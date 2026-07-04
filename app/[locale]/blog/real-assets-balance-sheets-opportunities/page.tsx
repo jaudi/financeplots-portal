@@ -33,6 +33,7 @@ export default async function RealAssetsBalanceSheets({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"Real Assets, Balance Sheets and Where the Opportunities Are Hiding\",\"description\":\"How to read a balance sheet like a contrarian — where real assets hide at historical cost, the five line items that matter, and the sectors trading well below replacement value in 2026.\",\"url\":\"https://www.financeplots.com/blog/real-assets-balance-sheets-opportunities\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/real-assets-balance-sheets-opportunities\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

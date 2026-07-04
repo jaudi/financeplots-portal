@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "Most company budgets fail because they are set once and ignored. Learn zero-based budgeting, rolling forecasts, and how to get department buy-in.",
     images: ["https://www.financeplots.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://www.financeplots.com/blog/annual-budget-guide",
+  },
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -30,6 +33,7 @@ export default async function AnnualBudgetGuide({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"How to Build an Annual Budget That Your Finance Team Will Actually Use\",\"description\":\"Most company budgets fail because they are set once and ignored. Learn zero-based budgeting, rolling forecasts, and how to get department buy-in.\",\"url\":\"https://www.financeplots.com/blog/annual-budget-guide\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/annual-budget-guide\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

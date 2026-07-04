@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "Most people try to budget and give up within a month. Here is a simple, honest framework for taking control of your money — income, expenses, savings rate, and what to do first.",
     images: ["https://www.financeplots.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://www.financeplots.com/blog/personal-budget-guide",
+  },
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -30,6 +33,7 @@ export default async function PersonalBudgetGuide({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"How to Build a Personal Budget That Actually Works\",\"description\":\"Most people try to budget and give up within a month. Here is a simple, honest framework for taking control of your money — income, expenses, savings rate, and what to do first.\",\"url\":\"https://www.financeplots.com/blog/personal-budget-guide\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/personal-budget-guide\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

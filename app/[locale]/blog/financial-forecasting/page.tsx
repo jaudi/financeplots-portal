@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "Most businesses react to numbers. The best ones anticipate them. Why financial forecasting is the single most important habit a business can build.",
     images: ["https://www.financeplots.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://www.financeplots.com/blog/financial-forecasting",
+  },
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -30,6 +33,7 @@ export default async function ArticleFinancialForecasting({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"Why Financial Forecasting Is the Most Underused Tool in Business\",\"description\":\"Most businesses react to numbers. The best ones anticipate them. Why financial forecasting is the single most important habit a business can build.\",\"url\":\"https://www.financeplots.com/blog/financial-forecasting\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/financial-forecasting\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

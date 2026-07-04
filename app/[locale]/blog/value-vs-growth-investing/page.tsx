@@ -33,6 +33,7 @@ export default async function ValueVsGrowthInvesting({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"Value vs Growth: A Century of Cycles, the Fed, Bitcoin and Gold\",\"description\":\"A century of value vs growth cycles — from 1920 to today. Why the next Fed meeting matters, where Bitcoin fits, and why gold never really leaves the room.\",\"url\":\"https://www.financeplots.com/blog/value-vs-growth-investing\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/value-vs-growth-investing\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

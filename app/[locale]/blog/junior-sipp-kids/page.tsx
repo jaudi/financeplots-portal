@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "How opening a pension for your child — with just £1,000 and £25/month — could hand them a quarter of a million pounds at retirement.",
     images: ["https://www.financeplots.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://www.financeplots.com/blog/junior-sipp-kids",
+  },
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -122,6 +125,7 @@ export default async function ArticleJuniorSIPP({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"The Smartest £25 You Can Spend on Your Child's Future: Junior SIPPs Explained\",\"description\":\"How opening a pension for your child — with just £1,000 and £25/month — could hand them a quarter of a million pounds at retirement.\",\"url\":\"https://www.financeplots.com/blog/junior-sipp-kids\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/junior-sipp-kids\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

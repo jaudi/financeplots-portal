@@ -33,6 +33,7 @@ export default async function USTenYearEquityRiskPremium({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"The 10-Year, the Equity Risk Premium and a World Drowning in Debt\",\"description\":\"The US 10-year Treasury anchors every asset price on the planet. With developed-world debt at post-war highs and the equity risk premium near zero, the foundation of finance is moving — and most portfolios haven't noticed.\",\"url\":\"https://www.financeplots.com/blog/us-10y-yield-equity-risk-premium\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/us-10y-yield-equity-risk-premium\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

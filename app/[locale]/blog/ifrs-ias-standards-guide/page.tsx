@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "A plain-English guide to the IFRS and IAS standards that drive the numbers in real financial statements.",
     images: ["https://www.financeplots.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://www.financeplots.com/blog/ifrs-ias-standards-guide",
+  },
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -30,6 +33,7 @@ export default async function ArticleIfrsIasStandards({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"The Most Important IFRS and IAS Standards Every Finance Professional Should Know\",\"description\":\"A plain-English guide to the IFRS and IAS standards that drive the numbers in real financial statements — IFRS 9, 15, 16, IAS 1, 36, 37 and the rest of the standards that matter in practice.\",\"url\":\"https://www.financeplots.com/blog/ifrs-ias-standards-guide\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/ifrs-ias-standards-guide\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

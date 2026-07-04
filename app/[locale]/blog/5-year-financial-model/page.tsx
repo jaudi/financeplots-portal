@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "A complete guide to building a three-statement financial model — P&L, cash flow and balance sheet — that investors and banks will trust.",
     images: ["https://www.financeplots.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://www.financeplots.com/blog/5-year-financial-model",
+  },
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -30,6 +33,7 @@ export default async function FiveYearFinancialModel({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"How to Build a 5-Year Financial Model for Your Business\",\"description\":\"A complete guide to building a three-statement financial model — P&L, cash flow and balance sheet — that investors and banks will trust.\",\"url\":\"https://www.financeplots.com/blog/5-year-financial-model\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/5-year-financial-model\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">

@@ -1,11 +1,28 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import Navbar from "@/components/Navbar";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "FinancePlots",
+  url: "https://www.financeplots.com",
+  logo: "https://www.financeplots.com/logo-sm.png",
+  sameAs: ["https://twitter.com/financeplots"],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "FinancePlots",
+  url: "https://www.financeplots.com",
+};
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -87,10 +104,25 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={inter.className}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded"
+        >
+          Skip to content
+        </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <NextIntlClientProvider messages={messages}>
           <Navbar />
           {children}
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );

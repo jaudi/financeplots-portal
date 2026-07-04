@@ -33,6 +33,7 @@ export default async function ECBRateHikeMistake({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: "{\"@context\":\"https://schema.org\",\"@type\":\"Article\",\"headline\":\"Why an ECB Rate Hike on June 11 Would Be the Wrong Response to the Iran Oil Shock\",\"description\":\"Eurozone inflation is rising, but not because the economy is hot. It's a structural supply shock from the Iran war pushing energy back up. Monetary policy can't make oil cheaper — and an ECB hike on June 11 would be the wrong tool for the wrong problem.\",\"url\":\"https://www.financeplots.com/blog/ecb-rate-hike-mistake\",\"image\":\"https://www.financeplots.com/og-image.png\",\"author\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\"},\"publisher\":{\"@type\":\"Organization\",\"name\":\"FinancePlots\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https://www.financeplots.com/logo-sm.png\"}},\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://www.financeplots.com/blog/ecb-rate-hike-mistake\"}}" }} />
       <BlogArticleShell>
 
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">
