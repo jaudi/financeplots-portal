@@ -9,6 +9,7 @@ const BLOG_SLUGS = [
   "break-even-analysis-guide",
   "cash-flow-forecast-guide",
   "claude-products-guide",
+  "control-is-the-whole-game",
   "dcf-valuation-guide",
   "finance-dashboard-problem",
   "financial-forecasting",
