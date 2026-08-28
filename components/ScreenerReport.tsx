@@ -39,6 +39,8 @@ interface ScreenerReportProps {
   jsonLdName: string;
   jsonLdDescription: string;
   jsonLdUrl: string;
+  /** Whether ROA is enforced as a hard filter for this index (default true). */
+  roaRequired?: boolean;
 }
 
 function formatDate(iso: string | null) {
@@ -54,6 +56,7 @@ export default function ScreenerReport({
   jsonLdName,
   jsonLdDescription,
   jsonLdUrl,
+  roaRequired = true,
 }: ScreenerReportProps) {
   const tc = useTranslations("toolCommon");
   const [data, setData] = useState<ScreenerReportData | null>(null);
@@ -119,9 +122,10 @@ export default function ScreenerReport({
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Quality Screener</p>
             <h2 className="text-3xl font-extrabold text-white mb-2">{universeName} Quality Screener</h2>
             <p className="text-gray-400 text-sm max-w-xl mx-auto">
-              Every week, the full {universeName} is screened on quality fundamentals (ROE &gt; 20%, ROA &gt; 12%, P/E &lt; 20,
-              Debt/Equity &lt; 100%) and momentum (RSI &gt; 30, price above the 50-day moving average). An AI agent
-              then researches the names that pass and writes an executive summary.
+              Every week, the full {universeName} is screened on quality fundamentals (ROE &gt; 20%
+              {roaRequired ? ", ROA > 12%" : ""}, P/E &lt; 20, Debt/Equity &lt; 100%) and momentum (RSI &gt; 30,
+              price above the 50-day moving average). An AI agent then researches the names that pass and writes
+              an executive summary.
             </p>
           </div>
 

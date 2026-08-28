@@ -63,12 +63,6 @@ export default function ScreenerSpotlight({ report }: { report: ScreenerReportDa
           >
             See the full report →
           </Link>
-          <Link
-            href="/tools/quality-screener-ibex35"
-            className="bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-600 text-gray-200 font-semibold px-8 py-4 rounded-xl text-base transition"
-          >
-            🇪🇸 Also screening the IBEX 35 →
-          </Link>
         </div>
       </div>
     </section>
