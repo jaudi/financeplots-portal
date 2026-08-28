@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import RelatedTools from "@/components/RelatedTools";
 
 interface Company {
@@ -168,10 +170,35 @@ export default function QualityScreenerPage() {
               )}
 
               {data.report && (
-                <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                  <h3 className="text-white font-bold text-base mb-4">📊 Research report</h3>
-                  <div className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">
-                    {data.report}
+                <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
+                  <h3 className="text-white font-bold text-base mb-5">📊 Research report</h3>
+                  <div className="text-sm text-gray-300 leading-relaxed">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        h1: (p) => <h1 className="text-xl font-extrabold text-white mt-6 mb-3 first:mt-0" {...p} />,
+                        h2: (p) => <h2 className="text-lg font-bold text-white mt-6 mb-3 first:mt-0" {...p} />,
+                        h3: (p) => <h3 className="text-base font-bold text-blue-300 mt-5 mb-2" {...p} />,
+                        p: (p) => <p className="mb-4 text-gray-300" {...p} />,
+                        strong: (p) => <strong className="text-white font-semibold" {...p} />,
+                        ul: (p) => <ul className="list-disc list-inside mb-4 space-y-1.5 text-gray-300" {...p} />,
+                        ol: (p) => <ol className="list-decimal list-inside mb-4 space-y-1.5 text-gray-300" {...p} />,
+                        li: (p) => <li className="pl-1" {...p} />,
+                        hr: () => <hr className="border-gray-800 my-6" />,
+                        a: (p) => <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...p} />,
+                        code: (p) => <code className="bg-black/30 text-blue-300 px-1.5 py-0.5 rounded text-xs" {...p} />,
+                        table: (p) => (
+                          <div className="overflow-x-auto mb-4 border border-gray-800 rounded-lg">
+                            <table className="w-full text-xs" {...p} />
+                          </div>
+                        ),
+                        thead: (p) => <thead className="bg-black/20" {...p} />,
+                        th: (p) => <th className="text-left px-3 py-2 font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-800" {...p} />,
+                        td: (p) => <td className="px-3 py-2 border-b border-gray-800/60 text-gray-300 align-top" {...p} />,
+                      }}
+                    >
+                      {data.report}
+                    </ReactMarkdown>
                   </div>
                 </div>
               )}
