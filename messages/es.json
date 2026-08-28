@@ -23,6 +23,7 @@
     "stockAnalysis": "Análisis de Acciones",
     "macroDashboard": "Macro EE.UU.",
     "qualityScreener": "Screener de Calidad",
+    "qualityScreenerIbex": "Screener IBEX 35",
     "marketIndices": "Índices Mundiales",
     "utilitiesSectionLabel": "Utilidades",
     "screenRecorder": "Grabador de Pantalla"
@@ -375,6 +376,12 @@
         "name": "Screener de Calidad S&P 500",
         "desc": "Cribado semanal del S&P 500 por fundamentales de calidad y momentum, con un informe de investigación generado por IA sobre las empresas que lo superan.",
         "href": "/tools/quality-screener"
+      },
+      {
+        "icon": "🇪🇸",
+        "name": "Screener de Calidad IBEX 35",
+        "desc": "El mismo cribado semanal de calidad y momentum generado por IA, aplicado al IBEX 35.",
+        "href": "/tools/quality-screener-ibex35"
       },
       {
         "icon": "📊",

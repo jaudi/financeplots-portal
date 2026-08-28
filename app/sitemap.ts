@@ -38,6 +38,7 @@ const TOOL_SLUGS = [
   "pitch-deck",
   "portfolio-analysis",
   "quality-screener",
+  "quality-screener-ibex35",
   "screen-recorder",
   "stock-analysis",
   "stock-comparison",

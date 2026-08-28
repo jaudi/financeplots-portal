@@ -58,6 +58,7 @@ export default function Navbar() {
     { label: `📈 ${t("stockAnalysis")}`,     href: "/tools/stock-analysis"     },
     { label: `📊 ${t("macroDashboard")}`,    href: "/tools/macro-dashboard"    },
     { label: `🏆 ${t("qualityScreener")}`,   href: "/tools/quality-screener"   },
+    { label: `🇪🇸 ${t("qualityScreenerIbex")}`, href: "/tools/quality-screener-ibex35" },
   ];
 
   return (

@@ -23,6 +23,7 @@
     "stockAnalysis": "Stock Analysis",
     "macroDashboard": "US Macro",
     "qualityScreener": "Quality Screener",
+    "qualityScreenerIbex": "IBEX 35 Screener",
     "marketIndices": "World Indices",
     "utilitiesSectionLabel": "Utilities",
     "screenRecorder": "Screen Recorder"
@@ -389,6 +390,12 @@
         "name": "S&P 500 Quality Screener",
         "desc": "Weekly AI-powered screen of the S&P 500 on quality fundamentals and momentum, with a research report on the names that pass.",
         "href": "/tools/quality-screener"
+      },
+      {
+        "icon": "🇪🇸",
+        "name": "IBEX 35 Quality Screener",
+        "desc": "The same weekly AI-powered quality and momentum screen, applied to the IBEX 35.",
+        "href": "/tools/quality-screener-ibex35"
       },
       {
         "icon": "📊",
