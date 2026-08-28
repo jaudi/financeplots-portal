@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import ScreenerSpotlight from "@/components/ScreenerSpotlight";
+import { getSp500Report } from "@/lib/screener";
 
 export const metadata: Metadata = {
   title: "FinancePlots — Independent Writing on Markets, Macro & FP&A",
@@ -38,9 +40,9 @@ const TAG_COLORS: Record<string, string> = {
   "Guía": "text-purple-400",
 };
 
-export default function Home() {
-  const t = useTranslations("home");
-  const tBlog = useTranslations("blog");
+export default async function Home() {
+  const t = await getTranslations("home");
+  const tBlog = await getTranslations("blog");
 
   const personalTools = t.raw("personalTools") as [string, string, string, string][];
   const professionalTools = t.raw("professionalTools") as [string, string, string, string][];
@@ -50,11 +52,15 @@ export default function Home() {
   const recent = articles.slice(1, 7); // next 6 after the featured one
   const totalArticles = articles.length;
 
+  const sp500Report = await getSp500Report();
+
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
 
+      <ScreenerSpotlight report={sp500Report} />
+
       {/* ── Hero: featured article ── */}
-      <section className="relative px-6 pt-32 pb-20 overflow-hidden">
+      <section className="relative px-6 pt-16 pb-20 overflow-hidden border-t border-gray-800">
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-4xl mx-auto relative">
@@ -72,9 +78,9 @@ export default function Home() {
             href={`/blog/${featured.slug}`}
             className="block group"
           >
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight group-hover:text-blue-300 transition">
+            <h2 className="text-4xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight group-hover:text-blue-300 transition">
               {featured.title}
-            </h1>
+            </h2>
             <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-3xl">
               {featured.description}
             </p>
