@@ -37,6 +37,7 @@ const TOOL_SLUGS = [
   "personal-budget",
   "pitch-deck",
   "portfolio-analysis",
+  "quality-screener",
   "screen-recorder",
   "stock-analysis",
   "stock-comparison",

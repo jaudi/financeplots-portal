@@ -22,6 +22,7 @@
     "stockComparison": "Comparación de Acciones",
     "stockAnalysis": "Análisis de Acciones",
     "macroDashboard": "Macro EE.UU.",
+    "qualityScreener": "Screener de Calidad",
     "marketIndices": "Índices Mundiales",
     "utilitiesSectionLabel": "Utilidades",
     "screenRecorder": "Grabador de Pantalla"
@@ -368,6 +369,12 @@
         "name": "Panel Macro EE.UU.",
         "desc": "Indicadores macroeconómicos clave de EE.UU. — PIB, IPC, desempleo, tipos de la Fed y bono 10 años. Datos de FRED.",
         "href": "/tools/macro-dashboard"
+      },
+      {
+        "icon": "🏆",
+        "name": "Screener de Calidad S&P 500",
+        "desc": "Cribado semanal del S&P 500 por fundamentales de calidad y momentum, con un informe de investigación generado por IA sobre las empresas que lo superan.",
+        "href": "/tools/quality-screener"
       },
       {
         "icon": "📊",

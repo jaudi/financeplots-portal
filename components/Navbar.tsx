@@ -57,6 +57,7 @@ export default function Navbar() {
     { label: `📉 ${t("stockComparison")}`,   href: "/tools/stock-comparison"   },
     { label: `📈 ${t("stockAnalysis")}`,     href: "/tools/stock-analysis"     },
     { label: `📊 ${t("macroDashboard")}`,    href: "/tools/macro-dashboard"    },
+    { label: `🏆 ${t("qualityScreener")}`,   href: "/tools/quality-screener"   },
   ];
 
   return (

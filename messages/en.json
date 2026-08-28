@@ -22,6 +22,7 @@
     "stockComparison": "Stock Comparison",
     "stockAnalysis": "Stock Analysis",
     "macroDashboard": "US Macro",
+    "qualityScreener": "Quality Screener",
     "marketIndices": "World Indices",
     "utilitiesSectionLabel": "Utilities",
     "screenRecorder": "Screen Recorder"
@@ -382,6 +383,12 @@
         "name": "US Macro Dashboard",
         "desc": "Key US macroeconomic indicators — GDP, CPI, unemployment, Fed Funds and 10Y Treasury. Sourced from FRED.",
         "href": "/tools/macro-dashboard"
+      },
+      {
+        "icon": "🏆",
+        "name": "S&P 500 Quality Screener",
+        "desc": "Weekly AI-powered screen of the S&P 500 on quality fundamentals and momentum, with a research report on the names that pass.",
+        "href": "/tools/quality-screener"
       },
       {
         "icon": "📊",
