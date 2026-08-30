@@ -171,15 +171,6 @@ export default function Navbar() {
             Learn
           </Link>
 
-          <Link
-            href="/download"
-            className={`px-4 py-2 rounded-lg transition font-medium ${
-              pathname?.includes("/download") ? "text-white bg-blue-600/10" : "hover:text-white hover:bg-white/5"
-            }`}
-          >
-            Desktop
-          </Link>
-
           {/* Language switcher */}
           <div className="flex items-center gap-1 ml-1 border border-gray-700 rounded-lg px-1 py-0.5">
             <button
@@ -246,7 +237,6 @@ export default function Navbar() {
             <Link href="/blog" className={`px-4 py-2.5 rounded-lg transition font-semibold ${pathname?.includes("/blog") ? "text-white bg-blue-600/15" : "text-blue-300 hover:text-white"}`}>📝 {t("blog")}</Link>
             <Link href="/tools/market-indices" className={`px-4 py-2.5 rounded-lg transition ${pathname?.includes("/market-indices") ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>🌐 {t("marketIndices")}</Link>
             <Link href="/learn" className={`px-4 py-2.5 rounded-lg transition ${pathname?.includes("/learn") ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>Learn</Link>
-            <Link href="/download" className="px-4 py-2.5 rounded-lg text-gray-300 hover:text-white transition">Desktop</Link>
           </div>
 
           {/* Mobile language switcher */}
