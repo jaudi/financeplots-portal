@@ -425,8 +425,8 @@ st.download_button("⬇ Download CSV", df.to_csv(index=False), "margin.csv", "te
           </h2>
           <p>
             {es
-              ? "Con estos conceptos puedes construir herramientas de finanzas reales. El siguiente paso es aprender a estructurar apps multi-página, conectar a fuentes de datos externas (APIs, bases de datos) y desplegar en producción. Todo eso está cubierto en las lecciones interactivas de Streamlit en FinancePlots."
-              : "With these concepts you can build real finance tools. The next step is learning how to structure multi-page apps, connect to external data sources (APIs, databases) and deploy to production. All of that is covered in the interactive Streamlit lessons on FinancePlots."}
+              ? "Con estos conceptos puedes construir herramientas de finanzas reales. El siguiente paso es aprender a estructurar apps multi-página, conectar a fuentes de datos externas (APIs, bases de datos) y desplegar en producción."
+              : "With these concepts you can build real finance tools. The next step is learning how to structure multi-page apps, connect to external data sources (APIs, databases) and deploy to production."}
           </p>
 
           <div className="bg-[#0d1426] border border-blue-600/20 rounded-2xl p-6 mt-4">
@@ -434,11 +434,6 @@ st.download_button("⬇ Download CSV", df.to_csv(index=False), "margin.csv", "te
               {es ? "Próximos pasos →" : "Continue learning →"}
             </p>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/learn/streamlit" className="text-blue-400 hover:text-blue-300 transition">
-                  {es ? "→ 40 lecciones interactivas de Streamlit — gratis en FinancePlots" : "→ 40 interactive Streamlit lessons — free on FinancePlots"}
-                </a>
-              </li>
               <li>
                 <a href="/tools" className="text-blue-400 hover:text-blue-300 transition">
                   {es ? "→ Ver las herramientas financieras en producción (todas construidas con Streamlit)" : "→ See the finance tools in production (all built with Streamlit)"}

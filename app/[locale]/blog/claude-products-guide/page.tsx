@@ -488,18 +488,18 @@ print(message.content[0].text)`}
 
           <div className="bg-purple-900/20 border border-purple-500/30 rounded-2xl p-6 not-prose">
             <p className="text-purple-300 font-bold text-sm mb-3">
-              {es ? "¿Quieres aprender a usar Claude para finanzas paso a paso?" : "Want to learn how to use Claude for finance step by step?"}
+              {es ? "¿Quieres poner esto en práctica?" : "Want to put this into practice?"}
             </p>
             <p className="text-gray-400 text-sm mb-4">
               {es
-                ? "El track Claude & Finance de FinancePlots cubre prompting, análisis de P&L, fórmulas de Excel, la API y MCP — 50 lecciones interactivas gratuitas."
-                : "FinancePlots' Claude & Finance track covers prompting, P&L analysis, Excel formulas, the API and MCP — 50 free interactive lessons."}
+                ? "Prueba las herramientas financieras gratuitas de FinancePlots — modelo financiero, presupuesto, valoración y más."
+                : "Try FinancePlots' free finance tools — financial model, budgeting, valuation and more."}
             </p>
             <Link
-              href="/learn/claude-finance"
+              href="/tools"
               className="inline-block bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-3 rounded-xl text-sm transition"
             >
-              {es ? "Empezar a aprender →" : "Start learning →"}
+              {es ? "Ver herramientas →" : "See the tools →"}
             </Link>
           </div>
 
