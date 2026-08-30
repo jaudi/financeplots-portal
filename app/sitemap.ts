@@ -29,6 +29,7 @@ const TOOL_SLUGS = [
   "break-even",
   "cash-flow",
   "compound-interest",
+  "etf-screener",
   "financial-model",
   "financial-planner",
   "financial-planner-company",

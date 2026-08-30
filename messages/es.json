@@ -384,6 +384,12 @@
         "href": "/tools/quality-screener-ibex35"
       },
       {
+        "icon": "📈",
+        "name": "Screener de ETFs",
+        "desc": "ETFs de bajo coste cotizados en Londres, clasificados por ratio de Sharpe a 3 años, con la metodología completa documentada en la página.",
+        "href": "/tools/etf-screener"
+      },
+      {
         "icon": "📊",
         "name": "Análisis de Cartera",
         "desc": "Sube tus posiciones y analiza rentabilidad, métricas de riesgo y asignación de activos.",

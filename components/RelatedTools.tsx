@@ -17,6 +17,7 @@ const ALL_TOOLS: { slug: string; icon: string; name: string }[] = [
   { slug: "market-indices",            icon: "🌐", name: "World Market Indices" },
   { slug: "quality-screener",          icon: "🏆", name: "S&P 500 Quality Screener" },
   { slug: "quality-screener-ibex35",   icon: "🇪🇸", name: "IBEX 35 Quality Screener" },
+  { slug: "etf-screener",              icon: "📈", name: "ETF Screener" },
 ];
 
 // Map each tool to 3 related slugs
@@ -35,8 +36,9 @@ const RELATED: Record<string, string[]> = {
   "stock-comparison":          ["market-indices", "stock-analysis", "quality-screener"],
   "stock-analysis":            ["quality-screener", "stock-comparison", "portfolio-analysis"],
   "market-indices":            ["stock-comparison", "stock-analysis", "portfolio-analysis"],
-  "quality-screener":          ["quality-screener-ibex35", "stock-analysis", "stock-comparison"],
-  "quality-screener-ibex35":   ["quality-screener", "stock-analysis", "portfolio-analysis"],
+  "quality-screener":          ["quality-screener-ibex35", "etf-screener", "stock-comparison"],
+  "quality-screener-ibex35":   ["quality-screener", "etf-screener", "portfolio-analysis"],
+  "etf-screener":              ["quality-screener", "quality-screener-ibex35", "portfolio-analysis"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

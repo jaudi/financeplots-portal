@@ -398,6 +398,12 @@
         "href": "/tools/quality-screener-ibex35"
       },
       {
+        "icon": "📈",
+        "name": "ETF Screener",
+        "desc": "Low-cost, London-listed ETFs ranked by 3-year Sharpe ratio, with the full filtering methodology documented on the page.",
+        "href": "/tools/etf-screener"
+      },
+      {
         "icon": "📊",
         "name": "Portfolio Analysis",
         "desc": "Upload your holdings and analyse returns, risk metrics and asset allocation.",
