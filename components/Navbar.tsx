@@ -12,23 +12,29 @@ export default function Navbar() {
   const t = useTranslations("nav");
   const [menuOpen, setMenuOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [screenersOpen, setScreenersOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const screenersRef = useRef<HTMLDivElement>(null);
   const [isPending, startTransition] = useTransition();
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setToolsOpen(false);
+      }
+      if (screenersRef.current && !screenersRef.current.contains(e.target as Node)) {
+        setScreenersOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Close dropdown on route change
+  // Close dropdowns on route change
   useEffect(() => {
     setToolsOpen(false);
+    setScreenersOpen(false);
     setMenuOpen(false);
   }, [pathname]);
 
@@ -57,8 +63,12 @@ export default function Navbar() {
     { label: `📉 ${t("stockComparison")}`,   href: "/tools/stock-comparison"   },
     { label: `📈 ${t("stockAnalysis")}`,     href: "/tools/stock-analysis"     },
     { label: `📊 ${t("macroDashboard")}`,    href: "/tools/macro-dashboard"    },
-    { label: `🏆 ${t("qualityScreener")}`,   href: "/tools/quality-screener"   },
+  ];
+
+  const SCREENERS = [
+    { label: `🏆 ${t("qualityScreener")}`,      href: "/tools/quality-screener"        },
     { label: `🇪🇸 ${t("qualityScreenerIbex")}`, href: "/tools/quality-screener-ibex35" },
+    { label: `📈 ${t("etfScreener")}`,          href: "/tools/etf-screener"            },
   ];
 
   return (
@@ -162,6 +172,42 @@ export default function Navbar() {
             🌐 {t("marketIndices")}
           </Link>
 
+          {/* Screeners dropdown */}
+          <div ref={screenersRef} className="relative">
+            <button
+              onClick={() => setScreenersOpen(v => !v)}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg transition font-medium ${
+                pathname?.includes("screener") ? "text-white bg-blue-600/10" : "hover:text-white hover:bg-white/5"
+              }`}
+            >
+              {t("screenersSectionLabel")}
+              <svg
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${screenersOpen ? "rotate-180" : ""}`}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {screenersOpen && (
+              <div className="absolute top-[calc(100%+6px)] right-0 w-56 bg-[#0d1426] border border-gray-700 rounded-2xl shadow-2xl shadow-black/60 overflow-hidden">
+                <div className="p-2">
+                  {SCREENERS.map(tool => (
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
+                        pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      {tool.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Language switcher */}
           <div className="flex items-center gap-1 ml-1 border border-gray-700 rounded-lg px-1 py-0.5">
             <button
@@ -219,6 +265,13 @@ export default function Navbar() {
 
           <p className="text-xs text-gray-600 font-bold uppercase tracking-wider px-4 py-1 mt-2">{t("marketSectionLabel")}</p>
           {MARKET_TOOLS.map(tool => (
+            <Link key={tool.href} href={tool.href} className={`px-4 py-2.5 rounded-lg transition ${pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>
+              {tool.label}
+            </Link>
+          ))}
+
+          <p className="text-xs text-gray-600 font-bold uppercase tracking-wider px-4 py-1 mt-2">{t("screenersSectionLabel")}</p>
+          {SCREENERS.map(tool => (
             <Link key={tool.href} href={tool.href} className={`px-4 py-2.5 rounded-lg transition ${pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>
               {tool.label}
             </Link>

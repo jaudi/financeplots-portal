@@ -9,6 +9,7 @@
     "financialJourney": "Financial Journey",
     "fpaSectionLabel": "FP&A Tools",
     "marketSectionLabel": "Market Tools",
+    "screenersSectionLabel": "Screeners",
     "viewAllTools": "View all tools →",
     "breakEven": "Break-Even",
     "financialModel": "Financial Model",
@@ -22,11 +23,10 @@
     "stockComparison": "Stock Comparison",
     "stockAnalysis": "Stock Analysis",
     "macroDashboard": "US Macro",
-    "qualityScreener": "Quality Screener",
+    "qualityScreener": "S&P 500 Screener",
     "qualityScreenerIbex": "IBEX 35 Screener",
-    "marketIndices": "World Indices",
-    "utilitiesSectionLabel": "Utilities",
-    "screenRecorder": "Screen Recorder"
+    "etfScreener": "ETF Screener",
+    "marketIndices": "World Indices"
   },
   "home": {
     "badge": "Free FP&A Tools · No Signup · Works Instantly",

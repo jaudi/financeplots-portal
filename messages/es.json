@@ -9,6 +9,7 @@
     "financialJourney": "Plan Financiero",
     "fpaSectionLabel": "Herramientas FP&A",
     "marketSectionLabel": "Herramientas de Mercado",
+    "screenersSectionLabel": "Screeners",
     "viewAllTools": "Ver todas las herramientas →",
     "breakEven": "Punto de Equilibrio",
     "financialModel": "Modelo Financiero",
@@ -22,11 +23,10 @@
     "stockComparison": "Comparación de Acciones",
     "stockAnalysis": "Análisis de Acciones",
     "macroDashboard": "Macro EE.UU.",
-    "qualityScreener": "Screener de Calidad",
+    "qualityScreener": "Screener S&P 500",
     "qualityScreenerIbex": "Screener IBEX 35",
-    "marketIndices": "Índices Mundiales",
-    "utilitiesSectionLabel": "Utilidades",
-    "screenRecorder": "Grabador de Pantalla"
+    "etfScreener": "Screener de ETFs",
+    "marketIndices": "Índices Mundiales"
   },
   "home": {
     "badge": "Herramientas FP&A Gratuitas · Sin Registro · Funciona Al Instante",
