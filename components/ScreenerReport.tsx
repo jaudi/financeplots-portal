@@ -129,6 +129,11 @@ export default function ScreenerReport({
             </p>
           </div>
 
+          <div className="max-w-2xl mx-auto mb-10 bg-amber-500/5 border border-amber-500/30 rounded-xl px-5 py-4">
+            <p className="text-amber-300 text-sm font-bold mb-1">⚠️ {tc("screenerDisclaimerTitle")}</p>
+            <p className="text-gray-300 text-sm leading-relaxed">{tc("screenerDisclaimer")}</p>
+          </div>
+
           {loading && (
             <div className="text-center text-gray-500 py-16 text-sm">Loading latest report…</div>
           )}

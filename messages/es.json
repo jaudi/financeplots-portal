@@ -472,6 +472,9 @@
     "generating": "Generando…",
     "backTools": "← Herramientas",
     "disclaimer": "Esta herramienta es solo para fines informativos y de planificación. No constituye asesoramiento financiero, de inversión, fiscal ni legal. Consulta siempre a un profesional cualificado antes de tomar decisiones financieras.",
+    "screenerDisclaimerTitle": "No es asesoramiento financiero",
+    "screenerDisclaimer": "Este es un proyecto personal, no análisis de inversión profesional. El cribado se ejecuta de forma automática y el análisis escrito lo genera un modelo de IA — ambos pueden contener errores, y los datos de mercado de origen pueden estar desactualizados o ser incorrectos. Nada de lo publicado aquí es una recomendación de compra o venta de ningún valor. Haz siempre tu propio análisis y consulta a un profesional cualificado antes de invertir.",
+    "screenerDisclaimerPast": "Este ranking se basa en los últimos 3 años de rentabilidad y volatilidad. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
     "alsoTry": "También puedes usar"
   },
   "breakEven": {
