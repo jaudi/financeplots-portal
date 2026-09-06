@@ -20,6 +20,14 @@ interface MacroResponse {
   error?: string;
 }
 
+interface ReportResponse {
+  report: string;
+  model: string;
+  generatedAt: string;
+  asOf: string | null;
+  error?: string;
+}
+
 const GROUP_ORDER = ["Growth", "Inflation", "Labor", "Rates"] as const;
 
 const GROUP_META: Record<string, { icon: string; blurb: string }> = {
@@ -60,6 +68,8 @@ export default function MacroDashboardPage() {
   const [data, setData] = useState<MacroResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [report, setReport] = useState<ReportResponse | null>(null);
+  const [reportLoading, setReportLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,6 +87,23 @@ export default function MacroDashboardPage() {
         if (!cancelled) setError(err instanceof Error ? err.message : "Fetch failed");
       } finally {
         if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/macro/report");
+        const json: ReportResponse = await res.json();
+        if (cancelled) return;
+        if (res.ok && json.report) setReport(json);
+      } catch {
+        // The commentary is supplementary — the dashboard stands without it.
+      } finally {
+        if (!cancelled) setReportLoading(false);
       }
     })();
     return () => { cancelled = true; };
@@ -196,6 +223,36 @@ export default function MacroDashboardPage() {
                   );
                 })}
               </div>
+
+              {(reportLoading || report) && (
+                <section className="mt-12 bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <h3 className="text-lg font-bold text-white">What the data says</h3>
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-blue-400 border border-blue-500/30 bg-blue-500/10 rounded px-1.5 py-0.5">
+                      AI summary
+                    </span>
+                  </div>
+
+                  {reportLoading && !report && (
+                    <div className="text-sm text-gray-500">Writing the latest commentary…</div>
+                  )}
+
+                  {report && (
+                    <>
+                      <div className="space-y-4">
+                        {report.report.split(/\n\s*\n/).map((para, i) => (
+                          <p key={i} className="text-sm text-gray-300 leading-relaxed">
+                            {para}
+                          </p>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-gray-600 mt-6 pt-4 border-t border-gray-800/60">
+                        Written by {report.model} from the FRED values above on {formatDate(report.generatedAt)}. Commentary only — not investment advice.
+                      </p>
+                    </>
+                  )}
+                </section>
+              )}
 
               <p className="text-xs text-gray-600 text-center mt-10">
                 Source: <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">FRED</a> · Federal Reserve Bank of St. Louis. Data refreshes daily.
