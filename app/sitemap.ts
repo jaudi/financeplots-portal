@@ -35,6 +35,7 @@ const TOOL_SLUGS = [
   "financial-planner",
   "financial-planner-company",
   "lending",
+  "macro-dashboard",
   "market-indices",
   "personal-budget",
   "pitch-deck",
