@@ -6,7 +6,7 @@ import { fetchIndicators, type MacroIndicator } from "@/lib/fred";
 // Adaptive thinking plus generation needs more than the platform default.
 export const maxDuration = 60;
 
-const MODEL = "claude-opus-5";
+const MODEL = "claude-sonnet-5";
 const TARGET_WORDS = 400;
 
 const SYSTEM = `You are a macro strategist writing the standing commentary that accompanies a live US macro dashboard on FinancePlots, a site used by finance directors and CFOs at small and mid-sized businesses.
@@ -77,7 +77,7 @@ async function generateReport(indicators: MacroIndicator[], today: string) {
  * series here (DGS10) is daily and the rest are monthly or quarterly. A thrown error
  * is not cached, so a failed generation retries on the next request.
  */
-const getCachedReport = unstable_cache(generateReport, ["macro-report-v2"], {
+const getCachedReport = unstable_cache(generateReport, ["macro-report-v3"], {
   revalidate: 86400,
   tags: ["macro-report"],
 });
