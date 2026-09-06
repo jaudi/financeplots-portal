@@ -35,8 +35,18 @@ const FUNDS_REPORT_URL =
 export const SCREENER_REVALIDATE_SECONDS = 3600;
 
 async function fetchReport<T>(url: string): Promise<T | null> {
+  // Vercel's Data Cache survives redeploys, so an entry written under the old 7-day
+  // window would keep being served even from a fresh deployment — a new report could
+  // stay invisible for days with no way to force it short of purging the cache by hand.
+  // Bucketing the URL by the hour gives each hour its own cache key, so a new report
+  // always surfaces within the hour regardless of what is already cached. GitHub
+  // ignores the extra param when serving raw files.
+  const hourBucket = Math.floor(Date.now() / (SCREENER_REVALIDATE_SECONDS * 1000));
+
   try {
-    const res = await fetch(url, { next: { revalidate: SCREENER_REVALIDATE_SECONDS } });
+    const res = await fetch(`${url}?h=${hourBucket}`, {
+      next: { revalidate: SCREENER_REVALIDATE_SECONDS },
+    });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
