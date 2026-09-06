@@ -66,6 +66,12 @@ export default async function ArticleBuildingMyFirstAIAgents({ params }: Props) 
               : "Today they're two tools that run themselves every week: the S&P 500 Quality Screener and the IBEX 35 one. They screen the whole index on fundamentals and technicals, and an AI agent researches the web and writes the final report. No server: the GitHub repo is the database, and the portal reads it live."}
           </p>
 
+          <p className="text-sm text-gray-400 bg-white/5 border border-gray-700 rounded-xl px-4 py-3">
+            {es
+              ? "Una aclaración antes de seguir: estos screeners son proyectos personales, construidos en mi tiempo libre para aprender. No son trabajo profesional, no están asociados a ningún empleador ni cliente, y nada de lo que publican es asesoramiento de inversión. Son una herramienta para decidir a qué empresas dedico yo mi propio tiempo de análisis — nada más."
+              : "One clarification before going further: these screeners are personal projects, built in my own time to learn. They aren't professional work, they're not associated with any employer or client, and nothing they publish is investment advice. They're a tool for deciding which companies get my own research time — nothing more."}
+          </p>
+
           <h2 className="text-2xl font-bold text-white mt-10">
             {es ? "El filtro: 6 criterios antes de tocar la IA" : "The filter: 6 criteria before any AI"}
           </h2>
