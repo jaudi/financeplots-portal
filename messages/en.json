@@ -210,6 +210,13 @@
     },
     "articles": [
       {
+        "slug": "building-my-first-ai-agents",
+        "title": "Building My First AI Agents: The S&P 500 and IBEX 35 Quality Screeners",
+        "date": "September 2026",
+        "description": "How I built my first AI agents — two weekly quality screeners combining fundamental and technical filters with a Groq tool-use loop, running on GitHub Actions with no server. And why agents aren't just for engineers.",
+        "tag": "AI & Agents"
+      },
+      {
         "slug": "control-is-the-whole-game",
         "title": "Control Is the Whole Game: What Real Madrid, Spain and Football Taught Me About Finance",
         "date": "July 2026",

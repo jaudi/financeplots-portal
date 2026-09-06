@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import ScreenerSpotlight from "@/components/ScreenerSpotlight";
-import { getSp500Report } from "@/lib/screener";
+import { getFundsReport, getIbex35Report, getSp500Report } from "@/lib/screener";
 
 export const metadata: Metadata = {
   title: "FinancePlots — Independent Writing on Markets, Macro & FP&A",
@@ -52,12 +52,16 @@ export default async function Home() {
   const recent = articles.slice(1, 7); // next 6 after the featured one
   const totalArticles = articles.length;
 
-  const sp500Report = await getSp500Report();
+  const [sp500Report, ibex35Report, fundsReport] = await Promise.all([
+    getSp500Report(),
+    getIbex35Report(),
+    getFundsReport(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
 
-      <ScreenerSpotlight report={sp500Report} />
+      <ScreenerSpotlight report={sp500Report} ibex35Report={ibex35Report} fundsReport={fundsReport} />
 
       {/* ── Hero: featured article ── */}
       <section className="relative px-6 pt-16 pb-20 overflow-hidden border-t border-gray-800">

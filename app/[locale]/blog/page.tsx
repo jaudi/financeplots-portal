@@ -22,6 +22,8 @@ const TAG_COLORS: Record<string, string> = {
   "Tutorial (es)": "text-teal-400",
   "Guide": "text-purple-400",
   "Guía": "text-purple-400",
+  "AI & Agents": "text-cyan-400",
+  "IA y Agentes": "text-cyan-400",
 };
 
 export default function BlogPage() {

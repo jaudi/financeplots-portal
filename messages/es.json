@@ -210,6 +210,13 @@
     },
     "articles": [
       {
+        "slug": "building-my-first-ai-agents",
+        "title": "Construyendo mis primeros agentes de IA: los screeners del S&P 500 y el IBEX 35",
+        "date": "Septiembre 2026",
+        "description": "Cómo construí mis primeros agentes de IA — dos screeners semanales que combinan filtros fundamentales y técnicos con un bucle de tool-use en Groq, ejecutándose en GitHub Actions y sin servidor. Y por qué los agentes no son solo para ingenieros.",
+        "tag": "IA y Agentes"
+      },
+      {
         "slug": "control-is-the-whole-game",
         "title": "Control es todo el partido: lo que Real Madrid, España y el fútbol me enseñaron sobre finanzas",
         "date": "Julio 2026",

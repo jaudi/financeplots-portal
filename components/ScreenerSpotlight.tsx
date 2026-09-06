@@ -1,16 +1,27 @@
 import Link from "next/link";
-import type { ScreenerReportData } from "@/lib/screener";
+import type { FundsReportData, ScreenerReportData } from "@/lib/screener";
 
 function formatDate(iso: string | null) {
   if (!iso) return null;
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
-export default function ScreenerSpotlight({ report }: { report: ScreenerReportData | null }) {
+type Props = {
+  report: ScreenerReportData | null;
+  ibex35Report: ScreenerReportData | null;
+  fundsReport: FundsReportData | null;
+};
+
+export default function ScreenerSpotlight({ report, ibex35Report, fundsReport }: Props) {
   const companies = report?.companies ?? [];
   const preview = companies.slice(0, 5);
   const extraCount = Math.max(0, companies.length - preview.length);
   const generatedLabel = formatDate(report?.generated_at ?? null);
+
+  const ibexCompanies = ibex35Report?.companies ?? [];
+  const ibexPreview = ibexCompanies.slice(0, 3);
+  const funds = fundsReport?.funds ?? [];
+  const topFunds = funds.slice(0, 3);
 
   return (
     <section className="relative px-6 pt-32 pb-16 overflow-hidden">
@@ -62,6 +73,63 @@ export default function ScreenerSpotlight({ report }: { report: ScreenerReportDa
             className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl text-base transition shadow-lg shadow-blue-600/25"
           >
             See the full report →
+          </Link>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4 mt-12 pt-10 border-t border-gray-800">
+          <Link
+            href="/tools/quality-screener-ibex35"
+            className="block bg-[#0d1426] border border-gray-800 hover:border-yellow-500/60 rounded-2xl p-6 transition group"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">🇪🇸</span>
+              <h2 className="text-white font-bold text-lg group-hover:text-blue-300 transition">IBEX 35 Quality Screener</h2>
+            </div>
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+              The same weekly agent, tuned for Spain — ROA is reported but not a hard filter, since low ROA is
+              structural for the index&apos;s banks and utilities.
+            </p>
+            {ibexPreview.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {ibexPreview.map((c) => (
+                  <span key={c.ticker} className="font-mono text-xs font-bold text-yellow-400 bg-yellow-400/5 border border-yellow-400/20 rounded-lg px-2.5 py-1">
+                    {c.ticker}
+                  </span>
+                ))}
+                {ibexCompanies.length > ibexPreview.length && (
+                  <span className="text-gray-500 text-xs px-1 py-1">+{ibexCompanies.length - ibexPreview.length} more</span>
+                )}
+              </div>
+            ) : (
+              <span className="text-gray-500 text-xs">No names passed every filter in the latest run.</span>
+            )}
+          </Link>
+
+          <Link
+            href="/tools/etf-screener"
+            className="block bg-[#0d1426] border border-gray-800 hover:border-yellow-500/60 rounded-2xl p-6 transition group"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">📊</span>
+              <h2 className="text-white font-bold text-lg group-hover:text-blue-300 transition">ETF Screener</h2>
+            </div>
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+              UCITS equity ETFs from the iShares catalogue with a TER under 0.20%, ranked by 3-year Sharpe ratio.
+            </p>
+            {topFunds.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {topFunds.map((f) => (
+                  <span key={f.isin} className="font-mono text-xs font-bold text-yellow-400 bg-yellow-400/5 border border-yellow-400/20 rounded-lg px-2.5 py-1">
+                    {f.ticker}
+                  </span>
+                ))}
+                {funds.length > topFunds.length && (
+                  <span className="text-gray-500 text-xs px-1 py-1">+{funds.length - topFunds.length} more</span>
+                )}
+              </div>
+            ) : (
+              <span className="text-gray-500 text-xs">Ranking refreshes with the next weekly run.</span>
+            )}
           </Link>
         </div>
       </div>
