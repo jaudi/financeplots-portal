@@ -103,6 +103,11 @@ export async function GET() {
     return NextResponse.json(result);
   } catch (err) {
     console.error("Macro report error:", err);
-    return NextResponse.json({ error: "Could not generate the macro commentary" }, { status: 500 });
+    // TEMPORARY: diagnosing a fast failure after the v2 cache bump. Remove.
+    const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    return NextResponse.json(
+      { error: "Could not generate the macro commentary", detail },
+      { status: 500 }
+    );
   }
 }
