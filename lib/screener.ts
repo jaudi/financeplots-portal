@@ -28,7 +28,11 @@ const IBEX35_REPORT_URL =
 const FUNDS_REPORT_URL =
   "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report-funds.json";
 
-export const SCREENER_REVALIDATE_SECONDS = 604800; // 7 days, matches the pipeline's weekly schedule
+// 1 hour. The pipeline only writes a new report weekly, but matching the cache to
+// that 7-day cadence meant a fresh report could sit unseen for days until someone
+// pushed a redeploy — the two schedules never line up. Revalidating hourly picks up
+// each run on its own, and costs one cheap refetch of a static file from GitHub.
+export const SCREENER_REVALIDATE_SECONDS = 3600;
 
 async function fetchReport<T>(url: string): Promise<T | null> {
   try {
