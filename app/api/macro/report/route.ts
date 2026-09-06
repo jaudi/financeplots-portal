@@ -12,10 +12,10 @@ const TARGET_WORDS = 400;
 const SYSTEM = `You are a macro strategist writing the standing commentary that accompanies a live US macro dashboard on FinancePlots, a site used by finance directors and CFOs at small and mid-sized businesses.
 
 Rules you must follow:
-- Write approximately ${TARGET_WORDS} words. Never go below 360 or above 440.
+- Write exactly four paragraphs. Budget roughly 100 words per paragraph — no paragraph shorter than 90 words or longer than 115. That puts the finished report at about ${TARGET_WORDS} words, and it must not come in under 380.
 - Use ONLY the indicator values supplied in the user message. Never introduce a number, date, central bank decision, or market event that is not in that data.
 - Every indicator is a published vintage with its own observation date. Say what the data shows as of those dates. Do not imply you know anything more recent.
-- Write in plain prose: three or four short paragraphs, no headings, no bullet lists, no markdown emphasis. It is read as body copy under the dashboard cards.
+- Write in plain prose: no headings, no bullet lists, no markdown emphasis. It is read as body copy under the dashboard cards.
 - Never print a raw ISO date. Write quarterly readings as "Q2 2026", monthly readings as "July 2026", and daily readings as "3 September 2026".
 - The reader runs a business, not a fund. Connect the numbers to what they affect: cost of borrowing, input costs, wage pressure, demand.
 - The "change" figure is the move versus the prior published reading of that same series. Describe direction, and say when a change is not available.
@@ -77,7 +77,7 @@ async function generateReport(indicators: MacroIndicator[], today: string) {
  * series here (DGS10) is daily and the rest are monthly or quarterly. A thrown error
  * is not cached, so a failed generation retries on the next request.
  */
-const getCachedReport = unstable_cache(generateReport, ["macro-report-v3"], {
+const getCachedReport = unstable_cache(generateReport, ["macro-report-v4"], {
   revalidate: 86400,
   tags: ["macro-report"],
 });
