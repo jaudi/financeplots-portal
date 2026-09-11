@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import RelatedTools from "@/components/RelatedTools";
+// `import type` so none of lib/screener's server-side fetch code follows the
+// types into the client bundle.
+import type { ScreenerValuation, ValuationMethod } from "@/lib/screener";
 
 interface Company {
   ticker: string;
@@ -28,6 +31,9 @@ interface ScreenerReportData {
   companies: Company[];
   failed: { ticker: string; error: string }[];
   report: string | null;
+  valuation_method?: ValuationMethod;
+  valuations?: ScreenerValuation[];
+  valuation_report?: string | null;
   error?: string;
 }
 
@@ -46,6 +52,57 @@ interface ScreenerReportProps {
 function formatDate(iso: string | null) {
   if (!iso) return null;
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
+
+// Shared by the research report and the valuation report so the two read as one
+// document. Defined at module scope, not inline, so it isn't rebuilt per render.
+const markdownComponents = {
+  h1: (p: object) => <h1 className="text-xl font-extrabold text-white mt-6 mb-3 first:mt-0" {...p} />,
+  h2: (p: object) => <h2 className="text-lg font-bold text-white mt-6 mb-3 first:mt-0" {...p} />,
+  h3: (p: object) => <h3 className="text-base font-bold text-blue-300 mt-5 mb-2" {...p} />,
+  p: (p: object) => <p className="mb-4 text-gray-300" {...p} />,
+  strong: (p: object) => <strong className="text-white font-semibold" {...p} />,
+  ul: (p: object) => <ul className="list-disc list-inside mb-4 space-y-1.5 text-gray-300" {...p} />,
+  ol: (p: object) => <ol className="list-decimal list-inside mb-4 space-y-1.5 text-gray-300" {...p} />,
+  li: (p: object) => <li className="pl-1" {...p} />,
+  hr: () => <hr className="border-gray-800 my-6" />,
+  a: (p: object) => <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...p} />,
+  code: (p: object) => <code className="bg-black/30 text-blue-300 px-1.5 py-0.5 rounded text-xs" {...p} />,
+  table: (p: object) => (
+    <div className="overflow-x-auto mb-4 border border-gray-800 rounded-lg">
+      <table className="w-full text-xs" {...p} />
+    </div>
+  ),
+  thead: (p: object) => <thead className="bg-black/20" {...p} />,
+  th: (p: object) => <th className="text-left px-3 py-2 font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-800" {...p} />,
+  td: (p: object) => <td className="px-3 py-2 border-b border-gray-800/60 text-gray-300 align-top" {...p} />,
+};
+
+function formatPct(value: number | null | undefined, withSign = false) {
+  if (value === null || value === undefined) return "—";
+  const sign = withSign && value > 0 ? "+" : "";
+  return `${sign}${value.toFixed(1)}%`;
+}
+
+// The valuation record carries the currency its filings are in, so the DCF
+// value can be labelled correctly — the IBEX names report in EUR, and showing
+// a euro fair value behind a dollar sign would be wrong, not just untidy.
+const CURRENCY_SYMBOLS: Record<string, string> = { USD: "$", EUR: "€", GBP: "£", CHF: "CHF " };
+
+function formatMoney(value: number | null, currency: string | null) {
+  if (value === null) return "—";
+  const symbol = CURRENCY_SYMBOLS[currency ?? "USD"] ?? `${currency} `;
+  return `${symbol}${value.toFixed(2)}`;
+}
+
+/** How much weight the probability deserves. With n=3 the spread of the
+ *  company's own growth is the honest guide: a steady compounder earns a real
+ *  read, a cyclical whose cash flows swing by an order of magnitude does not. */
+function probabilityConfidence(stdev: number | undefined) {
+  if (stdev === undefined) return null;
+  if (stdev < 0.2) return { label: "steady", className: "text-emerald-400/70" };
+  if (stdev < 1.0) return { label: "volatile", className: "text-amber-400/70" };
+  return { label: "near coin-flip", className: "text-red-400/70" };
 }
 
 export default function ScreenerReport({
@@ -86,6 +143,9 @@ export default function ScreenerReport({
 
   const generatedLabel = formatDate(data?.generated_at ?? null);
   const hasCompanies = (data?.companies?.length ?? 0) > 0;
+  // Reports written before the reverse-DCF stage shipped have no valuation
+  // block at all, so the whole section stays hidden rather than rendering empty.
+  const hasValuations = (data?.valuations?.length ?? 0) > 0;
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
@@ -200,33 +260,153 @@ export default function ScreenerReport({
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
                   <h3 className="text-white font-bold text-base mb-5">📊 Research report</h3>
                   <div className="text-sm text-gray-300 leading-relaxed">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        h1: (p) => <h1 className="text-xl font-extrabold text-white mt-6 mb-3 first:mt-0" {...p} />,
-                        h2: (p) => <h2 className="text-lg font-bold text-white mt-6 mb-3 first:mt-0" {...p} />,
-                        h3: (p) => <h3 className="text-base font-bold text-blue-300 mt-5 mb-2" {...p} />,
-                        p: (p) => <p className="mb-4 text-gray-300" {...p} />,
-                        strong: (p) => <strong className="text-white font-semibold" {...p} />,
-                        ul: (p) => <ul className="list-disc list-inside mb-4 space-y-1.5 text-gray-300" {...p} />,
-                        ol: (p) => <ol className="list-decimal list-inside mb-4 space-y-1.5 text-gray-300" {...p} />,
-                        li: (p) => <li className="pl-1" {...p} />,
-                        hr: () => <hr className="border-gray-800 my-6" />,
-                        a: (p) => <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...p} />,
-                        code: (p) => <code className="bg-black/30 text-blue-300 px-1.5 py-0.5 rounded text-xs" {...p} />,
-                        table: (p) => (
-                          <div className="overflow-x-auto mb-4 border border-gray-800 rounded-lg">
-                            <table className="w-full text-xs" {...p} />
-                          </div>
-                        ),
-                        thead: (p) => <thead className="bg-black/20" {...p} />,
-                        th: (p) => <th className="text-left px-3 py-2 font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-800" {...p} />,
-                        td: (p) => <td className="px-3 py-2 border-b border-gray-800/60 text-gray-300 align-top" {...p} />,
-                      }}
-                    >
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                       {data.report}
                     </ReactMarkdown>
                   </div>
+                </div>
+              )}
+
+              {hasValuations && (
+                <div className="mt-10">
+                  <div className="text-center mb-8">
+                    <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">
+                      What the price assumes
+                    </p>
+                    <h3 className="text-2xl font-extrabold text-white mb-2">Reverse DCF</h3>
+                    <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+                      Instead of asking whether these are good companies, this asks what today&apos;s
+                      price already assumes — the free cash flow growth that makes a 10-year DCF equal
+                      the current market cap — and compares it with the growth each business actually
+                      delivered.
+                    </p>
+                  </div>
+
+                  <div className="overflow-x-auto mb-6 bg-[#0d1426] border border-gray-800 rounded-xl">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wide">
+                          <th className="text-left px-4 py-3">Ticker</th>
+                          <th className="text-right px-4 py-3">Price implies</th>
+                          <th className="text-right px-4 py-3">Delivered</th>
+                          <th className="text-right px-4 py-3">Gap</th>
+                          <th className="text-right px-4 py-3">P(clears bar)</th>
+                          <th className="text-right px-4 py-3">DCF value</th>
+                          <th className="text-right px-4 py-3">vs price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.valuations!.map((v) => {
+                          const confidence = probabilityConfidence(v.probability?.historical_log_stdev);
+                          // A negative gap means the price assumes less than the
+                          // business has delivered — the favourable direction.
+                          const gapFavourable = v.gap_pp !== null && v.gap_pp < 0;
+                          return (
+                            <tr key={v.ticker} className="border-b border-gray-800/60 last:border-0">
+                              <td className="px-4 py-3 font-mono text-blue-300">{v.ticker}</td>
+                              <td
+                                className={`px-4 py-3 text-right font-semibold ${
+                                  v.implied_growth_pct !== null && v.implied_growth_pct < 0
+                                    ? "text-amber-400"
+                                    : "text-white"
+                                }`}
+                              >
+                                {formatPct(v.implied_growth_pct)}
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-300">
+                                {formatPct(v.historical_growth_pct)}
+                                {v.historical_growth_capped && (
+                                  <span
+                                    className="ml-1 text-amber-400/80 cursor-help"
+                                    title={`Not projectable at face value — the DCF used ${formatPct(
+                                      v.modelled_growth_pct
+                                    )} instead.`}
+                                  >
+                                    *
+                                  </span>
+                                )}
+                              </td>
+                              <td
+                                className={`px-4 py-3 text-right ${
+                                  gapFavourable ? "text-emerald-400" : "text-gray-400"
+                                }`}
+                              >
+                                {v.gap_pp === null ? "—" : `${v.gap_pp > 0 ? "+" : ""}${v.gap_pp.toFixed(1)} pp`}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <span className="text-gray-300">
+                                  {v.probability?.probability_pct === null ||
+                                  v.probability?.probability_pct === undefined
+                                    ? "—"
+                                    : `${v.probability.probability_pct.toFixed(0)}%`}
+                                </span>
+                                {confidence && (
+                                  <span className={`block text-[10px] ${confidence.className}`}>
+                                    {confidence.label}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-300">
+                                {formatMoney(v.dcf_value_per_share, v.currency)}
+                              </td>
+                              <td
+                                className={`px-4 py-3 text-right ${
+                                  v.dcf_upside_pct === null
+                                    ? "text-gray-400"
+                                    : v.dcf_upside_pct > 0
+                                      ? "text-emerald-400"
+                                      : "text-red-400"
+                                }`}
+                              >
+                                {formatPct(v.dcf_upside_pct, true)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="bg-[#0d1426]/60 border border-gray-800 rounded-xl px-5 py-4 mb-6 text-xs text-gray-500 leading-relaxed">
+                    <p className="mb-2">
+                      <span className="text-gray-400 font-semibold">How to read this.</span>{" "}
+                      <span className="text-gray-400">Price implies</span> is a reverse DCF — the growth
+                      rate that justifies today&apos;s price, not a forecast. A negative figure means the
+                      price assumes the business shrinks.{" "}
+                      <span className="text-gray-400">P(clears bar)</span> is how often this company&apos;s
+                      own cash flow history cleared that growth rate, fitted on{" "}
+                      {data.valuations![0]?.probability?.observations ?? 3} annual observations — a small
+                      sample, which is why each one is labelled by how steady the underlying cash flows
+                      are. It says nothing about what the future will do.
+                    </p>
+                    {data.valuations!.some((v) => v.historical_growth_capped) && (
+                      <p className="mb-2">
+                        <span className="text-amber-400/80">*</span> Growth clamped to the{" "}
+                        {data.valuation_method?.projected_growth_band_pct?.[0] ?? -15}% to{" "}
+                        {data.valuation_method?.projected_growth_band_pct?.[1] ?? 25}% band for the
+                        projection. A cyclical rebounding off a depressed base produces a CAGR that is
+                        real history but an indefensible forecast.
+                      </p>
+                    )}
+                    {data.valuation_method && (
+                      <p>
+                        {data.valuation_method.horizon_years}-year two-stage DCF on levered free cash
+                        flow, {data.valuation_method.terminal_growth_pct}% terminal growth.{" "}
+                        {data.valuation_method.discount_rate}
+                      </p>
+                    )}
+                  </div>
+
+                  {data.valuation_report && (
+                    <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
+                      <h3 className="text-white font-bold text-base mb-5">🧮 Valuation commentary</h3>
+                      <div className="text-sm text-gray-300 leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                          {data.valuation_report}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </>

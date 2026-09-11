@@ -11,6 +11,59 @@ export interface ScreenerCompany {
   ma50: number;
 }
 
+/** P(growth >= implied growth), fitted to the company's own year-on-year FCF
+ *  growth in log space. `observations` is typically 3 — yfinance only exposes
+ *  4-5 annual statements — so `historical_log_stdev` is what says whether the
+ *  number is worth quoting: under ~0.2 the company compounds steadily, over
+ *  ~1.0 it is barely better than a coin flip. */
+export interface ValuationProbability {
+  observations: number;
+  historical_mean_growth_pct: number | null;
+  basis?: string;
+  historical_log_stdev?: number;
+  t_statistic?: number;
+  degrees_of_freedom?: number;
+  probability_pct: number | null;
+  reason?: string;
+}
+
+export interface ScreenerValuation {
+  ticker: string;
+  nombre: string | null;
+  sector: string | null;
+  market_cap: number;
+  currency: string | null;
+  price: number | null;
+  fcf_latest: number;
+  fcf_source: string;
+  fcf_years: number;
+  fcf_series: number[];
+  cost_of_equity_pct: number;
+  beta_used: number;
+  risk_free_rate_pct: number;
+  /** Reverse DCF: the growth the current price implies. Not a forecast. */
+  implied_growth_pct: number | null;
+  implied_growth_status: string;
+  historical_growth_pct: number | null;
+  /** What the forward DCF actually projected — clamped to [-15%, +25%]. */
+  modelled_growth_pct: number | null;
+  historical_growth_capped: boolean;
+  gap_pp: number | null;
+  dcf_value_per_share: number | null;
+  dcf_upside_pct: number | null;
+  probability: ValuationProbability;
+}
+
+export interface ValuationMethod {
+  model: string;
+  horizon_years: number;
+  terminal_growth_pct: number;
+  discount_rate: string;
+  implied_growth: string;
+  projected_growth_band_pct: number[];
+  probability: string;
+}
+
 export interface ScreenerReportData {
   generated_at: string | null;
   universe_size: number;
@@ -19,6 +72,12 @@ export interface ScreenerReportData {
   companies: ScreenerCompany[];
   failed: { ticker: string; error: string }[];
   report: string | null;
+  // Added by the reverse-DCF stage. Optional because a report written before
+  // that stage shipped, or a run where it threw, simply has no valuation block.
+  valuation_method?: ValuationMethod;
+  valuations?: ScreenerValuation[];
+  valuation_failed?: { ticker: string; error: string }[];
+  valuation_report?: string | null;
 }
 
 const SP500_REPORT_URL =
