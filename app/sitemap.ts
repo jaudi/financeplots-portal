@@ -20,6 +20,7 @@ const BLOG_SLUGS = [
   "powerbi-vs-streamlit",
   "python-for-streamlit",
   "real-assets-balance-sheets-opportunities",
+  "reverse-dcf-what-the-price-assumes",
   "uk-pension-savings",
   "us-10y-yield-equity-risk-premium",
   "value-vs-growth-investing",

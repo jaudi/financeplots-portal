@@ -210,6 +210,13 @@
     },
     "articles": [
       {
+        "slug": "reverse-dcf-what-the-price-assumes",
+        "title": "Lo que el precio ya está asumiendo: un DCF inverso que sabe cuándo callarse",
+        "date": "Septiembre 2026",
+        "description": "En vez de preguntar si una empresa es buena, un DCF inverso pregunta qué tiene que cumplirse para que el precio de hoy tenga sentido. Construirlo me enseñó que lo más valioso que hace un modelo es negarse a responder.",
+        "tag": "Valoración"
+      },
+      {
         "slug": "building-my-first-ai-agents",
         "title": "Construyendo mis primeros agentes de IA: los screeners del S&P 500 y el IBEX 35",
         "date": "Septiembre 2026",

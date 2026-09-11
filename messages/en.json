@@ -210,6 +210,13 @@
     },
     "articles": [
       {
+        "slug": "reverse-dcf-what-the-price-assumes",
+        "title": "What the Price Already Assumes: Building a Reverse DCF That Refuses to Guess",
+        "date": "September 2026",
+        "description": "Instead of asking whether a company is good, a reverse DCF asks what today's price needs to be true. Building one taught me that the most valuable thing a model does is decline to answer.",
+        "tag": "Valuation"
+      },
+      {
         "slug": "building-my-first-ai-agents",
         "title": "Building My First AI Agents: The S&P 500 and IBEX 35 Quality Screeners",
         "date": "September 2026",
