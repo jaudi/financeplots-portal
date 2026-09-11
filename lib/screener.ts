@@ -24,6 +24,11 @@ export interface ValuationProbability {
   t_statistic?: number;
   degrees_of_freedom?: number;
   probability_pct: number | null;
+  /** [low, high] band implied by the ~3-observation sample. Quote this, not the
+   *  point estimate. */
+  probability_range_pct?: number[] | null;
+  /** Present when the estimate was withheld — volatility too high, or too few
+   *  usable observations. A null probability is a finding, not missing data. */
   reason?: string;
 }
 
@@ -40,17 +45,39 @@ export interface ScreenerValuation {
   fcf_series: number[];
   cost_of_equity_pct: number;
   beta_used: number;
+  beta_reported?: number | null;
+  beta_clamped?: boolean;
+  ke_clamped?: boolean;
+  beta_missing?: boolean;
   risk_free_rate_pct: number;
-  /** Reverse DCF: the growth the current price implies. Not a forecast. */
+  /** Whether the risk-free rate was a live quote or a static per-currency
+   *  assumption — only USD has a live source. */
+  risk_free_source?: string;
+  /** Reverse DCF: the growth the current price implies. Not a forecast. The one
+   *  figure available for every company, since it needs no history. */
   implied_growth_pct: number | null;
   implied_growth_status: string;
+  /** Endpoint-to-endpoint CAGR. Sees only the first and last year. */
   historical_growth_pct: number | null;
-  /** What the forward DCF actually projected — clamped to [-15%, +25%]. */
+  /** Least-squares slope through log FCF, using every point. */
+  trend_growth_pct?: number | null;
+  /** Whether the cash flows behave like a trend at all. Below 0.5 nothing is
+   *  projected — this is the single most important diagnostic in the row. */
+  trend_r2?: number | null;
+  revenue_growth_pct?: number | null;
+  fcf_vs_revenue_divergence_pp?: number | null;
   modelled_growth_pct: number | null;
   historical_growth_capped: boolean;
+  /** Null whenever the trend failed the R² test — a gap against a discarded
+   *  trend is arithmetic, not evidence. */
   gap_pp: number | null;
   dcf_value_per_share: number | null;
   dcf_upside_pct: number | null;
+  /** How much of the DCF comes from the 2.5% perpetuity rather than the ten
+   *  explicit years. High means that one assumption is doing the work. */
+  dcf_terminal_value_share_pct?: number | null;
+  /** Why no projection was made. Present exactly when dcf_value_per_share is null. */
+  dcf_skipped_reason?: string | null;
   probability: ValuationProbability;
 }
 
@@ -60,8 +87,10 @@ export interface ValuationMethod {
   terminal_growth_pct: number;
   discount_rate: string;
   implied_growth: string;
+  trend_test?: string;
   projected_growth_band_pct: number[];
   probability: string;
+  known_limits?: string[];
 }
 
 export interface ScreenerReportData {

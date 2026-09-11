@@ -97,12 +97,20 @@ function formatMoney(value: number | null, currency: string | null) {
 
 /** How much weight the probability deserves. With n=3 the spread of the
  *  company's own growth is the honest guide: a steady compounder earns a real
- *  read, a cyclical whose cash flows swing by an order of magnitude does not. */
+ *  read, a cyclical whose cash flows swing by an order of magnitude does not.
+ *  Above 1.0 the pipeline withholds the estimate outright, so this only ever
+ *  labels numbers that were published. */
 function probabilityConfidence(stdev: number | undefined) {
   if (stdev === undefined) return null;
   if (stdev < 0.2) return { label: "steady", className: "text-emerald-400/70" };
-  if (stdev < 1.0) return { label: "volatile", className: "text-amber-400/70" };
-  return { label: "near coin-flip", className: "text-red-400/70" };
+  return { label: "volatile", className: "text-amber-400/70" };
+}
+
+/** Whether the cash flows behaved like a trend. Below 0.5 nothing was projected. */
+function trendQuality(r2: number | null | undefined) {
+  if (r2 === null || r2 === undefined) return null;
+  if (r2 >= 0.5) return { label: `R² ${r2.toFixed(2)}`, className: "text-emerald-400/70" };
+  return { label: `R² ${r2.toFixed(2)} — no trend`, className: "text-gray-500" };
 }
 
 export default function ScreenerReport({
@@ -288,7 +296,8 @@ export default function ScreenerReport({
                         <tr className="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wide">
                           <th className="text-left px-4 py-3">Ticker</th>
                           <th className="text-right px-4 py-3">Price implies</th>
-                          <th className="text-right px-4 py-3">Delivered</th>
+                          <th className="text-right px-4 py-3">Trend</th>
+                          <th className="text-right px-4 py-3">Revenue</th>
                           <th className="text-right px-4 py-3">Gap</th>
                           <th className="text-right px-4 py-3">P(clears bar)</th>
                           <th className="text-right px-4 py-3">DCF value</th>
@@ -298,9 +307,17 @@ export default function ScreenerReport({
                       <tbody>
                         {data.valuations!.map((v) => {
                           const confidence = probabilityConfidence(v.probability?.historical_log_stdev);
+                          const trend = trendQuality(v.trend_r2);
+                          const projectable = (v.trend_r2 ?? 0) >= 0.5;
                           // A negative gap means the price assumes less than the
                           // business has delivered — the favourable direction.
                           const gapFavourable = v.gap_pp !== null && v.gap_pp < 0;
+                          const range = v.probability?.probability_range_pct;
+                          // FCF and revenue moving together corroborates a trend;
+                          // a wide split says the cash flow move came from
+                          // somewhere other than the business growing.
+                          const divergence = v.fcf_vs_revenue_divergence_pp;
+                          const diverges = divergence !== null && divergence !== undefined && Math.abs(divergence) >= 10;
                           return (
                             <tr key={v.ticker} className="border-b border-gray-800/60 last:border-0">
                               <td className="px-4 py-3 font-mono text-blue-300">{v.ticker}</td>
@@ -313,16 +330,25 @@ export default function ScreenerReport({
                               >
                                 {formatPct(v.implied_growth_pct)}
                               </td>
-                              <td className="px-4 py-3 text-right text-gray-300">
-                                {formatPct(v.historical_growth_pct)}
-                                {v.historical_growth_capped && (
+                              <td className="px-4 py-3 text-right">
+                                <span className={projectable ? "text-gray-300" : "text-gray-500"}>
+                                  {formatPct(v.trend_growth_pct ?? v.historical_growth_pct)}
+                                </span>
+                                {trend && (
+                                  <span className={`block text-[10px] ${trend.className}`}>{trend.label}</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <span className="text-gray-300">{formatPct(v.revenue_growth_pct)}</span>
+                                {diverges && (
                                   <span
-                                    className="ml-1 text-amber-400/80 cursor-help"
-                                    title={`Not projectable at face value — the DCF used ${formatPct(
-                                      v.modelled_growth_pct
-                                    )} instead.`}
+                                    className="block text-[10px] text-amber-400/70 cursor-help"
+                                    title={`Free cash flow and revenue growth differ by ${divergence!.toFixed(
+                                      1
+                                    )} pp. The cash flow move is not corroborated by the top line — it may be working capital, a capex pause or something non-recurring rather than a trend.`}
                                   >
-                                    *
+                                    {divergence! > 0 ? "+" : ""}
+                                    {divergence!.toFixed(0)} pp split
                                   </span>
                                 )}
                               </td>
@@ -331,23 +357,62 @@ export default function ScreenerReport({
                                   gapFavourable ? "text-emerald-400" : "text-gray-400"
                                 }`}
                               >
-                                {v.gap_pp === null ? "—" : `${v.gap_pp > 0 ? "+" : ""}${v.gap_pp.toFixed(1)} pp`}
+                                {v.gap_pp === null ? (
+                                  <span className="text-gray-600" title="No reliable trend to measure against.">
+                                    —
+                                  </span>
+                                ) : (
+                                  `${v.gap_pp > 0 ? "+" : ""}${v.gap_pp.toFixed(1)} pp`
+                                )}
                               </td>
                               <td className="px-4 py-3 text-right">
-                                <span className="text-gray-300">
-                                  {v.probability?.probability_pct === null ||
-                                  v.probability?.probability_pct === undefined
-                                    ? "—"
-                                    : `${v.probability.probability_pct.toFixed(0)}%`}
-                                </span>
-                                {confidence && (
-                                  <span className={`block text-[10px] ${confidence.className}`}>
-                                    {confidence.label}
+                                {v.probability?.probability_pct === null ||
+                                v.probability?.probability_pct === undefined ? (
+                                  <span
+                                    className="text-gray-600 cursor-help"
+                                    title={v.probability?.reason ?? "No usable estimate."}
+                                  >
+                                    withheld
                                   </span>
+                                ) : (
+                                  <>
+                                    <span className="text-gray-300">
+                                      {range && range.length === 2
+                                        ? `${range[0].toFixed(0)}–${range[1].toFixed(0)}%`
+                                        : `${v.probability.probability_pct.toFixed(0)}%`}
+                                    </span>
+                                    {confidence && (
+                                      <span className={`block text-[10px] ${confidence.className}`}>
+                                        {confidence.label}
+                                      </span>
+                                    )}
+                                  </>
                                 )}
                               </td>
                               <td className="px-4 py-3 text-right text-gray-300">
-                                {formatMoney(v.dcf_value_per_share, v.currency)}
+                                {v.dcf_value_per_share === null ? (
+                                  <span
+                                    className="text-gray-600 cursor-help"
+                                    title={v.dcf_skipped_reason ?? "No projection made."}
+                                  >
+                                    not projected
+                                  </span>
+                                ) : (
+                                  <>
+                                    {formatMoney(v.dcf_value_per_share, v.currency)}
+                                    {v.dcf_terminal_value_share_pct !== null &&
+                                      v.dcf_terminal_value_share_pct !== undefined && (
+                                        <span
+                                          className="block text-[10px] text-gray-500 cursor-help"
+                                          title={`${v.dcf_terminal_value_share_pct.toFixed(
+                                            0
+                                          )}% of this value comes from the 2.5% perpetuity rather than the ten explicit years.`}
+                                        >
+                                          {v.dcf_terminal_value_share_pct.toFixed(0)}% terminal
+                                        </span>
+                                      )}
+                                  </>
+                                )}
                               </td>
                               <td
                                 className={`px-4 py-3 text-right ${
@@ -372,28 +437,42 @@ export default function ScreenerReport({
                       <span className="text-gray-400 font-semibold">How to read this.</span>{" "}
                       <span className="text-gray-400">Price implies</span> is a reverse DCF — the growth
                       rate that justifies today&apos;s price, not a forecast. A negative figure means the
-                      price assumes the business shrinks.{" "}
-                      <span className="text-gray-400">P(clears bar)</span> is how often this company&apos;s
-                      own cash flow history cleared that growth rate, fitted on{" "}
-                      {data.valuations![0]?.probability?.observations ?? 3} annual observations — a small
-                      sample, which is why each one is labelled by how steady the underlying cash flows
-                      are. It says nothing about what the future will do.
+                      price assumes the business shrinks. It is the only column available for every
+                      company, because it needs no history at all.
                     </p>
-                    {data.valuations!.some((v) => v.historical_growth_capped) && (
-                      <p className="mb-2">
-                        <span className="text-amber-400/80">*</span> Growth clamped to the{" "}
-                        {data.valuation_method?.projected_growth_band_pct?.[0] ?? -15}% to{" "}
-                        {data.valuation_method?.projected_growth_band_pct?.[1] ?? 25}% band for the
-                        projection. A cyclical rebounding off a depressed base produces a CAGR that is
-                        real history but an indefensible forecast.
-                      </p>
-                    )}
+                    <p className="mb-2">
+                      <span className="text-gray-400">Trend</span> is a least-squares fit through log free
+                      cash flow, and its R² says whether the cash flows behave like a trend in the first
+                      place. Below 0.5 they don&apos;t, so nothing is projected and the DCF reads{" "}
+                      <span className="text-gray-400">not projected</span> — that is a result, not missing
+                      data. <span className="text-gray-400">Revenue</span> is the corroboration check: when
+                      cash flow and the top line move together the trend is probably real, and a wide split
+                      suggests the cash moved for some other reason.
+                    </p>
+                    <p className="mb-2">
+                      <span className="text-gray-400">P(clears bar)</span> is how often this company&apos;s
+                      own cash flow history cleared that growth rate. It rests on just{" "}
+                      {data.valuations![0]?.probability?.observations ?? 3} annual observations, so it is
+                      shown as a range rather than a single figure, and withheld altogether where the cash
+                      flows swing too violently for any estimate to mean anything. It says nothing about
+                      what the future will do.
+                    </p>
                     {data.valuation_method && (
-                      <p>
+                      <p className="mb-2">
                         {data.valuation_method.horizon_years}-year two-stage DCF on levered free cash
                         flow, {data.valuation_method.terminal_growth_pct}% terminal growth.{" "}
                         {data.valuation_method.discount_rate}
                       </p>
+                    )}
+                    {data.valuation_method?.known_limits && (
+                      <div>
+                        <span className="text-gray-400 font-semibold">Where this model is weakest.</span>
+                        <ul className="list-disc list-inside mt-1 space-y-1">
+                          {data.valuation_method.known_limits.map((limit, i) => (
+                            <li key={i}>{limit}</li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </div>
 
