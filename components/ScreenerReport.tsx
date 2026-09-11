@@ -335,7 +335,20 @@ export default function ScreenerReport({
                                   {formatPct(v.trend_growth_pct ?? v.historical_growth_pct)}
                                 </span>
                                 {trend && (
-                                  <span className={`block text-[10px] ${trend.className}`}>{trend.label}</span>
+                                  <span className={`block text-[10px] ${trend.className}`}>
+                                    {trend.label}
+                                    {v.fcf_years ? ` · ${v.fcf_years}y` : ""}
+                                  </span>
+                                )}
+                                {v.trend_broken && v.trend_recent_pct !== null && v.trend_recent_pct !== undefined && (
+                                  <span
+                                    className="block text-[10px] text-amber-400/70 cursor-help"
+                                    title={`The long-run fit no longer matches the last few years (${formatPct(
+                                      v.trend_recent_pct
+                                    )}). The projection uses whichever of the two is lower.`}
+                                  >
+                                    now {formatPct(v.trend_recent_pct)}
+                                  </span>
                                 )}
                               </td>
                               <td className="px-4 py-3 text-right">

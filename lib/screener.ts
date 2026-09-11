@@ -64,6 +64,11 @@ export interface ScreenerValuation {
   /** Whether the cash flows behave like a trend at all. Below 0.5 nothing is
    *  projected — this is the single most important diagnostic in the row. */
   trend_r2?: number | null;
+  /** The same fit over just the last few years. Where it diverges from the
+   *  long-run trend, the projection takes whichever is lower. */
+  trend_recent_pct?: number | null;
+  trend_broken?: boolean;
+  fcf_base_normalised?: number | null;
   revenue_growth_pct?: number | null;
   fcf_vs_revenue_divergence_pp?: number | null;
   modelled_growth_pct: number | null;
