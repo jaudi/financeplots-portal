@@ -155,6 +155,20 @@ export default function ScreenerReport({
   // block at all, so the whole section stays hidden rather than rendering empty.
   const hasValuations = (data?.valuations?.length ?? 0) > 0;
 
+  // How much history each probability rests on. This used to print the first
+  // company's count as though it spoke for the table; once the SEC filings went
+  // in, depth started ranging from 3 observations to 16 in the same run, and one
+  // number for all of them was simply wrong.
+  const observationCounts = (data?.valuations ?? [])
+    .map((v) => v.probability?.observations)
+    .filter((n): n is number => typeof n === "number" && n > 0);
+  const minObservations = observationCounts.length ? Math.min(...observationCounts) : 0;
+  const maxObservations = observationCounts.length ? Math.max(...observationCounts) : 0;
+  const observationRange =
+    minObservations === maxObservations
+      ? `${minObservations} annual observations here`
+      : `${minObservations} to ${maxObservations} annual observations in this run`;
+
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
       <script
@@ -464,8 +478,9 @@ export default function ScreenerReport({
                     </p>
                     <p className="mb-2">
                       <span className="text-gray-400">P(clears bar)</span> is how often this company&apos;s
-                      own cash flow history cleared that growth rate. It rests on just{" "}
-                      {data.valuations![0]?.probability?.observations ?? 3} annual observations, so it is
+                      own cash flow history cleared that growth rate. How much history sits behind it varies
+                      by company — {observationRange} — because the long record comes from SEC filings and
+                      only exists for US filers; everything else falls back to a four-year window. It is
                       shown as a range rather than a single figure, and withheld altogether where the cash
                       flows swing too violently for any estimate to mean anything. It says nothing about
                       what the future will do.
