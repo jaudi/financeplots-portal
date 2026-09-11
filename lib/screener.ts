@@ -39,6 +39,7 @@ export interface ScreenerValuation {
   market_cap: number;
   currency: string | null;
   price: number | null;
+  /** The actual most recent year. The DCF uses fcf_base_normalised, not this. */
   fcf_latest: number;
   fcf_source: string;
   fcf_years: number;
