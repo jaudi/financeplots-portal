@@ -271,3 +271,70 @@ export interface PerformanceData {
 export function getPerformanceReport(): Promise<PerformanceData | null> {
   return fetchReport<PerformanceData>(PERFORMANCE_URL);
 }
+
+/** The five factor scores, 0-100, each a percentile rank within the index.
+ *  A factor is absent when the company reported none of its metrics — never
+ *  zero, because a gap is not a bad result. */
+export interface FactorScores {
+  value?: number;
+  quality?: number;
+  growth?: number;
+  momentum?: number;
+  expectativas?: number;
+}
+
+/** One company in the browsable universe. Every field is nullable: this is the
+ *  whole index, not a filtered survivor list, so gaps are normal. */
+export interface UniverseCompany {
+  ticker: string;
+  nombre: string;
+  sector: string;
+  score: number | null;
+  cobertura_pct: number;
+  factores: FactorScores;
+  per: number | null;
+  per_normalizado: number | null;
+  precio_valor_libros: number | null;
+  fcf_yield: number | null;
+  ev_ebit: number | null;
+  roic: number | null;
+  roe: number | null;
+  roa: number | null;
+  margen_operativo: number | null;
+  conversion_fcf: number | null;
+  devengos: number | null;
+  deuda_patrimonio: number | null;
+  deuda_neta_ebitda: number | null;
+  cobertura_intereses: number | null;
+  crecimiento_ingresos_normalizado: number | null;
+  crecimiento_beneficios_normalizado: number | null;
+  /** Current earnings at a multi-year high. In a cyclical that is a warning,
+   *  not a compliment — the multiple looks cheapest at the top of the cycle. */
+  beneficio_en_pico: boolean | null;
+  rsi: number | null;
+  precio_actual: number | null;
+  ma50: number | null;
+  ma200: number | null;
+  retorno_6m: number | null;
+  retorno_12m: number | null;
+  distancia_ma200_pct: number | null;
+  exceso_implicito_pp: number | null;
+}
+
+export interface UniverseData {
+  generated_at: string | null;
+  screen: string;
+  universe_source?: string | null;
+  count: number;
+  methodology: Record<string, unknown>;
+  companies: UniverseCompany[];
+}
+
+export const UNIVERSE_SCREENS = ["sp500", "ibex35", "nasdaq100"] as const;
+export type UniverseScreen = (typeof UNIVERSE_SCREENS)[number];
+
+export function getUniverse(screen: UniverseScreen): Promise<UniverseData | null> {
+  return fetchReport<UniverseData>(
+    `https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/universe-${screen}.json`,
+  );
+}

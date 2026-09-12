@@ -66,6 +66,7 @@ export default function Navbar() {
   ];
 
   const SCREENERS = [
+    { label: `🔎 ${t("stockScreener")}`,        href: "/tools/stock-screener"          },
     { label: `🏆 ${t("qualityScreener")}`,      href: "/tools/quality-screener"        },
     { label: `🇪🇸 ${t("qualityScreenerIbex")}`, href: "/tools/quality-screener-ibex35" },
     { label: `🚀 ${t("growthScreenerNasdaq")}`, href: "/tools/growth-screener-nasdaq100" },

@@ -23,6 +23,7 @@
     "stockComparison": "Stock Comparison",
     "stockAnalysis": "Stock Analysis",
     "macroDashboard": "US Macro",
+    "stockScreener": "Stock Screener",
     "qualityScreener": "S&P 500 Screener",
     "qualityScreenerIbex": "IBEX 35 Screener",
     "growthScreenerNasdaq": "Nasdaq-100 Screener",
@@ -410,6 +411,12 @@
         "name": "IBEX 35 Quality Screener",
         "desc": "The same weekly AI-powered quality and momentum screen, applied to the IBEX 35.",
         "href": "/tools/quality-screener-ibex35"
+      },
+      {
+        "icon": "🔎",
+        "name": "Stock Screener",
+        "desc": "Browse every company in the S&P 500, Nasdaq-100 and IBEX 35 scored on value, quality, growth, momentum and expectations — and set your own minimums.",
+        "href": "/tools/stock-screener"
       },
       {
         "icon": "🚀",

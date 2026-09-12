@@ -44,6 +44,7 @@ const TOOL_SLUGS = [
   "quality-screener",
   "quality-screener-ibex35",
   "stock-analysis",
+  "stock-screener",
   "stock-comparison",
   "valuation",
 ];
