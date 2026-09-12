@@ -389,13 +389,13 @@
       {
         "icon": "🏆",
         "name": "Screener de Calidad S&P 500",
-        "desc": "Cribado semanal del S&P 500 por fundamentales de calidad y momentum, con un informe de investigación generado por IA sobre las empresas que lo superan.",
+        "desc": "Todas las empresas del S&P 500 puntuadas cada semana por cinco factores — valor, calidad, crecimiento, tendencia y lo que el precio ya descuenta — con un informe de IA cada mes.",
         "href": "/tools/quality-screener"
       },
       {
         "icon": "🇪🇸",
         "name": "Screener de Calidad IBEX 35",
-        "desc": "El mismo cribado semanal de calidad y momentum generado por IA, aplicado al IBEX 35.",
+        "desc": "La misma puntuación de cinco factores aplicada al IBEX 35, inclinada hacia el valor para un mercado de bancos, utilities e industriales.",
         "href": "/tools/quality-screener-ibex35"
       },
       {
@@ -407,7 +407,7 @@
       {
         "icon": "🚀",
         "name": "Screener de Crecimiento Nasdaq-100",
-        "desc": "Cribado semanal del Nasdaq-100 con IA por crecimiento y momentum — crecimiento de ingresos y beneficios con la tendencia del precio acompañando, y sin filtro de PER a propósito.",
+        "desc": "El Nasdaq-100 puntuado cada semana con los mismos cinco factores, inclinados hacia crecimiento y tendencia — y ninguna empresa se descarta antes de que la veas.",
         "href": "/tools/growth-screener-nasdaq100"
       },
       {

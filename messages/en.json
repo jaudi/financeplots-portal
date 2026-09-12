@@ -403,13 +403,13 @@
       {
         "icon": "🏆",
         "name": "S&P 500 Quality Screener",
-        "desc": "Weekly AI-powered screen of the S&P 500 on quality fundamentals and momentum, with a research report on the names that pass.",
+        "desc": "Every company in the S&P 500 scored weekly on five factors — value, quality, growth, trend and what the price assumes — with an AI research report each month.",
         "href": "/tools/quality-screener"
       },
       {
         "icon": "🇪🇸",
         "name": "IBEX 35 Quality Screener",
-        "desc": "The same weekly AI-powered quality and momentum screen, applied to the IBEX 35.",
+        "desc": "The same five-factor score applied to the IBEX 35, weighted towards value for a market of banks, utilities and industrials.",
         "href": "/tools/quality-screener-ibex35"
       },
       {
@@ -421,7 +421,7 @@
       {
         "icon": "🚀",
         "name": "Nasdaq-100 Growth Screener",
-        "desc": "Weekly AI-powered screen of the Nasdaq-100 on growth and momentum — revenue and earnings growth with the price trend confirming it, and deliberately no P/E filter.",
+        "desc": "The Nasdaq-100 scored weekly on the same five factors, weighted towards growth and trend — and no company is filtered out before you see it.",
         "href": "/tools/growth-screener-nasdaq100"
       },
       {

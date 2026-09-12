@@ -135,12 +135,10 @@ interface ScreenerReportProps {
   jsonLdName: string;
   jsonLdDescription: string;
   jsonLdUrl: string;
-  /** Which screen this index gets. Picks the column set and the default intro. */
+  /** Which screen this index gets. Picks the column set and the label. */
   variant?: "quality" | "growth";
   /** Key into performance.json — which track record belongs to this screener. */
   performanceKey: string;
-  /** Whether ROA is enforced as a hard filter. Quality screens only. */
-  roaRequired?: boolean;
 }
 
 function formatDate(iso: string | null) {
@@ -245,7 +243,6 @@ export default function ScreenerReport({
   jsonLdUrl,
   variant = "quality",
   performanceKey,
-  roaRequired = true,
 }: ScreenerReportProps) {
   const tc = useTranslations("toolCommon");
   const isGrowth = variant === "growth";
@@ -335,21 +332,11 @@ export default function ScreenerReport({
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">{screenerLabel}</p>
             <h2 className="text-3xl font-extrabold text-white mb-2">{universeName} {screenerLabel}</h2>
             <p className="text-gray-400 text-sm max-w-xl mx-auto">
-              {isGrowth ? (
-                <>
-                  Every week, the full {universeName} is screened on growth (revenue and earnings both growing
-                  more than 10% year on year, positive free cash flow) and momentum (price above the 50-day
-                  moving average, the 50-day above the 200-day, a positive 6-month return, RSI &gt; 40). An AI
-                  agent then researches the names that pass and writes an executive summary.
-                </>
-              ) : (
-                <>
-                  Every week, the full {universeName} is screened on quality fundamentals (ROE &gt; 20%
-                  {roaRequired ? ", ROA > 12%" : ""}, P/E &lt; 20, Debt/Equity &lt; 100%) and momentum (RSI &gt; 30,
-                  price above the 50-day moving average). An AI agent then researches the names that pass and writes
-                  an executive summary.
-                </>
-              )}
+              Every week, every company in the {universeName} is scored on five factors — value, quality,
+              growth, trend, and how much growth its price already assumes — and ranked against the rest of
+              the index. The highest-scoring names appear here. Nothing is rejected for scoring poorly, only
+              for being impossible to evaluate. Once a month, an AI agent researches them and writes the
+              commentary below.
             </p>
           </div>
 

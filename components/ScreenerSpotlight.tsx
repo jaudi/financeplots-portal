@@ -40,8 +40,8 @@ export default function ScreenerSpotlight({ report, ibex35Report, nasdaq100Repor
             S&amp;P 500 Quality Screener
           </h1>
           <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-8 max-w-3xl">
-            Every week, an AI agent screens the full S&amp;P 500 on quality fundamentals (ROE, ROA, P/E, Debt/Equity)
-            and momentum, then researches every name that passes and writes an executive report.
+            Every company in the S&amp;P 500, scored each week on value, quality, growth, trend and what its
+            price already assumes — then ranked against the whole index, with an AI research report each month.
           </p>
         </Link>
 
@@ -86,8 +86,8 @@ export default function ScreenerSpotlight({ report, ibex35Report, nasdaq100Repor
               <h2 className="text-white font-bold text-lg group-hover:text-blue-300 transition">IBEX 35 Quality Screener</h2>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
-              The same weekly agent, tuned for Spain — ROA is reported but not a hard filter, since low ROA is
-              structural for the index&apos;s banks and utilities.
+              The same five factors, weighted for Spain — value counts for more and trend for less, in an index
+              where banks and utilities make a high return on assets structurally unlikely.
             </p>
             {ibexPreview.length > 0 ? (
               <div className="flex flex-wrap gap-2">

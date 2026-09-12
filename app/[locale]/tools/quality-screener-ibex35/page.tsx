@@ -11,7 +11,6 @@ export default function QualityScreenerIbex35Page() {
       jsonLdDescription="Weekly IBEX 35 screen on quality fundamentals (ROE, P/E, Debt/Equity) and momentum (RSI, MA50), with an AI-generated research report on the companies that pass."
       jsonLdUrl="https://www.financeplots.com/tools/quality-screener-ibex35"
       performanceKey="ibex35"
-      roaRequired={false}
     />
   );
 }
