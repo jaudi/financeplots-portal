@@ -10,27 +10,103 @@ import RelatedTools from "@/components/RelatedTools";
 // types into the client bundle.
 import type { ScreenerValuation, ValuationMethod } from "@/lib/screener";
 
-interface Company {
+// The two screens report different columns — the quality screen has a P/E and
+// an ROE, the growth screen has neither on purpose — so a row is whatever its
+// pipeline wrote, read through the column descriptors below.
+type Company = {
   ticker: string;
   nombre: string;
   sector: string;
-  per: number;
-  roe: string;
-  roa: string;
-  deuda_patrimonio: string;
-  rsi: number;
-  precio_actual: number;
-  ma50: number;
+} & Record<string, string | number | null | undefined>;
+
+/** How to render one column. Plain data, no functions: these cross the server →
+ *  client boundary, and the whole set has to stay serialisable. */
+interface ScreenerColumn {
+  key: string;
+  label: string;
+  numeric?: boolean;
+  prefix?: string;
+  suffix?: string;
+  /** Prefix a "+" and colour by sign. For returns, where direction is the point. */
+  signed?: boolean;
+  /** Thousands separators. For the free cash flow column, which runs to six figures. */
+  grouped?: boolean;
+  /** Fixed decimal places. Without it JS drops trailing zeros and a column of
+   *  percentages reads 129 next to 32.68. */
+  decimals?: number;
+  /** Pull the eye to this column. Used for the growth score. */
+  emphasis?: boolean;
+  /** Shown on hover, for a column whose header can't carry its own caveat. */
+  title?: string;
+}
+
+const QUALITY_COLUMNS: ScreenerColumn[] = [
+  { key: "ticker", label: "Ticker" },
+  { key: "nombre", label: "Name" },
+  { key: "sector", label: "Sector" },
+  { key: "per", label: "P/E", numeric: true },
+  { key: "roe", label: "ROE", numeric: true },
+  { key: "roa", label: "ROA", numeric: true },
+  { key: "deuda_patrimonio", label: "D/E", numeric: true },
+  { key: "rsi", label: "RSI", numeric: true },
+  { key: "precio_actual", label: "Price", numeric: true, prefix: "$" },
+  { key: "ma50", label: "MA50", numeric: true, prefix: "$" },
+];
+
+const GROWTH_COLUMNS: ScreenerColumn[] = [
+  { key: "ticker", label: "Ticker" },
+  { key: "nombre", label: "Name" },
+  { key: "sector", label: "Sector" },
+  {
+    key: "score",
+    label: "Score",
+    numeric: true,
+    decimals: 1,
+    emphasis: true,
+    title:
+      "Percentile rank within this week's cohort, averaged over revenue growth, earnings growth and the 6-month return. 100 is the best of the names that passed — not a quality grade, and it moves when the cohort moves.",
+  },
+  { key: "crecimiento_ingresos", label: "Revenue", numeric: true, suffix: "%", signed: true, decimals: 1 },
+  { key: "crecimiento_beneficios", label: "Earnings", numeric: true, suffix: "%", signed: true, decimals: 1 },
+  {
+    key: "flujo_caja_libre",
+    label: "FCF ($m)",
+    numeric: true,
+    grouped: true,
+    title: "Trailing free cash flow, in millions of the reporting currency.",
+  },
+  { key: "rsi", label: "RSI", numeric: true, decimals: 1 },
+  { key: "retorno_6m", label: "6M", numeric: true, suffix: "%", signed: true, decimals: 1 },
+  { key: "retorno_12m", label: "12M", numeric: true, suffix: "%", signed: true, decimals: 1 },
+  { key: "precio_actual", label: "Price", numeric: true, prefix: "$", decimals: 2 },
+  { key: "ma50", label: "MA50", numeric: true, prefix: "$", decimals: 2 },
+  { key: "ma200", label: "MA200", numeric: true, prefix: "$", decimals: 2 },
+];
+
+/** The growth screen's filter set, written by the pipeline into the JSON so the
+ *  page can state what was actually applied instead of a copy that drifts. */
+interface GrowthCriteria {
+  screen?: string;
+  revenue_growth_min_pct?: number;
+  earnings_growth_min_pct?: number;
+  free_cash_flow?: string;
+  trend?: string;
+  return_6m?: string;
+  rsi_min?: number;
+  excluded_on_purpose?: string;
+  score?: string;
 }
 
 interface ScreenerReportData {
   generated_at: string | null;
   universe_size: number;
+  universe_source?: string | null;
   analyzed: number;
   passed_filters: number;
   companies: Company[];
   failed: { ticker: string; error: string }[];
   report: string | null;
+  criteria?: GrowthCriteria;
   valuation_method?: ValuationMethod;
   valuations?: ScreenerValuation[];
   valuation_report?: string | null;
@@ -45,7 +121,9 @@ interface ScreenerReportProps {
   jsonLdName: string;
   jsonLdDescription: string;
   jsonLdUrl: string;
-  /** Whether ROA is enforced as a hard filter for this index (default true). */
+  /** Which screen this index gets. Picks the column set and the default intro. */
+  variant?: "quality" | "growth";
+  /** Whether ROA is enforced as a hard filter. Quality screens only. */
   roaRequired?: boolean;
 }
 
@@ -77,6 +155,34 @@ const markdownComponents = {
   th: (p: object) => <th className="text-left px-3 py-2 font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-800" {...p} />,
   td: (p: object) => <td className="px-3 py-2 border-b border-gray-800/60 text-gray-300 align-top" {...p} />,
 };
+
+/** Renders one cell from its column descriptor. A missing value prints an em
+ *  dash rather than "null" or a silent blank — the growth screen carries columns
+ *  Yahoo doesn't always report. */
+function renderCell(value: string | number | null | undefined, col: ScreenerColumn) {
+  if (value === null || value === undefined || value === "") return "—";
+  if (typeof value === "string") return value;
+
+  const sign = col.signed && value > 0 ? "+" : "";
+  let body: string;
+  if (col.grouped) {
+    body = value.toLocaleString("en-US", {
+      minimumFractionDigits: col.decimals ?? 0,
+      maximumFractionDigits: col.decimals ?? 0,
+    });
+  } else {
+    body = col.decimals === undefined ? String(value) : value.toFixed(col.decimals);
+  }
+  return `${sign}${col.prefix ?? ""}${body}${col.suffix ?? ""}`;
+}
+
+function cellClassName(value: string | number | null | undefined, col: ScreenerColumn) {
+  if (col.emphasis) return "text-white font-semibold";
+  if (col.signed && typeof value === "number") {
+    return value >= 0 ? "text-emerald-400" : "text-red-400";
+  }
+  return "text-gray-300";
+}
 
 function formatPct(value: number | null | undefined, withSign = false) {
   if (value === null || value === undefined) return "—";
@@ -121,9 +227,13 @@ export default function ScreenerReport({
   jsonLdName,
   jsonLdDescription,
   jsonLdUrl,
+  variant = "quality",
   roaRequired = true,
 }: ScreenerReportProps) {
   const tc = useTranslations("toolCommon");
+  const isGrowth = variant === "growth";
+  const screenerLabel = isGrowth ? "Growth Screener" : "Quality Screener";
+  const columns = isGrowth ? GROWTH_COLUMNS : QUALITY_COLUMNS;
   const [data, setData] = useState<ScreenerReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -191,7 +301,7 @@ export default function ScreenerReport({
         <div className="max-w-7xl mx-auto flex items-center gap-3">
           <Link href="/tools" className="text-gray-400 hover:text-white text-sm transition">{tc("allTools")}</Link>
           <span className="text-gray-700">|</span>
-          <h1 className="text-white font-bold hidden sm:block">{emoji} {universeName} Quality Screener</h1>
+          <h1 className="text-white font-bold hidden sm:block">{emoji} {universeName} {screenerLabel}</h1>
           <span className="ml-auto text-xs text-gray-600 hidden md:block">{tc("disclaimer")}</span>
         </div>
       </div>
@@ -201,13 +311,24 @@ export default function ScreenerReport({
 
           {/* Header */}
           <div className="text-center mb-10">
-            <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Quality Screener</p>
-            <h2 className="text-3xl font-extrabold text-white mb-2">{universeName} Quality Screener</h2>
+            <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">{screenerLabel}</p>
+            <h2 className="text-3xl font-extrabold text-white mb-2">{universeName} {screenerLabel}</h2>
             <p className="text-gray-400 text-sm max-w-xl mx-auto">
-              Every week, the full {universeName} is screened on quality fundamentals (ROE &gt; 20%
-              {roaRequired ? ", ROA > 12%" : ""}, P/E &lt; 20, Debt/Equity &lt; 100%) and momentum (RSI &gt; 30,
-              price above the 50-day moving average). An AI agent then researches the names that pass and writes
-              an executive summary.
+              {isGrowth ? (
+                <>
+                  Every week, the full {universeName} is screened on growth (revenue and earnings both growing
+                  more than 10% year on year, positive free cash flow) and momentum (price above the 50-day
+                  moving average, the 50-day above the 200-day, a positive 6-month return, RSI &gt; 40). An AI
+                  agent then researches the names that pass and writes an executive summary.
+                </>
+              ) : (
+                <>
+                  Every week, the full {universeName} is screened on quality fundamentals (ROE &gt; 20%
+                  {roaRequired ? ", ROA > 12%" : ""}, P/E &lt; 20, Debt/Equity &lt; 100%) and momentum (RSI &gt; 30,
+                  price above the 50-day moving average). An AI agent then researches the names that pass and writes
+                  an executive summary.
+                </>
+              )}
             </p>
           </div>
 
@@ -233,6 +354,14 @@ export default function ScreenerReport({
                 {generatedLabel && <span>Last run: {generatedLabel}</span>}
                 <span>{data.analyzed} companies analyzed</span>
                 <span>{data.passed_filters} passed all filters</span>
+                {data.universe_source && (
+                  <span
+                    className="cursor-help"
+                    title="Where this run got its constituent list. A pinned fallback means the live source was unreachable and the universe may be slightly stale."
+                  >
+                    Universe: {data.universe_source}
+                  </span>
+                )}
               </div>
 
               {!hasCompanies && (
@@ -246,35 +375,88 @@ export default function ScreenerReport({
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-800 text-gray-500 text-xs uppercase tracking-wide">
-                        <th className="text-left px-4 py-3">Ticker</th>
-                        <th className="text-left px-4 py-3">Name</th>
-                        <th className="text-left px-4 py-3">Sector</th>
-                        <th className="text-right px-4 py-3">P/E</th>
-                        <th className="text-right px-4 py-3">ROE</th>
-                        <th className="text-right px-4 py-3">ROA</th>
-                        <th className="text-right px-4 py-3">D/E</th>
-                        <th className="text-right px-4 py-3">RSI</th>
-                        <th className="text-right px-4 py-3">Price</th>
-                        <th className="text-right px-4 py-3">MA50</th>
+                        {columns.map((col) => (
+                          <th
+                            key={col.key}
+                            className={`${col.numeric ? "text-right" : "text-left"} px-4 py-3 ${
+                              col.title ? "cursor-help" : ""
+                            }`}
+                            title={col.title}
+                          >
+                            {col.label}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {data.companies.map((c) => (
                         <tr key={c.ticker} className="border-b border-gray-800/60 last:border-0">
-                          <td className="px-4 py-3 font-mono text-blue-300">{c.ticker}</td>
-                          <td className="px-4 py-3 text-white">{c.nombre}</td>
-                          <td className="px-4 py-3 text-gray-400">{c.sector}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">{c.per}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">{c.roe}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">{c.roa}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">{c.deuda_patrimonio}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">{c.rsi}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">${c.precio_actual}</td>
-                          <td className="px-4 py-3 text-right text-gray-300">${c.ma50}</td>
+                          {columns.map((col) => {
+                            const value = c[col.key];
+                            // Ticker and name carry their own treatment in both
+                            // screens; everything else is driven by the descriptor.
+                            if (col.key === "ticker") {
+                              return (
+                                <td key={col.key} className="px-4 py-3 font-mono text-blue-300">
+                                  {c.ticker}
+                                </td>
+                              );
+                            }
+                            if (col.key === "nombre") {
+                              return (
+                                <td key={col.key} className="px-4 py-3 text-white">
+                                  {c.nombre}
+                                </td>
+                              );
+                            }
+                            if (col.key === "sector") {
+                              return (
+                                <td key={col.key} className="px-4 py-3 text-gray-400">
+                                  {c.sector}
+                                </td>
+                              );
+                            }
+                            return (
+                              <td
+                                key={col.key}
+                                className={`px-4 py-3 ${col.numeric ? "text-right" : "text-left"} ${cellClassName(
+                                  value,
+                                  col
+                                )}`}
+                              >
+                                {renderCell(value, col)}
+                              </td>
+                            );
+                          })}
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                </div>
+              )}
+
+              {hasCompanies && data.criteria && (
+                <div className="bg-[#0d1426]/60 border border-gray-800 rounded-xl px-5 py-4 mb-10 text-xs text-gray-500 leading-relaxed">
+                  <p className="mb-2">
+                    <span className="text-gray-400 font-semibold">How to read this.</span>{" "}
+                    {data.criteria.excluded_on_purpose}
+                  </p>
+                  {data.criteria.score && (
+                    <p className="mb-2">
+                      <span className="text-gray-400 font-semibold">Score.</span> {data.criteria.score}
+                    </p>
+                  )}
+                  {data.criteria.free_cash_flow && (
+                    <p className="mb-2">
+                      <span className="text-gray-400 font-semibold">Free cash flow.</span>{" "}
+                      {data.criteria.free_cash_flow}
+                    </p>
+                  )}
+                  {data.criteria.trend && (
+                    <p>
+                      <span className="text-gray-400 font-semibold">Trend.</span> {data.criteria.trend}
+                    </p>
+                  )}
                 </div>
               )}
 

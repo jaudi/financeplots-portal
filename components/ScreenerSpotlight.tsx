@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { FundsReportData, ScreenerReportData } from "@/lib/screener";
+import type { GrowthReportData, ScreenerReportData } from "@/lib/screener";
 
 function formatDate(iso: string | null) {
   if (!iso) return null;
@@ -9,10 +9,10 @@ function formatDate(iso: string | null) {
 type Props = {
   report: ScreenerReportData | null;
   ibex35Report: ScreenerReportData | null;
-  fundsReport: FundsReportData | null;
+  nasdaq100Report: GrowthReportData | null;
 };
 
-export default function ScreenerSpotlight({ report, ibex35Report, fundsReport }: Props) {
+export default function ScreenerSpotlight({ report, ibex35Report, nasdaq100Report }: Props) {
   const companies = report?.companies ?? [];
   const preview = companies.slice(0, 5);
   const extraCount = Math.max(0, companies.length - preview.length);
@@ -20,8 +20,8 @@ export default function ScreenerSpotlight({ report, ibex35Report, fundsReport }:
 
   const ibexCompanies = ibex35Report?.companies ?? [];
   const ibexPreview = ibexCompanies.slice(0, 3);
-  const funds = fundsReport?.funds ?? [];
-  const topFunds = funds.slice(0, 3);
+  const nasdaqCompanies = nasdaq100Report?.companies ?? [];
+  const nasdaqPreview = nasdaqCompanies.slice(0, 3);
 
   return (
     <section className="relative px-6 pt-32 pb-16 overflow-hidden">
@@ -106,29 +106,31 @@ export default function ScreenerSpotlight({ report, ibex35Report, fundsReport }:
           </Link>
 
           <Link
-            href="/tools/etf-screener"
+            href="/tools/growth-screener-nasdaq100"
             className="block bg-[#0d1426] border border-gray-800 hover:border-yellow-500/60 rounded-2xl p-6 transition group"
           >
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl">📊</span>
-              <h2 className="text-white font-bold text-lg group-hover:text-blue-300 transition">ETF Screener</h2>
+              <span className="text-xl">🚀</span>
+              <h2 className="text-white font-bold text-lg group-hover:text-blue-300 transition">Nasdaq-100 Growth Screener</h2>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">
-              UCITS equity ETFs from the iShares catalogue with a TER under 0.20%, ranked by 3-year Sharpe ratio.
+              A different question for a different index: revenue and earnings growth, with the price trend
+              confirming it. No P/E filter — in the Nasdaq-100 a low multiple says the market has stopped
+              expecting growth.
             </p>
-            {topFunds.length > 0 ? (
+            {nasdaqPreview.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {topFunds.map((f) => (
-                  <span key={f.isin} className="font-mono text-xs font-bold text-yellow-400 bg-yellow-400/5 border border-yellow-400/20 rounded-lg px-2.5 py-1">
-                    {f.ticker}
+                {nasdaqPreview.map((c) => (
+                  <span key={c.ticker} className="font-mono text-xs font-bold text-yellow-400 bg-yellow-400/5 border border-yellow-400/20 rounded-lg px-2.5 py-1">
+                    {c.ticker}
                   </span>
                 ))}
-                {funds.length > topFunds.length && (
-                  <span className="text-gray-500 text-xs px-1 py-1">+{funds.length - topFunds.length} more</span>
+                {nasdaqCompanies.length > nasdaqPreview.length && (
+                  <span className="text-gray-500 text-xs px-1 py-1">+{nasdaqCompanies.length - nasdaqPreview.length} more</span>
                 )}
               </div>
             ) : (
-              <span className="text-gray-500 text-xs">Ranking refreshes with the next weekly run.</span>
+              <span className="text-gray-500 text-xs">No names passed every filter in the latest run.</span>
             )}
           </Link>
         </div>

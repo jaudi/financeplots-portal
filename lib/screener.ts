@@ -1,3 +1,5 @@
+/** A row from the quality screen (S&P 500, IBEX 35). Percentages arrive
+ *  pre-formatted as strings; the P/E arrives as a number. */
 export interface ScreenerCompany {
   ticker: string;
   nombre: string;
@@ -9,6 +11,48 @@ export interface ScreenerCompany {
   rsi: number;
   precio_actual: number;
   ma50: number;
+}
+
+/** A row from the growth screen (Nasdaq-100). Deliberately shares no valuation
+ *  or profitability column with ScreenerCompany — the two screens ask different
+ *  questions, so they report different things. Percentages are numbers here, not
+ *  pre-formatted strings, because the table sorts and colours on them. */
+export interface GrowthCompany {
+  ticker: string;
+  nombre: string;
+  sector: string;
+  /** Year-on-year, most recent reported period. */
+  crecimiento_ingresos: number;
+  crecimiento_beneficios: number;
+  /** Carried for context, not filtered on. Null when Yahoo doesn't report it. */
+  margen_bruto: number | null;
+  /** Trailing free cash flow, in millions of the reporting currency. */
+  flujo_caja_libre: number;
+  rsi: number;
+  precio_actual: number;
+  ma50: number;
+  ma200: number;
+  /** Total returns in percent, on split- and dividend-adjusted prices. */
+  retorno_6m: number;
+  retorno_12m: number;
+  /** Within-cohort percentile rank over revenue growth, earnings growth and the
+   *  6-month return. 100 is the best of the names that passed *this week* — it
+   *  moves when the cohort moves, and it is not a quality grade. */
+  score: number;
+}
+
+/** The growth screen's filter set, carried in the JSON so the page and the
+ *  pipeline can't drift apart on what was actually applied. */
+export interface GrowthCriteria {
+  screen: string;
+  revenue_growth_min_pct: number;
+  earnings_growth_min_pct: number;
+  free_cash_flow: string;
+  trend: string;
+  return_6m: string;
+  rsi_min: number;
+  excluded_on_purpose: string;
+  score: string;
 }
 
 /** P(growth >= implied growth), fitted to the company's own year-on-year FCF
@@ -119,8 +163,8 @@ const SP500_REPORT_URL =
   "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report.json";
 const IBEX35_REPORT_URL =
   "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report-ibex35.json";
-const FUNDS_REPORT_URL =
-  "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report-funds.json";
+const NASDAQ100_REPORT_URL =
+  "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report-nasdaq100.json";
 
 // 1 hour. The pipeline only writes a new report weekly, but matching the cache to
 // that 7-day cadence meant a fresh report could sit unseen for days until someone
@@ -156,41 +200,27 @@ export function getIbex35Report(): Promise<ScreenerReportData | null> {
   return fetchReport<ScreenerReportData>(IBEX35_REPORT_URL);
 }
 
-export interface FundMethodology {
-  data_source: string;
-  vehicle: string;
-  domicile: string[];
-  domicile_note: string;
-  max_ter_ocf_pct: number;
-  asset_class: string;
-  listing_preference: string;
-  sharpe_calc: string;
-  sanity_filter: string;
-}
-
-export interface Fund {
-  isin: string;
-  ticker: string;
-  listado_lse: boolean;
-  nombre: string;
-  domicilio: string;
-  ter: number;
-  rendimiento_3y: number;
-  volatilidad_3y: number;
-  sharpe: number;
-}
-
-export interface FundsReportData {
+/** The growth report. Same envelope as ScreenerReportData — including the whole
+ *  reverse-DCF block, which runs unchanged on whichever names passed — with a
+ *  different company shape and the filter set carried alongside. */
+export interface GrowthReportData {
   generated_at: string | null;
-  methodology: FundMethodology;
   universe_size: number;
+  /** Whether the constituent list came from the live scrape or the pinned
+   *  fallback. Surfaced on the page: a stale universe is otherwise invisible. */
+  universe_source?: string | null;
+  analyzed: number;
   passed_filters: number;
-  funds: Fund[];
-  failed_count: number;
+  companies: GrowthCompany[];
+  failed: { ticker: string; error: string }[];
   report: string | null;
-  error?: string;
+  criteria?: GrowthCriteria;
+  valuation_method?: ValuationMethod;
+  valuations?: ScreenerValuation[];
+  valuation_failed?: { ticker: string; error: string }[];
+  valuation_report?: string | null;
 }
 
-export function getFundsReport(): Promise<FundsReportData | null> {
-  return fetchReport<FundsReportData>(FUNDS_REPORT_URL);
+export function getNasdaq100Report(): Promise<GrowthReportData | null> {
+  return fetchReport<GrowthReportData>(NASDAQ100_REPORT_URL);
 }

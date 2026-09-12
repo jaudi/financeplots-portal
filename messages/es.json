@@ -25,7 +25,7 @@
     "macroDashboard": "Macro EE.UU.",
     "qualityScreener": "Screener S&P 500",
     "qualityScreenerIbex": "Screener IBEX 35",
-    "etfScreener": "Screener de ETFs",
+    "growthScreenerNasdaq": "Screener Nasdaq-100",
     "marketIndices": "Índices Mundiales"
   },
   "home": {
@@ -398,10 +398,10 @@
         "href": "/tools/quality-screener-ibex35"
       },
       {
-        "icon": "📈",
-        "name": "Screener de ETFs",
-        "desc": "ETFs de bajo coste cotizados en Londres, clasificados por ratio de Sharpe a 3 años, con la metodología completa documentada en la página.",
-        "href": "/tools/etf-screener"
+        "icon": "🚀",
+        "name": "Screener de Crecimiento Nasdaq-100",
+        "desc": "Cribado semanal del Nasdaq-100 con IA por crecimiento y momentum — crecimiento de ingresos y beneficios con la tendencia del precio acompañando, y sin filtro de PER a propósito.",
+        "href": "/tools/growth-screener-nasdaq100"
       },
       {
         "icon": "📊",
@@ -481,7 +481,7 @@
     "disclaimer": "Esta herramienta es solo para fines informativos y de planificación. No constituye asesoramiento financiero, de inversión, fiscal ni legal. Consulta siempre a un profesional cualificado antes de tomar decisiones financieras.",
     "screenerDisclaimerTitle": "No es asesoramiento financiero",
     "screenerDisclaimer": "Este es un proyecto personal, no análisis de inversión profesional. El cribado se ejecuta de forma automática y el análisis escrito lo genera un modelo de IA — ambos pueden contener errores, y los datos de mercado de origen pueden estar desactualizados o ser incorrectos. Nada de lo publicado aquí es una recomendación de compra o venta de ningún valor. Haz siempre tu propio análisis y consulta a un profesional cualificado antes de invertir.",
-    "screenerDisclaimerPast": "Este ranking se basa en los últimos 3 años de rentabilidad y volatilidad. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
+    "screenerDisclaimerPast": "Este cribado se apoya en parte en la evolución pasada del precio. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
     "alsoTry": "También puedes usar"
   },
   "breakEven": {

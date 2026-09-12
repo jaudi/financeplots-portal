@@ -68,7 +68,7 @@ export default function Navbar() {
   const SCREENERS = [
     { label: `🏆 ${t("qualityScreener")}`,      href: "/tools/quality-screener"        },
     { label: `🇪🇸 ${t("qualityScreenerIbex")}`, href: "/tools/quality-screener-ibex35" },
-    { label: `📈 ${t("etfScreener")}`,          href: "/tools/etf-screener"            },
+    { label: `🚀 ${t("growthScreenerNasdaq")}`, href: "/tools/growth-screener-nasdaq100" },
   ];
 
   return (
