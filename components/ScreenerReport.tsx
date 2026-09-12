@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import RelatedTools from "@/components/RelatedTools";
+import ScreenerPerformance from "@/components/ScreenerPerformance";
 // `import type` so none of lib/screener's server-side fetch code follows the
 // types into the client bundle.
 import type { ScreenerValuation, ValuationMethod } from "@/lib/screener";
@@ -38,19 +39,22 @@ interface ScreenerColumn {
   emphasis?: boolean;
   /** Shown on hover, for a column whose header can't carry its own caveat. */
   title?: string;
+  /** Glossary anchor. The header becomes a link to the full definition, so the
+   *  explanation lives in one place instead of being paraphrased per table. */
+  glossary?: string;
 }
 
 const QUALITY_COLUMNS: ScreenerColumn[] = [
   { key: "ticker", label: "Ticker" },
   { key: "nombre", label: "Name" },
   { key: "sector", label: "Sector" },
-  { key: "per", label: "P/E", numeric: true },
-  { key: "roe", label: "ROE", numeric: true },
-  { key: "roa", label: "ROA", numeric: true },
-  { key: "deuda_patrimonio", label: "D/E", numeric: true },
-  { key: "rsi", label: "RSI", numeric: true },
-  { key: "precio_actual", label: "Price", numeric: true, prefix: "$" },
-  { key: "ma50", label: "MA50", numeric: true, prefix: "$" },
+  { key: "per", label: "P/E", numeric: true, glossary: "pe-ratio" },
+  { key: "roe", label: "ROE", numeric: true, glossary: "roe" },
+  { key: "roa", label: "ROA", numeric: true, glossary: "roa" },
+  { key: "deuda_patrimonio", label: "D/E", numeric: true, glossary: "debt-to-equity" },
+  { key: "rsi", label: "RSI", numeric: true, glossary: "rsi" },
+  { key: "precio_actual", label: "Price", numeric: true, prefix: "$", decimals: 2 },
+  { key: "ma50", label: "MA50", numeric: true, prefix: "$", decimals: 2, glossary: "moving-average" },
 ];
 
 const GROWTH_COLUMNS: ScreenerColumn[] = [
@@ -73,14 +77,15 @@ const GROWTH_COLUMNS: ScreenerColumn[] = [
     label: "FCF ($m)",
     numeric: true,
     grouped: true,
+    glossary: "free-cash-flow",
     title: "Trailing free cash flow, in millions of the reporting currency.",
   },
-  { key: "rsi", label: "RSI", numeric: true, decimals: 1 },
-  { key: "retorno_6m", label: "6M", numeric: true, suffix: "%", signed: true, decimals: 1 },
-  { key: "retorno_12m", label: "12M", numeric: true, suffix: "%", signed: true, decimals: 1 },
+  { key: "rsi", label: "RSI", numeric: true, decimals: 1, glossary: "rsi" },
+  { key: "retorno_6m", label: "6M", numeric: true, suffix: "%", signed: true, decimals: 1, glossary: "momentum" },
+  { key: "retorno_12m", label: "12M", numeric: true, suffix: "%", signed: true, decimals: 1, glossary: "momentum" },
   { key: "precio_actual", label: "Price", numeric: true, prefix: "$", decimals: 2 },
-  { key: "ma50", label: "MA50", numeric: true, prefix: "$", decimals: 2 },
-  { key: "ma200", label: "MA200", numeric: true, prefix: "$", decimals: 2 },
+  { key: "ma50", label: "MA50", numeric: true, prefix: "$", decimals: 2, glossary: "moving-average" },
+  { key: "ma200", label: "MA200", numeric: true, prefix: "$", decimals: 2, glossary: "moving-average" },
 ];
 
 /** The growth screen's filter set, written by the pipeline into the JSON so the
@@ -123,6 +128,8 @@ interface ScreenerReportProps {
   jsonLdUrl: string;
   /** Which screen this index gets. Picks the column set and the default intro. */
   variant?: "quality" | "growth";
+  /** Key into performance.json — which track record belongs to this screener. */
+  performanceKey: string;
   /** Whether ROA is enforced as a hard filter. Quality screens only. */
   roaRequired?: boolean;
 }
@@ -228,6 +235,7 @@ export default function ScreenerReport({
   jsonLdDescription,
   jsonLdUrl,
   variant = "quality",
+  performanceKey,
   roaRequired = true,
 }: ScreenerReportProps) {
   const tc = useTranslations("toolCommon");
@@ -383,7 +391,16 @@ export default function ScreenerReport({
                             }`}
                             title={col.title}
                           >
-                            {col.label}
+                            {col.glossary ? (
+                              <Link
+                                href={`/glossary#${col.glossary}`}
+                                className="hover:text-blue-300 underline decoration-dotted decoration-gray-700 underline-offset-4 transition"
+                              >
+                                {col.label}
+                              </Link>
+                            ) : (
+                              col.label
+                            )}
                           </th>
                         ))}
                       </tr>
@@ -470,6 +487,8 @@ export default function ScreenerReport({
                   </div>
                 </div>
               )}
+
+              <ScreenerPerformance screenerKey={performanceKey} />
 
               {hasValuations && (
                 <div className="mt-10">

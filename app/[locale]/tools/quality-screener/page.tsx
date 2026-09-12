@@ -10,6 +10,7 @@ export default function QualityScreenerPage() {
       jsonLdName="S&P 500 Quality Screener"
       jsonLdDescription="Weekly S&P 500 screen on quality fundamentals (ROE, ROA, P/E) and momentum (RSI, MA50), with an AI-generated research report on the companies that pass."
       jsonLdUrl="https://www.financeplots.com/tools/quality-screener"
+      performanceKey="sp500"
     />
   );
 }

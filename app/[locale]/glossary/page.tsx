@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Finance Glossary — 20 Key Terms Explained | FinancePlots",
-  description: "Plain-English definitions of the 20 most important finance terms: WACC, EBITDA, DCF, break-even, compound interest, IRR, NPV, burn rate and more.",
+  title: "Finance Glossary — 32 Key Terms Explained",
+  description: "Plain-English definitions of 32 essential finance terms: WACC, EBITDA, DCF, ROE, RSI, PEG, reverse DCF, alpha, break-even, IRR, NPV and more — including every metric used by the FinancePlots screeners.",
   alternates: { canonical: "https://www.financeplots.com/glossary" },
   openGraph: {
-    title: "Finance Glossary — 20 Key Terms Explained",
-    description: "Plain-English definitions of WACC, EBITDA, DCF, compound interest, IRR, NPV, and 14 more essential finance terms.",
+    title: "Finance Glossary — 32 Key Terms Explained",
+    description: "Plain-English definitions of WACC, EBITDA, DCF, ROE, RSI, PEG, reverse DCF, alpha and 24 more essential finance terms.",
     url: "https://www.financeplots.com/glossary",
     siteName: "FinancePlots",
     type: "website",
@@ -19,7 +19,7 @@ interface Term {
   id: string;
   term: string;
   abbr?: string;
-  category: "business" | "personal" | "market";
+  category: "business" | "personal" | "market" | "screener";
   definition: string;
   example: string;
   tool?: { label: string; href: string };
@@ -206,18 +206,128 @@ const TERMS: Term[] = [
     example: "Earning £4,000/month and saving £800 gives a 20% savings rate. Increasing to 30% (£1,200/month) invested at 8% p.a. can cut the time to financial independence by over a decade.",
     tool: { label: "Personal Financial Planner", href: "/tools/financial-planner" },
   },
+  {
+    id: "roe",
+    term: "Return on Equity",
+    abbr: "ROE",
+    category: "screener",
+    definition: "Net profit divided by shareholders' equity — how much profit a company generates from the money its owners have put in. A high ROE usually signals a strong competitive position, but it can also be manufactured with debt: borrowing shrinks the equity base and inflates the ratio without the business improving at all. That is why a quality screen should always pair ROE with a leverage check.",
+    example: "A company earning £50m on £200m of equity has a 25% ROE. If it buys back £100m of stock with borrowed money, equity halves and ROE jumps to 50% — the same profit, a better-looking ratio, and a more fragile balance sheet.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
+  {
+    id: "roa",
+    term: "Return on Assets",
+    abbr: "ROA",
+    category: "screener",
+    definition: "Net profit divided by total assets — profit generated per unit of everything the company controls, borrowed or owned. Because the denominator includes debt-funded assets, ROA cannot be inflated by leverage the way ROE can, which makes the two useful together. It is highly sector-dependent: a software firm and a utility are not comparable on it.",
+    example: "The FinancePlots S&P 500 screen requires ROA above 12%, but the IBEX 35 screen does not apply it at all — the Spanish index is heavy with banks and utilities, where a low ROA is structural to the business model rather than a sign of poor quality.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
+  {
+    id: "debt-to-equity",
+    term: "Debt-to-Equity Ratio",
+    abbr: "D/E",
+    category: "screener",
+    definition: "Total debt divided by shareholders' equity — how much of the business is funded by lenders versus owners. It is a blunt instrument: it is a snapshot that says nothing about when the debt matures or whether profits comfortably cover the interest. A company at 80% with debt due next year is more fragile than one at 120% with nothing due until 2032.",
+    example: "A D/E of 100% means £1 of debt for every £1 of equity. The FinancePlots quality screens reject anything above that, mainly to filter out companies whose high ROE is an artefact of leverage rather than a good business.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
+  {
+    id: "free-cash-flow",
+    term: "Free Cash Flow",
+    abbr: "FCF",
+    category: "screener",
+    definition: "The cash left after a company has paid its operating costs and its capital expenditure — money genuinely available to repay debt, pay dividends or reinvest. It is harder to manipulate than reported earnings, because accounting judgement affects profit far more than it affects cash. A business whose profits keep rising while its free cash flow does not is one worth looking at closely.",
+    example: "The Nasdaq-100 growth screen requires positive free cash flow as its only quality guardrail — the line between growth that funds itself and growth that burns cash. It doubles as a practical requirement: the reverse DCF cannot run on a negative cash flow base.",
+    tool: { label: "Nasdaq-100 Growth Screener", href: "/tools/growth-screener-nasdaq100" },
+  },
+  {
+    id: "peg",
+    term: "Price/Earnings to Growth Ratio",
+    abbr: "PEG",
+    category: "screener",
+    definition: "The P/E ratio divided by the earnings growth rate. Peter Lynch popularised it on the logic that a P/E means nothing without knowing how fast the company is growing: a business on 30x growing at 30% (PEG 1.0) is cheaper per unit of growth than one on 15x growing at 5% (PEG 3.0). Its weakness is the denominator — a company rebounding from a cyclical trough shows enormous growth and a flatteringly low PEG at precisely the wrong moment.",
+    example: "A fertiliser producer whose earnings rose 99% off a trough shows a PEG of 0.10, the lowest of any name on the screen — not because it is cheap, but because the denominator is a one-off rebound. Using normalised multi-year earnings instead of the last twelve months is the standard fix.",
+    tool: { label: "Nasdaq-100 Growth Screener", href: "/tools/growth-screener-nasdaq100" },
+  },
+  {
+    id: "rsi",
+    term: "Relative Strength Index",
+    abbr: "RSI",
+    category: "screener",
+    definition: "A momentum oscillator from 0 to 100 that compares the size of recent gains to recent losses over a period, usually 14 days. Readings below 30 conventionally suggest oversold conditions and above 70 overbought. It measures the behaviour of the price, not the business — a company can have a perfect RSI and deteriorating fundamentals, and nothing in the indicator would know.",
+    example: "The FinancePlots screens use RSI as a floor rather than a range — above 30 for the quality screens, above 40 for growth — to exclude names in distress, with no upper bound, so that strong momentum is not penalised by the very filter meant to find it.",
+    tool: { label: "Nasdaq-100 Growth Screener", href: "/tools/growth-screener-nasdaq100" },
+  },
+  {
+    id: "moving-average",
+    term: "Moving Average",
+    abbr: "MA50 / MA200",
+    category: "screener",
+    definition: "The average closing price over a trailing window, used to smooth out daily noise and show the underlying direction. The 50-day is the medium-term trend and the 200-day the long-term one. When the 50-day sits above the 200-day the market calls it a golden cross; the reverse is a death cross. The distinction matters: a price can recover its 50-day in any two-week bounce, while the crossing of the two averages takes months to turn.",
+    example: "The Nasdaq-100 growth screen requires both — price above the 50-day and the 50-day above the 200-day — precisely so that a short-lived rally in a falling stock does not register as an uptrend.",
+    tool: { label: "Nasdaq-100 Growth Screener", href: "/tools/growth-screener-nasdaq100" },
+  },
+  {
+    id: "momentum",
+    term: "Momentum",
+    abbr: undefined,
+    category: "screener",
+    definition: "The tendency of assets that have performed well recently to keep performing well over the following months. It is one of the most persistently documented anomalies in finance, and also one of the most uncomfortable: it offers no explanation of why it works, it contradicts the value investor's instinct to buy what has fallen, and it reverses sharply and without warning.",
+    example: "Requiring a positive 6-month return alongside the moving-average conditions is a momentum filter. It is the reason a value investor would object to these screens on principle — buying what has already risen is the opposite of buying what is cheap.",
+    tool: { label: "Nasdaq-100 Growth Screener", href: "/tools/growth-screener-nasdaq100" },
+  },
+  {
+    id: "reverse-dcf",
+    term: "Reverse Discounted Cash Flow",
+    abbr: "Reverse DCF",
+    category: "screener",
+    definition: "Instead of forecasting cash flows to produce a fair value, a reverse DCF starts from today's market price and solves for the growth rate that would justify it. The output is not a prediction — it is a statement of what the market is currently assuming. It reframes the question from \"what is this worth?\" to \"what would have to be true for this price to make sense?\", which is a far harder thing to fool yourself about.",
+    example: "If a company's price implies 40% annual cash flow growth for a decade while the business has actually compounded at 12%, the gap is the question. The implied figure is available for every company, because unlike a forecast it requires no history at all.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
+  {
+    id: "r-squared",
+    term: "Coefficient of Determination",
+    abbr: "R²",
+    category: "screener",
+    definition: "How much of the variation in a series is explained by a fitted trend line, from 0 to 1. In cash flow analysis it answers a question that comes before growth rates: do these numbers behave like a trend at all, or is the apparent growth just the path a volatile series happened to take? A CAGR can be computed from any two endpoints and will happily describe a collapse-and-rebound as steady compounding; R² is what catches that.",
+    example: "The FinancePlots valuation stage refuses to project anything below an R² of 0.5, leaving the fair value blank with a stated reason. On a typical week that is four companies out of five — which is the correct outcome, not a bug.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
+  {
+    id: "terminal-value",
+    term: "Terminal Value",
+    abbr: "TV",
+    category: "screener",
+    definition: "The portion of a valuation attributable to every year beyond the explicit forecast window, usually calculated as a perpetuity growing at a low fixed rate. It is the least examined and often the largest part of a DCF: when the terminal share exceeds half the total, most of the valuation rests on a single assumption about the distant future rather than on anything analysed.",
+    example: "A 2.5% terminal growth rate is applied uniformly across a miner, a biotech and a software firm, none of which plausibly share a long-run growth ceiling. The screener reports the terminal share per company so the reader can see how much of each number that one assumption is carrying.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
+  {
+    id: "alpha",
+    term: "Alpha",
+    abbr: undefined,
+    category: "screener",
+    definition: "Return in excess of a benchmark over the same period. It is the only number that justifies picking individual stocks at all: if a strategy returns 8% while its index returns 10%, the strategy lost, however positive it looks in isolation. Alpha is also the figure most often quietly omitted — a portfolio return with no benchmark beside it is not a result, it is a decoration.",
+    example: "A screen returning -3.7% while its index returned -0.7% has an alpha of -3.0 percentage points. Judging it on the -3.7% alone tells you about the market; the comparison is what tells you about the screen.",
+    tool: { label: "S&P 500 Quality Screener", href: "/tools/quality-screener" },
+  },
 ];
 
 const CATEGORY_LABELS: Record<Term["category"], string> = {
   business: "Business & Corporate Finance",
   personal: "Personal Finance",
   market: "Markets & Investing",
+  screener: "Screener Metrics",
 };
 
 const CATEGORY_COLORS: Record<Term["category"], string> = {
   business: "bg-blue-500/10 text-blue-300 border-blue-500/20",
   personal: "bg-green-500/10 text-green-300 border-green-500/20",
   market: "bg-purple-500/10 text-purple-300 border-purple-500/20",
+  screener: "bg-yellow-500/10 text-yellow-300 border-yellow-500/20",
 };
 
 type Props = { params: Promise<{ locale: string }> };
@@ -229,7 +339,7 @@ export default async function GlossaryPage({ params }: Props) {
   const title = es ? "Glosario de Finanzas" : "Finance Glossary";
   const subtitle = es
     ? "Los 20 términos más importantes de las finanzas, explicados en lenguaje sencillo."
-    : "The 20 most important finance terms, explained in plain English.";
+    : "32 essential finance terms, explained in plain English — including every metric behind the screeners.";
 
   const termsByLetter = TERMS.reduce<Record<string, Term[]>>((acc, term) => {
     const letter = (term.abbr ?? term.term)[0].toUpperCase();

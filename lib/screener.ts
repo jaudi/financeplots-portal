@@ -165,6 +165,8 @@ const IBEX35_REPORT_URL =
   "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report-ibex35.json";
 const NASDAQ100_REPORT_URL =
   "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/latest-report-nasdaq100.json";
+const PERFORMANCE_URL =
+  "https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/performance.json";
 
 // 1 hour. The pipeline only writes a new report weekly, but matching the cache to
 // that 7-day cadence meant a fresh report could sit unseen for days until someone
@@ -223,4 +225,49 @@ export interface GrowthReportData {
 
 export function getNasdaq100Report(): Promise<GrowthReportData | null> {
   return fetchReport<GrowthReportData>(NASDAQ100_REPORT_URL);
+}
+
+/** One name the screener picked, priced from the run that first picked it. */
+export interface PerformancePosition {
+  ticker: string;
+  entry_date: string;
+  entry_price: number;
+  current_price: number | null;
+  return_pct: number | null;
+  /** Whether it still passes the filter today. A name that left the screen and
+   *  then fell is the case that says whether a sell rule is needed. */
+  still_passing: boolean;
+}
+
+export interface ScreenerPerformance {
+  name: string;
+  benchmark: string;
+  since: string;
+  /** Read this before reading the return. Over a few weeks it is noise. */
+  weeks_of_history: number;
+  n_positions: number;
+  portfolio_return_pct: number;
+  benchmark_return_pct: number | null;
+  /** Portfolio minus benchmark. This is the result — the portfolio return on
+   *  its own says nothing without the index over the same window. */
+  alpha_pp: number | null;
+  positions: PerformancePosition[];
+}
+
+export interface PerformanceMethod {
+  entry: string;
+  holding: string;
+  benchmark: string;
+  costs: string;
+  caveat: string;
+}
+
+export interface PerformanceData {
+  generated_at: string | null;
+  method: PerformanceMethod;
+  screeners: Record<string, ScreenerPerformance>;
+}
+
+export function getPerformanceReport(): Promise<PerformanceData | null> {
+  return fetchReport<PerformanceData>(PERFORMANCE_URL);
 }
