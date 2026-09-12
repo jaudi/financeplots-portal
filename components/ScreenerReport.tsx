@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import RelatedTools from "@/components/RelatedTools";
 import ScreenerPerformance from "@/components/ScreenerPerformance";
+import WinnerCards from "@/components/WinnerCards";
 // `import type` so none of lib/screener's server-side fetch code follows the
 // types into the client bundle.
 import type { ScreenerValuation, ValuationMethod } from "@/lib/screener";
@@ -377,6 +378,8 @@ export default function ScreenerReport({
                   No companies passed every filter in the most recent run. Check back next week.
                 </div>
               )}
+
+              {hasCompanies && <WinnerCards companies={data.companies} />}
 
               {hasCompanies && (
                 <div className="overflow-x-auto mb-10 bg-[#0d1426] border border-gray-800 rounded-xl">
