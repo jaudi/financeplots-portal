@@ -262,7 +262,11 @@ export default function UniverseScreener() {
                     >
                       <div className="flex items-start gap-4">
                         <div className="shrink-0">
-                          <FactorSnowflake factores={c.factores} size={abierto ? 150 : 110} />
+                          <FactorSnowflake
+                            factores={c.factores}
+                            size={abierto ? 210 : 110}
+                            conEtiquetas={abierto}
+                          />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-baseline gap-2 flex-wrap">
