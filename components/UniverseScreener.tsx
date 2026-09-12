@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import FactorSnowflake, { EJES } from "@/components/FactorSnowflake";
+import FactorMethodology, { type MetodologiaFactores } from "@/components/FactorMethodology";
 import type { UniverseCompany, UniverseData, UniverseScreen } from "@/lib/screener";
 
 const PANTALLAS: { clave: UniverseScreen; etiqueta: string; emoji: string }[] = [
@@ -239,6 +240,8 @@ export default function UniverseScreener() {
               </button>
             </div>
           </div>
+
+          <FactorMethodology metodologia={data.methodology as MetodologiaFactores} />
 
           {/* Tarjetas */}
           {visibles.length === 0 ? (

@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import RelatedTools from "@/components/RelatedTools";
 import ScreenerPerformance from "@/components/ScreenerPerformance";
 import WinnerCards from "@/components/WinnerCards";
+import FactorMethodology, { type MetodologiaFactores } from "@/components/FactorMethodology";
 // `import type` so none of lib/screener's server-side fetch code follows the
 // types into the client bundle.
 import type { ScreenerValuation, ValuationMethod } from "@/lib/screener";
@@ -117,6 +118,9 @@ interface ScreenerReportData {
    *  beats letting the page imply they were written together. */
   report_generated_at?: string | null;
   criteria?: GrowthCriteria;
+  /** Bloque que escribe el motor multifactor, generado desde su propia
+   *  configuración de pesos. Ausente en informes anteriores al motor. */
+  methodology?: MetodologiaFactores;
   valuation_method?: ValuationMethod;
   valuations?: ScreenerValuation[];
   valuation_report?: string | null;
@@ -397,6 +401,8 @@ export default function ScreenerReport({
               )}
 
               {hasCompanies && <WinnerCards companies={data.companies} />}
+
+              <FactorMethodology metodologia={data.methodology} />
 
               {hasCompanies && (
                 <div className="overflow-x-auto mb-10 bg-[#0d1426] border border-gray-800 rounded-xl">
