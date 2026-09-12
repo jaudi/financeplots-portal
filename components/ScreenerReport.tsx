@@ -273,6 +273,10 @@ export default function ScreenerReport({
   }, [apiPath]);
 
   const generatedLabel = formatDate(data?.generated_at ?? null);
+  const commentaryLabel = formatDate(data?.report_generated_at ?? null);
+  // Los datos se refrescan cada semana y la narrativa una vez al mes, asi que
+  // casi siempre son de fechas distintas. Cuando coinciden no hace falta decirlo.
+  const commentaryIsOlder = Boolean(commentaryLabel) && commentaryLabel !== generatedLabel;
   const hasCompanies = (data?.companies?.length ?? 0) > 0;
   // Reports written before the reverse-DCF stage shipped have no valuation
   // block at all, so the whole section stays hidden rather than rendering empty.
@@ -364,7 +368,16 @@ export default function ScreenerReport({
           {data && !loading && !error && (
             <>
               <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-500 mb-8">
-                {generatedLabel && <span>Last run: {generatedLabel}</span>}
+                {generatedLabel && (
+                  <span>
+                    <span className="text-gray-400">Data:</span> {generatedLabel}
+                  </span>
+                )}
+                {commentaryLabel && (
+                  <span>
+                    <span className="text-gray-400">Commentary:</span> {commentaryLabel}
+                  </span>
+                )}
                 <span>{data.analyzed} companies analyzed</span>
                 <span>{data.passed_filters} passed all filters</span>
                 {data.universe_source && (
@@ -486,18 +499,22 @@ export default function ScreenerReport({
 
               {data.report && (
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
                     <h3 className="text-white font-bold text-base">📊 Research report</h3>
-                    {data.report_generated_at &&
-                      formatDate(data.report_generated_at) !== generatedLabel && (
-                        <span
-                          className="text-xs text-gray-500 cursor-help"
-                          title="The screen runs weekly; the written commentary is generated monthly. The table above is from the latest run."
-                        >
-                          Written {formatDate(data.report_generated_at)} · figures above are current
-                        </span>
-                      )}
+                    {commentaryLabel && (
+                      <span className="text-xs font-semibold text-amber-300/80 bg-amber-400/10 border border-amber-400/20 rounded-full px-3 py-1">
+                        Written {commentaryLabel}
+                      </span>
+                    )}
                   </div>
+                  {commentaryIsOlder && (
+                    <p className="text-xs text-gray-500 mb-5">
+                      The screen reruns weekly; this commentary is written monthly. The numbers in the
+                      table above are from {generatedLabel} — the text below describes the screen as it
+                      stood on {commentaryLabel}, and any company that has since entered or left is not
+                      discussed in it.
+                    </p>
+                  )}
                   <div className="text-sm text-gray-300 leading-relaxed">
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                       {data.report}
@@ -725,7 +742,14 @@ export default function ScreenerReport({
 
                   {data.valuation_report && (
                     <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
-                      <h3 className="text-white font-bold text-base mb-5">🧮 Valuation commentary</h3>
+                      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-5">
+                        <h3 className="text-white font-bold text-base">🧮 Valuation commentary</h3>
+                        {commentaryLabel && (
+                          <span className="text-xs font-semibold text-amber-300/80 bg-amber-400/10 border border-amber-400/20 rounded-full px-3 py-1">
+                            Written {commentaryLabel}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-sm text-gray-300 leading-relaxed">
                         <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                           {data.valuation_report}
