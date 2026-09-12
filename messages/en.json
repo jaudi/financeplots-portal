@@ -27,7 +27,8 @@
     "qualityScreener": "S&P 500 Screener",
     "qualityScreenerIbex": "IBEX 35 Screener",
     "growthScreenerNasdaq": "Nasdaq-100 Screener",
-    "marketIndices": "World Indices"
+    "marketIndices": "World Indices",
+    "glossary": "Glossary"
   },
   "home": {
     "badge": "Free FP&A Tools · No Signup · Works Instantly",

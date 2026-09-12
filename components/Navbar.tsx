@@ -151,7 +151,21 @@ export default function Navbar() {
                     </Link>
                   ))}
 
+                  {/* El glosario define cada metrica que aparece en los
+                      screeners. Estaba solo enlazado desde dentro de las
+                      tablas, asi que no lo encontraba quien no estuviera ya
+                      mirando una. */}
                   <div className="border-t border-gray-800 mt-2 pt-2">
+                    <Link
+                      href="/glossary"
+                      className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
+                        pathname?.includes("/glossary")
+                          ? "text-white bg-blue-600/15"
+                          : "text-gray-300 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      📖 {t("glossary")}
+                    </Link>
                     <Link
                       href="/tools"
                       className="flex items-center justify-center px-3 py-2 rounded-lg text-xs text-blue-400 hover:text-blue-300 transition"
@@ -277,6 +291,13 @@ export default function Navbar() {
               {tool.label}
             </Link>
           ))}
+
+          <Link
+            href="/glossary"
+            className="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
+          >
+            📖 {t("glossary")}
+          </Link>
 
           <div className="border-t border-gray-800 mt-3 pt-3 flex flex-col gap-1">
             <Link href="/blog" className={`px-4 py-2.5 rounded-lg transition font-semibold ${pathname?.includes("/blog") ? "text-white bg-blue-600/15" : "text-blue-300 hover:text-white"}`}>📝 {t("blog")}</Link>

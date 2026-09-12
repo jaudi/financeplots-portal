@@ -27,7 +27,8 @@
     "qualityScreener": "Screener S&P 500",
     "qualityScreenerIbex": "Screener IBEX 35",
     "growthScreenerNasdaq": "Screener Nasdaq-100",
-    "marketIndices": "Índices Mundiales"
+    "marketIndices": "Índices Mundiales",
+    "glossary": "Glosario"
   },
   "home": {
     "badge": "Herramientas FP&A Gratuitas · Sin Registro · Funciona Al Instante",
