@@ -112,6 +112,10 @@ interface ScreenerReportData {
   companies: Company[];
   failed: { ticker: string; error: string }[];
   report: string | null;
+  /** When the commentary was written. The table refreshes weekly and the
+   *  narrative monthly, so the two dates are usually different — saying so
+   *  beats letting the page imply they were written together. */
+  report_generated_at?: string | null;
   criteria?: GrowthCriteria;
   valuation_method?: ValuationMethod;
   valuations?: ScreenerValuation[];
@@ -482,7 +486,18 @@ export default function ScreenerReport({
 
               {data.report && (
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 sm:p-8">
-                  <h3 className="text-white font-bold text-base mb-5">📊 Research report</h3>
+                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-5">
+                    <h3 className="text-white font-bold text-base">📊 Research report</h3>
+                    {data.report_generated_at &&
+                      formatDate(data.report_generated_at) !== generatedLabel && (
+                        <span
+                          className="text-xs text-gray-500 cursor-help"
+                          title="The screen runs weekly; the written commentary is generated monthly. The table above is from the latest run."
+                        >
+                          Written {formatDate(data.report_generated_at)} · figures above are current
+                        </span>
+                      )}
+                  </div>
                   <div className="text-sm text-gray-300 leading-relaxed">
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                       {data.report}
