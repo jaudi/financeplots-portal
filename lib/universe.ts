@@ -34,10 +34,21 @@ function numberOrNull(value: unknown): number | null {
 
 export async function getUniverse(screen: UniverseScreen): Promise<UniverseData | null> {
   const hourBucket = Math.floor(Date.now() / (REVALIDATE_SECONDS * 1000));
-  const url = `https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/data/universe-${screen}.json?h=${hourBucket}`;
+  const path = `data/universe-${screen}.json`;
+
+  // The data repo is private. With SCREENER_REPO_TOKEN — a fine-grained,
+  // read-only token for that one repo — the file comes through the GitHub API.
+  // Without it, the public raw URL, which only works while the repo is public.
+  const token = process.env.SCREENER_REPO_TOKEN;
+  const url = token
+    ? `https://api.github.com/repos/jaudi/sp500-quality-screener/contents/${path}?ref=main&h=${hourBucket}`
+    : `https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/${path}?h=${hourBucket}`;
+  const headers: Record<string, string> = token
+    ? { Authorization: `Bearer ${token}`, Accept: "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" }
+    : {};
 
   try {
-    const res = await fetch(url, { next: { revalidate: REVALIDATE_SECONDS } });
+    const res = await fetch(url, { headers, next: { revalidate: REVALIDATE_SECONDS } });
     if (!res.ok) return null;
     const raw = (await res.json()) as { generated_at?: string; companies?: Record<string, unknown>[] };
 

@@ -7,7 +7,6 @@ const BLOG_SLUGS = [
   "annual-budget-guide",
   "bootstrapping-runway",
   "break-even-analysis-guide",
-  "building-my-first-ai-agents",
   "cash-flow-forecast-guide",
   "claude-products-guide",
   "control-is-the-whole-game",

@@ -50,6 +50,13 @@ construction. Keep these properties when you change it:
   the allowlist on purpose.
 - A company with no figure for a filtered metric is left out and counted, not
   silently treated as passing or failing.
+- **The snowflakes (`components/NeutralSnowflake.tsx`) are positions, not
+  grades.** Axes are only the measures the user filtered on (three or more).
+  Each point is the share of the index with a lower figure — further out means
+  *higher*, never *better*, so no axis is ever inverted for P/E or debt. One
+  neutral colour, no total or area score. The old `FactorSnowflake` broke all
+  three rules (site weights, "better" pointing out, green/amber/red) and was
+  removed for it.
 
 Units follow the pipeline: `%` metrics are percentage points (`roe: 16.5` is
 16.5%), `deuda_patrimonio` is a percentage, and prices are in the listing
@@ -74,3 +81,4 @@ Set in the Vercel dashboard, **Production scope included** — a variable scoped
 - `FRED_API_KEY`
 - `ANTHROPIC_API_KEY`
 - `RESEND_API_KEY` — contact form (`/api/subscribe`)
+- `SCREENER_REPO_TOKEN` — fine-grained GitHub token, read-only **Contents** on `jaudi/sp500-quality-screener` only. That repo is private, so without this the stock screener can't load its data (`lib/universe.ts` falls back to the public raw URL, which 404s on a private repo).

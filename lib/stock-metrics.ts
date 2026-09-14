@@ -39,6 +39,8 @@ export type MetricGroup = (typeof METRIC_GROUPS)[number];
 export interface MetricDef {
   key: MetricKey;
   label: string;
+  /** Axis label on the snowflake, where the full label doesn't fit. */
+  short: string;
   /** One plain-English sentence. Shown under the label, so no jargon. */
   help: string;
   unit: "%" | "x" | "";
@@ -48,46 +50,46 @@ export interface MetricDef {
 }
 
 export const METRICS: MetricDef[] = [
-  { key: "per", label: "P/E ratio", unit: "x", group: "Valuation", glossary: "pe-ratio",
+  { key: "per", label: "P/E ratio", short: "P/E", unit: "x", group: "Valuation", glossary: "pe-ratio",
     help: "Share price divided by the last twelve months' earnings per share." },
-  { key: "per_normalizado", label: "P/E on average earnings", unit: "x", group: "Valuation", glossary: "pe-ratio",
+  { key: "per_normalizado", label: "P/E on average earnings", short: "P/E avg", unit: "x", group: "Valuation", glossary: "pe-ratio",
     help: "Share price divided by earnings averaged over the last few reported years." },
-  { key: "precio_valor_libros", label: "Price / book", unit: "x", group: "Valuation",
+  { key: "precio_valor_libros", label: "Price / book", short: "P/B", unit: "x", group: "Valuation",
     help: "Market value divided by the accounting value of shareholders' equity." },
-  { key: "ev_ebit", label: "EV / EBIT", unit: "x", group: "Valuation", glossary: "ebit",
+  { key: "ev_ebit", label: "EV / EBIT", short: "EV/EBIT", unit: "x", group: "Valuation", glossary: "ebit",
     help: "Company value including its debt, divided by operating profit." },
-  { key: "fcf_yield", label: "Free cash flow yield", unit: "%", group: "Valuation", glossary: "free-cash-flow",
+  { key: "fcf_yield", label: "Free cash flow yield", short: "FCF yield", unit: "%", group: "Valuation", glossary: "free-cash-flow",
     help: "Cash left after running costs and investment, as a share of market value." },
 
-  { key: "roe", label: "Return on equity", unit: "%", group: "Profitability", glossary: "roe",
+  { key: "roe", label: "Return on equity", short: "ROE", unit: "%", group: "Profitability", glossary: "roe",
     help: "Net profit as a percentage of the shareholders' money in the business." },
-  { key: "roa", label: "Return on assets", unit: "%", group: "Profitability", glossary: "roa",
+  { key: "roa", label: "Return on assets", short: "ROA", unit: "%", group: "Profitability", glossary: "roa",
     help: "Net profit as a percentage of everything the company owns." },
-  { key: "roic", label: "Return on invested capital", unit: "%", group: "Profitability",
+  { key: "roic", label: "Return on invested capital", short: "ROIC", unit: "%", group: "Profitability",
     help: "Profit as a percentage of the money invested in the business, from lenders and owners." },
-  { key: "margen_operativo", label: "Operating margin", unit: "%", group: "Profitability", glossary: "ebit",
+  { key: "margen_operativo", label: "Operating margin", short: "Op. margin", unit: "%", group: "Profitability", glossary: "ebit",
     help: "Operating profit as a percentage of revenue." },
 
-  { key: "deuda_patrimonio", label: "Debt / equity", unit: "%", group: "Debt", glossary: "debt-to-equity",
+  { key: "deuda_patrimonio", label: "Debt / equity", short: "D/E", unit: "%", group: "Debt", glossary: "debt-to-equity",
     help: "Total debt as a percentage of shareholders' equity." },
-  { key: "deuda_neta_ebitda", label: "Net debt / EBITDA", unit: "x", group: "Debt", glossary: "ebitda",
+  { key: "deuda_neta_ebitda", label: "Net debt / EBITDA", short: "ND/EBITDA", unit: "x", group: "Debt", glossary: "ebitda",
     help: "Debt minus cash, divided by yearly operating earnings. Negative means more cash than debt." },
-  { key: "cobertura_intereses", label: "Interest cover", unit: "x", group: "Debt",
+  { key: "cobertura_intereses", label: "Interest cover", short: "Int. cover", unit: "x", group: "Debt",
     help: "How many times operating profit covers the interest bill." },
 
-  { key: "crecimiento_ingresos_normalizado", label: "Revenue growth", unit: "%", group: "Growth",
+  { key: "crecimiento_ingresos_normalizado", label: "Revenue growth", short: "Rev. growth", unit: "%", group: "Growth",
     help: "Latest year's revenue compared with the average of the previous reported years." },
-  { key: "crecimiento_beneficios_normalizado", label: "Earnings growth", unit: "%", group: "Growth",
+  { key: "crecimiento_beneficios_normalizado", label: "Earnings growth", short: "Earn. growth", unit: "%", group: "Growth",
     help: "Latest year's net profit compared with the average of the previous reported years." },
 
-  { key: "precio_actual", label: "Share price", unit: "", group: "Price & trend",
+  { key: "precio_actual", label: "Share price", short: "Price", unit: "", group: "Price & trend",
     help: "Latest price, in the currency the shares trade in." },
-  { key: "retorno_6m", label: "6-month return", unit: "%", group: "Price & trend", glossary: "momentum",
+  { key: "retorno_6m", label: "6-month return", short: "6M return", unit: "%", group: "Price & trend", glossary: "momentum",
     help: "Change in the share price over the last six months." },
-  { key: "retorno_12m", label: "12-month return", unit: "%", group: "Price & trend", glossary: "momentum",
+  { key: "retorno_12m", label: "12-month return", short: "12M return", unit: "%", group: "Price & trend", glossary: "momentum",
     help: "Change in the share price over the last twelve months." },
-  { key: "distancia_ma200_pct", label: "Price vs 200-day average", unit: "%", group: "Price & trend", glossary: "moving-average",
+  { key: "distancia_ma200_pct", label: "Price vs 200-day average", short: "vs 200-day", unit: "%", group: "Price & trend", glossary: "moving-average",
     help: "How far the price is above (+) or below (−) its average over the last 200 trading days." },
-  { key: "rsi", label: "RSI (14-day)", unit: "", group: "Price & trend", glossary: "rsi",
+  { key: "rsi", label: "RSI (14-day)", short: "RSI", unit: "", group: "Price & trend", glossary: "rsi",
     help: "A 0–100 gauge comparing recent price rises with recent falls." },
 ];

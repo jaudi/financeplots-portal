@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import NeutralSnowflake from "@/components/NeutralSnowflake";
 import { METRIC_GROUPS, METRICS, type MetricDef, type MetricKey } from "@/lib/stock-metrics";
 import type { UniverseCompany, UniverseData, UniverseScreen } from "@/lib/universe";
 
@@ -9,7 +10,8 @@ import type { UniverseCompany, UniverseData, UniverseScreen } from "@/lib/univer
 // run it, and the results come back alphabetically. What is deliberately absent
 // — and has to stay absent (UK MAR, see CLAUDE.md): a default or featured list,
 // suggested thresholds, any site-built score or rank, and green/red colouring
-// that reads as a verdict on a company.
+// that reads as a verdict on a company. The snowflakes follow the same rules;
+// see NeutralSnowflake.
 
 const INDICES: { key: UniverseScreen; label: string }[] = [
   { key: "sp500", label: "S&P 500" },
@@ -77,6 +79,28 @@ function compare(a: UniverseCompany, b: UniverseCompany, key: SortKey, dir: 1 | 
   return order * dir || a.ticker.localeCompare(b.ticker);
 }
 
+/** Share of the index below this figure, 0–100, counting ties as half. A plain
+ *  position — it says "higher than", never "better than". */
+function positionIn(sorted: number[], value: number) {
+  if (sorted.length === 0) return 0;
+  let lo = 0;
+  let hi = sorted.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (sorted[mid] < value) lo = mid + 1;
+    else hi = mid;
+  }
+  const below = lo;
+  hi = sorted.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (sorted[mid] <= value) lo = mid + 1;
+    else hi = mid;
+  }
+  const equal = lo - below;
+  return ((below + equal / 2) / sorted.length) * 100;
+}
+
 export default function StockScreener({ initialIndex }: { initialIndex: UniverseScreen }) {
   const [index, setIndex] = useState<UniverseScreen>(initialIndex);
   const [data, setData] = useState<UniverseData | null>(null);
@@ -86,6 +110,7 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
   const [query, setQuery] = useState("");
   const [ran, setRan] = useState<Criteria | null>(null);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "ticker", dir: 1 });
+  const [view, setView] = useState<"snowflakes" | "table">("snowflakes");
 
   useEffect(() => {
     let cancelled = false;
@@ -145,6 +170,19 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
     return Array.from(set).sort();
   }, [data]);
 
+  // Every figure in the index, per measure, sorted — what a snowflake point is
+  // positioned against.
+  const sortedByMetric = useMemo(() => {
+    const out = {} as Record<MetricKey, number[]>;
+    for (const m of METRICS) {
+      out[m.key] = (data?.companies ?? [])
+        .map((c) => c[m.key])
+        .filter((v): v is number => v !== null)
+        .sort((a, b) => a - b);
+    }
+    return out;
+  }, [data]);
+
   const { criteria, problems } = useMemo(() => readCriteria(bounds, sector, query), [bounds, sector, query]);
   const hasCriteria = criteria.filters.length > 0 || criteria.sector !== "" || criteria.query !== "";
   const canRun = status === "ready" && hasCriteria && problems.size === 0;
@@ -186,6 +224,8 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
 
   const columns = ran ? METRICS.filter((m) => ran.filters.some((f) => f.key === m.key)) : [];
   const indexLabel = INDICES.find((i) => i.key === index)?.label ?? index;
+  const canDrawShapes = columns.length >= 3;
+  const showShapes = view === "snowflakes" && canDrawShapes;
 
   function sortBy(key: SortKey) {
     setSort((prev) => (prev.key === key ? { key, dir: prev.dir === 1 ? -1 : 1 } : { key, dir: 1 }));
@@ -349,11 +389,23 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
       {/* Results — only after the user has run a screen */}
       {results && ran && (
         <div>
-          <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
             <h2 className="text-lg font-bold text-white">
               {results.rows.length} {results.rows.length === 1 ? "company meets" : "companies meet"} your criteria
             </h2>
-            <p className="text-xs text-gray-500">A–Z by ticker. Click a column heading to sort by it.</p>
+            <div className="flex items-center gap-1 bg-[#0d1426] border border-gray-800 rounded-lg p-1 text-xs">
+              {(["snowflakes", "table"] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={`px-3 py-1.5 rounded-md font-semibold transition ${
+                    view === v ? "bg-gray-700 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {v === "snowflakes" ? "Snowflakes" : "Table"}
+                </button>
+              ))}
+            </div>
           </div>
 
           {results.missing > 0 && (
@@ -367,35 +419,93 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
             <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 text-center text-sm text-gray-400">
               No company in the {indexLabel} meets all of these criteria.
             </div>
+          ) : showShapes ? (
+            <>
+              <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+                Each snowflake uses only the measures you set limits on. A point further out means the figure is
+                higher than more of the {indexLabel} — <span className="text-gray-400">higher, not better</span>: a
+                high P/E or a high debt ratio sits far out too. Listed A–Z by ticker.
+              </p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {results.rows.map((c) => (
+                  <div key={c.ticker} className="bg-[#0d1426] border border-gray-800 rounded-2xl p-5">
+                    <p className="font-mono font-bold text-gray-200">{c.ticker}</p>
+                    <p className="text-white text-sm font-semibold truncate" title={c.nombre}>
+                      {c.nombre}
+                    </p>
+                    <p className="text-gray-500 text-xs">{c.sector ?? "—"}</p>
+                    <div className="flex justify-center my-2">
+                      <NeutralSnowflake
+                        axes={columns.map((m) => {
+                          const value = c[m.key] as number;
+                          const position = positionIn(sortedByMetric[m.key], value);
+                          return {
+                            label: m.short,
+                            position,
+                            title: `${m.label}: ${formatValue(value, m)} — higher than ${Math.round(position)}% of the ${indexLabel}`,
+                          };
+                        })}
+                      />
+                    </div>
+                    <dl className="space-y-1">
+                      {columns.map((m) => {
+                        const value = c[m.key] as number;
+                        return (
+                          <div key={m.key} className="flex justify-between gap-2 text-xs">
+                            <dt className="text-gray-500 truncate">{m.label}</dt>
+                            <dd className="text-right shrink-0">
+                              <span className="font-mono text-gray-300">{formatValue(value, m)}</span>
+                              <span className="text-gray-600">
+                                {" "}
+                                · higher than {Math.round(positionIn(sortedByMetric[m.key], value))}%
+                              </span>
+                            </dd>
+                          </div>
+                        );
+                      })}
+                    </dl>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
-            <div className="overflow-x-auto bg-[#0d1426] border border-gray-800 rounded-xl">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-800 text-gray-500 text-xs">
-                    <SortHeader k="ticker" label="Ticker" />
-                    <SortHeader k="nombre" label="Name" />
-                    <SortHeader k="sector" label="Sector" />
-                    {columns.map((m) => (
-                      <SortHeader key={m.key} k={m.key} label={m.label} numeric />
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.rows.map((c) => (
-                    <tr key={c.ticker} className="border-b border-gray-800/60 last:border-0">
-                      <td className="px-4 py-3 font-mono text-gray-200">{c.ticker}</td>
-                      <td className="px-4 py-3 text-gray-200">{c.nombre}</td>
-                      <td className="px-4 py-3 text-gray-400">{c.sector ?? "—"}</td>
+            <>
+              {view === "snowflakes" && !canDrawShapes && (
+                <p className="text-xs text-gray-500 mb-3">
+                  A snowflake needs at least three measures. Set limits on {3 - columns.length} more to see them —
+                  the table shows your results in the meantime.
+                </p>
+              )}
+              <p className="text-xs text-gray-500 mb-3">A–Z by ticker. Click a column heading to sort by it.</p>
+              <div className="overflow-x-auto bg-[#0d1426] border border-gray-800 rounded-xl">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-800 text-gray-500 text-xs">
+                      <SortHeader k="ticker" label="Ticker" />
+                      <SortHeader k="nombre" label="Name" />
+                      <SortHeader k="sector" label="Sector" />
                       {columns.map((m) => (
-                        <td key={m.key} className="px-4 py-3 text-right text-gray-300 font-mono">
-                          {formatValue(c[m.key], m)}
-                        </td>
+                        <SortHeader key={m.key} k={m.key} label={m.label} numeric />
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {results.rows.map((c) => (
+                      <tr key={c.ticker} className="border-b border-gray-800/60 last:border-0">
+                        <td className="px-4 py-3 font-mono text-gray-200">{c.ticker}</td>
+                        <td className="px-4 py-3 text-gray-200">{c.nombre}</td>
+                        <td className="px-4 py-3 text-gray-400">{c.sector ?? "—"}</td>
+                        {columns.map((m) => (
+                          <td key={m.key} className="px-4 py-3 text-right text-gray-300 font-mono">
+                            {formatValue(c[m.key], m)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
 
           <p className="text-xs text-gray-600 mt-4 leading-relaxed">

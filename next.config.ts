@@ -25,10 +25,12 @@ const nextConfig: NextConfig = {
     return [
       { source: "/tools/etf-screener", destination: "/tools", permanent: true },
       { source: "/es/tools/etf-screener", destination: "/es/tools", permanent: true },
-      // Deleted 2026-09-14: the article quoted model valuations for named
-      // companies (UK MAR). It was in the sitemap, so send readers to the blog.
-      { source: "/blog/reverse-dcf-what-the-price-assumes", destination: "/blog", permanent: true },
-      { source: "/es/blog/reverse-dcf-what-the-price-assumes", destination: "/es/blog", permanent: true },
+      // Deleted 2026-09-14 along with the screeners they described (UK MAR).
+      // Both were in the sitemap, so send readers to the blog.
+      ...["reverse-dcf-what-the-price-assumes", "building-my-first-ai-agents"].flatMap((slug) => [
+        { source: `/blog/${slug}`, destination: "/blog", permanent: true },
+        { source: `/es/blog/${slug}`, destination: "/es/blog", permanent: true },
+      ]),
       ...RETIRED_SCREENERS.flatMap(([slug, index]) => [
         { source: `/tools/${slug}`, destination: `/tools/stock-screener?index=${index}`, permanent: true },
         { source: `/es/tools/${slug}`, destination: `/es/tools/stock-screener?index=${index}`, permanent: true },
