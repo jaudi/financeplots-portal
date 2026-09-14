@@ -48,9 +48,19 @@ export async function getUniverse(screen: UniverseScreen): Promise<UniverseData 
     : {};
 
   try {
-    const res = await fetch(url, { headers, next: { revalidate: REVALIDATE_SECONDS } });
-    if (!res.ok) return null;
-    const raw = (await res.json()) as { generated_at?: string; companies?: Record<string, unknown>[] };
+    type RawUniverse = { generated_at?: string; companies?: Record<string, unknown>[] };
+    let raw: RawUniverse;
+    // Local development without a token: point SCREENER_DATA_DIR at the data/
+    // folder of a local clone of the data repo.
+    const localDir = process.env.SCREENER_DATA_DIR;
+    if (localDir) {
+      const { readFile } = await import("node:fs/promises");
+      raw = JSON.parse(await readFile(`${localDir}/universe-${screen}.json`, "utf8")) as RawUniverse;
+    } else {
+      const res = await fetch(url, { headers, next: { revalidate: REVALIDATE_SECONDS } });
+      if (!res.ok) return null;
+      raw = (await res.json()) as RawUniverse;
+    }
 
     const companies = (raw.companies ?? [])
       .filter((c) => typeof c.ticker === "string")

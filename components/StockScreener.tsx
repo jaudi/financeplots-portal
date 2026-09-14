@@ -149,11 +149,20 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
     });
   }
 
+  // Snowflake axes the visitor chose to reverse, so that a lower figure sits
+  // further out. Empty by default: the site never picks a direction.
+  const [reversedAxes, setReversedAxes] = useState<Partial<Record<MetricKey, boolean>>>({});
+
+  function toggleAxis(key: MetricKey) {
+    setReversedAxes((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
   function clearAll() {
     setBounds({});
     setSector("");
     setQuery("");
     setRan(null);
+    setReversedAxes({});
   }
 
   // Back/forward between ?index= URLs is a client-side navigation: this
@@ -421,11 +430,35 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
             </div>
           ) : showShapes ? (
             <>
-              <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+              <p className="text-xs text-gray-500 mb-3 leading-relaxed">
                 Each snowflake uses only the measures you set limits on. A point further out means the figure is
                 higher than more of the {indexLabel} — <span className="text-gray-400">higher, not better</span>: a
-                high P/E or a high debt ratio sits far out too. Listed A–Z by ticker.
+                high P/E or a high debt ratio sits far out too, unless you reverse that axis below. Listed A–Z by
+                ticker.
               </p>
+              {/* The visitor decides which direction points outwards on each
+                  axis. The site never does: nothing is reversed until they click. */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="text-xs text-gray-500">Further out means:</span>
+                {columns.map((m) => {
+                  const reversed = Boolean(reversedAxes[m.key]);
+                  return (
+                    <button
+                      key={m.key}
+                      onClick={() => toggleAxis(m.key)}
+                      aria-pressed={reversed}
+                      title="Click to reverse this axis"
+                      className={`text-xs px-2.5 py-1 rounded-lg border transition ${
+                        reversed
+                          ? "border-blue-500/60 bg-blue-600/10 text-white"
+                          : "border-gray-700 text-gray-400 hover:text-white"
+                      }`}
+                    >
+                      {m.short}: {reversed ? "lower" : "higher"} ↔
+                    </button>
+                  );
+                })}
+              </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {results.rows.map((c) => (
                   <div key={c.ticker} className="bg-[#0d1426] border border-gray-800 rounded-2xl p-5">
@@ -439,9 +472,10 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
                         axes={columns.map((m) => {
                           const value = c[m.key] as number;
                           const position = positionIn(sortedByMetric[m.key], value);
+                          const reversed = Boolean(reversedAxes[m.key]);
                           return {
-                            label: m.short,
-                            position,
+                            label: reversed ? `${m.short} (lower out)` : m.short,
+                            position: reversed ? 100 - position : position,
                             title: `${m.label}: ${formatValue(value, m)} — higher than ${Math.round(position)}% of the ${indexLabel}`,
                           };
                         })}

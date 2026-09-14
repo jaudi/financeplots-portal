@@ -53,7 +53,9 @@ construction. Keep these properties when you change it:
 - **The snowflakes (`components/NeutralSnowflake.tsx`) are positions, not
   grades.** Axes are only the measures the user filtered on (three or more).
   Each point is the share of the index with a lower figure — further out means
-  *higher*, never *better*, so no axis is ever inverted for P/E or debt. One
+  *higher*, never *better*, so the site never inverts an axis for P/E or debt.
+  The visitor can reverse an axis themselves ("Further out means: lower"),
+  nothing is reversed until they click, and a reversed axis is labelled. One
   neutral colour, no total or area score. The old `FactorSnowflake` broke all
   three rules (site weights, "better" pointing out, green/amber/red) and was
   removed for it.

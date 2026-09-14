@@ -17,7 +17,8 @@ export interface SnowflakeAxis {
 //
 // - Every axis is a plain position within the index: further out means a
 //   HIGHER figure, never a better one. A high P/E or a high debt ratio sits far
-//   out too. No axis is ever inverted.
+//   out too. The site never inverts an axis; the visitor can reverse one
+//   themselves ("Further out means" in StockScreener), and the label says so.
 // - One neutral colour for every company. No green/red, no total, no area score.
 // - Axes are only the measures the user filtered on, shown only after they run.
 
