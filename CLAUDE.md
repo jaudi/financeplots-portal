@@ -11,9 +11,9 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 
 ## Layout
 
-- `app/[locale]/tools/*` — 20 native tool routes (calculators, screeners, dashboards). No iframes; the old Streamlit embed is gone.
+- `app/[locale]/tools/*` — 17 native tool routes (calculators, a stock screener, dashboards). No iframes; the old Streamlit embed is gone.
 - `app/api/*` — server routes for data the client can't fetch directly (API keys, CORS)
-- `lib/` — shared server-side data access (`fred.ts`, `screener.ts`)
+- `lib/` — shared server-side data access (`fred.ts`, `universe.ts`) and `stock-metrics.ts`, the stock screener's metric definitions
 - `messages/en.json`, `messages/es.json` — all UI copy, including the `/tools` grid entries
 - `app/sitemap.ts` — tool slugs are listed in one array and expanded per locale
 
@@ -22,37 +22,39 @@ Adding a tool means: a route under `app/[locale]/tools/`, an entry in both messa
 ## Data sources
 
 - **FRED** — `lib/fred.ts` fetches 8 US macro series server-side; needs `FRED_API_KEY`
-- **Screener reports** — fetched live from `raw.githubusercontent.com`; the `sp500-quality-screener` repo runs weekly in GitHub Actions and commits its JSON. No database anywhere. Three reports: S&P 500, IBEX 35, Nasdaq-100.
+- **Stock screener data** — `lib/universe.ts` fetches `universe-*.json` live from `raw.githubusercontent.com`; the `sp500-quality-screener` repo refreshes it weekly in GitHub Actions. No database anywhere. Three indices: S&P 500, IBEX 35, Nasdaq-100.
 - **Yahoo Finance** — `yahoo-finance2` for stock/portfolio tools
 
-## The screeners
+## The stock screener (and why there is only one)
 
-`components/ScreenerReport.tsx` renders all three, driven by a `variant` prop:
+**The site does not publish curated lists of named securities** (UK MAR
+investment-recommendation rules, 2026-09-14). That removed the homepage ticker
+strip, the three index screener pages (top-N tables, monthly AI commentary,
+reverse-DCF table, track record) and the old score-ranked stock screener. Their
+URLs 301 to `/tools/stock-screener?index=…` (`next.config.ts`). Don't bring any
+of it back without legal sign-off.
 
-- `variant="quality"` (default) — S&P 500 and IBEX 35. Columns: P/E, ROE, ROA, D/E, RSI, price, MA50.
-- `variant="growth"` — Nasdaq-100. Columns: score, revenue growth, earnings growth, FCF, RSI, 6M/12M returns, price, MA50, MA200.
+`/tools/stock-screener` (`components/StockScreener.tsx`) is neutral by
+construction. Keep these properties when you change it:
 
-The two screens ask different questions, so they report different columns. That
-is why the table is driven by a column descriptor rather than hardcoded `<td>`s,
-and why a company row is `Record<string, string | number | null>` rather than one
-fixed interface. Descriptors are plain data — no render functions — because they
-cross the server → client boundary.
+- **Nothing renders until the user runs a screen** with at least one criterion.
+  No default, featured or "popular" list, and no suggested threshold values.
+- **Results are alphabetical by ticker**, and the user can sort by any column
+  they filtered on. No site score, percentile, rank or recommendation wording,
+  and no green/red colouring that reads as good or bad.
+- **Only raw metrics reach the browser.** `lib/universe.ts` allowlists the
+  fields in `METRIC_KEYS` (`lib/stock-metrics.ts`) and re-sorts by ticker. The
+  pipeline's own `score`, factor percentiles, `beneficio_en_pico` and
+  reverse-DCF output are also stripped by a workflow step before the JSON is
+  committed. A new pipeline field stays off the site until someone adds it to
+  the allowlist on purpose.
+- A company with no figure for a filtered metric is left out and counted, not
+  silently treated as passing or failing.
 
-Things to know:
-
-- **The Nasdaq-100 screen has no P/E, ROE or leverage filter, on purpose.** A P/E
-  < 20 filter rejects almost the entire index and what it lets through is the
-  least representative of it. If you find yourself "fixing" that omission, read
-  `criteria.excluded_on_purpose` in the JSON first.
-- **`score` is a within-cohort percentile rank, not a grade.** The page prints
-  the pipeline's own explanation of it from `criteria.score` rather than a copy,
-  so the two can't drift.
-- **The methodology note under the growth table comes from the JSON**, not from
-  the component. Change the filters in the pipeline and the page follows.
-- Adding a screener means a route, an API route under `app/api/`, a fetcher in
-  `lib/screener.ts`, and the usual three (message files, sitemap, `RelatedTools`)
-  — plus the `Navbar` `SCREENERS` list and the `ScreenerSpotlight` card on the
-  homepage, which the other tools don't have.
+Units follow the pipeline: `%` metrics are percentage points (`roe: 16.5` is
+16.5%), `deuda_patrimonio` is a percentage, and prices are in the listing
+currency. The growth metrics compare the latest year with the average of the
+prior reported years — they are not year-on-year.
 
 ## AI
 

@@ -171,20 +171,16 @@ run_pipeline(obtener_tickers_fn=obtener_tickers_ibex35, ..., roa_minimo=None)  #
 
           <div className="bg-[#0d1426] border border-blue-600/20 rounded-2xl p-6 mt-4">
             <p className="text-blue-300 font-semibold mb-2">
-              {es ? "Ver los agentes en producción →" : "See the agents in production →"}
+              {es ? "Actualización — septiembre de 2026" : "Update — September 2026"}
             </p>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/tools/quality-screener" className="text-blue-400 hover:text-blue-300 transition">
-                  {es ? "→ Quality Screener del S&P 500" : "→ S&P 500 Quality Screener"}
-                </Link>
-              </li>
-              <li>
-                <Link href="/tools/quality-screener-ibex35" className="text-blue-400 hover:text-blue-300 transition">
-                  {es ? "→ Quality Screener del IBEX 35" : "→ IBEX 35 Quality Screener"}
-                </Link>
-              </li>
-            </ul>
+            <p className="text-sm text-gray-400 mb-3">
+              {es
+                ? "El pipeline que describe este artículo sigue en el repositorio, pero FinancePlots ya no publica sus listas de empresas ni sus informes de IA. En su lugar hay un screener neutral: tú eliges los criterios y los resultados son tuyos."
+                : "The pipeline this article describes is still in the repo, but FinancePlots no longer publishes its lists of companies or its AI reports. In their place is a neutral stock screener: you choose the criteria, and the results are yours."}
+            </p>
+            <Link href="/tools/stock-screener" className="text-sm text-blue-400 hover:text-blue-300 transition">
+              {es ? "→ Screener de acciones" : "→ Stock Screener"}
+            </Link>
           </div>
 
         </div>

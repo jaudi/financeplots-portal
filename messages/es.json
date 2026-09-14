@@ -9,7 +9,6 @@
     "financialJourney": "Plan Financiero",
     "fpaSectionLabel": "Herramientas FP&A",
     "marketSectionLabel": "Herramientas de Mercado",
-    "screenersSectionLabel": "Screeners",
     "viewAllTools": "Ver todas las herramientas →",
     "breakEven": "Punto de Equilibrio",
     "financialModel": "Modelo Financiero",
@@ -24,9 +23,6 @@
     "stockAnalysis": "Análisis de Acciones",
     "macroDashboard": "Macro EE.UU.",
     "stockScreener": "Screener de Acciones",
-    "qualityScreener": "Screener S&P 500",
-    "qualityScreenerIbex": "Screener IBEX 35",
-    "growthScreenerNasdaq": "Screener Nasdaq-100",
     "marketIndices": "Índices Mundiales",
     "glossary": "Glosario"
   },
@@ -181,7 +177,7 @@
     "blogArticle3Title": "Valoración DCF Explicada: Cómo Valorar una Empresa",
     "blogArticle3Tag": "Valoración",
     "readArticle": "Leer artículo →",
-    "viewAllArticles": "Ver los 17 artículos →",
+    "viewAllArticles": "Ver los {count} artículos →",
     "bookLabel": "Del fundador de FinancePlots",
     "bookTitle": "Your Money Rules",
     "bookDesc": "Un libro práctico de finanzas personales para ayudarte a tomar el control de tu dinero, construir mejores hábitos y tomar decisiones financieras más inteligentes.",
@@ -190,7 +186,7 @@
     "contactTitle": "Escríbenos",
     "contactDesc": "Preguntas, solicitudes de dashboard personalizado o comentarios — respondemos en menos de 24 horas.",
     "contactCta": "Escríbenos a hello@financeplots.com",
-    "footerTagline": "Herramientas FP&A para particulares, empresas y gestores de patrimonio",
+    "footerTagline": "Herramientas FP&A para particulares y empresas",
     "footerCopyright": "© 2026 FinancePlots · No es asesoramiento financiero",
     "stat5Value": "3.200+",
     "stat5Label": "Informes Generados",
@@ -211,13 +207,6 @@
       "Analysis": "Análisis"
     },
     "articles": [
-      {
-        "slug": "reverse-dcf-what-the-price-assumes",
-        "title": "Lo que el precio ya está asumiendo: un DCF inverso que sabe cuándo callarse",
-        "date": "Septiembre 2026",
-        "description": "En vez de preguntar si una empresa es buena, un DCF inverso pregunta qué tiene que cumplirse para que el precio de hoy tenga sentido. Construirlo me enseñó que lo más valioso que hace un modelo es negarse a responder.",
-        "tag": "Valoración"
-      },
       {
         "slug": "building-my-first-ai-agents",
         "title": "Construyendo mis primeros agentes de IA: los screeners del S&P 500 y el IBEX 35",
@@ -388,28 +377,10 @@
         "href": "/tools/macro-dashboard"
       },
       {
-        "icon": "🏆",
-        "name": "Screener de Calidad S&P 500",
-        "desc": "Todas las empresas del S&P 500 puntuadas cada semana por cinco factores — valor, calidad, crecimiento, tendencia y lo que el precio ya descuenta — con un informe de IA cada mes.",
-        "href": "/tools/quality-screener"
-      },
-      {
-        "icon": "🇪🇸",
-        "name": "Screener de Calidad IBEX 35",
-        "desc": "La misma puntuación de cinco factores aplicada al IBEX 35, inclinada hacia el valor para un mercado de bancos, utilities e industriales.",
-        "href": "/tools/quality-screener-ibex35"
-      },
-      {
         "icon": "🔎",
         "name": "Screener de Acciones",
-        "desc": "Explora todas las empresas del S&P 500, Nasdaq-100 e IBEX 35 puntuadas por valor, calidad, crecimiento, momentum y expectativas — y pon tus propios mínimos.",
+        "desc": "Elige tus propios criterios — valoración, rentabilidad, deuda, crecimiento y tendencia del precio — y filtra el S&P 500, el Nasdaq-100 o el IBEX 35. Nada se ordena ni se elige por ti.",
         "href": "/tools/stock-screener"
-      },
-      {
-        "icon": "🚀",
-        "name": "Screener de Crecimiento Nasdaq-100",
-        "desc": "El Nasdaq-100 puntuado cada semana con los mismos cinco factores, inclinados hacia crecimiento y tendencia — y ninguna empresa se descarta antes de que la veas.",
-        "href": "/tools/growth-screener-nasdaq100"
       },
       {
         "icon": "📊",
@@ -488,7 +459,7 @@
     "backTools": "← Herramientas",
     "disclaimer": "Esta herramienta es solo para fines informativos y de planificación. No constituye asesoramiento financiero, de inversión, fiscal ni legal. Consulta siempre a un profesional cualificado antes de tomar decisiones financieras.",
     "screenerDisclaimerTitle": "No es asesoramiento financiero",
-    "screenerDisclaimer": "Este es un proyecto personal, no análisis de inversión profesional. El cribado se ejecuta de forma automática y el análisis escrito lo genera un modelo de IA — ambos pueden contener errores, y los datos de mercado de origen pueden estar desactualizados o ser incorrectos. Nada de lo publicado aquí es una recomendación de compra o venta de ningún valor. Haz siempre tu propio análisis y consulta a un profesional cualificado antes de invertir.",
+    "screenerDisclaimer": "Este es un proyecto personal, no análisis de inversión profesional. Los datos de mercado de origen pueden estar desactualizados o ser incorrectos. Nada de lo publicado aquí es una recomendación de compra o venta de ningún valor. Haz siempre tu propio análisis y consulta a un profesional cualificado antes de invertir.",
     "screenerDisclaimerPast": "Este cribado se apoya en parte en la evolución pasada del precio. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
     "alsoTry": "También puedes usar"
   },

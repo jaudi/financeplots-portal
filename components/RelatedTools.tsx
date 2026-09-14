@@ -15,9 +15,6 @@ const ALL_TOOLS: { slug: string; icon: string; name: string }[] = [
   { slug: "stock-comparison",          icon: "📉", name: "Stock Comparison" },
   { slug: "stock-analysis",            icon: "📈", name: "Stock Analysis" },
   { slug: "market-indices",            icon: "🌐", name: "World Market Indices" },
-  { slug: "quality-screener",          icon: "🏆", name: "S&P 500 Quality Screener" },
-  { slug: "quality-screener-ibex35",   icon: "🇪🇸", name: "IBEX 35 Quality Screener" },
-  { slug: "growth-screener-nasdaq100", icon: "🚀", name: "Nasdaq-100 Growth Screener" },
   { slug: "stock-screener",            icon: "🔎", name: "Stock Screener" },
 ];
 
@@ -33,14 +30,11 @@ const RELATED: Record<string, string[]> = {
   "lending":                   ["financial-planner", "compound-interest", "personal-budget"],
   "personal-budget":           ["financial-planner", "compound-interest", "lending"],
   "compound-interest":         ["personal-budget", "lending", "portfolio-analysis"],
-  "portfolio-analysis":        ["market-indices", "stock-comparison", "quality-screener"],
-  "stock-comparison":          ["market-indices", "stock-analysis", "quality-screener"],
-  "stock-analysis":            ["quality-screener", "stock-comparison", "portfolio-analysis"],
+  "portfolio-analysis":        ["market-indices", "stock-comparison", "stock-screener"],
+  "stock-comparison":          ["market-indices", "stock-analysis", "stock-screener"],
+  "stock-analysis":            ["stock-screener", "stock-comparison", "portfolio-analysis"],
   "market-indices":            ["stock-comparison", "stock-analysis", "portfolio-analysis"],
-  "quality-screener":          ["growth-screener-nasdaq100", "quality-screener-ibex35", "stock-comparison"],
-  "quality-screener-ibex35":   ["quality-screener", "growth-screener-nasdaq100", "portfolio-analysis"],
-  "growth-screener-nasdaq100": ["stock-screener", "quality-screener", "stock-analysis"],
-  "stock-screener":            ["quality-screener", "growth-screener-nasdaq100", "stock-analysis"],
+  "stock-screener":            ["stock-analysis", "stock-comparison", "portfolio-analysis"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {
