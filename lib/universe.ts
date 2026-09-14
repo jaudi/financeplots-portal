@@ -1,4 +1,7 @@
 import { METRIC_KEYS, type MetricKey } from "@/lib/stock-metrics";
+import ibex35Snapshot from "@/data/universe/universe-ibex35.json";
+import nasdaq100Snapshot from "@/data/universe/universe-nasdaq100.json";
+import sp500Snapshot from "@/data/universe/universe-sp500.json";
 
 // The pipeline's universe files carry every company in the index. This module
 // passes on only reported and market data — never a composite score, factor
@@ -23,44 +26,66 @@ export interface UniverseData {
   companies: UniverseCompany[];
 }
 
+type RawUniverse = { generated_at?: string; companies?: Record<string, unknown>[] };
+
+// Copies of the data repo's universe files, committed here. The data repo is
+// private, so without SCREENER_REPO_TOKEN the site can't read it — these keep
+// the screener working meanwhile, frozen at the date they were copied. Once the
+// token is set the live files take over on their own. To refresh, copy
+// sp500-quality-screener/data/universe-*.json into data/universe/.
+const SNAPSHOTS: Record<UniverseScreen, RawUniverse> = {
+  sp500: sp500Snapshot as unknown as RawUniverse,
+  nasdaq100: nasdaq100Snapshot as unknown as RawUniverse,
+  ibex35: ibex35Snapshot as unknown as RawUniverse,
+};
+
 // The pipeline writes weekly. Revalidating hourly, with the hour in the URL as
 // the cache key, means a new run surfaces within the hour even though Vercel's
 // Data Cache survives redeploys.
 const REVALIDATE_SECONDS = 3600;
+
+/** Where the data comes from, in order: a local clone (development), the
+ *  private data repo through the GitHub API (needs SCREENER_REPO_TOKEN — a
+ *  fine-grained, read-only token for that one repo), then the committed
+ *  snapshot, so the screener never goes blank. */
+async function loadRaw(screen: UniverseScreen): Promise<RawUniverse> {
+  const localDir = process.env.SCREENER_DATA_DIR;
+  if (localDir) {
+    const { readFile } = await import("node:fs/promises");
+    return JSON.parse(await readFile(`${localDir}/universe-${screen}.json`, "utf8")) as RawUniverse;
+  }
+
+  const token = process.env.SCREENER_REPO_TOKEN;
+  if (token) {
+    const hourBucket = Math.floor(Date.now() / (REVALIDATE_SECONDS * 1000));
+    const url = `https://api.github.com/repos/jaudi/sp500-quality-screener/contents/data/universe-${screen}.json?ref=main&h=${hourBucket}`;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github.raw+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        next: { revalidate: REVALIDATE_SECONDS },
+      });
+      if (res.ok) return (await res.json()) as RawUniverse;
+      // A 401/404 here usually means the token expired or lost access to the repo.
+      console.warn(`universe ${screen}: GitHub API returned ${res.status}; serving the committed snapshot`);
+    } catch (err) {
+      console.warn(`universe ${screen}: GitHub API failed (${String(err)}); serving the committed snapshot`);
+    }
+  }
+
+  return SNAPSHOTS[screen];
+}
 
 function numberOrNull(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
 export async function getUniverse(screen: UniverseScreen): Promise<UniverseData | null> {
-  const hourBucket = Math.floor(Date.now() / (REVALIDATE_SECONDS * 1000));
-  const path = `data/universe-${screen}.json`;
-
-  // The data repo is private. With SCREENER_REPO_TOKEN — a fine-grained,
-  // read-only token for that one repo — the file comes through the GitHub API.
-  // Without it, the public raw URL, which only works while the repo is public.
-  const token = process.env.SCREENER_REPO_TOKEN;
-  const url = token
-    ? `https://api.github.com/repos/jaudi/sp500-quality-screener/contents/${path}?ref=main&h=${hourBucket}`
-    : `https://raw.githubusercontent.com/jaudi/sp500-quality-screener/refs/heads/main/${path}?h=${hourBucket}`;
-  const headers: Record<string, string> = token
-    ? { Authorization: `Bearer ${token}`, Accept: "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" }
-    : {};
-
   try {
-    type RawUniverse = { generated_at?: string; companies?: Record<string, unknown>[] };
-    let raw: RawUniverse;
-    // Local development without a token: point SCREENER_DATA_DIR at the data/
-    // folder of a local clone of the data repo.
-    const localDir = process.env.SCREENER_DATA_DIR;
-    if (localDir) {
-      const { readFile } = await import("node:fs/promises");
-      raw = JSON.parse(await readFile(`${localDir}/universe-${screen}.json`, "utf8")) as RawUniverse;
-    } else {
-      const res = await fetch(url, { headers, next: { revalidate: REVALIDATE_SECONDS } });
-      if (!res.ok) return null;
-      raw = (await res.json()) as RawUniverse;
-    }
+    const raw = await loadRaw(screen);
 
     const companies = (raw.companies ?? [])
       .filter((c) => typeof c.ticker === "string")

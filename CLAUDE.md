@@ -83,4 +83,4 @@ Set in the Vercel dashboard, **Production scope included** — a variable scoped
 - `FRED_API_KEY`
 - `ANTHROPIC_API_KEY`
 - `RESEND_API_KEY` — contact form (`/api/subscribe`)
-- `SCREENER_REPO_TOKEN` — fine-grained GitHub token, read-only **Contents** on `jaudi/sp500-quality-screener` only. That repo is private, so without this the stock screener can't load its data (`lib/universe.ts` falls back to the public raw URL, which 404s on a private repo).
+- `SCREENER_REPO_TOKEN` — fine-grained GitHub token, read-only **Contents** on `jaudi/sp500-quality-screener` only. That repo is private. Without this, `lib/universe.ts` serves the snapshot committed in `data/universe/` (copied 2026-09-14 with the owner's approval — raw metrics only, no scores) — the screener keeps working, but its numbers are frozen at that date. Refresh the snapshot by copying the data repo's `data/universe-*.json` there.
