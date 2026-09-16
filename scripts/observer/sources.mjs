@@ -1,6 +1,6 @@
 /**
- * Free data sources for The Observer agent. No API keys: FRED's public CSV
- * download, Eurostat, Yahoo Finance, SEC EDGAR, Google News RSS, GDELT, Reddit,
+ * Free data sources for The Observer agent. Only FRED needs a (free) key, and
+ * only on cloud runners. Also: Eurostat, Yahoo Finance, SEC EDGAR, Google News RSS, GDELT, Reddit,
  * ApeWisdom and CNN Fear & Greed.
  *
  * Every function returns plain data or throws. The caller decides what a
@@ -16,7 +16,8 @@ async function get(url, { headers = {}, timeoutMs = 20000 } = {}) {
     headers: { "User-Agent": BROWSER_UA, ...headers },
     signal: AbortSignal.timeout(timeoutMs),
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText} — ${url}`);
+  // Errors end up in the published edition's metadata: never include a key.
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText} — ${url.replace(/api_key=[^&]+/, "api_key=***")}`);
   return res;
 }
 
@@ -64,19 +65,31 @@ export const MACRO_SERIES = {
 // Publication lags included: quarterly debt lands ~6 months late, IMF annual ~2 years.
 const MAX_AGE_DAYS = { d: 14, m: 120, q: 300, a: 1000 };
 
+/** Raw observations, oldest first. */
+async function fredObservations(id, start) {
+  const apiKey = process.env.FRED_API_KEY;
+  let pairs;
+  if (apiKey) {
+    // The official API. The public CSV download times out from cloud runners
+    // (GitHub Actions), so the workflow always sets FRED_API_KEY.
+    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(id)}&api_key=${apiKey}&file_type=json&observation_start=${start}`;
+    const json = await (await get(url)).json();
+    pairs = (json.observations ?? []).map((o) => [o.date, o.value]);
+  } else {
+    // Keyless fallback for local runs.
+    const url = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(id)}&cosd=${start}`;
+    const text = await (await get(url)).text();
+    pairs = text.trim().split("\n").slice(1).map((line) => line.split(","));
+  }
+  return pairs
+    .filter(([, v]) => v !== "" && v !== "." && !Number.isNaN(Number(v)))
+    .map(([date, v]) => ({ date, value: Number(v) }));
+}
+
 export async function fredSeries(id, { transform = "level", freq = "m", label = id, unit } = {}) {
   const start = new Date();
   start.setFullYear(start.getFullYear() - 3);
-  const url = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(id)}&cosd=${start.toISOString().slice(0, 10)}`;
-  const text = await (await get(url)).text();
-
-  const rows = text
-    .trim()
-    .split("\n")
-    .slice(1)
-    .map((line) => line.split(","))
-    .filter(([, v]) => v !== "" && v !== "." && !Number.isNaN(Number(v)))
-    .map(([date, v]) => ({ date, value: Number(v) }));
+  const rows = await fredObservations(id, start.toISOString().slice(0, 10));
   if (rows.length === 0) throw new Error(`FRED ${id}: no observations`);
 
   let points = rows;
@@ -130,7 +143,7 @@ export async function macroSnapshot() {
   const errors = [];
   for (const [region, defs] of Object.entries(MACRO_SERIES)) {
     out[region] = [];
-    // Sequential per region: FRED's public CSV endpoint throttles bursts.
+    // Sequential per region: FRED throttles bursts.
     for (const def of defs) {
       try {
         out[region].push(await fredSeries(def.id, def));

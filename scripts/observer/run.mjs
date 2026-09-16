@@ -9,7 +9,7 @@
  *    content/observer/<date>.json.
  *
  * Runs weekly in .github/workflows/observer.yml, which opens a pull request for review.
- * Needs ANTHROPIC_API_KEY. Everything else is free and keyless.
+ * Needs ANTHROPIC_API_KEY, and FRED_API_KEY on cloud runners. Everything else is keyless.
  */
 import fs from "node:fs";
 import path from "node:path";
