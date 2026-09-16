@@ -11,7 +11,7 @@ export default function Navbar() {
   const locale = useLocale();
   const t = useTranslations("nav");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<"fpa" | "market" | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -19,7 +19,7 @@ export default function Navbar() {
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setToolsOpen(false);
+        setOpenMenu(null);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -28,7 +28,7 @@ export default function Navbar() {
 
   // Close dropdowns on route change
   useEffect(() => {
-    setToolsOpen(false);
+    setOpenMenu(null);
     setMenuOpen(false);
   }, [pathname]);
 
@@ -58,6 +58,7 @@ export default function Navbar() {
     { label: `📈 ${t("stockAnalysis")}`,     href: "/tools/stock-analysis"     },
     { label: `🔎 ${t("stockScreener")}`,     href: "/tools/stock-screener"     },
     { label: `📊 ${t("macroDashboard")}`,    href: "/tools/macro-dashboard"    },
+    { label: `🌐 ${t("marketIndices")}`,     href: "/tools/market-indices"     },
   ];
 
   return (
@@ -72,7 +73,79 @@ export default function Navbar() {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-1 text-sm text-gray-400">
 
-          {/* Blog (promoted to first nav item) */}
+          {/* FP&A and Market dropdowns */}
+          <div ref={dropdownRef} className="flex items-center gap-1">
+            {([
+              { key: "fpa",    label: t("fpaSectionLabel"),    items: FPA_TOOLS    },
+              { key: "market", label: t("marketSectionLabel"), items: MARKET_TOOLS },
+            ] as const).map(menu => {
+              const active = menu.items.some(tool => pathname === tool.href);
+              const open = openMenu === menu.key;
+              return (
+                <div key={menu.key} className="relative">
+                  <button
+                    onClick={() => setOpenMenu(open ? null : menu.key)}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg transition font-medium ${
+                      active ? "text-white bg-blue-600/10" : "hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    {menu.label}
+                    <svg
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {open && (
+                    <div className="absolute top-[calc(100%+6px)] left-0 w-64 bg-[#0d1426] border border-gray-700 rounded-2xl shadow-2xl shadow-black/60 overflow-y-auto max-h-[80vh]">
+                      <div className="p-2">
+                        {menu.items.map(tool => (
+                          <Link
+                            key={tool.href}
+                            href={tool.href}
+                            className={
+                              "featured" in tool
+                                ? "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-blue-300 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/20 mb-2 transition"
+                                : `flex items-center px-3 py-2 rounded-lg text-sm transition ${
+                                    pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white hover:bg-white/5"
+                                  }`
+                            }
+                          >
+                            {tool.label}
+                          </Link>
+                        ))}
+
+                        {/* El glosario define cada métrica del screener de acciones y
+                            del resto de herramientas. Va en el menú para que lo
+                            encuentre también quien no está ya dentro de una. */}
+                        <div className="border-t border-gray-800 mt-2 pt-2">
+                          <Link
+                            href="/glossary"
+                            className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
+                              pathname?.includes("/glossary")
+                                ? "text-white bg-blue-600/15"
+                                : "text-gray-300 hover:text-white hover:bg-white/5"
+                            }`}
+                          >
+                            📖 {t("glossary")}
+                          </Link>
+                          <Link
+                            href="/tools"
+                            className="flex items-center justify-center px-3 py-2 rounded-lg text-xs text-blue-400 hover:text-blue-300 transition"
+                          >
+                            {t("viewAllTools")}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
           <Link
             href="/blog"
             className={`px-4 py-2 rounded-lg transition font-medium ${
@@ -80,98 +153,6 @@ export default function Navbar() {
             }`}
           >
             {t("blog")}
-          </Link>
-
-          {/* Tools dropdown */}
-          <div ref={dropdownRef} className="relative">
-            <button
-              onClick={() => setToolsOpen(v => !v)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg transition font-medium ${
-                pathname?.includes("/tools") ? "text-white bg-blue-600/10" : "hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {t("tools")}
-              <svg
-                className={`w-3.5 h-3.5 transition-transform duration-200 ${toolsOpen ? "rotate-180" : ""}`}
-                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {toolsOpen && (
-              <div className="absolute top-[calc(100%+6px)] right-0 w-64 bg-[#0d1426] border border-gray-700 rounded-2xl shadow-2xl shadow-black/60 overflow-y-auto max-h-[80vh]">
-                <div className="p-2">
-
-                  {/* Featured */}
-                  <Link
-                    href="/tools/financial-planner"
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-blue-300 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/20 mb-2 transition"
-                  >
-                    🗺️ {t("financialJourney")}
-                  </Link>
-
-                  {/* FP&A */}
-                  <p className="text-xs text-gray-600 font-bold uppercase tracking-wider px-3 py-1">{t("fpaSectionLabel")}</p>
-                  {FPA_TOOLS.filter(t => !t.featured).map(tool => (
-                    <Link
-                      key={tool.href}
-                      href={tool.href}
-                      className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
-                        pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white hover:bg-white/5"
-                      }`}
-                    >
-                      {tool.label}
-                    </Link>
-                  ))}
-
-                  {/* Market */}
-                  <p className="text-xs text-gray-600 font-bold uppercase tracking-wider px-3 py-1 mt-2">{t("marketSectionLabel")}</p>
-                  {MARKET_TOOLS.map(tool => (
-                    <Link
-                      key={tool.href}
-                      href={tool.href}
-                      className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
-                        pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white hover:bg-white/5"
-                      }`}
-                    >
-                      {tool.label}
-                    </Link>
-                  ))}
-
-                  {/* El glosario define cada métrica del screener de acciones y
-                      del resto de herramientas. Va en el menú para que lo
-                      encuentre también quien no está ya dentro de una. */}
-                  <div className="border-t border-gray-800 mt-2 pt-2">
-                    <Link
-                      href="/glossary"
-                      className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
-                        pathname?.includes("/glossary")
-                          ? "text-white bg-blue-600/15"
-                          : "text-gray-300 hover:text-white hover:bg-white/5"
-                      }`}
-                    >
-                      📖 {t("glossary")}
-                    </Link>
-                    <Link
-                      href="/tools"
-                      className="flex items-center justify-center px-3 py-2 rounded-lg text-xs text-blue-400 hover:text-blue-300 transition"
-                    >
-                      {t("viewAllTools")}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <Link
-            href="/tools/market-indices"
-            className={`px-4 py-2 rounded-lg transition font-medium ${
-              pathname?.includes("/market-indices") ? "text-white bg-blue-600/10" : "hover:text-white hover:bg-white/5"
-            }`}
-          >
-            🌐 {t("marketIndices")}
           </Link>
 
           {/* Language switcher */}
@@ -245,7 +226,6 @@ export default function Navbar() {
 
           <div className="border-t border-gray-800 mt-3 pt-3 flex flex-col gap-1">
             <Link href="/blog" className={`px-4 py-2.5 rounded-lg transition font-semibold ${pathname?.includes("/blog") ? "text-white bg-blue-600/15" : "text-blue-300 hover:text-white"}`}>📝 {t("blog")}</Link>
-            <Link href="/tools/market-indices" className={`px-4 py-2.5 rounded-lg transition ${pathname?.includes("/market-indices") ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>🌐 {t("marketIndices")}</Link>
           </div>
 
           {/* Mobile language switcher */}

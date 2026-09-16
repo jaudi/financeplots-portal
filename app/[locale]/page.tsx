@@ -53,121 +53,11 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
 
-      {/* ── Hero: featured article ── */}
-      <section className="relative px-6 pt-32 pb-20 overflow-hidden">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-4xl mx-auto relative">
-          <div className="flex items-center gap-3 mb-6 flex-wrap">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-blue-400 bg-blue-400/10 border border-blue-400/20 rounded-full px-4 py-1.5">
-              {t("featuredArticleBadge")}
-            </span>
-            <span className={`text-xs font-semibold uppercase tracking-wider ${TAG_COLORS[featured.tag] ?? "text-blue-400"}`}>
-              {featured.tag}
-            </span>
-            <span className="text-gray-500 text-xs">{featured.date}</span>
-          </div>
-
-          <Link
-            href={`/blog/${featured.slug}`}
-            className="block group"
-          >
-            {/* The page's h1 — it used to live in the screener spotlight above this section. */}
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight group-hover:text-blue-300 transition">
-              {featured.title}
-            </h1>
-            <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-3xl">
-              {featured.description}
-            </p>
-          </Link>
-
-          <div className="flex gap-4 flex-wrap">
-            <Link
-              href={`/blog/${featured.slug}`}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl text-base transition shadow-lg shadow-blue-600/25"
-            >
-              {t("heroCtaArticle")}
-            </Link>
-            <Link
-              href="/tools"
-              className="bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-600 text-gray-200 font-semibold px-8 py-4 rounded-xl text-base transition"
-            >
-              {t("heroCtaTools")}
-            </Link>
-          </div>
-
-          {/* Stats bar */}
-          <div className="flex flex-wrap gap-8 md:gap-12 mt-16 pt-10 border-t border-gray-800">
-            {[
-              [String(totalArticles), t("stat3Label")],
-              ["16", t("stat1Label")],
-              ["2",  t("stat2Label")],
-            ].map(([num, label]) => (
-              <div key={label}>
-                <div className="text-3xl font-extrabold text-white">{num}</div>
-                <div className="text-gray-500 text-xs uppercase tracking-wider mt-1">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Blog grid: recent articles ── */}
-      <section className="bg-[#0d1426] py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-            <div>
-              <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("blogLabel")}</p>
-              <h2 className="text-3xl font-bold">{t("latestArticlesTitle")}</h2>
-            </div>
-            <Link href="/blog" className="text-blue-400 hover:text-blue-300 text-sm font-semibold transition">
-              {t("viewAllArticles", { count: totalArticles })}
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {recent.map((a) => (
-              <Link
-                key={a.slug}
-                href={`/blog/${a.slug}`}
-                className="block bg-[#111827] border border-gray-800 rounded-2xl p-6 hover:border-blue-700/50 transition group"
-              >
-                <span className={`text-xs font-bold uppercase tracking-wider ${TAG_COLORS[a.tag] ?? "text-blue-400"}`}>
-                  {a.tag}
-                </span>
-                <h3 className="text-white font-semibold mt-2 mb-2 text-base leading-snug group-hover:text-blue-300 transition">
-                  {a.title}
-                </h3>
-                <p className="text-gray-500 text-xs mb-3 leading-relaxed line-clamp-2">{a.description}</p>
-                <span className="text-gray-600 text-xs">{a.date}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Promo video ── */}
-      <section className="px-6 py-20">
-        <div className="max-w-sm mx-auto">
-          <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-blue-700/30 shadow-2xl shadow-blue-600/10 bg-[#0d1426]">
-            <video
-              src="/financeplots-top-tools.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* ── Tools ── */}
-      <section className="py-20 px-6">
+      <section className="px-6 pt-32 pb-20">
         <div className="max-w-5xl mx-auto">
           <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("toolsLabel")}</p>
-          <h2 className="text-3xl font-bold text-center mb-3">{t("toolsTitle")}</h2>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-3">{t("toolsTitle")}</h1>
           <p className="text-gray-400 text-center mb-10">{t("toolsSubtitle")}</p>
 
           {/* Featured: Financial Journey Planners */}
@@ -296,6 +186,115 @@ export default async function Home() {
                 </ol>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Hero: featured article ── */}
+      <section className="relative px-6 py-20 overflow-hidden">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto relative">
+          <div className="flex items-center gap-3 mb-6 flex-wrap">
+            <span className="inline-block text-xs font-bold uppercase tracking-widest text-blue-400 bg-blue-400/10 border border-blue-400/20 rounded-full px-4 py-1.5">
+              {t("featuredArticleBadge")}
+            </span>
+            <span className={`text-xs font-semibold uppercase tracking-wider ${TAG_COLORS[featured.tag] ?? "text-blue-400"}`}>
+              {featured.tag}
+            </span>
+            <span className="text-gray-500 text-xs">{featured.date}</span>
+          </div>
+
+          <Link
+            href={`/blog/${featured.slug}`}
+            className="block group"
+          >
+                        <h2 className="text-4xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight group-hover:text-blue-300 transition">
+              {featured.title}
+            </h2>
+            <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-3xl">
+              {featured.description}
+            </p>
+          </Link>
+
+          <div className="flex gap-4 flex-wrap">
+            <Link
+              href={`/blog/${featured.slug}`}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl text-base transition shadow-lg shadow-blue-600/25"
+            >
+              {t("heroCtaArticle")}
+            </Link>
+            <Link
+              href="/tools"
+              className="bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-600 text-gray-200 font-semibold px-8 py-4 rounded-xl text-base transition"
+            >
+              {t("heroCtaTools")}
+            </Link>
+          </div>
+
+          {/* Stats bar */}
+          <div className="flex flex-wrap gap-8 md:gap-12 mt-16 pt-10 border-t border-gray-800">
+            {[
+              [String(totalArticles), t("stat3Label")],
+              ["16", t("stat1Label")],
+              ["2",  t("stat2Label")],
+            ].map(([num, label]) => (
+              <div key={label}>
+                <div className="text-3xl font-extrabold text-white">{num}</div>
+                <div className="text-gray-500 text-xs uppercase tracking-wider mt-1">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Blog grid: recent articles ── */}
+      <section className="bg-[#0d1426] py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("blogLabel")}</p>
+              <h2 className="text-3xl font-bold">{t("latestArticlesTitle")}</h2>
+            </div>
+            <Link href="/blog" className="text-blue-400 hover:text-blue-300 text-sm font-semibold transition">
+              {t("viewAllArticles", { count: totalArticles })}
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {recent.map((a) => (
+              <Link
+                key={a.slug}
+                href={`/blog/${a.slug}`}
+                className="block bg-[#111827] border border-gray-800 rounded-2xl p-6 hover:border-blue-700/50 transition group"
+              >
+                <span className={`text-xs font-bold uppercase tracking-wider ${TAG_COLORS[a.tag] ?? "text-blue-400"}`}>
+                  {a.tag}
+                </span>
+                <h3 className="text-white font-semibold mt-2 mb-2 text-base leading-snug group-hover:text-blue-300 transition">
+                  {a.title}
+                </h3>
+                <p className="text-gray-500 text-xs mb-3 leading-relaxed line-clamp-2">{a.description}</p>
+                <span className="text-gray-600 text-xs">{a.date}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Promo video ── */}
+      <section className="px-6 py-20">
+        <div className="max-w-sm mx-auto">
+          <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-blue-700/30 shadow-2xl shadow-blue-600/10 bg-[#0d1426]">
+            <video
+              src="/financeplots-top-tools.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </section>
