@@ -287,6 +287,8 @@ const client = new Anthropic();
 const runner = client.beta.messages.toolRunner({
   model: MODEL,
   max_tokens: 32000,
+  // The SDK refuses non-streaming requests this large (they can outlast HTTP timeouts).
+  stream: true,
   thinking: { type: "adaptive" },
   output_config: { effort: "high" },
   // If a safety classifier declines, retry server-side on Anthropic's recommended fallback model.
@@ -302,7 +304,8 @@ const runner = client.beta.messages.toolRunner({
 
 let usage = { input_tokens: 0, output_tokens: 0 };
 let toolCalls = 0;
-for await (const message of runner) {
+for await (const stream of runner) {
+  const message = await stream.finalMessage();
   usage.input_tokens += message.usage.input_tokens ?? 0;
   usage.output_tokens += message.usage.output_tokens ?? 0;
   const calls = message.content.filter((b) => b.type === "tool_use");
