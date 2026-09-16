@@ -325,14 +325,15 @@ const runner = client.beta.messages.toolRunner({
   messages: [{ role: "user", content: userMessage }],
 });
 
-let usage = { input_tokens: 0, output_tokens: 0 };
+// input_tokens counts only uncached input; with prompt caching most input is
+// cache reads, so track all four to see what a run really costs.
+const usage = { input_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 0 };
 let toolCalls = 0;
 let lastMessage = null;
 for await (const stream of runner) {
   const message = await stream.finalMessage();
   lastMessage = message;
-  usage.input_tokens += message.usage.input_tokens ?? 0;
-  usage.output_tokens += message.usage.output_tokens ?? 0;
+  for (const key of Object.keys(usage)) usage[key] += message.usage[key] ?? 0;
   const calls = message.content.filter((b) => b.type === "tool_use");
   toolCalls += calls.length;
   for (const c of calls) log("tool", c.name, JSON.stringify(c.input).slice(0, 100));
@@ -378,7 +379,10 @@ const edition = {
 fs.mkdirSync(OUT_DIR, { recursive: true });
 const file = path.join(OUT_DIR, `${today}.json`);
 fs.writeFileSync(file, JSON.stringify(edition, null, 2) + "\n");
-log("wrote", path.relative(process.cwd(), file), `(${toolCalls} tool calls, ${usage.input_tokens} in / ${usage.output_tokens} out tokens)`);
+// Claude Opus 5 list prices per million tokens: input $5, cache write $6.25, cache read $0.50, output $25.
+const costUsd =
+  (usage.input_tokens * 5 + usage.cache_creation_input_tokens * 6.25 + usage.cache_read_input_tokens * 0.5 + usage.output_tokens * 25) / 1e6;
+log("wrote", path.relative(process.cwd(), file), `(${toolCalls} tool calls, ~${costUsd.toFixed(2)})`, JSON.stringify(usage));
 
 if (process.env.GITHUB_OUTPUT) {
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `slug=${today}\ntitle=${edition.title.replace(/\n/g, " ")}\n`);

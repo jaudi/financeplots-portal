@@ -44,6 +44,9 @@ jobs:
         id: audio
         continue-on-error: true
         run: |
+          # GitHub's Ubuntu image has no ffmpeg; the first run synthesised every
+          # paragraph and then died at the MP3 encode.
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           npm install --no-save kokoro-js@1.2.1
           node scripts/observer/audio.mjs "content/observer/${{ steps.write.outputs.slug }}.json" "the-observer-${{ steps.write.outputs.slug }}.mp3"
 
