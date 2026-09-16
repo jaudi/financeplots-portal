@@ -1,0 +1,95 @@
+# The Observer: a Claude agent drafts the weekly macro edition every Monday
+# and opens a pull request. Merging the PR publishes it (Vercel deploys master).
+name: The Observer
+
+on:
+  schedule:
+    - cron: "0 5 * * 1" # Mondays 05:00 UTC, after Asia's Monday session has started
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: observer
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write edition
+        id: write
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/observer/run.mjs
+
+      # Audio is a bonus: if any audio step fails, the edition still goes out without it.
+      # The MP3 lives on a GitHub Release, not in the repo, so git history stays small.
+      - name: Read edition aloud (Kokoro)
+        id: audio
+        continue-on-error: true
+        run: |
+          npm install --no-save kokoro-js@1.2.1
+          node scripts/observer/audio.mjs "content/observer/${{ steps.write.outputs.slug }}.json" "the-observer-${{ steps.write.outputs.slug }}.mp3"
+
+      - name: Upload audio
+        id: upload
+        if: steps.audio.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLUG: ${{ steps.write.outputs.slug }}
+        run: |
+          gh release create "observer-$SLUG" "the-observer-$SLUG.mp3" \
+            --title "The Observer — $SLUG (audio)" \
+            --notes "Audio edition of The Observer for the week of $SLUG." \
+            --latest=false
+
+      - name: Link audio in edition
+        if: steps.upload.outcome == 'success'
+        env:
+          SLUG: ${{ steps.write.outputs.slug }}
+          DURATION: ${{ steps.audio.outputs.duration }}
+          URL: https://github.com/${{ github.repository }}/releases/download/observer-${{ steps.write.outputs.slug }}/the-observer-${{ steps.write.outputs.slug }}.mp3
+        run: |
+          node -e '
+            const fs = require("fs");
+            const file = `content/observer/${process.env.SLUG}.json`;
+            const edition = JSON.parse(fs.readFileSync(file, "utf8"));
+            edition.audio = { url: process.env.URL, durationSeconds: Number(process.env.DURATION) };
+            fs.writeFileSync(file, JSON.stringify(edition, null, 2) + "\n");
+          '
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: observer/${{ steps.write.outputs.slug }}
+          add-paths: content/observer/*.json
+          commit-message: "The Observer: ${{ steps.write.outputs.slug }}"
+          title: "The Observer: ${{ steps.write.outputs.title }}"
+          body: |
+            Draft edition of **The Observer** for the week of ${{ steps.write.outputs.slug }}, written by the Claude agent in `scripts/observer/run.mjs`.
+
+            Vercel posts a preview link on this PR — open `/observer/${{ steps.write.outputs.slug }}` there to read it as it will appear.
+
+            Audio: ${{ steps.upload.outcome == 'success' && 'read aloud with Kokoro and attached as a GitHub Release' || 'not generated this week (see the workflow log)' }}.
+
+            Before merging, check:
+            - [ ] Headline claims match the linked sources
+            - [ ] No view on any company's shares, and no buy/sell/hold language
+            - [ ] Figures look right against the tables on the page
+
+            Merge to publish. Close without merging to skip this week.
+          delete-branch: true

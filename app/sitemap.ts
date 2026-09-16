@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { listEditions } from "@/lib/observer";
 
 const BASE = "https://www.financeplots.com";
 
@@ -49,6 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: BASE, priority: 1.0, changeFrequency: "weekly" as const },
     { url: `${BASE}/tools`, priority: 0.9, changeFrequency: "weekly" as const },
     { url: `${BASE}/blog`, priority: 0.8, changeFrequency: "weekly" as const },
+    { url: `${BASE}/observer`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE}/map`, priority: 0.7, changeFrequency: "monthly" as const },
     { url: `${BASE}/glossary`, priority: 0.6, changeFrequency: "monthly" as const },
     { url: `${BASE}/quiz`, priority: 0.5, changeFrequency: "monthly" as const },
@@ -68,9 +70,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/es/tools/${slug}`, priority: 0.7, changeFrequency: "monthly" as const },
   ]);
 
+  // English only: the /es copies of editions are the same page with a canonical to /observer.
+  const observerPages = listEditions().map((e) => ({
+    url: `${BASE}/observer/${e.slug}`,
+    priority: 0.7,
+    changeFrequency: "yearly" as const,
+  }));
+
   return [
     ...staticPages,
     ...blogPages,
+    ...observerPages,
     ...toolPages,
   ].map((page) => ({
     url: page.url,
