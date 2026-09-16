@@ -23,7 +23,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(here, "../../content/observer");
 
 const today = new Date().toISOString().slice(0, 10);
-const log = (...a) => console.log(`[observer]`, ...a);
+const t0 = Date.now();
+const log = (...a) => console.log(`[observer ${Math.round((Date.now() - t0) / 1000)}s]`, ...a);
 
 // ── 1. Snapshot ──────────────────────────────────────────────────────────────
 
@@ -49,25 +50,35 @@ if (markets.data.length < 10 || Object.values(macro.data).flat().length < 10) {
   process.exit(1);
 }
 
-// Every URL a tool hands to Claude. Sources it cites must come from this set.
-const seenUrls = new Set();
-const remember = (items) => {
-  for (const i of items ?? []) if (i.url) seenUrls.add(i.url);
-  return items;
-};
-remember(headlines?.world);
-remember(headlines?.business);
+// Every source a tool hands to Claude gets a short ref ("s12") in place of its URL.
+// Google News URLs are ~200 random characters, and a model copying them back
+// makes small mistakes; refs can't be mistyped into a different valid link, and
+// the script alone turns them back into URLs. Claude cannot cite anything else.
+const refs = new Map();
+const remember = (items, toSource) =>
+  (items ?? []).map((item) => {
+    const ref = `s${refs.size + 1}`;
+    refs.set(ref, toSource(item));
+    const { url: _url, ...rest } = item;
+    return { ref, ...rest };
+  });
+const fromNews = (i) => ({ title: i.title, publisher: i.source, url: i.url });
+if (headlines) {
+  headlines.world = remember(headlines.world, fromNews);
+  headlines.business = remember(headlines.business, fromNews);
+}
 
 // ── 2. Tools ─────────────────────────────────────────────────────────────────
 
 const json = (v) => JSON.stringify(v, null, 1);
 let submitted = null;
+let submitAttempts = 0;
 
 const tools = [
   betaTool({
     name: "search_news",
     description:
-      "Search news published in the last 7 days (Google News). Returns up to 12 headlines with publisher, date and URL. " +
+      "Search news published in the last 7 days (Google News). Returns up to 12 headlines with publisher, date and a ref to cite. " +
       "Use it to confirm what happened, find the latest data prints (e.g. 'Japan CPI August', 'China PMI'), central bank decisions, " +
       "elections, fiscal and debt news, and trade or geopolitical events. Only headlines are returned, not article text.",
     inputSchema: {
@@ -82,12 +93,12 @@ const tools = [
       required: ["query"],
       additionalProperties: false,
     },
-    run: async ({ query, site }) => json(remember(await src.newsSearch(query, 12, site))),
+    run: async ({ query, site }) => json(remember(await src.newsSearch(query, 12, site), fromNews)),
   }),
   betaTool({
     name: "list_sec_earnings_filings",
     description:
-      "Companies that filed quarterly results with the SEC in the last 7 days (8-K, Item 2.02), with filing date, a filingId and the filing URL. " +
+      "Companies that filed quarterly results with the SEC in the last 7 days (8-K, Item 2.02), with filing date, a filingId and a ref to cite. " +
       "Mostly US-listed companies of every size, so combine it with news searches to see which results mattered. " +
       "Optional query narrows the full-text search, e.g. a company name.",
     inputSchema: {
@@ -97,8 +108,8 @@ const tools = [
     },
     run: async ({ query }) => {
       const res = await src.secEarningsFilings(7, query);
-      remember(res.filings);
-      return json(res);
+      const filings = remember(res.filings, (f) => ({ title: `${f.company}: 8-K filing`, publisher: "SEC EDGAR", url: f.url }));
+      return json({ total: res.total, filings });
     },
   }),
   betaTool({
@@ -114,8 +125,12 @@ const tools = [
     },
     run: async ({ filing_id }) => {
       const res = await src.secEarningsRelease(filing_id);
-      seenUrls.add(res.url);
-      return json(res);
+      const [cited] = remember([res], (r) => ({
+        title: r.text.split("\n").find((l) => l.length > 20 && !/^exhibit/i.test(l))?.slice(0, 140) ?? "Earnings release",
+        publisher: "SEC EDGAR",
+        url: r.url,
+      }));
+      return json(cited);
     },
   }),
   betaTool({
@@ -202,37 +217,43 @@ const tools = [
         },
         body_markdown: {
           type: "string",
-          description: "The full article in Markdown. Use ## section headings. Link news claims inline to the URLs you were given.",
+          description:
+            "The full article in Markdown. Use ## section headings. Link each news claim to its source with the ref " +
+            "the tool gave you, written as [link text](ref:s12). Never write a URL.",
         },
         sources: {
           type: "array",
-          description: "Every news article you relied on. URLs must be exactly as returned by the tools.",
-          items: {
-            type: "object",
-            properties: {
-              title: { type: "string" },
-              publisher: { type: "string" },
-              url: { type: "string" },
-            },
-            required: ["title", "publisher", "url"],
-            additionalProperties: false,
-          },
+          description: "Refs (e.g. \"s12\") of every article or filing you relied on, including ones not linked inline.",
+          items: { type: "string" },
         },
       },
       required: ["title", "dek", "mood", "regions", "watch_next_week", "body_markdown", "sources"],
       additionalProperties: false,
     },
     run: async (edition) => {
-      const unknown = edition.sources.filter((s) => !seenUrls.has(s.url));
-      const linked = [...edition.body_markdown.matchAll(/\]\((https?:[^)\s]+)\)/g)].map((m) => m[1]);
-      const unknownLinks = linked.filter((u) => !seenUrls.has(u));
-      if (unknown.length || unknownLinks.length) {
+      submitAttempts++;
+      const LINK = /\[([^\]]+)\]\(([^)\s]*)\)/g;
+      const cited = [...edition.body_markdown.matchAll(LINK)].map((m) => m[2].replace(/^ref:/, ""));
+      const unknown = [...new Set([...cited, ...edition.sources].filter((r) => !refs.has(r)))];
+
+      // First bad submission: send it back. After that, drop the bad links
+      // (keeping their text) rather than lose a finished edition.
+      if (unknown.length && submitAttempts < 2) {
+        log("submit rejected, unknown refs:", unknown.join(", "));
         return (
-          "Rejected: these URLs were not returned by any tool this session. Remove them or replace them with URLs you were given, then submit again.\n" +
-          [...new Set([...unknown.map((s) => s.url), ...unknownLinks])].join("\n")
+          "Rejected: these links are not refs returned by any tool this session. " +
+          "Replace each with a ref you were given, written as [text](ref:s12), or remove the link, then submit again.\n" +
+          unknown.join("\n")
         );
       }
-      submitted = edition;
+      if (unknown.length) log("dropping unknown refs on final submit:", unknown.join(", "));
+
+      const body = edition.body_markdown.replace(LINK, (whole, text, target) => {
+        const source = refs.get(target.replace(/^ref:/, ""));
+        return source ? `[${text}](${source.url})` : text;
+      });
+      const sourceRefs = [...new Set([...edition.sources, ...cited])].filter((r) => refs.has(r));
+      submitted = { ...edition, body_markdown: body, sources: sourceRefs.map((r) => refs.get(r)) };
       return "Edition accepted. You are done — do not call any more tools.";
     },
   }),
@@ -244,7 +265,7 @@ const SYSTEM = `You are the writer of The Observer, the weekly macro edition on 
 
 How to work:
 - Start from the snapshot in the user message. Then use the tools to find the week's most important world news — central banks, inflation and growth data, government debt and deficits, elections and policy, trade, wars and energy — and to fill gaps the snapshot leaves (Japanese, Chinese and Indian inflation prints are not in it). Also search for the week's AI news: major deals and investments, new model releases, chips and data-centre spending, and regulation. For company news, check which large companies reported results this week (list_sec_earnings_filings, plus searches limited to barrons.com), read the official figures in their SEC earnings releases, and look for major deals, mergers and corporate news. Check what people are talking about on Reddit and how the tone of news coverage moved. Aim for breadth, then choose what actually mattered.
-- Be efficient: run several searches in one turn when they are independent. Around 15-25 tool calls is usually enough.
+- Be efficient: run several searches in one turn when they are independent. Around 15-20 tool calls is usually enough.
 
 What to write (submit it with submit_edition):
 - About 1,300-1,500 words in the body, roughly a six-minute read. Sections, as ## headings: a short opening on the week in one paragraph; United States; Euro area; Asia; Debt and politics; AI and technology (exactly one paragraph: the biggest deals, model launches, investment and regulation news, and why it matters for the economy); Company news and results (one or two paragraphs: the week's most important earnings reports and corporate deals, and what they say about demand, costs and the economy); Market mood (VIX, Fear & Greed, credit spreads, what Reddit and news tone suggest); What to watch next week.
@@ -253,7 +274,7 @@ What to write (submit it with submit_edition):
 
 Rules you must follow:
 - Numbers: use only figures from the snapshot or tool results, and say when they are from (e.g. "August CPI", "Friday's close"). Never invent or estimate a figure. If a series is marked stale, either leave it out or name its date plainly.
-- News: only report events that appear in headlines returned by the tools, and link each claim inline to that headline's URL exactly as given. Headlines are short — do not add details the headline does not contain. List every article you relied on in sources.
+- News: only report events that appear in headlines returned by the tools, and link each claim inline using that headline's ref, as [text](ref:s12). Never write URLs. Headlines are short — do not add details the headline does not contain. List the refs of every article you relied on in sources.
 - Reddit posts and titles are unverified opinion. Describe them only as a mood signal ("retail investors on Reddit were focused on…"), never as fact.
 - This is commentary, not investment advice, and the site is regulated in the UK. Never recommend buying, selling or holding anything, never forecast a price or level, and never say an asset is cheap, expensive or a good opportunity. Talk about indices, rates, currencies and commodities, not individual companies' shares: do not name a listed company or ticker unless the company itself is a major macro or political news event, and then report the news without any view on its shares. The AI and technology and Company news and results sections are the exception where naming companies is normal — say who reported, announced a deal or released a model — but report only what happened: figures exactly as the company reported them in its SEC filing (and say they are company-reported), deals as announced. Never give a view on anyone's shares, valuation or prospects, do not describe share-price reactions, and do not call results good, bad, strong or disappointing — describe them against the company's own prior period or guidance instead. Barron's is paywalled: use its headlines as pointers to what mattered, not as the source of figures.
 - Be even-handed on politics: report what governments and parties did and how markets reacted, without taking sides.
@@ -290,7 +311,9 @@ const runner = client.beta.messages.toolRunner({
   // The SDK refuses non-streaming requests this large (they can outlast HTTP timeouts).
   stream: true,
   thinking: { type: "adaptive" },
-  output_config: { effort: "high" },
+  // "high" took ~35 minutes for ~26 tool calls on the first run; medium keeps the
+  // research breadth with shorter thinking between rounds.
+  output_config: { effort: "medium" },
   // If a safety classifier declines, retry server-side on Anthropic's recommended fallback model.
   betas: ["server-side-fallback-2026-07-01"],
   fallbacks: "default",
@@ -304,8 +327,10 @@ const runner = client.beta.messages.toolRunner({
 
 let usage = { input_tokens: 0, output_tokens: 0 };
 let toolCalls = 0;
+let lastMessage = null;
 for await (const stream of runner) {
   const message = await stream.finalMessage();
+  lastMessage = message;
   usage.input_tokens += message.usage.input_tokens ?? 0;
   usage.output_tokens += message.usage.output_tokens ?? 0;
   const calls = message.content.filter((b) => b.type === "tool_use");
@@ -319,7 +344,8 @@ for await (const stream of runner) {
 }
 
 if (!submitted) {
-  console.error("The agent finished without submitting an edition.");
+  const lastText = lastMessage?.content.filter((b) => b.type === "text").map((b) => b.text).join(" ");
+  console.error("The agent finished without submitting an edition.", lastMessage?.stop_reason, lastText?.slice(0, 2000));
   process.exit(1);
 }
 
