@@ -23,7 +23,7 @@ async function get(url, { headers = {}, timeoutMs = 20000 } = {}) {
 
 const round = (n, dp = 2) => (n == null || Number.isNaN(n) ? null : Number(n.toFixed(dp)));
 
-// ── FRED (public CSV, no key) ────────────────────────────────────────────────
+// ── FRED ─────────────────────────────────────────────────────────────────────
 
 /**
  * transform: "level" reports the value as published; "yoy" turns an index into
