@@ -27,7 +27,9 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      # Not `npm ci`: the lockfile drifts from package.json (Vercel installs with
+      # `npm install` too), and ci refuses to run when they disagree.
+      - run: npm install --no-audit --no-fund
 
       - name: Write edition
         id: write
