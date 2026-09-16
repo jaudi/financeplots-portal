@@ -67,13 +67,17 @@ const MAX_AGE_DAYS = { d: 14, m: 120, q: 300, a: 1000 };
 
 /** Raw observations, oldest first. */
 async function fredObservations(id, start) {
-  const apiKey = process.env.FRED_API_KEY;
+  // Trimmed: a key pasted into a secrets form easily picks up a newline or quotes.
+  const apiKey = process.env.FRED_API_KEY?.trim().replace(/^["']|["']$/g, "");
   let pairs;
   if (apiKey) {
     // The official API. The public CSV download times out from cloud runners
     // (GitHub Actions), so the workflow always sets FRED_API_KEY.
     const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(id)}&api_key=${apiKey}&file_type=json&observation_start=${start}`;
-    const json = await (await get(url)).json();
+    const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
+    const json = await res.json().catch(() => ({}));
+    // FRED explains a 400 (bad key, unknown series) in error_message.
+    if (!res.ok) throw new Error(`${res.status}: ${json.error_message ?? res.statusText}`);
     pairs = (json.observations ?? []).map((o) => [o.date, o.value]);
   } else {
     // Keyless fallback for local runs.
