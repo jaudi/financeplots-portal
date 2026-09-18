@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import { breakEven } from "@/lib/calculators";
 import {
   LineChart,
   Line,
@@ -131,28 +132,7 @@ export default function BreakEvenPage() {
 
   const calcs = useMemo(() => {
     const totalFixed = Object.values(fixed).reduce((a, b) => a + b, 0);
-    const cm = sellingPrice - variableCost;
-    const cmRatio = sellingPrice > 0 ? cm / sellingPrice : 0;
-    const bepUnits = cm > 0 ? totalFixed / cm : null;
-    const bepRevenue = bepUnits !== null ? bepUnits * sellingPrice : null;
-    const currentRevenue = currentUnits * sellingPrice;
-    const currentProfit = cm * currentUnits - totalFixed;
-    const mosUnits = bepUnits !== null ? currentUnits - bepUnits : null;
-    const mosPct =
-      bepUnits !== null && currentUnits > 0
-        ? ((currentUnits - bepUnits) / currentUnits) * 100
-        : null;
-    return {
-      totalFixed,
-      cm,
-      cmRatio,
-      bepUnits,
-      bepRevenue,
-      currentRevenue,
-      currentProfit,
-      mosUnits,
-      mosPct,
-    };
+    return breakEven(totalFixed, sellingPrice, variableCost, currentUnits);
   }, [fixed, sellingPrice, variableCost, currentUnits]);
 
   const invalid = calcs.cm <= 0;

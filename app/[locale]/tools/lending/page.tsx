@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import { buildSchedule } from "@/lib/calculators";
 import {
   AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip as PieTooltip,
@@ -11,27 +12,6 @@ import {
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-function monthlyPayment(rate: number, years: number, amount: number) {
-  const r = rate / 12;
-  const n = years * 12;
-  if (r === 0) return amount / n;
-  return (amount * r) / (1 - Math.pow(1 + r, -n));
-}
-
-function buildSchedule(rate: number, years: number, amount: number) {
-  const r = rate / 12;
-  const pmt = monthlyPayment(rate, years, amount);
-  let balance = amount;
-  const rows = [];
-  for (let i = 1; i <= years * 12; i++) {
-    const interest = balance * r;
-    const principal = pmt - interest;
-    balance = Math.max(balance - principal, 0);
-    rows.push({ period: i, payment: pmt, interest, principal, balance });
-  }
-  return rows;
-}
 
 function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: string; sub: string; color?: "blue" | "green" | "red" }) {
   const border = color === "green" ? "border-l-green-500" : color === "red" ? "border-l-red-500" : "border-l-blue-500";

@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import { compoundGrowth } from "@/lib/calculators";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
@@ -65,24 +66,8 @@ export default function CompoundInterestPage() {
   const annualRate = PRESETS[preset].rate ?? customRate;
 
   const { rows, finalValue, totalInvested, totalInterest, returnMultiple, chartData } = useMemo(() => {
-    const rMonthly = annualRate / 100 / 12;
-    let balance = initialCapital;
-    let totalContrib = initialCapital;
-    let totalInt = 0;
-    const rows: { year: number; portfolioValue: number; totalContributed: number; interestEarned: number }[] = [];
-
-    for (let m = 1; m <= years * 12; m++) {
-      const interest = balance * rMonthly;
-      balance = balance + interest + monthlyContribution;
-      totalInt += interest;
-      totalContrib += monthlyContribution;
-      if (m % 12 === 0) {
-        rows.push({ year: m / 12, portfolioValue: Math.round(balance), totalContributed: Math.round(totalContrib), interestEarned: Math.round(totalInt) });
-      }
-    }
-
-    const totalInvested = initialCapital + monthlyContribution * years * 12;
-    const returnMultiple = totalInvested > 0 ? balance / totalInvested : 1;
+    const { rows, finalValue, totalInvested, totalInterest, returnMultiple } =
+      compoundGrowth(initialCapital, monthlyContribution, years, annualRate);
 
     const chartData = rows.map(r => ({
       year: r.year,
@@ -91,7 +76,7 @@ export default function CompoundInterestPage() {
       "Interest": r.interestEarned,
     }));
 
-    return { rows, finalValue: Math.round(balance), totalInvested, totalInterest: Math.round(totalInt), returnMultiple, chartData };
+    return { rows, finalValue, totalInvested, totalInterest, returnMultiple, chartData };
   }, [initialCapital, monthlyContribution, years, annualRate]);
 
   const handleExportPdf = useCallback(async () => {

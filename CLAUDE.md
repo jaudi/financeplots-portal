@@ -13,7 +13,7 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 
 - `app/[locale]/tools/*` — 17 native tool routes (calculators, a stock screener, dashboards). No iframes; the old Streamlit embed is gone.
 - `app/api/*` — server routes for data the client can't fetch directly (API keys, CORS)
-- `lib/` — shared server-side data access (`fred.ts`, `universe.ts`) and `stock-metrics.ts`, the stock screener's metric definitions
+- `lib/` — shared server-side data access (`fred.ts`, `universe.ts`, `markets.ts`), `stock-metrics.ts` (the stock screener's metric definitions), `calculators.ts` (calculator maths shared by the pages and the MCP server) and `mcp-server.ts`
 - `messages/en.json`, `messages/es.json` — all UI copy, including the `/tools` grid entries
 - `app/sitemap.ts` — tool slugs are listed in one array and expanded per locale
 
@@ -64,6 +64,16 @@ Units follow the pipeline: `%` metrics are percentage points (`roe: 16.5` is
 16.5%), `deuda_patrimonio` is a percentage, and prices are in the listing
 currency. The growth metrics compare the latest year with the average of the
 prior reported years — they are not year-on-year.
+
+## MCP server
+
+`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `us_macro_indicators`, `market_snapshot`, `screener_metrics`, `screen_stocks`.
+
+- The calculators call the same functions as the tool pages (`lib/calculators.ts`), so the MCP and the site can't give different answers for the same inputs. Change the formula there, not in a page.
+- `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities.
+- No tool calls the Claude API — a public endpoint that spends `ANTHROPIC_API_KEY` per call would be an open bill. Yahoo quotes are cached 60 s (`lib/markets.ts`), FRED 24 h.
+
+Test locally with `npx @modelcontextprotocol/inspector` pointed at `http://localhost:3000/api/mcp`.
 
 ## AI
 
