@@ -47,13 +47,16 @@ interface Props {
   epsValue: number;
   evValue: number;
   avgValuation: number;
+  netDebt: number;
+  enterpriseAvg: number;
   dcfRows: DCFRow[];
 }
 
+// Values passed in are equity values (enterprise value minus net debt).
 export default function ValuationPDF({
   companyName, revenue, ebitda, netIncome, fcf,
   growthRate, discountRate, terminalGrowth, ebitdaMultiple, peRatio,
-  dcfValue, epsValue, evValue, avgValuation, dcfRows,
+  dcfValue, epsValue, evValue, avgValuation, netDebt, enterpriseAvg, dcfRows,
 }: Props) {
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const ebitdaMargin = revenue > 0 ? (ebitda / revenue) * 100 : 0;
@@ -78,7 +81,7 @@ export default function ValuationPDF({
           <View style={[styles.kpiCard, styles.kpiCardGold]}>
             <Text style={styles.kpiLabel}>Average Valuation</Text>
             <Text style={styles.kpiValue}>£{fmt(avgValuation)}</Text>
-            <Text style={styles.kpiSub}>3-method average</Text>
+            <Text style={styles.kpiSub}>4-method average, equity value</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>DCF Value</Text>
@@ -109,6 +112,8 @@ export default function ValuationPDF({
               ["EBITDA", `£${fmt(ebitda)} (${fmtM(ebitdaMargin)}%)`],
               ["Net Income", `£${fmt(netIncome)} (${fmtM(netMargin)}%)`],
               ["Free Cash Flow", `£${fmt(fcf)}`],
+              ["Net Debt (debt − cash)", `£${fmt(netDebt)}`],
+              ["Enterprise Value (avg)", `£${fmt(enterpriseAvg)}`],
             ].map(([label, value], idx) => (
               <View key={label} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
                 <Text style={[styles.tableCell, { flex: 2 }]}>{label}</Text>

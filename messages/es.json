@@ -1155,5 +1155,91 @@
     "successMsg": "✓ ¡Apuntado! Te avisaremos pronto.",
     "errorMsg": "Algo salió mal. Inténtalo de nuevo.",
     "label": "Mantente al día"
+  },
+  "mcp": {
+    "metaTitle": "Usa FinancePlots en Claude — Herramientas financieras gratis para tu asistente de IA",
+    "metaDescription": "Conecta FinancePlots a Claude y otros asistentes de IA: calculadoras de préstamos, valoración y punto de equilibrio, datos macro de EE. UU., mercados y un filtro de acciones. Gratis, sin registro.",
+    "label": "Úsalo con IA",
+    "title": "FinancePlots, dentro de tu asistente de IA",
+    "subtitle": "Conéctalo una vez y pide a Claude que use nuestras calculadoras y datos de mercado por ti, en lenguaje normal. Gratis y sin cuenta.",
+    "urlLabel": "URL del conector",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "stepsTitle": "Conéctalo en Claude (web y app de escritorio)",
+    "steps": [
+      "Abre Claude y ve a Settings → Connectors.",
+      "Pulsa «Add custom connector».",
+      "Ponle de nombre FinancePlots, pega la URL de arriba y pulsa Add.",
+      "En un chat nuevo, abre el menú de herramientas, activa FinancePlots y pregunta."
+    ],
+    "otherTitle": "Otras apps",
+    "otherClaudeCode": "Claude Code: ejecuta esto en una terminal.",
+    "otherGeneric": "La mayoría de apps de IA que aceptan conectores personalizados: pega la misma URL donde pidan la dirección del servidor.",
+    "whatTitle": "Qué puedes preguntar",
+    "exampleLabel": "Prueba",
+    "groups": [
+      {
+        "icon": "🧮",
+        "title": "Calculadoras",
+        "items": [
+          {
+            "name": "Préstamos e hipotecas",
+            "desc": "Cuota mensual, intereses totales y cuadro año a año."
+          },
+          {
+            "name": "Interés compuesto",
+            "desc": "Cómo crece tu ahorro con una aportación mensual."
+          },
+          {
+            "name": "Punto de equilibrio",
+            "desc": "Unidades y ventas necesarias para cubrir tus costes."
+          },
+          {
+            "name": "Valoración de empresas",
+            "desc": "Valoración por flujos de caja y múltiplos del sector, el método de Damodaran para empresas jóvenes con pérdidas y el valor que implica una ronda de financiación."
+          }
+        ],
+        "example": "¿Qué cuota pagaría por una hipoteca de 250.000 € al 4,5 % a 25 años?"
+      },
+      {
+        "icon": "📡",
+        "title": "Mercados y economía",
+        "items": [
+          {
+            "name": "Economía de EE. UU.",
+            "desc": "Crecimiento, inflación, paro y tipos de interés de la Reserva Federal."
+          },
+          {
+            "name": "Mercados hoy",
+            "desc": "Principales índices bursátiles, divisas, oro, petróleo y bitcoin."
+          }
+        ],
+        "example": "¿Cómo está la economía de EE. UU. ahora mismo?"
+      },
+      {
+        "icon": "🔎",
+        "title": "Filtro de acciones",
+        "items": [
+          {
+            "name": "S&P 500, Nasdaq-100 e IBEX 35",
+            "desc": "Filtra por las medidas que elijas, como PER, rentabilidad sobre fondos propios, deuda o crecimiento. Los resultados salen por orden alfabético."
+          }
+        ],
+        "example": "Muéstrame las empresas del IBEX 35 con rentabilidad sobre fondos propios superior al 15 % y PER inferior a 15."
+      }
+    ],
+    "whatIsTitle": "¿Qué es un conector?",
+    "whatIsBody": "Los conectores (basados en un estándar abierto llamado MCP) permiten que un asistente de IA use herramientas externas. Con FinancePlots conectado, Claude hace las cuentas con las mismas fórmulas que esta web en lugar de estimarlas, y te dice qué herramienta ha usado.",
+    "notesTitle": "Conviene saber",
+    "notes": [
+      "Gratis, sin cuenta ni clave.",
+      "El conector no guarda tus preguntas ni las cifras que envías.",
+      "Las cifras son para aprender y planificar, no son asesoramiento de inversión. El filtro de acciones aplica tus criterios; nunca ordena ni recomienda valores."
+    ],
+    "ctaTools": "¿Prefieres hacer clic? Usa las herramientas de la web →",
+    "bannerTitle": "Novedad: usa FinancePlots dentro de Claude",
+    "bannerDesc": "Conecta nuestras calculadoras y datos de mercado a tu asistente de IA y pregunta con tus palabras.",
+    "bannerCta": "Cómo conectarlo →",
+    "navLabel": "Usar en Claude"
   }
 }

@@ -53,6 +53,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/observer`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE}/map`, priority: 0.7, changeFrequency: "monthly" as const },
     { url: `${BASE}/glossary`, priority: 0.6, changeFrequency: "monthly" as const },
+    { url: `${BASE}/mcp`, priority: 0.7, changeFrequency: "monthly" as const },
+    { url: `${BASE}/es/mcp`, priority: 0.6, changeFrequency: "monthly" as const },
     { url: `${BASE}/quiz`, priority: 0.5, changeFrequency: "monthly" as const },
     { url: `${BASE}/about`, priority: 0.6, changeFrequency: "yearly" as const },
     { url: `${BASE}/es`, priority: 0.9, changeFrequency: "weekly" as const },

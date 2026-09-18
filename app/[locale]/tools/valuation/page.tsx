@@ -33,8 +33,8 @@ function KpiCard({ label, value, sub, color = "blue" }: {
   );
 }
 
-function NumInput({ label, value, onChange, prefix = "£", step = 1000 }: {
-  label: string; value: number; onChange: (v: number) => void; prefix?: string; step?: number;
+function NumInput({ label, value, onChange, prefix = "£", step = 1000, min = 0 }: {
+  label: string; value: number; onChange: (v: number) => void; prefix?: string; step?: number; min?: number;
 }) {
   return (
     <div className="flex flex-col gap-1">
@@ -43,7 +43,7 @@ function NumInput({ label, value, onChange, prefix = "£", step = 1000 }: {
         {prefix && <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>}
         <input
           type="number"
-          min={0}
+          min={min}
           step={step}
           value={value}
           onChange={e => onChange(parseFloat(e.target.value) || 0)}
@@ -82,6 +82,7 @@ export default function ValuationPage() {
   const [ebitda,         setEbitda]         = useState(1_000_000);
   const [netIncome,      setNetIncome]      = useState(700_000);
   const [fcf,            setFcf]            = useState(800_000);
+  const [netDebt,        setNetDebt]        = useState(0);
   const [growthRate,     setGrowthRate]     = useState(10);
   const [discountRate,   setDiscountRate]   = useState(12);
   const [terminalGrowth, setTerminalGrowth] = useState(2.5);
@@ -100,14 +101,24 @@ export default function ValuationPage() {
     setPeRatio(parseFloat(ind.pe.toFixed(1)));
   }, []);
 
-  const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation } = useMemo(() => {
-    const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation } = valuation({
+  // Every figure on the page is an equity value (what the shares are worth);
+  // the enterprise-value average is shown alongside for reference.
+  const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation, enterpriseAvg } = useMemo(() => {
+    const { dcfRows, equity, enterprise } = valuation({
       revenue, ebitda, netIncome, fcf,
       growthRatePct: growthRate, discountRatePct: discountRate, terminalGrowthPct: terminalGrowth,
-      ebitdaMultiple, evSalesMultiple, peRatio,
+      ebitdaMultiple, evSalesMultiple, peRatio, netDebt,
     });
-    return { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation };
-  }, [fcf, growthRate, discountRate, terminalGrowth, netIncome, peRatio, ebitda, ebitdaMultiple, revenue, evSalesMultiple]);
+    return {
+      dcfRows,
+      dcfValue: equity.dcf,
+      epsValue: equity.pe,
+      evValue: equity.evEbitda,
+      evSalesValue: equity.evSales,
+      avgValuation: equity.average,
+      enterpriseAvg: enterprise.average,
+    };
+  }, [fcf, growthRate, discountRate, terminalGrowth, netIncome, peRatio, ebitda, ebitdaMultiple, revenue, evSalesMultiple, netDebt]);
 
   const ebitdaMargin = revenue > 0 ? (ebitda   / revenue) * 100 : 0;
   const netMargin    = revenue > 0 ? (netIncome / revenue) * 100 : 0;
@@ -148,6 +159,8 @@ export default function ValuationPage() {
           epsValue={epsValue}
           evValue={evValue}
           avgValuation={avgValuation}
+          netDebt={netDebt}
+          enterpriseAvg={enterpriseAvg}
           dcfRows={dcfRows}
         />
       ).toBlob();
@@ -160,7 +173,7 @@ export default function ValuationPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [companyName, revenue, ebitda, netIncome, fcf, growthRate, discountRate, terminalGrowth, ebitdaMultiple, peRatio, dcfValue, epsValue, evValue, avgValuation, dcfRows]);
+  }, [companyName, revenue, ebitda, netIncome, fcf, growthRate, discountRate, terminalGrowth, ebitdaMultiple, peRatio, dcfValue, epsValue, evValue, avgValuation, netDebt, enterpriseAvg, dcfRows]);
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -258,6 +271,8 @@ export default function ValuationPage() {
                     <NumInput label={t("labelEBITDA")}    value={ebitda}     onChange={setEbitda}     step={50_000}  />
                     <NumInput label={t("labelNetIncome")} value={netIncome}  onChange={setNetIncome}  step={50_000}  />
                     <NumInput label={t("labelFCF")}       value={fcf}        onChange={setFcf}        step={50_000}  />
+                    <NumInput label="Net Debt (debt − cash)" value={netDebt} onChange={setNetDebt} step={50_000} min={-1e15} />
+                    <p className="text-xs text-gray-500 -mt-1">Negative if the company holds more cash than debt.</p>
                   </div>
                   <div className="mt-3 pt-3 border-t border-gray-800 space-y-1 text-xs text-gray-400">
                     <div className="flex justify-between"><span>EBITDA Margin</span><span className="text-white font-semibold">{fmtM(ebitdaMargin)}%</span></div>
@@ -310,6 +325,10 @@ export default function ValuationPage() {
                 <KpiCard label="EV/Revenue" value={`£${fmt(evSalesValue)}`} sub={`${fmtX(evSalesMultiple)}×`}  color="blue"   />
                 <KpiCard label="P/E"        value={`£${fmt(epsValue)}`}     sub={`${fmtX(peRatio)}× earnings`} color="green"  />
               </div>
+              <p className="text-xs text-gray-500 -mt-3">
+                All figures are equity value — what the shares are worth. Including debt, the business
+                (enterprise value) averages £{fmt(enterpriseAvg)}; net debt £{fmt(netDebt)}.
+              </p>
 
               {/* Valuation comparison chart */}
               <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">

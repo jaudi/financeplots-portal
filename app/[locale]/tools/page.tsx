@@ -30,6 +30,7 @@ function ToolCard({ tool }: { tool: { icon: string; name: string; desc: string; 
 
 export default function ToolsPage() {
   const t = useTranslations("tools");
+  const tm = useTranslations("mcp");
   const stockTools = t.raw("stockTools") as { icon: string; name: string; desc: string; href: string }[];
   const fpaTools = t.raw("fpaTools") as { icon: string; name: string; desc: string; href: string }[];
 
@@ -106,6 +107,19 @@ export default function ToolsPage() {
             </div>
           </Link>
         </div>
+
+        {/* The same tools, from inside an AI assistant */}
+        <Link
+          href="/mcp"
+          className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 bg-[#0d1426] border border-blue-600/30 hover:border-blue-500 rounded-2xl px-6 py-5 mb-12 transition group"
+        >
+          <span className="text-3xl shrink-0">🤖</span>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-white font-bold group-hover:text-blue-300 transition">{tm("bannerTitle")}</h2>
+            <p className="text-gray-500 text-sm">{tm("bannerDesc")}</p>
+          </div>
+          <span className="text-blue-400 text-sm font-semibold shrink-0">{tm("bannerCta")}</span>
+        </Link>
 
         {/* Stock & Market */}
         <div className="mb-12">

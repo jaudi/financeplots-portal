@@ -10,6 +10,7 @@ export default function Navbar() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("nav");
+  const tm = useTranslations("mcp");
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<"fpa" | "market" | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -132,6 +133,16 @@ export default function Navbar() {
                             📖 {t("glossary")}
                           </Link>
                           <Link
+                            href="/mcp"
+                            className={`flex items-center px-3 py-2 rounded-lg text-sm transition ${
+                              pathname?.endsWith("/mcp")
+                                ? "text-white bg-blue-600/15"
+                                : "text-gray-300 hover:text-white hover:bg-white/5"
+                            }`}
+                          >
+                            🤖 {tm("navLabel")}
+                          </Link>
+                          <Link
                             href="/tools"
                             className="flex items-center justify-center px-3 py-2 rounded-lg text-xs text-blue-400 hover:text-blue-300 transition"
                           >
@@ -231,6 +242,12 @@ export default function Navbar() {
             className="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
           >
             📖 {t("glossary")}
+          </Link>
+          <Link
+            href="/mcp"
+            className="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
+          >
+            🤖 {tm("navLabel")}
           </Link>
 
           <div className="border-t border-gray-800 mt-3 pt-3 flex flex-col gap-1">

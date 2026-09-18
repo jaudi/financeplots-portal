@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, valuation } from "@/lib/calculators";
+import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
 import { METRIC_KEYS, METRICS, type MetricKey } from "@/lib/stock-metrics";
@@ -18,7 +18,7 @@ import { getUniverse, UNIVERSE_SCREENS } from "@/lib/universe";
 const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
-Calculators: loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples).
+Calculators: loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
 Data: us_macro_indicators (FRED), market_snapshot (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
@@ -143,14 +143,23 @@ export function createFinancePlotsServer() {
     {
       title: "Industry valuation multiples",
       description:
-        "Average EV/EBITDA, EV/Sales and P/E multiples by industry (Damodaran, January 2026). Use an id with business_valuation.",
+        "Industry averages by industry (Damodaran, January 2026): EV/EBITDA, EV/Sales and forward P/E multiples, plus pre-tax operating margin, sales-to-invested-capital and cost of capital. Use an id with business_valuation or startup_valuation.",
       inputSchema: {},
       annotations: readOnly,
     },
     async () =>
       json({
-        source: "Aswath Damodaran, NYU Stern — industry averages, January 2026",
-        industries: INDUSTRIES.map((i) => ({ id: i.id, label: i.label, ev_ebitda: i.ebitda, ev_sales: i.evSales, pe: i.pe })),
+        source: "Aswath Damodaran, NYU Stern — US industry averages, January 2026",
+        industries: INDUSTRIES.map((i) => ({
+          id: i.id,
+          label: i.label,
+          ev_ebitda: i.ebitda,
+          ev_sales: i.evSales,
+          pe: i.pe,
+          operating_margin_pct: i.opMargin,
+          sales_to_capital: i.salesToCapital,
+          cost_of_capital_pct: i.costOfCapital,
+        })),
       }),
   );
 
@@ -159,7 +168,7 @@ export function createFinancePlotsServer() {
     {
       title: "Business valuation (DCF + multiples)",
       description:
-        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. Multiples come from `industry` (see industry_multiples) unless given explicitly. For planning and education; not a fairness opinion.",
+        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. Multiples come from `industry` (see industry_multiples) unless given explicitly. Needs positive profits and cash flow; for a loss-making or early-stage company use startup_valuation. For planning and education; not a fairness opinion.",
       inputSchema: {
         revenue: z.number().min(0).describe("Annual revenue"),
         ebitda: z.number().describe("Annual EBITDA"),
@@ -172,6 +181,7 @@ export function createFinancePlotsServer() {
         ev_ebitda_multiple: z.number().min(0).optional().describe("Overrides the industry EV/EBITDA multiple"),
         ev_sales_multiple: z.number().min(0).optional().describe("Overrides the industry EV/Sales multiple"),
         pe_ratio: z.number().min(0).optional().describe("Overrides the industry P/E"),
+        net_debt: z.number().default(0).describe("Debt minus cash; negative if the company holds more cash than debt"),
       },
       annotations: readOnly,
     },
@@ -195,17 +205,185 @@ export function createFinancePlotsServer() {
         ebitdaMultiple,
         evSalesMultiple,
         peRatio,
+        netDebt: a.net_debt,
       });
+      const byMethod = (m: typeof r.equity) => ({ dcf: m.dcf, ev_ebitda: m.evEbitda, ev_sales: m.evSales, pe: m.pe, average: m.average });
       return json({
-        methods: {
-          dcf: r.dcfValue,
-          ev_ebitda: r.evValue,
-          ev_sales: r.evSalesValue,
-          pe: r.epsValue,
-        },
-        average: r.avgValuation,
+        equity_value: byMethod(r.equity),
+        enterprise_value: byMethod(r.enterprise),
+        net_debt: a.net_debt,
         multiples_used: { ev_ebitda: ebitdaMultiple, ev_sales: evSalesMultiple, pe: peRatio, industry: ind?.label ?? null },
         dcf_detail: { years: r.dcfRows, pv_of_terminal_value: r.pvTerminal },
+        tool_page: `${SITE}/tools/valuation`,
+      });
+    },
+  );
+
+  server.registerTool(
+    "startup_valuation",
+    {
+      title: "Startup valuation (Damodaran DCF, revenue multiple, funding round, runway)",
+      description:
+        "Values a young, early-stage or loss-making company. Four parts, each computed only when its inputs are given — pass whatever is known: " +
+        "(1) dcf — Aswath Damodaran's intrinsic valuation for young companies: 10 years of revenue growth (the rate given for years 1–5, stepping down to terminal growth by year 10), an operating margin moving from today's to a mature target, reinvestment set by the sales-to-capital ratio, tax losses carried forward, a cost of capital falling to a mature level, and a probability that the business fails before maturing. Needs revenue, revenue_growth_pct and current_operating_margin_pct; target margin, sales-to-capital and cost of capital default to the `industry` averages (see industry_multiples). For a young firm the initial cost of capital is usually set above the industry average. " +
+        "(2) revenue_multiple — revenue × EV/Sales from `industry` or `ev_sales_multiple`, plus net cash, with an optional private-company discount. " +
+        "(3) funding_round — the post-money valuation implied by the latest round: price_per_share × shares_outstanding, or investment ÷ stake_pct. That is a price paid for preferred shares with investor protections, not an intrinsic value, and usually overstates what an ordinary share is worth. " +
+        "(4) runway — months of cash left: cash ÷ annual_burn.",
+      inputSchema: {
+        revenue: z.number().positive().optional().describe("Latest annual revenue (DCF and revenue multiple)"),
+        revenue_growth_pct: z.number().min(-50).max(300).optional().describe("DCF: annual revenue growth for years 1–5, percent"),
+        current_operating_margin_pct: z.number().min(-1000).max(100).optional().describe("DCF: today's operating (EBIT) margin, percent; negative if loss-making"),
+        industry: z.enum(INDUSTRIES.map((i) => i.id) as [string, ...string[]]).optional().describe("Industry id: defaults for the DCF inputs and the EV/Sales multiple"),
+        target_operating_margin_pct: z.number().min(-50).max(100).optional().describe("DCF: mature operating margin; defaults to the industry's"),
+        years_to_target_margin: z.number().int().min(1).max(10).default(5).describe("DCF: year by which the target margin is reached"),
+        sales_to_capital: z.number().positive().optional().describe("DCF: revenue per unit of capital invested; defaults to the industry's"),
+        initial_cost_of_capital_pct: z.number().min(0).max(50).optional().describe("DCF: cost of capital for years 1–5, percent; defaults to the mature one"),
+        mature_cost_of_capital_pct: z.number().min(0).max(30).optional().describe("DCF: cost of capital from year 10 on, percent; defaults to the industry's"),
+        terminal_growth_pct: z.number().min(-5).max(10).default(2.5).describe("DCF: growth forever after year 10, percent; must be below the mature cost of capital"),
+        tax_rate_pct: z.number().min(0).max(60).default(25).describe("DCF: marginal tax rate, percent"),
+        net_operating_loss: z.number().min(0).default(0).describe("DCF: tax losses already carried forward"),
+        failure_probability_pct: z.number().min(0).max(100).default(0).describe("DCF: chance the business fails before maturing, percent"),
+        failure_proceeds: z.number().min(0).default(0).describe("DCF: amount recovered if it fails"),
+        options_value: z.number().min(0).default(0).describe("DCF: value of employee options outstanding, subtracted from equity"),
+        ev_sales_multiple: z.number().min(0).optional().describe("Revenue multiple: overrides the industry EV/Sales"),
+        private_discount_pct: z.number().min(0).max(90).optional().describe("Revenue multiple: optional discount for a private, illiquid company, percent. Nothing is applied unless given."),
+        net_cash: z.number().default(0).describe("Cash minus debt (negative if net debt), added to reach equity value in the DCF and revenue multiple"),
+        price_per_share: z.number().positive().optional().describe("Funding round: price paid per share"),
+        shares_outstanding: z.number().positive().optional().describe("Shares in issue after the round (fully diluted if known); also gives the DCF a value per share"),
+        investment: z.number().positive().optional().describe("Funding round: amount raised"),
+        stake_pct: z.number().gt(0).max(100).optional().describe("Funding round: percentage of the company the round bought, used with investment"),
+        cash: z.number().min(0).optional().describe("Runway: cash in the bank"),
+        annual_burn: z.number().positive().optional().describe("Runway: cash used per year (net outflow)"),
+      },
+      annotations: readOnly,
+    },
+    async (a) => {
+      const ind = INDUSTRIES.find((i) => i.id === a.industry);
+      const skipped: string[] = [];
+      const round0 = (n: number) => Math.round(n);
+
+      // (1) Damodaran DCF
+      let dcf: Record<string, unknown> | null = null;
+      const wantsDcf = a.revenue_growth_pct !== undefined || a.current_operating_margin_pct !== undefined;
+      if (wantsDcf) {
+        const target = a.target_operating_margin_pct ?? ind?.opMargin;
+        const salesToCapital = a.sales_to_capital ?? ind?.salesToCapital;
+        const mature = a.mature_cost_of_capital_pct ?? ind?.costOfCapital;
+        const initial = a.initial_cost_of_capital_pct ?? mature;
+        if (a.revenue === undefined || a.revenue_growth_pct === undefined || a.current_operating_margin_pct === undefined) {
+          skipped.push("dcf: needs revenue, revenue_growth_pct and current_operating_margin_pct.");
+        } else if (target === undefined || salesToCapital === undefined || mature === undefined || initial === undefined) {
+          skipped.push("dcf: give an `industry`, or target_operating_margin_pct, sales_to_capital and mature_cost_of_capital_pct.");
+        } else if (a.terminal_growth_pct >= mature) {
+          skipped.push("dcf: terminal_growth_pct must be lower than the mature cost of capital.");
+        } else {
+          const r = youngCompanyDcf({
+            revenue: a.revenue,
+            revenueGrowthPct: a.revenue_growth_pct,
+            currentMarginPct: a.current_operating_margin_pct,
+            targetMarginPct: target,
+            yearsToTargetMargin: a.years_to_target_margin,
+            salesToCapital,
+            initialCostOfCapitalPct: initial,
+            matureCostOfCapitalPct: mature,
+            terminalGrowthPct: a.terminal_growth_pct,
+            taxRatePct: a.tax_rate_pct,
+            netOperatingLoss: a.net_operating_loss,
+            failureProbabilityPct: a.failure_probability_pct,
+            failureProceeds: a.failure_proceeds,
+            netCash: a.net_cash,
+            optionsValue: a.options_value,
+          });
+          dcf = {
+            assumptions: {
+              industry: ind?.label ?? null,
+              target_operating_margin_pct: target,
+              sales_to_capital: salesToCapital,
+              initial_cost_of_capital_pct: initial,
+              mature_cost_of_capital_pct: mature,
+              terminal_growth_pct: a.terminal_growth_pct,
+              tax_rate_pct: a.tax_rate_pct,
+              failure_probability_pct: a.failure_probability_pct,
+            },
+            years: r.years.map((y) => ({
+              year: y.year,
+              growth_pct: round2(y.growthPct),
+              revenue: round0(y.revenue),
+              operating_margin_pct: round2(y.marginPct),
+              ebit: round0(y.ebit),
+              tax: round0(y.tax),
+              reinvestment: round0(y.reinvestment),
+              fcff: round0(y.fcff),
+              cost_of_capital_pct: round2(y.costOfCapitalPct),
+              present_value: round0(y.pv),
+            })),
+            pv_of_10_years_cash_flows: round0(r.pvOfCashFlows),
+            terminal_value: round0(r.terminalValue),
+            pv_of_terminal_value: round0(r.pvTerminal),
+            value_if_it_survives: round0(r.goingConcern),
+            value_after_failure_risk: round0(r.operatingValue),
+            equity_value: round0(r.equityValue),
+            ...(a.shares_outstanding !== undefined && {
+              value_per_share: Math.round((r.equityValue / a.shares_outstanding) * 10000) / 10000,
+            }),
+          };
+        }
+      }
+
+      // (2)–(4) revenue multiple, funding round, runway
+      const evSalesMultiple = a.ev_sales_multiple ?? ind?.evSales;
+      const s = startupValuation({
+        pricePerShare: a.price_per_share,
+        sharesOutstanding: a.shares_outstanding,
+        investment: a.investment,
+        stakePct: a.stake_pct,
+        revenue: a.revenue,
+        evSalesMultiple,
+        netCash: a.net_cash,
+        privateDiscountPct: a.private_discount_pct,
+        cash: a.cash,
+        annualBurn: a.annual_burn,
+      });
+
+      if (!dcf && !s.round && !s.revenueMultiple && s.runwayMonths === null) {
+        return error(
+          [
+            "Give at least one set of inputs:",
+            "dcf — revenue, revenue_growth_pct, current_operating_margin_pct and an industry;",
+            "revenue multiple — revenue plus industry or ev_sales_multiple;",
+            "funding round — price_per_share + shares_outstanding, or investment + stake_pct;",
+            "runway — cash + annual_burn.",
+            ...skipped,
+          ].join(" "),
+        );
+      }
+
+      return json({
+        ...(dcf && { dcf }),
+        ...(s.revenueMultiple && {
+          revenue_multiple: {
+            ev_sales_multiple: evSalesMultiple,
+            industry: ind?.label ?? null,
+            enterprise_value: round0(s.revenueMultiple.enterpriseValue),
+            equity_value: round0(s.revenueMultiple.equityValue),
+            private_discount_pct: a.private_discount_pct ?? 0,
+            equity_value_after_discount: round0(s.revenueMultiple.afterDiscount),
+          },
+        }),
+        ...(s.round && {
+          funding_round: {
+            post_money: round0(s.round.postMoney),
+            pre_money: s.round.preMoney === null ? null : round0(s.round.preMoney),
+            basis: s.round.basis,
+          },
+        }),
+        ...(s.runwayMonths !== null && { runway_months: Math.round(s.runwayMonths * 10) / 10 }),
+        ...(skipped.length > 0 && { skipped }),
+        notes: [
+          "DCF method: A. Damodaran, 'Valuing Young, Start-up and Growth Companies' (2009). Industry inputs are US averages for listed companies, January 2026.",
+          "The DCF is only as good as its growth, margin and failure assumptions; small changes move the value a lot.",
+          "A funding-round price is what investors paid for preferred shares, which usually carry a liquidation preference; ordinary shares are normally worth less.",
+        ],
         tool_page: `${SITE}/tools/valuation`,
       });
     },

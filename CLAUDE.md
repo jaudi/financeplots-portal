@@ -67,11 +67,14 @@ prior reported years — they are not year-on-year.
 
 ## MCP server
 
-`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `us_macro_indicators`, `market_snapshot`, `screener_metrics`, `screen_stocks`.
+`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `startup_valuation`, `us_macro_indicators`, `market_snapshot`, `screener_metrics`, `screen_stocks`.
 
 - The calculators call the same functions as the tool pages (`lib/calculators.ts`), so the MCP and the site can't give different answers for the same inputs. Change the formula there, not in a page.
 - `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities.
+- `INDUSTRIES` in `lib/calculators.ts` is Damodaran data (January 2026): the valuation page uses the multiples, `startup_valuation` (its Damodaran DCF) the margin, sales-to-capital and cost of capital. Damodaran republishes every January — refresh all six columns together.
 - No tool calls the Claude API — a public endpoint that spends `ANTHROPIC_API_KEY` per call would be an open bill. Yahoo quotes are cached 60 s (`lib/markets.ts`), FRED 24 h.
+
+`/mcp` (`app/[locale]/mcp/page.tsx`, copy in the `mcp` message namespace) tells people how to connect it. Its tool list is written by hand — update it when a tool is added or removed.
 
 Test locally with `npx @modelcontextprotocol/inspector` pointed at `http://localhost:3000/api/mcp`.
 

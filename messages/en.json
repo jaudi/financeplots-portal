@@ -1175,5 +1175,91 @@
     "successMsg": "✓ You're in! We'll be in touch.",
     "errorMsg": "Something went wrong. Please try again.",
     "label": "Stay updated"
+  },
+  "mcp": {
+    "metaTitle": "Use FinancePlots in Claude — Free Finance Tools for Your AI Assistant",
+    "metaDescription": "Connect FinancePlots to Claude and other AI assistants: loan, valuation and break-even calculators, US macro data, market quotes and a stock screener. Free, no signup.",
+    "label": "Use with AI",
+    "title": "FinancePlots, inside your AI assistant",
+    "subtitle": "Connect once, then ask Claude to run our calculators and pull market data for you, in plain English. Free, no account needed.",
+    "urlLabel": "Connector URL",
+    "copy": "Copy",
+    "copied": "Copied",
+    "stepsTitle": "Connect in Claude (web and desktop app)",
+    "steps": [
+      "Open Claude and go to Settings → Connectors.",
+      "Click “Add custom connector”.",
+      "Name it FinancePlots, paste the URL above and click Add.",
+      "In a new chat, open the tools menu, switch FinancePlots on and ask away."
+    ],
+    "otherTitle": "Other apps",
+    "otherClaudeCode": "Claude Code: run this in a terminal.",
+    "otherGeneric": "Most AI apps that accept custom connectors: paste the same URL where they ask for a server address.",
+    "whatTitle": "What you can ask",
+    "exampleLabel": "Try",
+    "groups": [
+      {
+        "icon": "🧮",
+        "title": "Calculators",
+        "items": [
+          {
+            "name": "Loans and mortgages",
+            "desc": "Monthly payment, total interest and a year-by-year schedule."
+          },
+          {
+            "name": "Compound interest",
+            "desc": "How savings grow with a monthly contribution."
+          },
+          {
+            "name": "Break-even",
+            "desc": "Units and revenue needed to cover your costs."
+          },
+          {
+            "name": "Business valuation",
+            "desc": "Cash-flow and industry-multiple valuations, plus Damodaran’s method for young, loss-making companies and the value implied by a funding round."
+          }
+        ],
+        "example": "What’s the monthly payment on a £250,000 mortgage at 4.5% over 25 years?"
+      },
+      {
+        "icon": "📡",
+        "title": "Market and economy",
+        "items": [
+          {
+            "name": "US economy",
+            "desc": "Growth, inflation, unemployment and interest rates from the Federal Reserve."
+          },
+          {
+            "name": "Markets today",
+            "desc": "Major stock indices, currencies, gold, oil and Bitcoin."
+          }
+        ],
+        "example": "How is the US economy doing right now?"
+      },
+      {
+        "icon": "🔎",
+        "title": "Stock screener",
+        "items": [
+          {
+            "name": "S&P 500, Nasdaq-100 and IBEX 35",
+            "desc": "Filter by measures you choose, such as P/E, return on equity, debt or growth. Matches come back alphabetically."
+          }
+        ],
+        "example": "Show IBEX 35 companies with return on equity above 15% and P/E below 15."
+      }
+    ],
+    "whatIsTitle": "What is a connector?",
+    "whatIsBody": "Connectors (built on an open standard called MCP) let an AI assistant use outside tools. With FinancePlots connected, Claude works the numbers out with the same formulas as this site instead of estimating them, and tells you which tool it used.",
+    "notesTitle": "Good to know",
+    "notes": [
+      "Free, with no account or key.",
+      "The connector doesn’t save your questions or the numbers you send.",
+      "Figures are for learning and planning, not investment advice. The screener filters by your criteria; it never ranks or recommends shares."
+    ],
+    "ctaTools": "Prefer clicking? Use the tools on the site →",
+    "bannerTitle": "New: use FinancePlots inside Claude",
+    "bannerDesc": "Connect our calculators and market data to your AI assistant and ask in plain English.",
+    "bannerCta": "How to connect →",
+    "navLabel": "Use in Claude"
   }
 }
