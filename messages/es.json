@@ -209,6 +209,13 @@
     },
     "articles": [
       {
+        "slug": "use-financeplots-in-claude",
+        "title": "FinancePlots ya funciona dentro de Claude: fórmulas y datos reales para tu asistente de IA",
+        "date": "Septiembre 2026",
+        "description": "Conecta FinancePlots a Claude y tu asistente de IA deja de estimar. Qué puede hacer, un ejemplo de valoración de una startup con el método de Damodaran y cómo conectarlo en dos minutos.",
+        "tag": "IA y Agentes"
+      },
+      {
         "slug": "control-is-the-whole-game",
         "title": "Control es todo el partido: lo que Real Madrid, España y el fútbol me enseñaron sobre finanzas",
         "date": "Julio 2026",

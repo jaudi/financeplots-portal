@@ -22,6 +22,7 @@ const BLOG_SLUGS = [
   "real-assets-balance-sheets-opportunities",
   "uk-pension-savings",
   "us-10y-yield-equity-risk-premium",
+  "use-financeplots-in-claude",
   "value-vs-growth-investing",
 ];
 
