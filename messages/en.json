@@ -209,13 +209,6 @@
     },
     "articles": [
       {
-        "slug": "use-financeplots-in-claude",
-        "title": "FinancePlots Now Works Inside Claude: Real Formulas and Data for Your AI Assistant",
-        "date": "September 2026",
-        "description": "Connect FinancePlots to Claude and your AI assistant stops estimating. What it can do, a worked startup valuation using Damodaran’s method, and how to connect it in two minutes.",
-        "tag": "AI & Agents"
-      },
-      {
         "slug": "control-is-the-whole-game",
         "title": "Control Is the Whole Game: What Real Madrid, Spain and Football Taught Me About Finance",
         "date": "July 2026",
