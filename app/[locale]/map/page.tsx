@@ -48,7 +48,7 @@ export default function MapPage() {
           Your Finance Tool Journey
         </h1>
         <p className="text-gray-400 text-lg max-w-xl mx-auto">
-          Two lines. 16 tools. Pick your path and start building.
+          Two lines. 17 tools. Pick your path and start building.
         </p>
       </section>
 

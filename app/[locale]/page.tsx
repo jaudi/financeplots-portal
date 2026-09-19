@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
 
 export const metadata: Metadata = {
   title: "FinancePlots — Independent Writing on Markets, Macro & FP&A",
   description:
-    "Independent writing on markets, macro and corporate finance, plus 16 free FP&A tools — personal budget, portfolio analysis, DCF valuation, cash flow forecast and more. No signup.",
+    "Independent writing on markets, macro and corporate finance, plus 17 free FP&A tools — personal budget, portfolio analysis, DCF valuation, cash flow forecast and more. No signup.",
   alternates: { canonical: "https://www.financeplots.com" },
 };
 
@@ -49,6 +50,7 @@ export default async function Home() {
   const featured = articles[0];
   const recent = articles.slice(1, 7); // next 6 after the featured one
   const totalArticles = articles.length;
+  const [observer] = listEditions();
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -190,6 +192,68 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ── The Observer: latest weekly edition ── */}
+      {observer && (
+        <section className="px-6 pb-20">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-end justify-between mb-6 flex-wrap gap-4">
+              <div>
+                <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("observerLabel")}</p>
+                <h2 className="text-3xl font-bold">{t("observerTitle")}</h2>
+              </div>
+              <Link href="/observer" className="text-blue-400 hover:text-blue-300 text-sm font-semibold transition">
+                {t("observerAll")} →
+              </Link>
+            </div>
+
+            <Link
+              href={`/observer/${observer.slug}`}
+              className="block bg-gradient-to-br from-blue-900/40 to-indigo-900/20 border border-blue-700/40 hover:border-blue-500 rounded-2xl p-7 md:p-8 transition group"
+            >
+              <div className="flex items-center gap-3 mb-4 flex-wrap">
+                <span className="text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-0.5 rounded-full font-semibold">
+                  {t("observerLatest")}
+                </span>
+                <span className="text-gray-400 text-xs">{t("observerWeekOf", { date: formatEditionDate(observer.date) })}</span>
+                {observer.audio && (
+                  <span className="text-gray-400 text-xs">· 🎧 {formatDuration(observer.audio.durationSeconds)}</span>
+                )}
+              </div>
+              <h3 className="text-2xl md:text-4xl font-extrabold leading-tight mb-3 group-hover:text-blue-300 transition">
+                {observer.title}
+              </h3>
+              <p className="text-gray-400 leading-relaxed mb-6">{observer.dek}</p>
+
+              <div className="grid md:grid-cols-3 gap-3 mb-6">
+                {observer.regions.map((r) => (
+                  <div key={r.region} className="bg-black/20 border border-gray-800 rounded-xl p-4">
+                    <p className="text-gray-500 text-[11px] uppercase tracking-wider mb-1">
+                      {r.region === "Euro" ? "Euro area" : r.region === "US" ? "United States" : "Asia"}
+                    </p>
+                    <p className="text-gray-200 text-sm font-semibold leading-snug">{r.headline}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-500 text-xs">{t("observerMood")}</span>
+                  <div className="flex gap-1">
+                    {MOODS.map((m) => (
+                      <span key={m} className={`w-6 h-1.5 rounded-full ${m === observer.mood.label ? "bg-blue-400" : "bg-gray-700"}`} />
+                    ))}
+                  </div>
+                  <span className="text-white text-sm font-semibold">{observer.mood.label}</span>
+                </div>
+                <span className="text-blue-400 text-sm font-semibold">{t("observerCta")}</span>
+              </div>
+            </Link>
+
+            <p className="mt-4 text-gray-600 text-xs">{t("observerDisclaimer")}</p>
+          </div>
+        </section>
+      )}
+
       {/* ── Hero: featured article ── */}
       <section className="relative px-6 py-20 overflow-hidden">
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -236,8 +300,7 @@ export default async function Home() {
           <div className="flex flex-wrap gap-8 md:gap-12 mt-16 pt-10 border-t border-gray-800">
             {[
               [String(totalArticles), t("stat3Label")],
-              ["16", t("stat1Label")],
-              ["2",  t("stat2Label")],
+              ["17", t("stat1Label")],
             ].map(([num, label]) => (
               <div key={label}>
                 <div className="text-3xl font-extrabold text-white">{num}</div>
