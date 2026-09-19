@@ -73,8 +73,8 @@ export function getEdition(slug: string): Edition | null {
   return JSON.parse(fs.readFileSync(file, "utf8")) as Edition;
 }
 
-export function formatEditionDate(date: string): string {
-  return new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", {
+export function formatEditionDate(date: string, locale = "en-GB"): string {
+  return new Date(`${date}T12:00:00Z`).toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",

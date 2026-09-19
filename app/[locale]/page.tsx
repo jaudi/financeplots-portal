@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
 
 export const metadata: Metadata = {
@@ -51,6 +51,7 @@ export default async function Home() {
   const recent = articles.slice(1, 7); // next 6 after the featured one
   const totalArticles = articles.length;
   const [observer] = listEditions();
+  const dateLocale = (await getLocale()) === "es" ? "es-ES" : "en-GB";
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -58,6 +59,21 @@ export default async function Home() {
       {/* ── Tools ── */}
       <section className="px-6 pt-32 pb-20">
         <div className="max-w-5xl mx-auto">
+          {observer && (
+            <Link
+              href={`/observer/${observer.slug}`}
+              className="group flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 max-w-3xl mx-auto mb-12 bg-blue-600/10 border border-blue-500/30 hover:border-blue-400 rounded-2xl sm:rounded-full px-5 py-3 transition"
+            >
+              <span className="flex items-center gap-2 shrink-0">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <span className="text-blue-300 text-xs font-bold uppercase tracking-wider">{t("observerTitle")}</span>
+                <span className="text-gray-500 text-xs">· {t("observerWeekOf", { date: formatEditionDate(observer.date, dateLocale) })}</span>
+              </span>
+              <span className="text-gray-200 text-sm font-medium truncate group-hover:text-white transition">
+                {observer.title} <span className="text-blue-400">→</span>
+              </span>
+            </Link>
+          )}
           <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("toolsLabel")}</p>
           <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-3">{t("toolsTitle")}</h1>
           <p className="text-gray-400 text-center mb-10">{t("toolsSubtitle")}</p>
@@ -214,7 +230,7 @@ export default async function Home() {
                 <span className="text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-0.5 rounded-full font-semibold">
                   {t("observerLatest")}
                 </span>
-                <span className="text-gray-400 text-xs">{t("observerWeekOf", { date: formatEditionDate(observer.date) })}</span>
+                <span className="text-gray-400 text-xs">{t("observerWeekOf", { date: formatEditionDate(observer.date, dateLocale) })}</span>
                 {observer.audio && (
                   <span className="text-gray-400 text-xs">· 🎧 {formatDuration(observer.audio.durationSeconds)}</span>
                 )}
