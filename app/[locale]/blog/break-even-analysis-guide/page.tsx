@@ -273,7 +273,7 @@ export default async function BreakEvenAnalysisGuide({ params }: Props) {
               ? "Introduce tus costes fijos, costes variables y precio: obtén tu punto de equilibrio y margen de seguridad al instante."
               : "Enter your fixed costs, variable costs, and price — get your break-even point and margin of safety instantly."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

@@ -266,7 +266,7 @@ export default async function DcfValuationGuide({ params }: Props) {
               ? "Introduce tus proyecciones de flujo de caja y tasa de descuento: obtén un resultado DCF completo con tabla de sensibilidad en segundos."
               : "Input your cash flow projections and discount rate — get a full DCF output with sensitivity table in seconds."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

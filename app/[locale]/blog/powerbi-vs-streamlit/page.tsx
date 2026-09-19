@@ -263,7 +263,7 @@ export default async function ArticlePowerBIvsStreamlit({ params }: Props) {
               : "5-Year Financial Model, Portfolio Analysis, and more — live in your browser, no signup required."}
           </p>
           <Link
-            href="/dashboard"
+            href="/tools"
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block"
           >
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}

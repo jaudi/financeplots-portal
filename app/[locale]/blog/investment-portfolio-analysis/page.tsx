@@ -291,7 +291,7 @@ export default async function InvestmentPortfolioAnalysis({ params }: Props) {
               ? "Introduce tus posiciones y obtén rentabilidad, volatilidad, ratio de Sharpe y desglose de asignación al instante."
               : "Enter your holdings and get return, volatility, Sharpe ratio, and allocation breakdown instantly."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

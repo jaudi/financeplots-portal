@@ -294,7 +294,7 @@ export default async function ECBRateHikeMistake({ params }: Props) {
               ? "Nuestras calculadoras de modelo financiero a 5 años y de valoración te dejan ajustar la tasa de descuento y ver, al instante, cómo cambia el resultado ante distintos escenarios de tipos del BCE."
               : "Our 5-year financial model and valuation calculators let you adjust the discount rate and instantly see how the result changes under different ECB rate scenarios."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir las herramientas" : "Open the tools"}
           </Link>
         </div>

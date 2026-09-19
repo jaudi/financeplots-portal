@@ -290,7 +290,7 @@ export default async function CashFlowForecastGuide({ params }: Props) {
               ? "Crea tu previsión de flujo de caja en minutos: sin configurar hojas de cálculo, sin registro."
               : "Build your cash flow forecast in minutes — no spreadsheet setup required, no signup needed."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

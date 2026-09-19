@@ -317,7 +317,7 @@ export default async function ArticleJuniorSIPP({ params }: Props) {
               ? "Usa nuestro modelo financiero gratuito para proyectar el crecimiento bajo distintos escenarios de aportación y rentabilidad."
               : "Use our free Financial Model to project growth under different contribution and return scenarios."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

@@ -296,7 +296,7 @@ export default async function AnnualBudgetGuide({ params }: Props) {
               ? "Estructura tus ingresos, personal y costes departamentales en un solo lugar, con seguimiento presupuesto vs real integrado."
               : "Structure your revenue, headcount, and department costs in one place — with budget vs actual tracking built in."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

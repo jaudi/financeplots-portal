@@ -280,7 +280,7 @@ export default async function FiveYearFinancialModel({ params }: Props) {
               ? "Introduce tus impulsores de ingresos y supuestos de costes: obtén una P&L integrada, flujo de caja y ratios clave al instante."
               : "Input your revenue drivers and cost assumptions — get a fully integrated P&amp;L, cash flow, and key ratio output instantly."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

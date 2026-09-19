@@ -262,7 +262,7 @@ export default async function PersonalBudgetGuide({ params }: Props) {
               ? "Introduce tus ingresos y gastos: ve tu tasa de ahorro, desglose de gasto y análisis por categorías al instante."
               : "Enter your income and expenses — see your savings rate, spending breakdown, and category analysis instantly."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Personal Budget Tool"}
           </Link>
         </div>

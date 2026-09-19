@@ -290,7 +290,7 @@ export default async function ArticleUKPensionSavings({ params }: Props) {
               ? "Calculadora de jubilación y modelo financiero gratuitos: proyecta tu fondo de pensión en diferentes escenarios."
               : "Free Retirement Calculator and Financial Model — project your pension pot under different scenarios."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

@@ -208,7 +208,7 @@ export default function MapPage() {
       <section className="border-t border-white/5 px-6 py-12 text-center">
         <p className="text-gray-400 text-sm mb-4">All tools are free. No signup required.</p>
         <Link
-          href="/dashboard"
+          href="/tools"
           className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3 rounded-xl transition"
         >
           Open All Tools →

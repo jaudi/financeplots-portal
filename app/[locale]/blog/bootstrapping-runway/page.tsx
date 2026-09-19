@@ -279,7 +279,7 @@ export default async function ArticleBootstrappingRunway({ params }: Props) {
               ? "Modelo Financiero a 5 Años y Previsión de Flujo de Caja — construye tus escenarios antes de la próxima conversación con inversores."
               : "Free 5-Year Financial Model and Cash Flow Forecast — build your scenarios before your next investor conversation."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>

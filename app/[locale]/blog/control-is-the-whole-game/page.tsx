@@ -155,7 +155,7 @@ export default async function ControlIsTheWholeGame({ params }: Props) {
               ? "Nuestro flujo de caja a 13 semanas y nuestro informe de presupuesto anual están pensados para que veas los huecos antes de que se conviertan en un problema, no después."
               : "Our 13-week cash flow forecast and annual budget tools are built so you see the gaps before they become a problem, not after."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir las herramientas" : "Open the tools"}
           </Link>
         </div>

@@ -349,7 +349,7 @@ export default async function ArticleIfrsIasStandards({ params }: Props) {
               ? "Modelo Financiero a 5 Años, Presupuesto Anual y Previsión de Caja a 13 Semanas — en directo en tu navegador, sin registro."
               : "Free 5-Year Financial Model, Annual Budget and 13-Week Cash Flow Forecast — live in your browser, no signup required."}
           </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
+          <Link href="/tools" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition inline-block">
             {es ? "Abrir Herramientas Financieras" : "Open Finance Tools"}
           </Link>
         </div>
