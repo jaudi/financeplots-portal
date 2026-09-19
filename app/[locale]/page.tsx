@@ -76,7 +76,13 @@ export default async function Home() {
           )}
           <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("toolsLabel")}</p>
           <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-3">{t("toolsTitle")}</h1>
-          <p className="text-gray-400 text-center mb-10">{t("toolsSubtitle")}</p>
+          <p className="text-gray-400 text-center mb-3">{t("toolsSubtitle")}</p>
+          <p className="text-center mb-10">
+            <Link href="/mcp" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-500/15 text-orange-300 border border-orange-500/30 rounded-full px-2 py-0.5">{t("mcpNoteBadge")}</span>
+              {t("mcpNote")} <span className="text-blue-400">→</span>
+            </Link>
+          </p>
 
           {/* Featured: Financial Journey Planners */}
           <div className="grid md:grid-cols-2 gap-4 mb-10">
