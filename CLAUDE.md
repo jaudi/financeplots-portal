@@ -11,7 +11,7 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 
 ## Layout
 
-- `app/[locale]/tools/*` — 17 tool routes (calculators, a stock screener, dashboards). **One still embeds the legacy Streamlit app on Railway in an iframe: `portfolio-analysis`**, as does `/dashboard` (no longer linked from anywhere). Railway can only be switched off once it is rebuilt natively. `stock-analysis` and `stock-comparison` were rebuilt on 2026-09-19 (`components/StockAnalysis.tsx`, `components/StockComparison.tsx`, both on `/api/prices`; the comparison maths is in `lib/price-stats.ts`).
+- `app/[locale]/tools/*` — 17 native tool routes (calculators, a stock screener, dashboards). The last three Streamlit iframes (`stock-analysis`, `stock-comparison`, `portfolio-analysis`) were rebuilt natively on 2026-09-19 on `/api/prices`: `components/StockAnalysis.tsx`, `StockComparison.tsx` (maths in `lib/price-stats.ts`) and `PortfolioAnalysis.tsx` (maths in `lib/portfolio-stats.ts`, shared with the MCP). Only `/dashboard` still iframes the Railway Streamlit app, and nothing links to it — delete it before switching Railway off.
 - `app/api/*` — server routes for data the client can't fetch directly (API keys, CORS)
 - `lib/` — shared server-side data access (`fred.ts`, `universe.ts`, `markets.ts`, `prices.ts`; `price-types.ts` holds the parts the browser also needs), `stock-metrics.ts` (the stock screener's metric definitions), `calculators.ts` (calculator maths shared by the pages and the MCP server) and `mcp-server.ts`
 - `messages/en.json`, `messages/es.json` — all UI copy, including the `/tools` grid entries
@@ -23,7 +23,7 @@ Adding a tool means: a route under `app/[locale]/tools/`, an entry in both messa
 
 - **FRED** — `lib/fred.ts` fetches 8 US macro series server-side; needs `FRED_API_KEY`
 - **Stock screener data** — `lib/universe.ts` fetches `universe-*.json` live from `raw.githubusercontent.com`; the `sp500-quality-screener` repo refreshes it weekly in GitHub Actions. No database anywhere. Three indices: S&P 500, IBEX 35, Nasdaq-100.
-- **Yahoo Finance** — `yahoo-finance2` for quotes (`lib/markets.ts`) and price history (`lib/prices.ts`). Its calls bypass Next's fetch cache, so each is wrapped in `unstable_cache`. Stock Analysis and Stock Comparison follow the screener's neutrality: they open empty, never suggest a ticker, show moves with ▲/▼ rather than green/red, and the comparison keeps tickers in the order typed with colours by position, never by performance.
+- **Yahoo Finance** — `yahoo-finance2` for quotes (`lib/markets.ts`) and price history (`lib/prices.ts`). Its calls bypass Next's fetch cache, so each is wrapped in `unstable_cache`. Stock Analysis, Stock Comparison and Portfolio Analysis follow the screener's neutrality: they open empty, never suggest a ticker or holding, show moves with ▲/▼ rather than green/red, keep tickers in the order typed with colours by position (never by performance), and grade nothing (no "good" Sharpe ratio).
 
 ## The stock screener (and why there is only one)
 
@@ -67,7 +67,7 @@ prior reported years — they are not year-on-year.
 
 ## MCP server
 
-`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `startup_valuation`, `us_macro_indicators`, `market_snapshot`, `price_history`, `screener_metrics`, `screen_stocks`.
+`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `startup_valuation`, `us_macro_indicators`, `market_snapshot`, `price_history`, `portfolio_analysis`, `screener_metrics`, `screen_stocks`.
 
 - The calculators call the same functions as the tool pages (`lib/calculators.ts`), so the MCP and the site can't give different answers for the same inputs. Change the formula there, not in a page.
 - `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities.

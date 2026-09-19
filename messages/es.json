@@ -84,7 +84,7 @@
       [
         "📊",
         "Análisis de Cartera",
-        "Sube tus posiciones. Analiza rentabilidad, riesgo y asignación de activos.",
+        "Introduce tus posiciones y pesos — rentabilidad, volatilidad, ratio de Sharpe, VaR y cuánto riesgo aporta cada una.",
         "/tools/portfolio-analysis"
       ],
       [
@@ -395,7 +395,7 @@
       {
         "icon": "📊",
         "name": "Análisis de Cartera",
-        "desc": "Sube tus posiciones y analiza rentabilidad, métricas de riesgo y asignación de activos.",
+        "desc": "Introduce tus posiciones y pesos — rentabilidad, volatilidad, ratio de Sharpe, VaR y cuánto riesgo aporta cada una.",
         "href": "/tools/portfolio-analysis"
       },
       {
@@ -1232,6 +1232,10 @@
           {
             "name": "Histórico de precios",
             "desc": "Precios de cierre de cualquier acción, índice o divisa, con la media de 200 días, máximos, mínimos y volatilidad."
+          },
+          {
+            "name": "Análisis de cartera",
+            "desc": "Rentabilidad, volatilidad, ratio de Sharpe, VaR y riesgo aportado por cada posición, hasta ocho posiciones."
           }
         ],
         "example": "¿Cómo está la economía de EE. UU. ahora mismo?"

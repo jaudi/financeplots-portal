@@ -3,6 +3,7 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
+import { analysePortfolio } from "@/lib/portfolio-stats";
 import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
 import { METRIC_KEYS, METRICS, type MetricKey } from "@/lib/stock-metrics";
 import { getUniverse, UNIVERSE_SCREENS } from "@/lib/universe";
@@ -20,7 +21,7 @@ const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
 Calculators: loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
-Data: us_macro_indicators (FRED), market_snapshot and price_history (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
+Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
 function json(data: unknown) {
@@ -477,6 +478,78 @@ export function createFinancePlotsServer() {
         if (isUnknownSymbol(err)) return error(`No price data found for "${s}". Check the ticker and its exchange suffix.`);
         return error("Price data is temporarily unavailable.");
       }
+    },
+  );
+
+  server.registerTool(
+    "portfolio_analysis",
+    {
+      title: "Portfolio analysis",
+      description:
+        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall, and for each holding its return, volatility, largest fall and share of the portfolio's risk. Weights are scaled to sum to 100. Everything is historical — not a forecast or recommendation.",
+      inputSchema: {
+        holdings: z
+          .array(
+            z.object({
+              symbol: z.string().min(1).max(15).describe("Yahoo Finance ticker, e.g. AAPL, SAN.MC, ^GSPC"),
+              weight: z.number().positive().describe("Weight; any positive numbers, scaled to sum to 100"),
+            }),
+          )
+          .min(1)
+          .max(8),
+        range: z.enum(["6m", "1y", "5y", "max"]).default("1y").describe("Period; 'max' uses weekly closes"),
+        risk_free_pct: z.number().min(-5).max(30).default(0).describe("Annual risk-free rate for the Sharpe ratio, percent (us_macro_indicators has the Fed funds rate)"),
+      },
+      annotations: { ...readOnly, openWorldHint: true },
+    },
+    async ({ holdings, range, risk_free_pct }) => {
+      const symbols = holdings.map((h) => normaliseSymbol(h.symbol));
+      const bad = holdings.filter((_, i) => !symbols[i]).map((h) => h.symbol);
+      if (bad.length) return error(`Not valid tickers: ${bad.join(", ")}. Use Yahoo Finance symbols such as AAPL or SAN.MC.`);
+      if (new Set(symbols).size !== symbols.length) return error("A ticker appears twice; combine its weights.");
+
+      const histories = await Promise.all(symbols.map((s) => getPriceHistory(s!, range).catch((err) => (isUnknownSymbol(err) ? null : Promise.reject(err))))).catch(() => undefined);
+      if (!histories) return error("Price data is temporarily unavailable.");
+      const missing = symbols.filter((_, i) => !histories[i]);
+      if (missing.length) return error(`No price data for ${missing.join(", ")}. Fix or remove them — the portfolio isn't calculated with a holding missing.`);
+
+      const r = analysePortfolio(
+        holdings.map((h, i) => ({ symbol: symbols[i]!, weight: h.weight, points: histories[i]!.points })),
+        risk_free_pct,
+        range === "max" ? 52 : 252,
+      );
+      if (!r) return error("Not enough shared price history to analyse. Try a longer period.");
+      const r2 = (n: number | null) => (n === null ? null : round2(n));
+      return json({
+        source: "Yahoo Finance (delayed)",
+        period: { start: r.start, end: r.end, interval: range === "max" ? "weekly" : "daily" },
+        risk_free_pct,
+        portfolio: {
+          change_pct: r2(r.change_pct),
+          annualised_pct: r2(r.annualised_pct),
+          volatility_pct: r2(r.volatility_pct),
+          sharpe: r2(r.sharpe),
+          max_drawdown: { pct: r2(r.max_drawdown.pct), peak: r.max_drawdown.peak, trough: r.max_drawdown.trough },
+          var95_pct: r2(r.var95_pct),
+          expected_shortfall_95_pct: r2(r.cvar95_pct),
+          worst_period: { pct: r2(r.worst_period.pct), date: r.worst_period.date },
+          undiversified_volatility_pct: r2(r.undiversified_volatility_pct),
+        },
+        holdings: r.holdings.map((h, i) => ({
+          symbol: h.symbol,
+          name: histories[i]!.name,
+          currency: histories[i]!.currency,
+          weight_pct: r2(h.weight),
+          change_pct: r2(h.change_pct),
+          annualised_pct: r2(h.annualised_pct),
+          volatility_pct: r2(h.volatility_pct),
+          max_drawdown_pct: r2(h.max_drawdown_pct),
+          risk_share_pct: r2(h.risk_share_pct),
+        })),
+        value_path: thin(r.path, 60).map((p) => ({ date: p.date, value: round2(p.value) })),
+        note: "Historical figures with weights rebalanced each period; holdings move in their own currencies. Not a forecast, investment advice or a recommendation.",
+        tool_page: `${SITE}/tools/portfolio-analysis?h=${encodeURIComponent(r.holdings.map((h) => `${h.symbol}:${round2(h.weight)}`).join(","))}&range=${range}&rf=${risk_free_pct}`,
+      });
     },
   );
 

@@ -84,7 +84,7 @@
       [
         "📊",
         "Portfolio Analysis",
-        "Upload holdings. Analyse returns, risk and asset allocation.",
+        "Enter your holdings and weights — return, volatility, Sharpe ratio, VaR and each holding's share of risk.",
         "/tools/portfolio-analysis"
       ],
       [
@@ -409,7 +409,7 @@
       {
         "icon": "📊",
         "name": "Portfolio Analysis",
-        "desc": "Upload your holdings and analyse returns, risk metrics and asset allocation.",
+        "desc": "Enter your holdings and weights — return, volatility, Sharpe ratio, VaR and each holding's share of risk.",
         "href": "/tools/portfolio-analysis"
       },
       {
@@ -1252,6 +1252,10 @@
           {
             "name": "Price history",
             "desc": "Closing prices for any stock, index or currency, with the 200-day average, highs, lows and volatility."
+          },
+          {
+            "name": "Portfolio analysis",
+            "desc": "Return, volatility, Sharpe ratio, VaR and each holding's share of risk for up to eight holdings."
           }
         ],
         "example": "How is the US economy doing right now?"
