@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
   // redirect to an unrelated page as a soft 404 anyway.
   async redirects() {
     return [
+      // /dashboard embedded the legacy Streamlit app; deleted 2026-09-19. Until then
+      // 16 blog posts and /map linked to it, so it is crawled and bookmarked.
+      { source: "/dashboard", destination: "/tools", permanent: true },
+      { source: "/es/dashboard", destination: "/es/tools", permanent: true },
       { source: "/tools/etf-screener", destination: "/tools", permanent: true },
       { source: "/es/tools/etf-screener", destination: "/es/tools", permanent: true },
       // Deleted 2026-09-14 along with the screeners they described (UK MAR).

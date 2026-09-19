@@ -11,7 +11,7 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 
 ## Layout
 
-- `app/[locale]/tools/*` — 17 native tool routes (calculators, a stock screener, dashboards). The last three Streamlit iframes (`stock-analysis`, `stock-comparison`, `portfolio-analysis`) were rebuilt natively on 2026-09-19 on `/api/prices`: `components/StockAnalysis.tsx`, `StockComparison.tsx` (maths in `lib/price-stats.ts`) and `PortfolioAnalysis.tsx` (maths in `lib/portfolio-stats.ts`, shared with the MCP). Only `/dashboard` still iframes the Railway Streamlit app, and nothing links to it — delete it before switching Railway off.
+- `app/[locale]/tools/*` — 17 native tool routes (calculators, a stock screener, dashboards). The last three Streamlit iframes (`stock-analysis`, `stock-comparison`, `portfolio-analysis`) were rebuilt natively on 2026-09-19 on `/api/prices`: `components/StockAnalysis.tsx`, `StockComparison.tsx` (maths in `lib/price-stats.ts`) and `PortfolioAnalysis.tsx` (maths in `lib/portfolio-stats.ts`, shared with the MCP). `/dashboard`, the old Streamlit iframe route, was deleted the same day and 308s to `/tools` (`next.config.ts`). Nothing on the site uses the Railway app any more.
 - `app/api/*` — server routes for data the client can't fetch directly (API keys, CORS)
 - `lib/` — shared server-side data access (`fred.ts`, `universe.ts`, `markets.ts`, `prices.ts`; `price-types.ts` holds the parts the browser also needs), `stock-metrics.ts` (the stock screener's metric definitions), `calculators.ts` (calculator maths shared by the pages and the MCP server) and `mcp-server.ts`
 - `messages/en.json`, `messages/es.json` — all UI copy, including the `/tools` grid entries

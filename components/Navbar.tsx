@@ -33,8 +33,6 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
-  if (pathname?.startsWith("/dashboard") || pathname?.includes("/dashboard")) return null;
-
   function switchLocale(next: "en" | "es") {
     startTransition(() => {
       router.replace(pathname, { locale: next });
