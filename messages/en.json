@@ -90,7 +90,7 @@
       [
         "📉",
         "Stock Comparison",
-        "Compare two tickers side by side — returns, volatility, key ratios.",
+        "Compare up to four tickers on one chart — returns, volatility, largest fall and correlation.",
         "/tools/stock-comparison"
       ],
       [
@@ -415,7 +415,7 @@
       {
         "icon": "📉",
         "name": "Stock Comparison",
-        "desc": "Compare two tickers side by side — returns, volatility, drawdown and key ratios.",
+        "desc": "Compare up to four tickers on one chart — returns, volatility, largest fall and correlation.",
         "href": "/tools/stock-comparison"
       },
       {

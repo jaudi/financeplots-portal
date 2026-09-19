@@ -90,7 +90,7 @@
       [
         "📉",
         "Comparación de Acciones",
-        "Compara dos tickers lado a lado — rentabilidad, volatilidad, ratios clave.",
+        "Compara hasta cuatro tickers en un mismo gráfico — rentabilidad, volatilidad, caída máxima y correlación.",
         "/tools/stock-comparison"
       ],
       [
@@ -401,7 +401,7 @@
       {
         "icon": "📉",
         "name": "Comparación de Acciones",
-        "desc": "Compara dos tickers lado a lado — rentabilidad, volatilidad, caída máxima y ratios clave.",
+        "desc": "Compara hasta cuatro tickers en un mismo gráfico — rentabilidad, volatilidad, caída máxima y correlación.",
         "href": "/tools/stock-comparison"
       },
       {

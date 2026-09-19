@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Area, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PRICE_RANGES, SYMBOL_PATTERN, type PriceHistory, type PriceRange } from "@/lib/price-types";
 
@@ -49,44 +49,48 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
   const [input, setInput] = useState(initialSymbol ?? "");
   const [symbol, setSymbol] = useState<string | null>(initialSymbol);
   const [range, setRange] = useState<PriceRange>(initialRange);
-  const [data, setData] = useState<PriceHistory | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{ key: string; data: PriceHistory | null; error: string | null } | null>(null);
+  const [inputError, setInputError] = useState<string | null>(null);
   const [showMa, setShowMa] = useState(true);
 
-  const load = useCallback(async (s: string, r: PriceRange) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/prices?symbol=${encodeURIComponent(s)}&range=${r}`);
-      const json = await res.json();
-      if (!res.ok) {
-        setData(null);
-        setError(ERRORS[json.error] ?? ERRORS.unavailable);
-        return;
-      }
-      setData(json as PriceHistory);
-      const url = new URL(window.location.href);
-      url.searchParams.set("symbol", s);
-      url.searchParams.set("range", r);
-      window.history.replaceState(null, "", url);
-    } catch {
-      setError(ERRORS.unavailable);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Loading is derived from the request, and a late response for an older
+  // request is dropped, so quick clicks on the periods can't show stale data.
+  const requestKey = `${symbol}|${range}`;
+  const loading = symbol !== null && result?.key !== requestKey;
+  const data = result?.data ?? null;
+  const error = inputError ?? (loading ? null : result?.error ?? null);
 
   useEffect(() => {
-    if (symbol) load(symbol, range);
-  }, [symbol, range, load]);
+    if (!symbol) return;
+    let current = true;
+    (async () => {
+      let next: { data: PriceHistory | null; error: string | null };
+      try {
+        const res = await fetch(`/api/prices?symbol=${encodeURIComponent(symbol)}&range=${range}`);
+        const json = await res.json();
+        next = res.ok ? { data: json as PriceHistory, error: null } : { data: null, error: ERRORS[json.error] ?? ERRORS.unavailable };
+      } catch {
+        next = { data: null, error: ERRORS.unavailable };
+      }
+      if (!current) return;
+      setResult({ key: `${symbol}|${range}`, ...next });
+      if (next.data) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("symbol", symbol);
+        url.searchParams.set("range", range);
+        window.history.replaceState(null, "", url);
+      }
+    })();
+    return () => {
+      current = false;
+    };
+  }, [symbol, range]);
 
   function submit(e: FormEvent | KeyboardEvent) {
     e.preventDefault();
     const s = input.trim().toUpperCase();
-    if (!s) return setError("Enter a ticker first.");
-    if (!SYMBOL_PATTERN.test(s)) return setError(ERRORS.invalid_symbol);
-    if (s === symbol && data) return;
+    if (!s) return setInputError("Enter a ticker first.");
+    if (!SYMBOL_PATTERN.test(s)) return setInputError(ERRORS.invalid_symbol);
     setSymbol(s);
   }
 
@@ -107,7 +111,7 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
               value={input}
               onChange={(e) => {
                 setInput(e.target.value);
-                setError(null);
+                setInputError(null);
               }}
               // Explicit, so Enter works even where implicit form submission doesn't fire
               onKeyDown={(e) => {
