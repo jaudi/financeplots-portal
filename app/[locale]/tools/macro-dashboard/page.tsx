@@ -44,7 +44,7 @@ const INDICATOR_DESC: Record<string, string> = {
   CPILFESL: "Core CPI, year-over-year. Excludes volatile food and energy prices.",
   PCEPI:    "Personal Consumption Expenditures price index. The Fed's preferred inflation gauge.",
   UNRATE:   "Unemployment rate. Share of the labor force actively looking for work.",
-  FEDFUNDS: "Federal Funds effective rate. The Fed's main policy lever.",
+  DFF:      "Federal Funds effective rate, daily. The Fed's main policy lever.",
   DGS10:    "10-Year Treasury constant maturity yield. The global risk-free rate benchmark.",
 };
 

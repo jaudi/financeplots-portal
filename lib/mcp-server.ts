@@ -396,7 +396,7 @@ export function createFinancePlotsServer() {
     {
       title: "US macro indicators",
       description:
-        "Latest US macro data from FRED: real GDP, industrial production, CPI, core CPI and PCE inflation (year-on-year %), unemployment, the Fed funds rate and the 10-year Treasury yield, each with its change from the prior reading and its date.",
+        "Latest US macro data from FRED: real GDP, industrial production, CPI, core CPI and PCE inflation (year-on-year %), unemployment, the Fed funds rate (daily effective rate) and the 10-year Treasury yield, each with its change from the prior reading and its date. Monthly and quarterly series report the latest published period, which can be a month or more behind today.",
       inputSchema: {},
       annotations: { ...readOnly, openWorldHint: true },
     },
@@ -431,7 +431,8 @@ export function createFinancePlotsServer() {
           symbol: q.symbol,
           group: q.group,
           price: q.price,
-          change: q.change === null ? null : round2(q.change),
+          // FX moves are often under 0.005, which two decimals would show as 0
+          change: q.change === null ? null : q.group === "FX" ? Math.round(q.change * 1e4) / 1e4 : round2(q.change),
           change_pct: q.changePct === null ? null : round2(q.changePct),
           currency: q.currency,
         })),
