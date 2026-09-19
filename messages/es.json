@@ -1228,6 +1228,10 @@
           {
             "name": "Mercados hoy",
             "desc": "Principales índices bursátiles, divisas, oro, petróleo y bitcoin."
+          },
+          {
+            "name": "Histórico de precios",
+            "desc": "Precios de cierre de cualquier acción, índice o divisa, con la media de 200 días, máximos, mínimos y volatilidad."
           }
         ],
         "example": "¿Cómo está la economía de EE. UU. ahora mismo?"

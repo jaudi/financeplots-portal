@@ -3,6 +3,7 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
+import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
 import { METRIC_KEYS, METRICS, type MetricKey } from "@/lib/stock-metrics";
 import { getUniverse, UNIVERSE_SCREENS } from "@/lib/universe";
 
@@ -19,7 +20,7 @@ const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
 Calculators: loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
-Data: us_macro_indicators (FRED), market_snapshot (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
+Data: us_macro_indicators (FRED), market_snapshot and price_history (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
 function json(data: unknown) {
@@ -437,6 +438,45 @@ export function createFinancePlotsServer() {
           currency: q.currency,
         })),
       });
+    },
+  );
+
+  server.registerTool(
+    "price_history",
+    {
+      title: "Price history",
+      description:
+        "Closing-price history for one ticker the user names (Yahoo Finance symbol: AAPL, SAN.MC, BRK-B, ^GSPC, EURUSD=X…) over 1m, 6m, 1y, 5y or max. Returns the change over the period, the high and low closes with dates, the last close against its 200-day moving average, annualised volatility, and the series thinned to at most `max_points` for charting. Raw prices, not a forecast or recommendation.",
+      inputSchema: {
+        symbol: z.string().min(1).max(15).describe("Yahoo Finance ticker; add the exchange suffix outside the US, e.g. .MC Madrid, .L London, .PA Paris"),
+        range: z.enum(PRICE_RANGES).default("1y").describe("Period to cover; 'max' uses weekly closes and has no 200-day average"),
+        max_points: z.number().int().min(10).max(500).default(120).describe("Most points to return in the series"),
+      },
+      annotations: { ...readOnly, openWorldHint: true },
+    },
+    async ({ symbol, range, max_points }) => {
+      const s = normaliseSymbol(symbol);
+      if (!s) return error(`"${symbol}" isn't a valid ticker. Use a Yahoo Finance symbol such as AAPL or SAN.MC.`);
+      try {
+        const h = await getPriceHistory(s, range);
+        return json({
+          source: "Yahoo Finance (delayed)",
+          symbol: h.symbol,
+          name: h.name,
+          currency: h.currency,
+          exchange: h.exchange,
+          range: h.range,
+          interval: h.interval,
+          stats: h.stats,
+          points_total: h.points.length,
+          points: thin(h.points, max_points),
+          note: "Raw market data for education. Past prices say nothing about future returns; not investment advice or a recommendation.",
+          tool_page: `${SITE}/tools/stock-analysis?symbol=${encodeURIComponent(h.symbol)}`,
+        });
+      } catch (err) {
+        if (isUnknownSymbol(err)) return error(`No price data found for "${s}". Check the ticker and its exchange suffix.`);
+        return error("Price data is temporarily unavailable.");
+      }
     },
   );
 

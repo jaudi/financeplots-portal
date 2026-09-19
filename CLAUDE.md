@@ -11,9 +11,9 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 
 ## Layout
 
-- `app/[locale]/tools/*` — 17 native tool routes (calculators, a stock screener, dashboards). No iframes; the old Streamlit embed is gone.
+- `app/[locale]/tools/*` — 17 tool routes (calculators, a stock screener, dashboards). **Two still embed the legacy Streamlit app on Railway in an iframe: `stock-comparison` and `portfolio-analysis`**, as does `/dashboard` (no longer linked from anywhere). Railway can only be switched off once those are rebuilt natively. `stock-analysis` was rebuilt on 2026-09-19 (`components/StockAnalysis.tsx` + `/api/prices`).
 - `app/api/*` — server routes for data the client can't fetch directly (API keys, CORS)
-- `lib/` — shared server-side data access (`fred.ts`, `universe.ts`, `markets.ts`), `stock-metrics.ts` (the stock screener's metric definitions), `calculators.ts` (calculator maths shared by the pages and the MCP server) and `mcp-server.ts`
+- `lib/` — shared server-side data access (`fred.ts`, `universe.ts`, `markets.ts`, `prices.ts`; `price-types.ts` holds the parts the browser also needs), `stock-metrics.ts` (the stock screener's metric definitions), `calculators.ts` (calculator maths shared by the pages and the MCP server) and `mcp-server.ts`
 - `messages/en.json`, `messages/es.json` — all UI copy, including the `/tools` grid entries
 - `app/sitemap.ts` — tool slugs are listed in one array and expanded per locale
 
@@ -23,7 +23,7 @@ Adding a tool means: a route under `app/[locale]/tools/`, an entry in both messa
 
 - **FRED** — `lib/fred.ts` fetches 8 US macro series server-side; needs `FRED_API_KEY`
 - **Stock screener data** — `lib/universe.ts` fetches `universe-*.json` live from `raw.githubusercontent.com`; the `sp500-quality-screener` repo refreshes it weekly in GitHub Actions. No database anywhere. Three indices: S&P 500, IBEX 35, Nasdaq-100.
-- **Yahoo Finance** — `yahoo-finance2` for stock/portfolio tools
+- **Yahoo Finance** — `yahoo-finance2` for quotes (`lib/markets.ts`) and price history (`lib/prices.ts`). Its calls bypass Next's fetch cache, so each is wrapped in `unstable_cache`. Stock Analysis follows the screener's neutrality: it opens empty, never suggests a ticker, and shows moves with ▲/▼ in one colour.
 
 ## The stock screener (and why there is only one)
 
@@ -67,7 +67,7 @@ prior reported years — they are not year-on-year.
 
 ## MCP server
 
-`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `startup_valuation`, `us_macro_indicators`, `market_snapshot`, `screener_metrics`, `screen_stocks`.
+`/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `startup_valuation`, `us_macro_indicators`, `market_snapshot`, `price_history`, `screener_metrics`, `screen_stocks`.
 
 - The calculators call the same functions as the tool pages (`lib/calculators.ts`), so the MCP and the site can't give different answers for the same inputs. Change the formula there, not in a page.
 - `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities.

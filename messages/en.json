@@ -1248,6 +1248,10 @@
           {
             "name": "Markets today",
             "desc": "Major stock indices, currencies, gold, oil and Bitcoin."
+          },
+          {
+            "name": "Price history",
+            "desc": "Closing prices for any stock, index or currency, with the 200-day average, highs, lows and volatility."
           }
         ],
         "example": "How is the US economy doing right now?"
