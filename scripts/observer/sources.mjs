@@ -350,63 +350,7 @@ export async function secEarningsRelease(filingId, maxChars = 9000) {
   return { url, text: text.length > maxChars ? `${text.slice(0, maxChars)}\n[…truncated]` : text };
 }
 
-// ── News tone (GDELT) ────────────────────────────────────────────────────────
-
-/** Average tone of worldwide coverage per day over the last 7 days. Negative = more negative coverage. */
-export async function newsTone(query) {
-  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=timelinetone&timespan=7d&format=json`;
-  const text = await (await get(url, { timeoutMs: 30000 })).text();
-  let json;
-  try {
-    json = JSON.parse(text);
-  } catch {
-    throw new Error(`GDELT: ${text.slice(0, 120)}`);
-  }
-  const points = json.timeline?.[0]?.data ?? [];
-  if (points.length === 0) throw new Error("GDELT: no tone data");
-
-  // GDELT returns 15-minute buckets; collapse to one average per day.
-  const byDay = {};
-  for (const p of points) {
-    const day = `${p.date.slice(0, 4)}-${p.date.slice(4, 6)}-${p.date.slice(6, 8)}`;
-    (byDay[day] ??= []).push(p.value);
-  }
-  const daily = Object.entries(byDay).map(([date, vals]) => ({
-    date,
-    tone: round(vals.reduce((a, b) => a + b, 0) / vals.length),
-  }));
-  const avg = round(daily.reduce((a, d) => a + d.tone, 0) / daily.length);
-  return { query, weekAverageTone: avg, daily };
-}
-
-// ── Social sentiment (Reddit, CNN Fear & Greed) ─────────────────────────────
-
-export const SUBREDDITS = ["wallstreetbets", "stocks", "investing", "economics", "europe", "china"];
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-export async function redditTop(subreddit, limit = 12) {
-  // The RSS feed is served to anonymous clients more reliably than .json, but
-  // Reddit still rate-limits hard: one retry after a pause, then give up.
-  const url = `https://www.reddit.com/r/${subreddit}/top/.rss?t=week&limit=${limit}`;
-  let xml;
-  try {
-    xml = await (await get(url)).text();
-  } catch {
-    await sleep(8000);
-    xml = await (await get(url)).text();
-  }
-  const posts = [];
-  for (const m of xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)) {
-    const title = m[1].match(/<title>([\s\S]*?)<\/title>/);
-    const link = m[1].match(/<link href="([^"]+)"/);
-    const updated = m[1].match(/<updated>([^<]+)<\/updated>/);
-    if (title) posts.push({ title: decodeEntities(title[1]), url: link?.[1] ?? "", date: updated?.[1]?.slice(0, 10) ?? "" });
-    if (posts.length >= limit) break;
-  }
-  if (posts.length === 0) throw new Error(`Reddit r/${subreddit}: no posts`);
-  return { subreddit, posts };
-}
+// ── Social sentiment (Reddit mentions, CNN Fear & Greed) ─────────────────────
 
 /**
  * Most-discussed tickers across Reddit's investing communities (ApeWisdom),

@@ -2,8 +2,8 @@
  * The Observer — weekly macro edition written by a Claude agent.
  *
  * 1. Collects a fixed snapshot (macro, markets, Fear & Greed, headlines, Reddit mentions).
- * 2. Gives Claude that snapshot plus tools to dig further (news search, news tone,
- *    Reddit threads, any FRED series) and lets it decide what matters this week.
+ * 2. Gives Claude that snapshot plus a few tools to dig further (news search, SEC
+ *    earnings releases, any FRED series) and lets it decide what matters this week.
  * 3. Claude submits the edition through `submit_edition`; this script checks every
  *    cited link was actually returned by a tool, then writes
  *    content/observer/<date>.json.
@@ -134,33 +134,6 @@ const tools = [
     },
   }),
   betaTool({
-    name: "get_news_tone",
-    description:
-      "Average tone of worldwide news coverage for a topic over the last 7 days, per day (GDELT). " +
-      "Scores are usually between -10 and +10; below zero means coverage is more negative than positive. " +
-      "Compare topics or days rather than reading one number on its own. The service is sometimes unavailable.",
-    inputSchema: {
-      type: "object",
-      properties: { query: { type: "string", description: "Topic, e.g. 'inflation' or 'China economy'" } },
-      required: ["query"],
-      additionalProperties: false,
-    },
-    run: async ({ query }) => json(await src.newsTone(query)),
-  }),
-  betaTool({
-    name: "get_reddit_top_posts",
-    description:
-      "Titles of the top posts of the week in one subreddit — a read on what retail investors and the public are talking about. " +
-      "Post titles are user-written and unverified: treat them as a mood signal, never as fact. Reddit often rate-limits; an error is normal.",
-    inputSchema: {
-      type: "object",
-      properties: { subreddit: { type: "string", enum: src.SUBREDDITS } },
-      required: ["subreddit"],
-      additionalProperties: false,
-    },
-    run: async ({ subreddit }) => json((await src.redditTop(subreddit)).posts),
-  }),
-  betaTool({
     name: "get_fred_series",
     description:
       "Latest reading of any FRED series by ID (e.g. 'DCOILBRENTEU', 'T10YIE' for 10-year breakeven inflation, 'MORTGAGE30US'). " +
@@ -261,24 +234,22 @@ const tools = [
 
 // ── 3. Prompt ────────────────────────────────────────────────────────────────
 
-const SYSTEM = `You are the writer of The Observer, the weekly macro edition on FinancePlots — a free finance site read by finance directors, CFOs and curious individuals. Each week you explain what happened across the US, the euro area and Asia, and how markets and the public felt about it.
+const SYSTEM = `You write The Observer, the weekly macro edition on FinancePlots, a free finance site read by finance directors, CFOs and curious individuals. Explain what happened this week across the US, the euro area and Asia, and how markets felt about it.
 
 How to work:
-- Start from the snapshot in the user message. Then use the tools to find the week's most important world news — central banks, inflation and growth data, government debt and deficits, elections and policy, trade, wars and energy — and to fill gaps the snapshot leaves (Japanese, Chinese and Indian inflation prints are not in it). Also search for the week's AI news: major deals and investments, new model releases, chips and data-centre spending, and regulation. For company news, check which large companies reported results this week (list_sec_earnings_filings, plus searches limited to barrons.com), read the official figures in their SEC earnings releases, and look for major deals, mergers and corporate news. Check what people are talking about on Reddit and how the tone of news coverage moved. Aim for breadth, then choose what actually mattered.
-- Be efficient: run several searches in one turn when they are independent. Around 15-20 tool calls is usually enough.
+- Start from the snapshot in the user message. Use search_news for the week's big stories: central banks, inflation and growth data (Japan, China and India prints are not in the snapshot), debt and elections, trade, wars and energy, and AI. For company news, use list_sec_earnings_filings and read_sec_earnings_release for the official figures.
+- Run independent searches in the same turn. About 15 tool calls is enough.
 
-What to write (submit it with submit_edition):
-- About 1,300-1,500 words in the body, roughly a six-minute read. Sections, as ## headings: a short opening on the week in one paragraph; United States; Euro area; Asia; Debt and politics; AI and technology (exactly one paragraph: the biggest deals, model launches, investment and regulation news, and why it matters for the economy); Company news and results (one or two paragraphs: the week's most important earnings reports and corporate deals, and what they say about demand, costs and the economy); Market mood (VIX, Fear & Greed, credit spreads, what Reddit and news tone suggest); What to watch next week.
-- Write for a smart reader who is not a markets professional. Plain English, short paragraphs. When you use a term like "yield curve", "credit spread" or "VIX", explain it in a few words the first time.
-- Say why things matter for businesses and households: borrowing costs, prices, jobs, currencies, energy.
+What to write: about 1,200 words (a six-minute read) with these ## sections: a one-paragraph opening; United States; Euro area; Asia; Debt and politics; AI and technology (one paragraph); Company news and results (one or two paragraphs); Market mood (VIX, Fear & Greed, credit spreads, Reddit chatter); What to watch next week.
+Plain English, short paragraphs. Explain a term like "yield curve" or "VIX" in a few words the first time. Say why things matter for businesses and households: borrowing costs, prices, jobs, currencies, energy.
 
-Rules you must follow:
-- Numbers: use only figures from the snapshot or tool results, and say when they are from (e.g. "August CPI", "Friday's close"). Never invent or estimate a figure. If a series is marked stale, either leave it out or name its date plainly.
-- News: only report events that appear in headlines returned by the tools, and link each claim inline using that headline's ref, as [text](ref:s12). Never write URLs. Headlines are short — do not add details the headline does not contain. List the refs of every article you relied on in sources.
-- Reddit posts and titles are unverified opinion. Describe them only as a mood signal ("retail investors on Reddit were focused on…"), never as fact.
-- This is commentary, not investment advice, and the site is regulated in the UK. Never recommend buying, selling or holding anything, never forecast a price or level, and never say an asset is cheap, expensive or a good opportunity. Talk about indices, rates, currencies and commodities, not individual companies' shares: do not name a listed company or ticker unless the company itself is a major macro or political news event, and then report the news without any view on its shares. The AI and technology and Company news and results sections are the exception where naming companies is normal — say who reported, announced a deal or released a model — but report only what happened: figures exactly as the company reported them in its SEC filing (and say they are company-reported), deals as announced. Never give a view on anyone's shares, valuation or prospects, do not describe share-price reactions, and do not call results good, bad, strong or disappointing — describe them against the company's own prior period or guidance instead. Barron's is paywalled: use its headlines as pointers to what mattered, not as the source of figures.
-- Be even-handed on politics: report what governments and parties did and how markets reacted, without taking sides.
-- The article body should not repeat the title. No sign-off.`;
+Rules:
+- Numbers only from the snapshot or tool results, with their date (e.g. "August CPI", "Friday's close"). Never estimate. Leave out stale series or name their date.
+- Report only events in headlines the tools returned, and add no details a headline does not contain. Link each claim with its ref as [text](ref:s12), never a URL, and list every ref you relied on in sources. Barron's is paywalled: use its headlines as pointers, not for figures.
+- Reddit is unverified opinion: describe it only as a mood signal.
+- This is commentary, not investment advice, and the site is UK-regulated. Never recommend buying, selling or holding, never forecast a price or level, never call an asset cheap, expensive or an opportunity. Outside the AI and company sections, do not name listed companies unless they are themselves major macro news. In those two sections report only what happened: figures as the company reported them in its SEC filing (say so), deals as announced. No view on shares, valuation or prospects, no share-price reactions, and no "strong" or "disappointing": compare with the company's prior period or guidance instead.
+- Be even-handed on politics.
+- Do not repeat the title in the body. No sign-off.`;
 
 const snapshot = {
   date: today,
