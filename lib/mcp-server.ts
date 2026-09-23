@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, realValue, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
+import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, payoffWithExtra, realValue, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
@@ -48,15 +48,16 @@ export function createFinancePlotsServer() {
     {
       title: "Loan / mortgage repayment",
       description:
-        "Repayment schedule for a fixed-rate, fully amortising loan or mortgage with monthly payments. Returns the monthly payment, total interest and a year-by-year summary of interest, principal and remaining balance.",
+        "Repayment schedule for a fixed-rate, fully amortising loan or mortgage with monthly payments. Returns the monthly payment, total interest and a year-by-year summary of interest, principal and remaining balance. With `extra_monthly_payment`, also how many months and how much interest overpaying saves.",
       inputSchema: {
         amount: z.number().positive().describe("Amount borrowed"),
         annual_rate_pct: z.number().min(0).max(100).describe("Annual interest rate in percent, e.g. 4.5"),
         years: z.number().int().min(1).max(50).describe("Term in years"),
+        extra_monthly_payment: z.number().positive().optional().describe("Amount overpaid every month on top of the scheduled payment"),
       },
       annotations: readOnly,
     },
-    async ({ amount, annual_rate_pct, years }) => {
+    async ({ amount, annual_rate_pct, years, extra_monthly_payment }) => {
       const schedule = buildSchedule(annual_rate_pct / 100, years, amount);
       const yearly = [];
       for (let y = 0; y < years; y++) {
@@ -68,10 +69,22 @@ export function createFinancePlotsServer() {
           closing_balance: round2(rows[rows.length - 1].balance),
         });
       }
+      const totalInterest = schedule.reduce((s, r) => s + r.interest, 0);
+      const extra = extra_monthly_payment === undefined ? null : payoffWithExtra(annual_rate_pct / 100, years, amount, extra_monthly_payment);
       return json({
         monthly_payment: round2(schedule[0].payment),
         total_paid: round2(schedule.reduce((s, r) => s + r.payment, 0)),
-        total_interest: round2(schedule.reduce((s, r) => s + r.interest, 0)),
+        total_interest: round2(totalInterest),
+        ...(extra && {
+          with_extra_payment: {
+            extra_monthly_payment,
+            monthly_payment: round2(schedule[0].payment + extra_monthly_payment!),
+            months_to_repay: extra.months,
+            months_saved: years * 12 - extra.months,
+            total_interest: round2(extra.totalInterest),
+            interest_saved: round2(totalInterest - extra.totalInterest),
+          },
+        }),
         yearly,
         tool_page: `${SITE}/tools/lending`,
       });

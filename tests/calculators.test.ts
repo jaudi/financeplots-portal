@@ -38,3 +38,21 @@ describe("compound_interest — inflation (item 8)", () => {
     expect(r.real_final_value).toBe(Math.round(nominal.final_value / 1.025 ** 20));
   });
 });
+
+describe("loan_repayment — overpaying (item 8)", () => {
+  it("counts the months and interest an extra monthly payment saves", async () => {
+    const args = { amount: 200_000, annual_rate_pct: 5, years: 25 };
+    const base = (await callTool("loan_repayment", args)).json;
+    expect(base.with_extra_payment).toBeUndefined();
+
+    const r = (await callTool("loan_repayment", { ...args, extra_monthly_payment: 200 })).json.with_extra_payment;
+    expect(r.monthly_payment).toBe(1369.18);
+    // Closed form: n = −ln(1 − rB/P) / ln(1 + r)
+    const i = 0.05 / 12;
+    const n = Math.ceil(-Math.log(1 - (i * 200_000) / (1169.18 + 200)) / Math.log(1 + i));
+    expect(r.months_to_repay).toBe(n);
+    expect(r.months_saved).toBe(300 - n);
+    expect(r.interest_saved).toBeGreaterThan(0);
+    expect(r.interest_saved).toBeCloseTo(base.total_interest - r.total_interest, 1);
+  });
+});

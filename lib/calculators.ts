@@ -35,6 +35,23 @@ export function buildSchedule(rate: number, years: number, amount: number): Sche
   return rows;
 }
 
+/** Paying `extra` on top of the scheduled payment every month: how many
+ *  months until the loan is cleared, and the interest paid on the way. */
+export function payoffWithExtra(rate: number, years: number, amount: number, extra: number) {
+  const r = rate / 12;
+  const pmt = monthlyPayment(rate, years, amount) + extra;
+  let balance = amount;
+  let months = 0;
+  let totalInterest = 0;
+  while (balance > 1e-6 && months < years * 12) {
+    const interest = balance * r;
+    totalInterest += interest;
+    balance = Math.max(balance + interest - pmt, 0);
+    months++;
+  }
+  return { months, totalInterest };
+}
+
 // ── Compound growth ─────────────────────────────────────────────────────────
 
 export interface CompoundRow {
