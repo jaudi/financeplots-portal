@@ -5,8 +5,8 @@ import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
 import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
-import { METRIC_KEYS, METRICS, type MetricKey } from "@/lib/stock-metrics";
-import { getUniverse, UNIVERSE_SCREENS } from "@/lib/universe";
+import { englishKey, METRIC_ALIASES, METRIC_KEYS, METRICS, resolveMetric } from "@/lib/stock-metrics";
+import { getUniverse, UNCLASSIFIED, UNIVERSE_SCREENS } from "@/lib/universe";
 
 // The FinancePlots MCP server, served at /api/mcp. It exposes the same
 // calculators and data the tool pages use, so an AI assistant gets the figures
@@ -652,20 +652,30 @@ export function createFinancePlotsServer() {
 
   // ── Stock screener (neutral) ─────────────────────────────────────────────
 
+  // Either the data's own key (partly Spanish: per, deuda_neta_ebitda…) or its English alias.
+  const metricName = z.enum([...METRIC_KEYS, ...(Object.keys(METRIC_ALIASES) as (keyof typeof METRIC_ALIASES)[])]);
+
   server.registerTool(
     "screener_metrics",
     {
       title: "Stock screener measures",
-      description: "The measures screen_stocks can filter on, with their units and a plain-English definition.",
+      description:
+        "The measures screen_stocks can filter on, with their units and a plain-English definition, and the exact sector names in each index. Each measure has a `key` (the data's own, partly Spanish) and an English `alias`; screen_stocks accepts either.",
       inputSchema: {},
-      annotations: readOnly,
+      annotations: { ...readOnly, openWorldHint: true },
     },
-    async () =>
-      json({
+    async () => {
+      const universes = await Promise.all(UNIVERSE_SCREENS.map((i) => getUniverse(i)));
+      return json({
         indices: UNIVERSE_SCREENS,
-        units_note: "'%' measures are percentage points (roe 16.5 means 16.5%). deuda_patrimonio is a percentage. Share prices are in the listing currency. Growth measures compare the latest year with the average of prior reported years.",
-        metrics: METRICS.map((m) => ({ key: m.key, label: m.label, unit: m.unit, group: m.group, definition: m.help })),
-      }),
+        sectors: Object.fromEntries(
+          UNIVERSE_SCREENS.map((index, n) => [index, universes[n] ? [...new Set(universes[n]!.companies.map((c) => c.sector))].sort() : null]),
+        ),
+        sectors_note: `Companies with no sector in the source data are listed under "${UNCLASSIFIED}".`,
+        units_note: "'%' measures are percentage points (roe 16.5 means 16.5%). deuda_patrimonio (debt_to_equity) is a percentage. Share prices are in the listing currency. Growth measures compare the latest year with the average of prior reported years.",
+        metrics: METRICS.map((m) => ({ key: m.key, alias: englishKey(m.key), label: m.label, unit: m.unit, group: m.group, definition: m.help })),
+      });
+    },
   );
 
   server.registerTool(
@@ -673,25 +683,27 @@ export function createFinancePlotsServer() {
     {
       title: "Screen stocks",
       description:
-        "Filters the companies of one index (S&P 500, Nasdaq-100 or IBEX 35) by criteria the user sets — minimum and/or maximum values of reported measures (see screener_metrics), a sector, or a name search. Returns every match alphabetically by ticker with the filtered figures. At least one criterion is required. Companies missing a figure for a filtered measure are left out and counted. This is a filter, not a ranking or recommendation.",
+        "Filters the companies of one index (S&P 500, Nasdaq-100 or IBEX 35) by criteria the user sets — minimum and/or maximum values of reported measures (see screener_metrics), a sector, or a name search. Returns matches alphabetically by ticker with the filtered figures plus any `fields` asked for, at most `limit` rows (default 50; `truncated` says when more matched, and match_count gives the total). Measures can be named by key or English alias (see screener_metrics); the response uses the name the request used. At least one criterion is required. Companies missing a figure for a filtered measure are left out and counted. This is a filter, not a ranking or recommendation.",
       inputSchema: {
         index: z.enum(UNIVERSE_SCREENS).describe("Which index to screen"),
         filters: z
           .array(
             z.object({
-              metric: z.enum(METRIC_KEYS).describe("Measure key from screener_metrics"),
+              metric: metricName.describe("Measure key or English alias from screener_metrics, e.g. pe or per"),
               min: z.number().optional().describe("Keep companies at or above this value"),
               max: z.number().optional().describe("Keep companies at or below this value"),
             }),
           )
           .default([])
           .describe("Range filters on reported measures"),
-        sector: z.string().optional().describe("Exact sector name, as in the results"),
+        sector: z.string().optional().describe("Exact sector name, as listed by screener_metrics"),
         query: z.string().optional().describe("Text to match in the ticker or company name"),
+        fields: z.array(metricName).max(19).default([]).describe("Extra measures to return for each match, besides the filtered ones"),
+        limit: z.number().int().min(1).max(500).default(50).describe("Most companies to return, still alphabetical; default 50"),
       },
       annotations: { ...readOnly, openWorldHint: true },
     },
-    async ({ index, filters, sector, query }) => {
+    async ({ index, filters, sector, query, fields, limit }) => {
       const ranges = filters.filter((f) => f.min !== undefined || f.max !== undefined);
       const q = query?.trim().toLowerCase() ?? "";
       if (ranges.length === 0 && !sector && !q) {
@@ -705,7 +717,7 @@ export function createFinancePlotsServer() {
       if (!data) return error("Screener data is temporarily unavailable.");
 
       if (sector) {
-        const sectors = [...new Set(data.companies.map((c) => c.sector).filter(Boolean))].sort();
+        const sectors = [...new Set(data.companies.map((c) => c.sector))].sort();
         if (!sectors.includes(sector)) {
           return error(`Unknown sector "${sector}". Sectors in ${index}: ${sectors.join(", ")}.`);
         }
@@ -718,7 +730,7 @@ export function createFinancePlotsServer() {
         if (q && !c.ticker.toLowerCase().includes(q) && !c.nombre.toLowerCase().includes(q)) return false;
         let lacksData = false;
         for (const f of ranges) {
-          const v = c[f.metric];
+          const v = c[resolveMetric(f.metric)];
           if (v === null) {
             lacksData = true;
             continue;
@@ -732,20 +744,24 @@ export function createFinancePlotsServer() {
         return true;
       });
 
-      const shown: MetricKey[] = [...new Set(ranges.map((f) => f.metric))];
+      // Columns keep the name the caller used (key or alias).
+      const shown = [...new Set([...ranges.map((f) => f.metric), ...fields])];
+      const rows = matches.slice(0, limit);
       return json({
         index,
         data_as_of: data.generated_at,
         criteria: { filters: ranges, sector: sector ?? null, query: q || null },
         universe_size: data.count,
         match_count: matches.length,
+        returned: rows.length,
+        truncated: rows.length < matches.length,
         left_out_for_missing_data: missing,
         order: "alphabetical by ticker",
-        companies: matches.map((c) => ({
+        companies: rows.map((c) => ({
           ticker: c.ticker,
           name: c.nombre,
           sector: c.sector,
-          ...Object.fromEntries(shown.map((k) => [k, c[k]])),
+          ...Object.fromEntries(shown.map((k) => [k, c[resolveMetric(k)]])),
         })),
         note: "Raw reported and market data for education. Not investment advice or a recommendation.",
         tool_page: `${SITE}/tools/stock-screener?index=${index}`,

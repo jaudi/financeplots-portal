@@ -70,7 +70,8 @@ prior reported years — they are not year-on-year.
 `/api/mcp` is a public, unauthenticated remote MCP server (Streamable HTTP, stateless, JSON responses) built on `@modelcontextprotocol/sdk`. Tools are defined in `lib/mcp-server.ts`: `loan_repayment`, `compound_interest`, `break_even`, `industry_multiples`, `business_valuation`, `startup_valuation`, `us_macro_indicators`, `market_snapshot`, `price_history`, `portfolio_analysis`, `screener_metrics`, `screen_stocks`.
 
 - The calculators call the same functions as the tool pages (`lib/calculators.ts`), so the MCP and the site can't give different answers for the same inputs. Change the formula there, not in a page.
-- `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities.
+- `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities. `limit` (default 50) cuts the A–Z list and sets `truncated`; it never reorders. Metrics can be named by the data's key or an English alias (`METRIC_ALIASES` in `lib/stock-metrics.ts`); the response echoes the name the caller used.
+- Companies the pipeline gives no sector ("N/A" or blank) get the sector "Unclassified" in `lib/universe.ts`, on the page too, so they stay findable.
 - `INDUSTRIES` in `lib/calculators.ts` is Damodaran data (January 2026): the valuation page uses the multiples, `startup_valuation` (its Damodaran DCF) the margin, sales-to-capital and cost of capital. Damodaran republishes every January — refresh all six columns together.
 - No tool calls the Claude API — a public endpoint that spends `ANTHROPIC_API_KEY` per call would be an open bill. Yahoo quotes are cached 60 s (`lib/markets.ts`), FRED 24 h.
 

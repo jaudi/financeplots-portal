@@ -33,6 +33,36 @@ export const METRIC_KEYS = [
 
 export type MetricKey = (typeof METRIC_KEYS)[number];
 
+/** English names for the pipeline's keys, which are partly Spanish. The MCP
+ *  server accepts either; the data and the page keep the original keys. */
+export const METRIC_ALIASES = {
+  pe: "per",
+  pe_normalized: "per_normalizado",
+  price_to_book: "precio_valor_libros",
+  operating_margin: "margen_operativo",
+  debt_to_equity: "deuda_patrimonio",
+  net_debt_to_ebitda: "deuda_neta_ebitda",
+  interest_coverage: "cobertura_intereses",
+  revenue_growth: "crecimiento_ingresos_normalizado",
+  earnings_growth: "crecimiento_beneficios_normalizado",
+  price: "precio_actual",
+  return_6m: "retorno_6m",
+  return_12m: "retorno_12m",
+  distance_ma200_pct: "distancia_ma200_pct",
+} as const satisfies Record<string, MetricKey>;
+
+export type MetricAlias = keyof typeof METRIC_ALIASES;
+
+/** The English key for a metric: its alias, or the key itself where it is already English (roe, ev_ebit…). */
+export function englishKey(key: MetricKey): string {
+  return (Object.keys(METRIC_ALIASES) as MetricAlias[]).find((a) => METRIC_ALIASES[a] === key) ?? key;
+}
+
+/** A key or an English alias → the key the data uses. */
+export function resolveMetric(name: MetricKey | MetricAlias): MetricKey {
+  return (METRIC_ALIASES as Record<string, MetricKey>)[name] ?? (name as MetricKey);
+}
+
 export const METRIC_GROUPS = ["Valuation", "Profitability", "Debt", "Growth", "Price & trend"] as const;
 export type MetricGroup = (typeof METRIC_GROUPS)[number];
 

@@ -16,7 +16,7 @@ export type UniverseScreen = (typeof UNIVERSE_SCREENS)[number];
 export type UniverseCompany = {
   ticker: string;
   nombre: string;
-  sector: string | null;
+  sector: string;
 } & Record<MetricKey, number | null>;
 
 export interface UniverseData {
@@ -24,6 +24,15 @@ export interface UniverseData {
   screen: UniverseScreen;
   count: number;
   companies: UniverseCompany[];
+}
+
+/** Yahoo has no sector for a few companies and the pipeline writes "N/A" (or
+ *  nothing); those are grouped as "Unclassified" rather than dropped, so a
+ *  screen without a sector still finds them. */
+export const UNCLASSIFIED = "Unclassified";
+function cleanSector(raw: unknown): string {
+  const s = typeof raw === "string" ? raw.trim() : "";
+  return s === "" || /^(n\/?a|none|null|unknown)$/i.test(s) ? UNCLASSIFIED : s;
 }
 
 type RawUniverse = { generated_at?: string; companies?: Record<string, unknown>[] };
@@ -93,7 +102,7 @@ export async function getUniverse(screen: UniverseScreen): Promise<UniverseData 
         const row = {
           ticker: c.ticker as string,
           nombre: typeof c.nombre === "string" ? c.nombre : (c.ticker as string),
-          sector: typeof c.sector === "string" ? c.sector : null,
+          sector: cleanSector(c.sector),
         } as UniverseCompany;
         for (const key of METRIC_KEYS) row[key] = numberOrNull(c[key]);
         return row;
