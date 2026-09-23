@@ -1,9 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
+import { compoundInterestChart } from "@/lib/charts";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
-import { analysePortfolio } from "@/lib/portfolio-stats";
+import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
 import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
 import { METRIC_KEYS, METRICS, type MetricKey } from "@/lib/stock-metrics";
 import { getUniverse, UNIVERSE_SCREENS } from "@/lib/universe";
@@ -83,18 +84,19 @@ export function createFinancePlotsServer() {
     {
       title: "Compound interest",
       description:
-        "Grows an initial sum plus a fixed monthly contribution at an assumed annual return, compounded monthly. Returns the final value, total contributed, interest earned and a year-by-year table. The return is an assumption the user supplies, not a forecast.",
+        "Grows an initial sum plus a fixed monthly contribution at an assumed annual return, compounded monthly. Returns the final value, total contributed, interest earned, a year-by-year table and, unless `chart` is false, a PNG chart of contributions and growth by year to show the user. The return is an assumption the user supplies, not a forecast.",
       inputSchema: {
         initial_capital: z.number().min(0).describe("Starting amount"),
         monthly_contribution: z.number().min(0).describe("Amount added at the end of every month"),
         annual_return_pct: z.number().min(-50).max(100).describe("Assumed annual return in percent, e.g. 7"),
         years: z.number().int().min(1).max(80).describe("Number of years"),
+        chart: z.boolean().default(true).describe("Include a PNG chart of the year-by-year growth"),
       },
       annotations: readOnly,
     },
-    async ({ initial_capital, monthly_contribution, annual_return_pct, years }) => {
+    async ({ initial_capital, monthly_contribution, annual_return_pct, years, chart }) => {
       const r = compoundGrowth(initial_capital, monthly_contribution, years, annual_return_pct);
-      return json({
+      const result = json({
         final_value: r.finalValue,
         total_contributed: r.totalInvested,
         interest_earned: r.totalInterest,
@@ -102,6 +104,13 @@ export function createFinancePlotsServer() {
         yearly: r.rows,
         tool_page: `${SITE}/tools/compound-interest`,
       });
+      if (!chart) return result;
+      try {
+        const data = await compoundInterestChart(r.rows, `Compound growth at ${annual_return_pct}% a year over ${years} years`);
+        return { content: [...result.content, { type: "image" as const, data, mimeType: "image/png" }] };
+      } catch {
+        return result; // the numbers are complete without the picture
+      }
     },
   );
 
@@ -170,28 +179,56 @@ export function createFinancePlotsServer() {
     {
       title: "Business valuation (DCF + multiples)",
       description:
-        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. Multiples come from `industry` (see industry_multiples) unless given explicitly. Needs positive profits and cash flow; for a loss-making or early-stage company use startup_valuation. For planning and education; not a fairness opinion.",
+        "Values an established, profitable private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. " +
+        "A method whose input is zero or negative (negative EBITDA, a net loss or negative free cash flow) returns null and is left out of the average; if EBITDA, net income and free cash flow are all zero or negative the call is rejected — use startup_valuation, which is built for loss-making companies. " +
+        "Multiples and the discount rate default to `industry` (see industry_multiples), which are averages for US listed companies; a small private company usually deserves a higher discount rate and a `private_discount_pct`. " +
+        "`warnings` flags inputs to check, including methods that disagree by more than 2x. For planning and education; not a fairness opinion.",
       inputSchema: {
         revenue: z.number().min(0).describe("Annual revenue"),
         ebitda: z.number().describe("Annual EBITDA"),
-        net_income: z.number().describe("Annual net income"),
-        free_cash_flow: z.number().describe("Annual free cash flow (year 0, grown from here)"),
+        net_income: z.number().describe("Annual net income (trailing)"),
+        free_cash_flow: z
+          .number()
+          .describe(
+            "Annual free cash flow to the firm (FCFF): operating cash flow after tax, capex and working capital, before interest and debt repayments — it is discounted at WACC. Year 0, grown from here.",
+          ),
         growth_rate_pct: z.number().min(-50).max(100).default(10).describe("Annual FCF growth for years 1–5, percent"),
-        discount_rate_pct: z.number().min(0).max(100).default(12).describe("Discount rate (WACC), percent"),
+        discount_rate_pct: z
+          .number()
+          .min(0)
+          .max(100)
+          .optional()
+          .describe("Discount rate (WACC), percent. Defaults to the industry's cost of capital if `industry` is given, else 12"),
         terminal_growth_pct: z.number().min(-10).max(20).default(2.5).describe("Growth after year 5, percent; must be below the discount rate"),
-        industry: z.enum(INDUSTRIES.map((i) => i.id) as [string, ...string[]]).optional().describe("Industry id for default multiples"),
+        industry: z.enum(INDUSTRIES.map((i) => i.id) as [string, ...string[]]).optional().describe("Industry id for default multiples and discount rate"),
         ev_ebitda_multiple: z.number().min(0).optional().describe("Overrides the industry EV/EBITDA multiple"),
         ev_sales_multiple: z.number().min(0).optional().describe("Overrides the industry EV/Sales multiple"),
-        pe_ratio: z.number().min(0).optional().describe("Overrides the industry P/E"),
+        pe_ratio: z
+          .number()
+          .min(0)
+          .optional()
+          .describe("Overrides the industry P/E. The industry figure is a forward P/E of listed companies; applied to trailing net income it overstates a growing company"),
         net_debt: z.number().default(0).describe("Debt minus cash; negative if the company holds more cash than debt"),
+        private_discount_pct: z
+          .number()
+          .min(0)
+          .max(90)
+          .default(0)
+          .describe("Optional discount for a private, illiquid company, percent (20–30 is common). Taken off enterprise value only, so cash isn't discounted"),
       },
       annotations: readOnly,
     },
     async (a) => {
-      if (a.terminal_growth_pct >= a.discount_rate_pct) {
-        return error("terminal_growth_pct must be lower than discount_rate_pct, or the terminal value is infinite.");
+      if (a.ebitda <= 0 && a.net_income <= 0 && a.free_cash_flow <= 0) {
+        return error(
+          "EBITDA, net income and free cash flow are all zero or negative, so the DCF, EV/EBITDA and P/E methods give no meaningful value. Use startup_valuation instead: its DCF projects the path from losses to a mature margin, and its revenue multiple works without profits.",
+        );
       }
       const ind = INDUSTRIES.find((i) => i.id === a.industry);
+      const discountRate = a.discount_rate_pct ?? ind?.costOfCapital ?? 12;
+      if (a.terminal_growth_pct >= discountRate) {
+        return error(`terminal_growth_pct must be lower than the discount rate (${discountRate}%), or the terminal value is infinite.`);
+      }
       // Same defaults as the valuation page when no industry is chosen.
       const ebitdaMultiple = a.ev_ebitda_multiple ?? ind?.ebitda ?? 8;
       const evSalesMultiple = a.ev_sales_multiple ?? ind?.evSales ?? 2;
@@ -202,20 +239,69 @@ export function createFinancePlotsServer() {
         netIncome: a.net_income,
         fcf: a.free_cash_flow,
         growthRatePct: a.growth_rate_pct,
-        discountRatePct: a.discount_rate_pct,
+        discountRatePct: discountRate,
         terminalGrowthPct: a.terminal_growth_pct,
         ebitdaMultiple,
         evSalesMultiple,
         peRatio,
         netDebt: a.net_debt,
+        privateDiscountPct: a.private_discount_pct,
       });
-      const byMethod = (m: typeof r.equity) => ({ dcf: m.dcf, ev_ebitda: m.evEbitda, ev_sales: m.evSales, pe: m.pe, average: m.average });
+
+      const u = r.usable;
+      const names = { dcf: "DCF", evEbitda: "EV/EBITDA", evSales: "EV/Sales", pe: "P/E" } as const;
+      const keys = Object.keys(names) as (keyof typeof names)[];
+      const used = keys.filter((k) => u[k]);
+      const byMethod = (m: typeof r.equity) => ({
+        dcf: u.dcf ? m.dcf : null,
+        ev_ebitda: u.evEbitda ? m.evEbitda : null,
+        ev_sales: u.evSales ? m.evSales : null,
+        pe: u.pe ? m.pe : null,
+        average: used.length ? m.average : null,
+      });
+
+      const warnings: string[] = [];
+      const excluded = keys.filter((k) => !u[k]).map((k) => names[k]);
+      if (excluded.length) {
+        warnings.push(`Left out (their input is zero or negative): ${excluded.join(", ")}. For a loss-making company, startup_valuation is the better tool.`);
+      }
+      // Compare on enterprise value so net debt doesn't distort the ratio.
+      const positive = used.filter((k) => r.enterprise[k] > 0);
+      if (positive.length >= 2) {
+        const lo = positive.reduce((m, k) => (r.enterprise[k] < r.enterprise[m] ? k : m));
+        const hi = positive.reduce((m, k) => (r.enterprise[k] > r.enterprise[m] ? k : m));
+        const ratio = r.enterprise[hi] / r.enterprise[lo];
+        if (ratio > 2) {
+          warnings.push(
+            `The methods disagree by ${round2(ratio)}x (${names[lo]} lowest, ${names[hi]} highest), so the average hides a wide range. Check the growth and discount rate against the multiples: listed-company multiples often sit well above a private company's DCF.`,
+          );
+        }
+      }
+      if (u.pe && a.pe_ratio === undefined) {
+        warnings.push("P/E uses an industry forward P/E for listed companies on trailing net income; for a growing company that overstates the value.");
+      }
+      if (a.private_discount_pct === 0) {
+        warnings.push("No private-company discount applied. The industry multiples and cost of capital come from listed companies; a small private business is usually worth less.");
+      }
+      if (used.some((k) => r.equity[k] < 0)) {
+        warnings.push("Some equity values are negative: net debt is larger than the enterprise value those methods give.");
+      }
+
       return json({
         equity_value: byMethod(r.equity),
         enterprise_value: byMethod(r.enterprise),
+        methods_averaged: used.map((k) => names[k]),
         net_debt: a.net_debt,
+        assumptions: {
+          discount_rate_pct: discountRate,
+          discount_rate_source:
+            a.discount_rate_pct !== undefined ? "given" : ind ? `${ind.label} cost of capital (Damodaran, US listed companies)` : "default",
+          terminal_growth_pct: a.terminal_growth_pct,
+          private_discount_pct: a.private_discount_pct,
+        },
         multiples_used: { ev_ebitda: ebitdaMultiple, ev_sales: evSalesMultiple, pe: peRatio, industry: ind?.label ?? null },
-        dcf_detail: { years: r.dcfRows, pv_of_terminal_value: r.pvTerminal },
+        ...(u.dcf && { dcf_detail: { years: r.dcfRows, pv_of_terminal_value: r.pvTerminal } }),
+        ...(warnings.length > 0 && { warnings }),
         tool_page: `${SITE}/tools/valuation`,
       });
     },
@@ -228,7 +314,7 @@ export function createFinancePlotsServer() {
       description:
         "Values a young, early-stage or loss-making company. Four parts, each computed only when its inputs are given — pass whatever is known: " +
         "(1) dcf — Aswath Damodaran's intrinsic valuation for young companies: 10 years of revenue growth (the rate given for years 1–5, stepping down to terminal growth by year 10), an operating margin moving from today's to a mature target, reinvestment set by the sales-to-capital ratio, tax losses carried forward, a cost of capital falling to a mature level, and a probability that the business fails before maturing. Needs revenue, revenue_growth_pct and current_operating_margin_pct; target margin, sales-to-capital and cost of capital default to the `industry` averages (see industry_multiples). For a young firm the initial cost of capital is usually set above the industry average. " +
-        "(2) revenue_multiple — revenue × EV/Sales from `industry` or `ev_sales_multiple`, plus net cash, with an optional private-company discount. " +
+        "(2) revenue_multiple — revenue × EV/Sales from `industry` or `ev_sales_multiple`, plus net cash, with an optional private-company discount taken off the enterprise value (cash is not discounted). " +
         "(3) funding_round — the post-money valuation implied by the latest round: price_per_share × shares_outstanding, or investment ÷ stake_pct. That is a price paid for preferred shares with investor protections, not an intrinsic value, and usually overstates what an ordinary share is worth. " +
         "(4) runway — months of cash left: cash ÷ annual_burn.",
       inputSchema: {
@@ -248,7 +334,7 @@ export function createFinancePlotsServer() {
         failure_proceeds: z.number().min(0).default(0).describe("DCF: amount recovered if it fails"),
         options_value: z.number().min(0).default(0).describe("DCF: value of employee options outstanding, subtracted from equity"),
         ev_sales_multiple: z.number().min(0).optional().describe("Revenue multiple: overrides the industry EV/Sales"),
-        private_discount_pct: z.number().min(0).max(90).optional().describe("Revenue multiple: optional discount for a private, illiquid company, percent. Nothing is applied unless given."),
+        private_discount_pct: z.number().min(0).max(90).optional().describe("Revenue multiple: optional discount for a private, illiquid company, percent, taken off enterprise value before net cash is added. Nothing is applied unless given."),
         net_cash: z.number().default(0).describe("Cash minus debt (negative if net debt), added to reach equity value in the DCF and revenue multiple"),
         price_per_share: z.number().positive().optional().describe("Funding round: price paid per share"),
         shares_outstanding: z.number().positive().optional().describe("Shares in issue after the round (fully diluted if known); also gives the DCF a value per share"),
@@ -398,7 +484,7 @@ export function createFinancePlotsServer() {
     {
       title: "US macro indicators",
       description:
-        "Latest US macro data from FRED: real GDP, industrial production, CPI, core CPI and PCE inflation (year-on-year %), unemployment, the Fed funds rate (daily effective rate) and the 10-year Treasury yield, each with its change from the prior reading and its date. Monthly and quarterly series report the latest published period, which can be a month or more behind today.",
+        "Latest US macro data from FRED: real GDP, industrial production, CPI, core CPI, PCE and core PCE inflation (year-on-year %; core PCE is the measure the Fed's 2% target refers to), unemployment, the Fed funds rate (daily effective rate) and the 10-year Treasury yield, each with its change from the prior reading and its date. Monthly and quarterly series report the latest published period, which can be a month or more behind today.",
       inputSchema: {},
       annotations: { ...readOnly, openWorldHint: true },
     },
@@ -420,7 +506,7 @@ export function createFinancePlotsServer() {
     {
       title: "Market snapshot",
       description:
-        "Latest level and daily change for major stock indices (S&P 500, Nasdaq, Dow Jones, FTSE 100, DAX), FX (EUR/USD, GBP/USD, USD/JPY), gold, WTI oil, Bitcoin, the US 10-year yield and the VIX. Delayed quotes from Yahoo Finance.",
+        "Latest level and daily change for major stock indices (S&P 500, Nasdaq, Dow Jones, FTSE 100, DAX), FX (EUR/USD, GBP/USD, USD/JPY), gold, WTI oil, Bitcoin, the US 10-year yield and the VIX. Delayed quotes from Yahoo Finance, each with the time it was quoted (`as_of`, UTC). The 10-year yield's price is in percent and its daily move is given in basis points (`change_bp`), not as a percentage change of the yield.",
       inputSchema: {},
       annotations: { ...readOnly, openWorldHint: true },
     },
@@ -428,16 +514,29 @@ export function createFinancePlotsServer() {
       const quotes = await getMarketQuotes();
       return json({
         source: "Yahoo Finance (delayed)",
-        quotes: quotes.map((q) => ({
-          label: q.label,
-          symbol: q.symbol,
-          group: q.group,
-          price: q.price,
-          // FX moves are often under 0.005, which two decimals would show as 0
-          change: q.change === null ? null : q.group === "FX" ? Math.round(q.change * 1e4) / 1e4 : round2(q.change),
-          change_pct: q.changePct === null ? null : round2(q.changePct),
-          currency: q.currency,
-        })),
+        quotes: quotes.map((q) =>
+          q.group === "Rates"
+            ? {
+                // A yield: a 0.12-point move is 12 bp; "2.9%" of the yield would mislead
+                label: q.label,
+                symbol: q.symbol,
+                group: q.group,
+                yield_pct: q.price === null ? null : Math.round(q.price * 1000) / 1000,
+                change_bp: q.change === null ? null : Math.round(q.change * 1000) / 10,
+                as_of: q.time,
+              }
+            : {
+                label: q.label,
+                symbol: q.symbol,
+                group: q.group,
+                price: q.price,
+                // FX moves are often under 0.005, which two decimals would show as 0
+                change: q.change === null ? null : q.group === "FX" ? Math.round(q.change * 1e4) / 1e4 : round2(q.change),
+                change_pct: q.changePct === null ? null : round2(q.changePct),
+                currency: q.currency,
+                as_of: q.time,
+              },
+        ),
       });
     },
   );
@@ -486,7 +585,8 @@ export function createFinancePlotsServer() {
     {
       title: "Portfolio analysis",
       description:
-        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall, and for each holding its return, volatility, largest fall and share of the portfolio's risk. Weights are scaled to sum to 100. Everything is historical — not a forecast or recommendation.",
+        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall per period (daily, or weekly for 'max'), and for each holding its return, volatility, largest fall and share of the portfolio's risk. Weights are scaled to sum to 100. " +
+        "Set `base_currency` to measure everything in one currency (e.g. GBP for a UK investor holding US and Spanish shares): each holding is converted at daily Yahoo FX rates, so currency moves count as returns. Without it, each holding is measured in its own listing currency. Everything is historical — not a forecast or recommendation.",
       inputSchema: {
         holdings: z
           .array(
@@ -498,11 +598,16 @@ export function createFinancePlotsServer() {
           .min(1)
           .max(8),
         range: z.enum(["6m", "1y", "5y", "max"]).default("1y").describe("Period; 'max' uses weekly closes"),
-        risk_free_pct: z.number().min(-5).max(30).default(0).describe("Annual risk-free rate for the Sharpe ratio, percent (us_macro_indicators has the Fed funds rate)"),
+        risk_free_pct: z.number().min(-5).max(30).default(0).describe("Annual risk-free rate for the Sharpe ratio, percent, in the base currency (us_macro_indicators has the Fed funds rate)"),
+        base_currency: z
+          .string()
+          .regex(/^[A-Za-z]{3}$/)
+          .optional()
+          .describe("ISO currency to measure the portfolio in, e.g. USD, EUR, GBP. Omit to leave each holding in its own currency"),
       },
       annotations: { ...readOnly, openWorldHint: true },
     },
-    async ({ holdings, range, risk_free_pct }) => {
+    async ({ holdings, range, risk_free_pct, base_currency }) => {
       const symbols = holdings.map((h) => normaliseSymbol(h.symbol));
       const bad = holdings.filter((_, i) => !symbols[i]).map((h) => h.symbol);
       if (bad.length) return error(`Not valid tickers: ${bad.join(", ")}. Use Yahoo Finance symbols such as AAPL or SAN.MC.`);
@@ -513,8 +618,27 @@ export function createFinancePlotsServer() {
       const missing = symbols.filter((_, i) => !histories[i]);
       if (missing.length) return error(`No price data for ${missing.join(", ")}. Fix or remove them — the portfolio isn't calculated with a holding missing.`);
 
+      // Restate each holding in the base currency, if one was asked for.
+      const base = base_currency?.toUpperCase();
+      const series = histories.map((h) => h!.points);
+      const fxUsed: Record<string, string> = {};
+      if (base) {
+        const needed = [...new Set(histories.map((h) => majorCurrency(h!.currency).code).filter((c) => c && c !== base))];
+        const unknownCcy = histories.filter((h) => !h!.currency).map((h) => h!.symbol);
+        if (unknownCcy.length) return error(`Yahoo doesn't report a currency for ${unknownCcy.join(", ")}, so it can't be converted to ${base}.`);
+        const fx = await Promise.all(needed.map((c) => getPriceHistory(`${c}${base}=X`, range).catch(() => null)));
+        const noFx = needed.filter((_, i) => !fx[i]);
+        if (noFx.length) return error(`No FX history to convert ${noFx.join(", ")} into ${base}. Check the currency code.`);
+        histories.forEach((h, i) => {
+          const { code, scale } = majorCurrency(h!.currency);
+          const rate = code === base ? null : fx[needed.indexOf(code)]!.points;
+          if (rate) fxUsed[code] = `${code}${base}=X`;
+          series[i] = rate ? convertPoints(h!.points, rate, scale) : scale === 1 ? h!.points : convertPoints(h!.points, [{ date: "", close: 1, ma200: null }], scale);
+        });
+      }
+
       const r = analysePortfolio(
-        holdings.map((h, i) => ({ symbol: symbols[i]!, weight: h.weight, points: histories[i]!.points })),
+        holdings.map((h, i) => ({ symbol: symbols[i]!, weight: h.weight, points: series[i] })),
         risk_free_pct,
         range === "max" ? 52 : 252,
       );
@@ -524,14 +648,16 @@ export function createFinancePlotsServer() {
         source: "Yahoo Finance (delayed)",
         period: { start: r.start, end: r.end, interval: range === "max" ? "weekly" : "daily" },
         risk_free_pct,
+        base_currency: base ?? null,
+        ...(base && Object.keys(fxUsed).length > 0 && { fx_rates_used: fxUsed }),
         portfolio: {
           change_pct: r2(r.change_pct),
           annualised_pct: r2(r.annualised_pct),
           volatility_pct: r2(r.volatility_pct),
           sharpe: r2(r.sharpe),
           max_drawdown: { pct: r2(r.max_drawdown.pct), peak: r.max_drawdown.peak, trough: r.max_drawdown.trough },
-          var95_pct: r2(r.var95_pct),
-          expected_shortfall_95_pct: r2(r.cvar95_pct),
+          [`var95_${range === "max" ? "weekly" : "daily"}_pct`]: r2(r.var95_pct),
+          [`expected_shortfall_95_${range === "max" ? "weekly" : "daily"}_pct`]: r2(r.cvar95_pct),
           worst_period: { pct: r2(r.worst_period.pct), date: r.worst_period.date },
           undiversified_volatility_pct: r2(r.undiversified_volatility_pct),
         },
@@ -539,6 +665,7 @@ export function createFinancePlotsServer() {
           symbol: h.symbol,
           name: histories[i]!.name,
           currency: histories[i]!.currency,
+          ...(base && { measured_in: base }),
           weight_pct: r2(h.weight),
           change_pct: r2(h.change_pct),
           annualised_pct: r2(h.annualised_pct),
@@ -547,7 +674,7 @@ export function createFinancePlotsServer() {
           risk_share_pct: r2(h.risk_share_pct),
         })),
         value_path: thin(r.path, 60).map((p) => ({ date: p.date, value: round2(p.value) })),
-        note: "Historical figures with weights rebalanced each period; holdings move in their own currencies. Not a forecast, investment advice or a recommendation.",
+        note: `Historical figures with weights rebalanced each period; ${base ? `every holding converted to ${base} at daily FX rates, so currency moves are included` : "each holding measured in its own currency, with no currency effect — set base_currency to include it"}. VaR and expected shortfall are one-${range === "max" ? "week" : "day"} losses, not annual. Not a forecast, investment advice or a recommendation.`,
         tool_page: `${SITE}/tools/portfolio-analysis?h=${encodeURIComponent(r.holdings.map((h) => `${h.symbol}:${round2(h.weight)}`).join(","))}&range=${range}&rf=${risk_free_pct}`,
       });
     },
@@ -559,16 +686,22 @@ export function createFinancePlotsServer() {
     "screener_metrics",
     {
       title: "Stock screener measures",
-      description: "The measures screen_stocks can filter on, with their units and a plain-English definition.",
+      description: "The measures screen_stocks can filter, sort and show, with their units and a plain-English definition, plus the exact sector names in each index.",
       inputSchema: {},
-      annotations: readOnly,
+      annotations: { ...readOnly, openWorldHint: true },
     },
-    async () =>
-      json({
+    async () => {
+      const universes = await Promise.all(UNIVERSE_SCREENS.map((i) => getUniverse(i)));
+      return json({
         indices: UNIVERSE_SCREENS,
+        sectors: Object.fromEntries(
+          UNIVERSE_SCREENS.map((i, n) => [i, universes[n] ? [...new Set(universes[n]!.companies.map((c) => c.sector).filter(Boolean))].sort() : null]),
+        ),
         units_note: "'%' measures are percentage points (roe 16.5 means 16.5%). deuda_patrimonio is a percentage. Share prices are in the listing currency. Growth measures compare the latest year with the average of prior reported years.",
+        keys_note: "Keys are the data pipeline's own (some in Spanish, e.g. per = P/E, deuda_neta_ebitda = net debt / EBITDA); `label` gives the English name.",
         metrics: METRICS.map((m) => ({ key: m.key, label: m.label, unit: m.unit, group: m.group, definition: m.help })),
-      }),
+      });
+    },
   );
 
   server.registerTool(
@@ -576,7 +709,9 @@ export function createFinancePlotsServer() {
     {
       title: "Screen stocks",
       description:
-        "Filters the companies of one index (S&P 500, Nasdaq-100 or IBEX 35) by criteria the user sets — minimum and/or maximum values of reported measures (see screener_metrics), a sector, or a name search. Returns every match alphabetically by ticker with the filtered figures. At least one criterion is required. Companies missing a figure for a filtered measure are left out and counted. This is a filter, not a ranking or recommendation.",
+        "Filters the companies of one index (S&P 500, Nasdaq-100 or IBEX 35) by criteria the user sets — minimum and/or maximum values of reported measures (see screener_metrics), a sector, or a name search. At least one criterion is required. Companies missing a figure for a filtered measure are left out and counted. " +
+        "Matches come alphabetically by ticker unless the user asks to sort by a measure: then pass `sort_by` and the direction they asked for in `order` (there is no default direction — higher is not better or worse). `limit` caps the rows returned (match_count still gives the total); `columns` adds measures to show without filtering on them. " +
+        "This is a filter the user drives, not a ranking or recommendation: don't describe a sorted list as the best or top companies.",
       inputSchema: {
         index: z.enum(UNIVERSE_SCREENS).describe("Which index to screen"),
         filters: z
@@ -591,10 +726,14 @@ export function createFinancePlotsServer() {
           .describe("Range filters on reported measures"),
         sector: z.string().optional().describe("Exact sector name, as in the results"),
         query: z.string().optional().describe("Text to match in the ticker or company name"),
+        columns: z.array(z.enum(METRIC_KEYS)).max(12).default([]).describe("Extra measures to show for each match, beyond the filtered ones"),
+        sort_by: z.enum(METRIC_KEYS).optional().describe("Only if the user asks: sort matches by this measure instead of by ticker"),
+        order: z.enum(["asc", "desc"]).optional().describe("Required with sort_by: the direction the user asked for"),
+        limit: z.number().int().min(1).max(500).optional().describe("Most rows to return; default all matches"),
       },
       annotations: { ...readOnly, openWorldHint: true },
     },
-    async ({ index, filters, sector, query }) => {
+    async ({ index, filters, sector, query, columns, sort_by, order, limit }) => {
       const ranges = filters.filter((f) => f.min !== undefined || f.max !== undefined);
       const q = query?.trim().toLowerCase() ?? "";
       if (ranges.length === 0 && !sector && !q) {
@@ -602,6 +741,9 @@ export function createFinancePlotsServer() {
       }
       if (ranges.some((f) => f.min !== undefined && f.max !== undefined && f.min > f.max)) {
         return error("A filter has min greater than max.");
+      }
+      if (sort_by && !order) {
+        return error("Say which direction to sort: order 'asc' (lowest first) or 'desc' (highest first), as the user asked.");
       }
 
       const data = await getUniverse(index);
@@ -635,16 +777,34 @@ export function createFinancePlotsServer() {
         return true;
       });
 
-      const shown: MetricKey[] = [...new Set(ranges.map((f) => f.metric))];
+      // Sorting by a measure the user chose; companies without that figure go last, A–Z.
+      let sorted = matches;
+      let noSortValue = 0;
+      if (sort_by) {
+        const dir = order === "desc" ? -1 : 1;
+        sorted = [...matches].sort((x, y) => {
+          const a = x[sort_by];
+          const b = y[sort_by];
+          if (a === null || b === null) return a === b ? 0 : a === null ? 1 : -1;
+          return a === b ? 0 : (a - b) * dir;
+        });
+        noSortValue = matches.filter((c) => c[sort_by] === null).length;
+      }
+      const rows = limit ? sorted.slice(0, limit) : sorted;
+
+      const shown: MetricKey[] = [...new Set([...ranges.map((f) => f.metric), ...(sort_by ? [sort_by] : []), ...columns])];
       return json({
         index,
         data_as_of: data.generated_at,
         criteria: { filters: ranges, sector: sector ?? null, query: q || null },
         universe_size: data.count,
         match_count: matches.length,
+        returned: rows.length,
         left_out_for_missing_data: missing,
-        order: "alphabetical by ticker",
-        companies: matches.map((c) => ({
+        order: sort_by
+          ? `by ${sort_by}, ${order === "desc" ? "highest" : "lowest"} first, as requested${noSortValue ? ` (${noSortValue} without a figure listed last)` : ""}`
+          : "alphabetical by ticker",
+        companies: rows.map((c) => ({
           ticker: c.ticker,
           name: c.nombre,
           sector: c.sector,
