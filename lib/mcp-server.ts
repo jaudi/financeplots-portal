@@ -3,7 +3,7 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
-import { analysePortfolio } from "@/lib/portfolio-stats";
+import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
 import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
 import { METRIC_KEYS, METRICS, type MetricKey } from "@/lib/stock-metrics";
 import { getUniverse, UNIVERSE_SCREENS } from "@/lib/universe";
@@ -540,7 +540,9 @@ export function createFinancePlotsServer() {
     {
       title: "Portfolio analysis",
       description:
-        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall, and for each holding its return, volatility, largest fall and share of the portfolio's risk. Weights are scaled to sum to 100. Everything is historical — not a forecast or recommendation.",
+        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall, and for each holding its return, volatility, largest fall and share of the portfolio's risk. Weights are scaled to sum to 100. " +
+        "VaR and expected shortfall are one-period losses: var95_daily_pct / expected_shortfall_95_daily_pct, or the _weekly_ pair for range 'max' (weekly closes) — not annual figures. var95_pct and expected_shortfall_95_pct carry the same values and are deprecated. " +
+        "Set `base_currency` (e.g. USD, EUR, GBP) to convert every holding at daily Yahoo FX rates before computing returns, so currency moves count; without it each holding is measured in its own listing currency, and mixed currencies get a warning. Everything is historical — not a forecast or recommendation.",
       inputSchema: {
         holdings: z
           .array(
@@ -553,10 +555,15 @@ export function createFinancePlotsServer() {
           .max(8),
         range: z.enum(["6m", "1y", "5y", "max"]).default("1y").describe("Period; 'max' uses weekly closes"),
         risk_free_pct: z.number().min(-5).max(30).default(0).describe("Annual risk-free rate for the Sharpe ratio, percent (us_macro_indicators has the Fed funds rate)"),
+        base_currency: z
+          .string()
+          .regex(/^[A-Za-z]{3}$/, "A three-letter ISO currency code, e.g. USD")
+          .optional()
+          .describe("ISO currency to measure the whole portfolio in, e.g. USD, EUR, GBP. Omit to leave each holding in its own currency"),
       },
       annotations: { ...readOnly, openWorldHint: true },
     },
-    async ({ holdings, range, risk_free_pct }) => {
+    async ({ holdings, range, risk_free_pct, base_currency }) => {
       const symbols = holdings.map((h) => normaliseSymbol(h.symbol));
       const bad = holdings.filter((_, i) => !symbols[i]).map((h) => h.symbol);
       if (bad.length) return error(`Not valid tickers: ${bad.join(", ")}. Use Yahoo Finance symbols such as AAPL or SAN.MC.`);
@@ -567,23 +574,52 @@ export function createFinancePlotsServer() {
       const missing = symbols.filter((_, i) => !histories[i]);
       if (missing.length) return error(`No price data for ${missing.join(", ")}. Fix or remove them — the portfolio isn't calculated with a holding missing.`);
 
+      // Restate every holding in the base currency, if one was asked for.
+      const base = base_currency?.toUpperCase();
+      const currencies = histories.map((h) => majorCurrency(h!.currency));
+      const series = histories.map((h) => h!.points);
+      const fxUsed: Record<string, string> = {};
+      const warnings: string[] = [];
+      if (base) {
+        const noCcy = histories.filter((h) => !h!.currency).map((h) => h!.symbol);
+        if (noCcy.length) return error(`Yahoo doesn't report a currency for ${noCcy.join(", ")}, so it can't be converted to ${base}.`);
+        const needed = [...new Set(currencies.map((c) => c.code).filter((c) => c !== base))];
+        const fx = await Promise.all(needed.map((c) => getPriceHistory(`${c}${base}=X`, range).catch(() => null)));
+        const noFx = needed.filter((_, i) => !fx[i]);
+        if (noFx.length) return error(`No FX history to convert ${noFx.join(", ")} into ${base}. Check the currency code.`);
+        needed.forEach((c) => (fxUsed[c] = `${c}${base}=X`));
+        currencies.forEach((c, i) => {
+          series[i] = convertPoints(series[i], c.code === base ? null : fx[needed.indexOf(c.code)]!.points, c.scale);
+        });
+      } else if (new Set(currencies.map((c) => c.code)).size > 1) {
+        warnings.push(
+          `The holdings trade in different currencies (${[...new Set(currencies.map((c) => c.code))].join(", ")}) and each is measured in its own, so currency moves are left out. Set base_currency to measure everything in the investor's currency.`,
+        );
+      }
+
       const r = analysePortfolio(
-        holdings.map((h, i) => ({ symbol: symbols[i]!, weight: h.weight, points: histories[i]!.points })),
+        holdings.map((h, i) => ({ symbol: symbols[i]!, weight: h.weight, points: series[i] })),
         risk_free_pct,
         range === "max" ? 52 : 252,
       );
       if (!r) return error("Not enough shared price history to analyse. Try a longer period.");
       const r2 = (n: number | null) => (n === null ? null : round2(n));
+      const period = range === "max" ? "weekly" : "daily";
       return json({
         source: "Yahoo Finance (delayed)",
         period: { start: r.start, end: r.end, interval: range === "max" ? "weekly" : "daily" },
         risk_free_pct,
+        base_currency: base ?? null,
+        ...(Object.keys(fxUsed).length > 0 && { fx_rates_used: fxUsed }),
         portfolio: {
           change_pct: r2(r.change_pct),
           annualised_pct: r2(r.annualised_pct),
           volatility_pct: r2(r.volatility_pct),
           sharpe: r2(r.sharpe),
           max_drawdown: { pct: r2(r.max_drawdown.pct), peak: r.max_drawdown.peak, trough: r.max_drawdown.trough },
+          [`var95_${period}_pct`]: r2(r.var95_pct),
+          [`expected_shortfall_95_${period}_pct`]: r2(r.cvar95_pct),
+          // Deprecated: same values, without the period in the name.
           var95_pct: r2(r.var95_pct),
           expected_shortfall_95_pct: r2(r.cvar95_pct),
           worst_period: { pct: r2(r.worst_period.pct), date: r.worst_period.date },
@@ -593,6 +629,7 @@ export function createFinancePlotsServer() {
           symbol: h.symbol,
           name: histories[i]!.name,
           currency: histories[i]!.currency,
+          measured_in: base ?? currencies[i].code,
           weight_pct: r2(h.weight),
           change_pct: r2(h.change_pct),
           annualised_pct: r2(h.annualised_pct),
@@ -601,7 +638,8 @@ export function createFinancePlotsServer() {
           risk_share_pct: r2(h.risk_share_pct),
         })),
         value_path: thin(r.path, 60).map((p) => ({ date: p.date, value: round2(p.value) })),
-        note: "Historical figures with weights rebalanced each period; holdings move in their own currencies. Not a forecast, investment advice or a recommendation.",
+        ...(warnings.length > 0 && { warnings }),
+        note: `Historical figures with weights rebalanced each period; ${base ? `every holding converted to ${base} at daily FX rates` : "each holding in its own currency"}. VaR and expected shortfall are one-${period === "daily" ? "day" : "week"} losses. Not a forecast, investment advice or a recommendation.`,
         tool_page: `${SITE}/tools/portfolio-analysis?h=${encodeURIComponent(r.holdings.map((h) => `${h.symbol}:${round2(h.weight)}`).join(","))}&range=${range}&rf=${risk_free_pct}`,
       });
     },
