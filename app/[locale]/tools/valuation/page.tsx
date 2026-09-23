@@ -103,8 +103,8 @@ export default function ValuationPage() {
 
   // Every figure on the page is an equity value (what the shares are worth);
   // the enterprise-value average is shown alongside for reference.
-  const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation, enterpriseAvg, methodsAveraged } = useMemo(() => {
-    const { dcfRows, equity, enterprise, usable } = valuation({
+  const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation, enterpriseAvg } = useMemo(() => {
+    const { dcfRows, equity, enterprise } = valuation({
       revenue, ebitda, netIncome, fcf,
       growthRatePct: growthRate, discountRatePct: discountRate, terminalGrowthPct: terminalGrowth,
       ebitdaMultiple, evSalesMultiple, peRatio, netDebt,
@@ -117,7 +117,6 @@ export default function ValuationPage() {
       evSalesValue: equity.evSales,
       avgValuation: equity.average,
       enterpriseAvg: enterprise.average,
-      methodsAveraged: Object.values(usable).filter(Boolean).length,
     };
   }, [fcf, growthRate, discountRate, terminalGrowth, netIncome, peRatio, ebitda, ebitdaMultiple, revenue, evSalesMultiple, netDebt]);
 
@@ -318,7 +317,7 @@ export default function ValuationPage() {
                 <KpiCard
                   label="Average Valuation"
                   value={`£${fmt(avgValuation)}`}
-                  sub={methodsAveraged === 4 ? "4-method average" : `${methodsAveraged} of 4 methods — the rest have a loss or zero as input`}
+                  sub="4-method average"
                   color="gold"
                 />
                 <KpiCard label="DCF"        value={`£${fmt(dcfValue)}`}     sub={`${discountRate}% WACC`}       color="blue"   />

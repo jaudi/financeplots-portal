@@ -93,8 +93,7 @@ export async function getUniverse(screen: UniverseScreen): Promise<UniverseData 
         const row = {
           ticker: c.ticker as string,
           nombre: typeof c.nombre === "string" ? c.nombre : (c.ticker as string),
-          // The pipeline writes "N/A" (or blank) when Yahoo has no sector
-          sector: typeof c.sector === "string" && c.sector.trim() && !/^n\/?a$/i.test(c.sector.trim()) ? c.sector.trim() : null,
+          sector: typeof c.sector === "string" ? c.sector : null,
         } as UniverseCompany;
         for (const key of METRIC_KEYS) row[key] = numberOrNull(c[key]);
         return row;

@@ -36,7 +36,6 @@ export const SERIES: SeriesDef[] = [
   { id: "CPIAUCSL", label: "CPI Inflation YoY",   group: "Inflation", transform: "yoy_pct" },
   { id: "CPILFESL", label: "Core CPI YoY",        group: "Inflation", transform: "yoy_pct" },
   { id: "PCEPI",    label: "PCE Inflation YoY",   group: "Inflation", transform: "yoy_pct" },
-  { id: "PCEPILFE", label: "Core PCE YoY",        group: "Inflation", transform: "yoy_pct" }, // the Fed's 2% target
   { id: "UNRATE",   label: "Unemployment",        group: "Labor",     transform: "level" },
   { id: "DFF",      label: "Fed Funds Rate",      group: "Rates",     transform: "level" }, // daily; FEDFUNDS is a monthly average and lags a rate change by weeks
   { id: "DGS10",    label: "10Y Treasury",        group: "Rates",     transform: "level" },

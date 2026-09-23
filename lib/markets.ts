@@ -11,7 +11,6 @@ interface RawQuote {
   regularMarketPrice?: number;
   regularMarketChange?: number;
   regularMarketChangePercent?: number;
-  regularMarketTime?: Date | string | number;
   currency?: string;
 }
 
@@ -24,8 +23,6 @@ export interface MarketQuote {
   change: number | null;
   changePct: number | null;
   currency: string;
-  /** When the quoted price was set, ISO 8601; null if Yahoo doesn't say */
-  time: string | null;
 }
 
 const SYMBOLS: Record<string, { label: string; group: string; prefix?: string }> = {
@@ -41,15 +38,8 @@ const SYMBOLS: Record<string, { label: string; group: string; prefix?: string }>
   "CL=F":     { label: "WTI Oil",   group: "Commodities", prefix: "$" },
   "BTC-USD":  { label: "Bitcoin",   group: "Crypto",      prefix: "$" },
   "^TNX":     { label: "US 10Y",    group: "Rates",       prefix: "" },
-  "^VIX":     { label: "VIX",       group: "Volatility" },
+  "^VIX":     { label: "VIX",       group: "Rates" },
 };
-
-function quoteTime(t: RawQuote["regularMarketTime"]): string | null {
-  if (t === undefined) return null;
-  // Yahoo sends seconds since the epoch when results aren't validated
-  const d = typeof t === "number" ? new Date(t < 1e12 ? t * 1000 : t) : new Date(t);
-  return Number.isNaN(d.getTime()) ? null : d.toISOString();
-}
 
 function mapQuote(q: RawQuote): MarketQuote {
   const meta = SYMBOLS[q.symbol] ?? { label: q.symbol, group: "Other" };
@@ -62,7 +52,6 @@ function mapQuote(q: RawQuote): MarketQuote {
     change: q.regularMarketChange ?? null,
     changePct: q.regularMarketChangePercent ?? null,
     currency: q.currency ?? "",
-    time: quoteTime(q.regularMarketTime),
   };
 }
 
@@ -78,4 +67,4 @@ async function fetchQuotes(): Promise<MarketQuote[]> {
 
 // yahoo-finance2's requests don't go through Next's fetch cache, and a route
 // handler re-runs on every request, so without this every call hits Yahoo.
-export const getMarketQuotes = unstable_cache(fetchQuotes, ["market-quotes-v2"], { revalidate: 60 });
+export const getMarketQuotes = unstable_cache(fetchQuotes, ["market-quotes-v1"], { revalidate: 60 });

@@ -179,7 +179,7 @@ export default function MacroDashboardPage() {
                         </h3>
                         <p className="text-xs text-gray-500 mt-0.5">{meta.blurb}</p>
                       </div>
-                      <div className={`grid sm:grid-cols-2 gap-3 ${items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {items.map((ind) => {
                           const changeStr = formatChange(ind.change);
                           const up = ind.change != null && ind.change > 0;

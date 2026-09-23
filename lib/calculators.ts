@@ -137,16 +137,8 @@ export interface ValuationInputs {
   peRatio: number;
   /** Debt minus cash; negative when the company holds more cash than debt. */
   netDebt: number;
-  /** Optional haircut for a private, illiquid company, percent. Taken off
-   *  enterprise value only, so cash is not discounted. */
-  privateDiscountPct?: number;
 }
 
-export type ValuationMethod = "dcf" | "evEbitda" | "evSales" | "pe";
-
-/** A method whose driver (revenue, EBITDA, net income or FCF) is zero or
- *  negative gives a meaningless number; it's reported but left out of the
- *  average. `average` is 0 when no method is usable. */
 export interface MethodValues { dcf: number; evEbitda: number; evSales: number; pe: number; average: number }
 
 /** Five-year DCF with a Gordon-growth terminal value, next to three multiples.
@@ -155,10 +147,7 @@ export interface MethodValues { dcf: number; evEbitda: number; evSales: number; 
  *  enterprise value — the business including its debt — while P/E gives an
  *  equity value. Averaging the four as they come mixes the two, so each is
  *  converted with net debt (equity = enterprise − net debt) and both sets are
- *  returned, each with its own average.
- *
- *  Only methods whose driver is positive are averaged (`usable`): a multiple of
- *  a loss is not a value, and growing a negative FCF only makes it worse. */
+ *  returned, each with its own average. */
 export function valuation(v: ValuationInputs) {
   const r  = v.discountRatePct   / 100;
   const g  = v.growthRatePct     / 100;
@@ -178,37 +167,23 @@ export function valuation(v: ValuationInputs) {
   const terminalValue = (projectedFCF * (1 + tg)) / (r - tg);
   const pvTerminal    = terminalValue / Math.pow(1 + r, 5);
 
-  const usable: Record<ValuationMethod, boolean> = {
-    dcf: v.fcf > 0,
-    evEbitda: v.ebitda > 0,
-    evSales: v.revenue > 0,
-    pe: v.netIncome > 0,
-  };
+  const dcfEV      = cumPV + pvTerminal;
+  const evEbitdaEV = v.ebitda * v.ebitdaMultiple;
+  const evSalesEV  = v.revenue * v.evSalesMultiple;
+  const peEquity   = v.netIncome * v.peRatio;
 
+  const methods = (dcf: number, evEbitda: number, evSales: number, pe: number): MethodValues => ({
+    dcf: Math.round(dcf),
+    evEbitda: Math.round(evEbitda),
+    evSales: Math.round(evSales),
+    pe: Math.round(pe),
+    average: Math.round((dcf + evEbitda + evSales + pe) / 4),
+  });
   const nd = v.netDebt;
-  const keep = 1 - (v.privateDiscountPct ?? 0) / 100;
-  // Every method as an enterprise value, discounted, then converted.
-  const ev = {
-    dcf: (cumPV + pvTerminal) * keep,
-    evEbitda: v.ebitda * v.ebitdaMultiple * keep,
-    evSales: v.revenue * v.evSalesMultiple * keep,
-    pe: (v.netIncome * v.peRatio + nd) * keep,
-  };
+  const enterprise = methods(dcfEV, evEbitdaEV, evSalesEV, peEquity + nd);
+  const equity     = methods(dcfEV - nd, evEbitdaEV - nd, evSalesEV - nd, peEquity);
 
-  const methods = (x: Record<ValuationMethod, number>): MethodValues => {
-    const valid = (Object.keys(usable) as ValuationMethod[]).filter((k) => usable[k]).map((k) => x[k]);
-    return {
-      dcf: Math.round(x.dcf),
-      evEbitda: Math.round(x.evEbitda),
-      evSales: Math.round(x.evSales),
-      pe: Math.round(x.pe),
-      average: valid.length ? Math.round(valid.reduce((a, b) => a + b, 0) / valid.length) : 0,
-    };
-  };
-  const enterprise = methods(ev);
-  const equity     = methods({ dcf: ev.dcf - nd, evEbitda: ev.evEbitda - nd, evSales: ev.evSales - nd, pe: ev.pe - nd });
-
-  return { dcfRows, pvTerminal: Math.round(pvTerminal), enterprise, equity, usable };
+  return { dcfRows, pvTerminal: Math.round(pvTerminal), enterprise, equity };
 }
 
 // ── Startup valuation ───────────────────────────────────────────────────────
@@ -251,8 +226,7 @@ export function startupValuation(v: StartupInputs) {
   if (v.revenue !== undefined && v.evSalesMultiple !== undefined) {
     const enterpriseValue = v.revenue * v.evSalesMultiple;
     const equityValue = enterpriseValue + (v.netCash ?? 0);
-    // The discount is for an illiquid operating business; cash isn't discounted.
-    const afterDiscount = enterpriseValue * (1 - (v.privateDiscountPct ?? 0) / 100) + (v.netCash ?? 0);
+    const afterDiscount = equityValue * (1 - (v.privateDiscountPct ?? 0) / 100);
     revenueMultiple = { enterpriseValue, equityValue, afterDiscount };
   }
 

@@ -68,29 +68,6 @@ function drawdown(values: number[], dates: string[]) {
   return worst;
 }
 
-/** Yahoo quotes some exchanges in minor units (London in pence as "GBp"). */
-export function majorCurrency(currency: string): { code: string; scale: number } {
-  if (currency === "GBp" || currency === "GBX") return { code: "GBP", scale: 0.01 };
-  if (currency === "ZAc") return { code: "ZAR", scale: 0.01 };
-  if (currency === "ILA") return { code: "ILS", scale: 0.01 };
-  return { code: currency.toUpperCase(), scale: 1 };
-}
-
-/** Restates closes in another currency: each close × `scale` × the latest FX
- *  rate on or before its date. `fx` is the price of one unit of the holding's
- *  currency in the target currency (Yahoo's "EURUSD=X" for EUR → USD). Closes
- *  before the first FX rate are dropped. */
-export function convertPoints(points: PricePoint[], fx: PricePoint[], scale = 1): PricePoint[] {
-  const out: PricePoint[] = [];
-  let j = 0;
-  let rate = NaN;
-  for (const p of points) {
-    while (j < fx.length && fx[j].date <= p.date) rate = fx[j++].close;
-    if (Number.isFinite(rate)) out.push({ date: p.date, close: p.close * scale * rate, ma200: null });
-  }
-  return out;
-}
-
 /**
  * @param riskFreePct annual risk-free rate in percent, for the Sharpe ratio
  * @param periodsPerYear 252 for daily closes, 52 for weekly
