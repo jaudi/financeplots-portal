@@ -1,6 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, payoffWithExtra, realValue, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
+import { chartPng } from "@/lib/charts/png";
+import { CHARTS_META_KEY, type ChartSpec } from "@/lib/charts/spec";
+import { breakEvenChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, valuationChart } from "@/lib/charts/tool-charts";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
@@ -33,6 +36,26 @@ function error(message: string) {
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
+
+const chartParam = z
+  .boolean()
+  .default(true)
+  .describe("Include a chart as a PNG image (dark theme) to show the user; false returns the figures only");
+
+/** Adds each chart as a PNG, and the chart specs under `_meta` for an MCP App
+ *  view. The JSON text stays first and complete: a chart that fails to render
+ *  is dropped, never the figures. */
+async function withCharts(result: ReturnType<typeof json>, specs: ChartSpec[], chart: boolean) {
+  if (!chart || specs.length === 0) return result;
+  const images = await Promise.all(specs.map((s) => chartPng(s).catch(() => null)));
+  return {
+    content: [
+      ...result.content,
+      ...images.filter((d): d is string => d !== null).map((data) => ({ type: "image" as const, data, mimeType: "image/png" })),
+    ],
+    _meta: { [CHARTS_META_KEY]: specs },
+  };
+}
 const readOnly = { readOnlyHint: true, destructiveHint: false, openWorldHint: false } as const;
 
 export function createFinancePlotsServer() {
@@ -48,16 +71,17 @@ export function createFinancePlotsServer() {
     {
       title: "Loan / mortgage repayment",
       description:
-        "Repayment schedule for a fixed-rate, fully amortising loan or mortgage with monthly payments. Returns the monthly payment, total interest and a year-by-year summary of interest, principal and remaining balance. With `extra_monthly_payment`, also how many months and how much interest overpaying saves.",
+        "Repayment schedule for a fixed-rate, fully amortising loan or mortgage with monthly payments. Returns the monthly payment, total interest and a year-by-year summary of interest, principal and remaining balance, with charts of each year's interest and capital and of the balance owed. With `extra_monthly_payment`, also how many months and how much interest overpaying saves.",
       inputSchema: {
         amount: z.number().positive().describe("Amount borrowed"),
         annual_rate_pct: z.number().min(0).max(100).describe("Annual interest rate in percent, e.g. 4.5"),
         years: z.number().int().min(1).max(50).describe("Term in years"),
         extra_monthly_payment: z.number().positive().optional().describe("Amount overpaid every month on top of the scheduled payment"),
+        chart: chartParam,
       },
       annotations: readOnly,
     },
-    async ({ amount, annual_rate_pct, years, extra_monthly_payment }) => {
+    async ({ amount, annual_rate_pct, years, extra_monthly_payment, chart }) => {
       const schedule = buildSchedule(annual_rate_pct / 100, years, amount);
       const yearly = [];
       for (let y = 0; y < years; y++) {
@@ -71,7 +95,7 @@ export function createFinancePlotsServer() {
       }
       const totalInterest = schedule.reduce((s, r) => s + r.interest, 0);
       const extra = extra_monthly_payment === undefined ? null : payoffWithExtra(annual_rate_pct / 100, years, amount, extra_monthly_payment);
-      return json({
+      const result = json({
         monthly_payment: round2(schedule[0].payment),
         total_paid: round2(schedule.reduce((s, r) => s + r.payment, 0)),
         total_interest: round2(totalInterest),
@@ -88,6 +112,7 @@ export function createFinancePlotsServer() {
         yearly,
         tool_page: `${SITE}/tools/lending`,
       });
+      return withCharts(result, loanCharts(yearly, amount), chart);
     },
   );
 
@@ -96,7 +121,7 @@ export function createFinancePlotsServer() {
     {
       title: "Compound interest",
       description:
-        "Grows an initial sum plus a fixed monthly contribution at an assumed annual return, compounded monthly. Returns the final value, total contributed, interest earned and a year-by-year table; with `inflation_pct`, also the final value in today's money. The return is an assumption the user supplies, not a forecast.",
+        "Grows an initial sum plus a fixed monthly contribution at an assumed annual return, compounded monthly. Returns the final value, total contributed, interest earned and a year-by-year table, with a chart of what was paid in and what it grew by; with `inflation_pct`, also the final value in today's money. The return is an assumption the user supplies, not a forecast.",
       inputSchema: {
         initial_capital: z.number().min(0).describe("Starting amount"),
         monthly_contribution: z.number().min(0).describe("Amount added at the end of every month"),
@@ -108,12 +133,13 @@ export function createFinancePlotsServer() {
           .max(50)
           .optional()
           .describe("Assumed annual inflation, percent; adds real_final_value, the final value in today's money"),
+        chart: chartParam,
       },
       annotations: readOnly,
     },
-    async ({ initial_capital, monthly_contribution, annual_return_pct, years, inflation_pct }) => {
+    async ({ initial_capital, monthly_contribution, annual_return_pct, years, inflation_pct, chart }) => {
       const r = compoundGrowth(initial_capital, monthly_contribution, years, annual_return_pct);
-      return json({
+      const result = json({
         final_value: r.finalValue,
         total_contributed: r.totalInvested,
         interest_earned: r.totalInterest,
@@ -125,6 +151,7 @@ export function createFinancePlotsServer() {
         yearly: r.rows,
         tool_page: `${SITE}/tools/compound-interest`,
       });
+      return withCharts(result, [compoundChart(r.rows, annual_return_pct, inflation_pct)], chart);
     },
   );
 
@@ -133,21 +160,22 @@ export function createFinancePlotsServer() {
     {
       title: "Break-even analysis",
       description:
-        "Break-even point for a product or business: contribution margin, units and revenue needed to cover fixed costs, and — if current volume is given — current profit and margin of safety.",
+        "Break-even point for a product or business: contribution margin, units and revenue needed to cover fixed costs, and — if current volume is given — current profit and margin of safety, with a chart of revenue against costs.",
       inputSchema: {
         fixed_costs: z.number().min(0).describe("Total fixed costs for the period (rent, payroll, etc.)"),
         selling_price: z.number().positive().describe("Selling price per unit"),
         variable_cost: z.number().min(0).describe("Variable cost per unit"),
         current_units: z.number().min(0).optional().describe("Units currently sold in the period, if known"),
+        chart: chartParam,
       },
       annotations: readOnly,
     },
-    async ({ fixed_costs, selling_price, variable_cost, current_units }) => {
+    async ({ fixed_costs, selling_price, variable_cost, current_units, chart }) => {
       const r = breakEven(fixed_costs, selling_price, variable_cost, current_units ?? 0);
       if (r.bepUnits === null) {
         return error("The selling price must be higher than the variable cost per unit, otherwise the business never breaks even.");
       }
-      return json({
+      const result = json({
         contribution_margin_per_unit: round2(r.cm),
         contribution_margin_ratio_pct: round2(r.cmRatio * 100),
         break_even_units: round2(r.bepUnits),
@@ -160,6 +188,7 @@ export function createFinancePlotsServer() {
         }),
         tool_page: `${SITE}/tools/break-even`,
       });
+      return withCharts(result, [breakEvenChart(fixed_costs, selling_price, variable_cost, r.bepUnits, current_units || undefined)], chart);
     },
   );
 
@@ -224,6 +253,7 @@ export function createFinancePlotsServer() {
           .max(90)
           .default(0)
           .describe("Optional discount for a private, illiquid company, percent, as in startup_valuation. Taken off enterprise value before net debt, so cash isn't discounted. Nothing is applied unless given"),
+        chart: chartParam,
       },
       annotations: readOnly,
     },
@@ -278,7 +308,7 @@ export function createFinancePlotsServer() {
           `The methods disagree materially: the highest is ${dispersion}x the lowest, so read the average with caution. Check the growth and discount rate against the multiples, which come from listed companies.`,
         );
       }
-      return json({
+      const result = json({
         equity_value: byMethod(r.equity),
         enterprise_value: byMethod(r.enterprise),
         excluded_methods: r.excluded.map((e) => ({ method: methodKey[e.method], reason: e.reason })),
@@ -292,6 +322,7 @@ export function createFinancePlotsServer() {
         ...(warnings.length > 0 && { warnings }),
         tool_page: `${SITE}/tools/valuation`,
       });
+      return withCharts(result, [valuationChart(byMethod(r.equity))], a.chart);
     },
   );
 
@@ -330,6 +361,7 @@ export function createFinancePlotsServer() {
         stake_pct: z.number().gt(0).max(100).optional().describe("Funding round: percentage of the company the round bought, used with investment"),
         cash: z.number().min(0).optional().describe("Runway: cash in the bank"),
         annual_burn: z.number().positive().optional().describe("Runway: cash used per year (net outflow)"),
+        chart: chartParam,
       },
       annotations: readOnly,
     },
@@ -442,7 +474,7 @@ export function createFinancePlotsServer() {
         );
       }
 
-      return json({
+      const result = json({
         ...(dcf && { dcf }),
         ...(s.revenueMultiple && {
           revenue_multiple: {
@@ -471,6 +503,13 @@ export function createFinancePlotsServer() {
         ],
         tool_page: `${SITE}/tools/valuation`,
       });
+      const methodValues = [
+        ...(dcf ? [{ label: "DCF", value: dcf.equity_value as number }] : []),
+        ...(s.revenueMultiple ? [{ label: "Revenue multiple", value: Math.round(s.revenueMultiple.afterDiscount) }] : []),
+        ...(s.round ? [{ label: "Funding round (post-money)", value: Math.round(s.round.postMoney) }] : []),
+      ];
+      const dcfYears = dcf ? (dcf.years as { year: number; revenue: number; fcff: number }[]) : null;
+      return withCharts(result, startupCharts(dcfYears, methodValues), a.chart);
     },
   );
 
@@ -535,20 +574,21 @@ export function createFinancePlotsServer() {
     {
       title: "Price history",
       description:
-        "Closing-price history for one ticker the user names (Yahoo Finance symbol: AAPL, SAN.MC, BRK-B, ^GSPC, EURUSD=X…) over 1m, 6m, 1y, 5y or max. Returns the change over the period, the high and low closes with dates, the last close against its 200-day moving average, annualised volatility, and the series thinned to at most `max_points` for charting. Raw prices, not a forecast or recommendation.",
+        "Closing-price history for one ticker the user names (Yahoo Finance symbol: AAPL, SAN.MC, BRK-B, ^GSPC, EURUSD=X…) over 1m, 6m, 1y, 5y or max. Returns the change over the period, the high and low closes with dates, the last close against its 200-day moving average, annualised volatility, the series thinned to at most `max_points`, and a chart of the closes. Raw prices, not a forecast or recommendation.",
       inputSchema: {
         symbol: z.string().min(1).max(15).describe("Yahoo Finance ticker; add the exchange suffix outside the US, e.g. .MC Madrid, .L London, .PA Paris"),
         range: z.enum(PRICE_RANGES).default("1y").describe("Period to cover; 'max' uses weekly closes and has no 200-day average"),
         max_points: z.number().int().min(10).max(500).default(120).describe("Most points to return in the series"),
+        chart: chartParam,
       },
       annotations: { ...readOnly, openWorldHint: true },
     },
-    async ({ symbol, range, max_points }) => {
+    async ({ symbol, range, max_points, chart }) => {
       const s = normaliseSymbol(symbol);
       if (!s) return error(`"${symbol}" isn't a valid ticker. Use a Yahoo Finance symbol such as AAPL or SAN.MC.`);
       try {
         const h = await getPriceHistory(s, range);
-        return json({
+        const result = json({
           source: "Yahoo Finance (delayed)",
           symbol: h.symbol,
           name: h.name,
@@ -562,6 +602,7 @@ export function createFinancePlotsServer() {
           note: "Raw market data for education. Past prices say nothing about future returns; not investment advice or a recommendation.",
           tool_page: `${SITE}/tools/stock-analysis?symbol=${encodeURIComponent(h.symbol)}`,
         });
+        return withCharts(result, [priceChart({ ...h, points: thin(h.points, 400) })], chart);
       } catch (err) {
         if (isUnknownSymbol(err)) return error(`No price data found for "${s}". Check the ticker and its exchange suffix.`);
         return error("Price data is temporarily unavailable.");
@@ -574,7 +615,7 @@ export function createFinancePlotsServer() {
     {
       title: "Portfolio analysis",
       description:
-        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall, and for each holding its return, volatility, largest fall and share of the portfolio's risk. Weights are scaled to sum to 100. " +
+        "Historical risk and return for a portfolio of up to eight tickers the user names, with weights held constant (rebalanced each period): change, annualised return, volatility, Sharpe ratio, largest fall, 95% historical VaR and expected shortfall, and for each holding its return, volatility, largest fall and share of the portfolio's risk, with charts of the portfolio's value and of each holding's weight against its share of risk. Weights are scaled to sum to 100. " +
         "VaR and expected shortfall are one-period losses: var95_daily_pct / expected_shortfall_95_daily_pct, or the _weekly_ pair for range 'max' (weekly closes) — not annual figures. var95_pct and expected_shortfall_95_pct carry the same values and are deprecated. " +
         "Set `base_currency` (e.g. USD, EUR, GBP) to convert every holding at daily Yahoo FX rates before computing returns, so currency moves count; without it each holding is measured in its own listing currency, and mixed currencies get a warning. Everything is historical — not a forecast or recommendation.",
       inputSchema: {
@@ -594,10 +635,11 @@ export function createFinancePlotsServer() {
           .regex(/^[A-Za-z]{3}$/, "A three-letter ISO currency code, e.g. USD")
           .optional()
           .describe("ISO currency to measure the whole portfolio in, e.g. USD, EUR, GBP. Omit to leave each holding in its own currency"),
+        chart: chartParam,
       },
       annotations: { ...readOnly, openWorldHint: true },
     },
-    async ({ holdings, range, risk_free_pct, base_currency }) => {
+    async ({ holdings, range, risk_free_pct, base_currency, chart }) => {
       const symbols = holdings.map((h) => normaliseSymbol(h.symbol));
       const bad = holdings.filter((_, i) => !symbols[i]).map((h) => h.symbol);
       if (bad.length) return error(`Not valid tickers: ${bad.join(", ")}. Use Yahoo Finance symbols such as AAPL or SAN.MC.`);
@@ -639,7 +681,7 @@ export function createFinancePlotsServer() {
       if (!r) return error("Not enough shared price history to analyse. Try a longer period.");
       const r2 = (n: number | null) => (n === null ? null : round2(n));
       const period = range === "max" ? "weekly" : "daily";
-      return json({
+      const result = json({
         source: "Yahoo Finance (delayed)",
         period: { start: r.start, end: r.end, interval: range === "max" ? "weekly" : "daily" },
         risk_free_pct,
@@ -676,6 +718,12 @@ export function createFinancePlotsServer() {
         note: `Historical figures with weights rebalanced each period; ${base ? `every holding converted to ${base} at daily FX rates` : "each holding in its own currency"}. VaR and expected shortfall are one-${period === "daily" ? "day" : "week"} losses. Not a forecast, investment advice or a recommendation.`,
         tool_page: `${SITE}/tools/portfolio-analysis?h=${encodeURIComponent(r.holdings.map((h) => `${h.symbol}:${round2(h.weight)}`).join(","))}&range=${range}&rf=${risk_free_pct}`,
       });
+      const charts = portfolioCharts(
+        thin(r.path, 400),
+        r.holdings.map((h) => ({ symbol: h.symbol, weight: round2(h.weight), risk_share_pct: round2(h.risk_share_pct) })),
+        base ?? null,
+      );
+      return withCharts(result, charts, chart);
     },
   );
 
