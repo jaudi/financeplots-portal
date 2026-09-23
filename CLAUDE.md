@@ -21,7 +21,7 @@ Adding a tool means: a route under `app/[locale]/tools/`, an entry in both messa
 
 ## Data sources
 
-- **FRED** — `lib/fred.ts` fetches 8 US macro series server-side; needs `FRED_API_KEY`
+- **FRED** — `lib/fred.ts` fetches 9 US macro series server-side; needs `FRED_API_KEY`
 - **Stock screener data** — `lib/universe.ts` fetches `universe-*.json` live from `raw.githubusercontent.com`; the `sp500-quality-screener` repo refreshes it weekly in GitHub Actions. No database anywhere. Three indices: S&P 500, IBEX 35, Nasdaq-100.
 - **Yahoo Finance** — `yahoo-finance2` for quotes (`lib/markets.ts`) and price history (`lib/prices.ts`). Its calls bypass Next's fetch cache, so each is wrapped in `unstable_cache`. Stock Analysis, Stock Comparison and Portfolio Analysis follow the screener's neutrality: they open empty, never suggest a ticker or holding, show moves with ▲/▼ rather than green/red, keep tickers in the order typed with colours by position (never by performance), and grade nothing (no "good" Sharpe ratio).
 
@@ -73,11 +73,15 @@ prior reported years — they are not year-on-year.
 - `screen_stocks` follows the stock screener's neutrality rules above: at least one criterion, alphabetical by ticker, raw figures only. Don't add a tool that returns a default, ranked or curated list of securities. `limit` (default 50) cuts the A–Z list and sets `truncated`; it never reorders. Metrics can be named by the data's key or an English alias (`METRIC_ALIASES` in `lib/stock-metrics.ts`); the response echoes the name the caller used.
 - Companies the pipeline gives no sector ("N/A" or blank) get the sector "Unclassified" in `lib/universe.ts`, on the page too, so they stay findable.
 - `INDUSTRIES` in `lib/calculators.ts` is Damodaran data (January 2026): the valuation page uses the multiples, `startup_valuation` (its Damodaran DCF) the margin, sales-to-capital and cost of capital. Damodaran republishes every January — refresh all six columns together.
+- **Backwards compatibility:** clients depend on the response shape. Add fields and input aliases; never remove or rename one — mark it deprecated in the description instead (e.g. `var95_pct`, kept next to `var95_daily_pct`).
+- `business_valuation` never averages a meaningless number: a method whose driver (FCF, EBITDA, net income, revenue) is ≤ 0 is `null`, listed in `excluded_methods` and left out of the average (in the shared `valuation()`, so the page shows "n/a" too); EBITDA, net income and FCF all ≤ 0 is rejected with a pointer to `startup_valuation`. Private-company discounts, in both valuation tools, come off enterprise value only — never off cash.
 - No tool calls the Claude API — a public endpoint that spends `ANTHROPIC_API_KEY` per call would be an open bill. Yahoo quotes are cached 60 s (`lib/markets.ts`), FRED 24 h.
 
 `/mcp` (`app/[locale]/mcp/page.tsx`, copy in the `mcp` message namespace) tells people how to connect it. Its tool list is written by hand — update it when a tool is added or removed.
 
-Test locally with `npx @modelcontextprotocol/inspector` pointed at `http://localhost:3000/api/mcp`.
+`npm test` (Vitest, `tests/`) calls every tool through the real server in-process (`tests/mcp-client.ts`). Data tools run on mocks or the committed screener snapshot, never the network. The valuation tests pin figures checked by hand in the September 2026 external review — if one moves, the maths changed.
+
+Test by hand with `npx @modelcontextprotocol/inspector` pointed at `http://localhost:3000/api/mcp`.
 
 ## AI
 
