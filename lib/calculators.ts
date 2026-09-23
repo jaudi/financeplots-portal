@@ -137,6 +137,9 @@ export interface ValuationInputs {
   peRatio: number;
   /** Debt minus cash; negative when the company holds more cash than debt. */
   netDebt: number;
+  /** Optional haircut for a private, illiquid company, percent. Taken off
+   *  enterprise value before net debt, so cash is never discounted. */
+  privateDiscountPct?: number;
 }
 
 export type ValuationMethod = "dcf" | "evEbitda" | "evSales" | "pe";
@@ -187,12 +190,14 @@ export function valuation(v: ValuationInputs) {
   }
 
   const nd = v.netDebt;
-  // Every method as an enterprise value; P/E gives equity, so add net debt back.
+  const keep = 1 - (v.privateDiscountPct ?? 0) / 100;
+  // Every method as an enterprise value (P/E gives equity, so net debt is
+  // added back), then the private discount on that, before net debt.
   const ev: Record<ValuationMethod, number> = {
-    dcf: cumPV + (pvTerminal ?? 0),
-    evEbitda: v.ebitda * v.ebitdaMultiple,
-    evSales: v.revenue * v.evSalesMultiple,
-    pe: v.netIncome * v.peRatio + nd,
+    dcf: (cumPV + (pvTerminal ?? 0)) * keep,
+    evEbitda: v.ebitda * v.ebitdaMultiple * keep,
+    evSales: v.revenue * v.evSalesMultiple * keep,
+    pe: (v.netIncome * v.peRatio + nd) * keep,
   };
 
   const methods = (x: Record<ValuationMethod, number>): MethodValues => {

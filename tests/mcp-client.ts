@@ -13,11 +13,24 @@ export interface ToolResult {
   json: any;
 }
 
-export async function callTool(name: string, args: Record<string, unknown> = {}): Promise<ToolResult> {
+async function connect() {
   const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
-  const server = createFinancePlotsServer();
   const client = new Client({ name: "test", version: "0" });
-  await Promise.all([server.connect(serverSide), client.connect(clientSide)]);
+  await Promise.all([createFinancePlotsServer().connect(serverSide), client.connect(clientSide)]);
+  return client;
+}
+
+export async function listTools() {
+  const client = await connect();
+  try {
+    return await client.listTools();
+  } finally {
+    await client.close();
+  }
+}
+
+export async function callTool(name: string, args: Record<string, unknown> = {}): Promise<ToolResult> {
+  const client = await connect();
   try {
     const res = await client.callTool({ name, arguments: args });
     const content = res.content as { type: string; text?: string }[];

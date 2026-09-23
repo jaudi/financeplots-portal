@@ -170,21 +170,36 @@ export function createFinancePlotsServer() {
     {
       title: "Business valuation (DCF + multiples)",
       description:
-        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. Multiples come from `industry` (see industry_multiples) unless given explicitly. " +
+        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. Multiples come from `industry` (see industry_multiples) unless given explicitly; the industry P/E is a forward P/E, so applied to trailing net income it tends to overstate a growing company. The discount rate defaults to the industry cost of capital. `dispersion` is the highest method value over the lowest; above 2 the methods disagree materially and the average needs care. " +
         "A method whose driver is zero or negative (FCF for the DCF, EBITDA for EV/EBITDA, net income for P/E) returns null, is listed in `excluded_methods` with the reason and is left out of the average; if EBITDA, net income and free cash flow are all zero or negative the call is rejected — use startup_valuation for a loss-making or early-stage company. For planning and education; not a fairness opinion.",
       inputSchema: {
         revenue: z.number().min(0).describe("Annual revenue"),
         ebitda: z.number().describe("Annual EBITDA"),
         net_income: z.number().describe("Annual net income"),
-        free_cash_flow: z.number().describe("Annual free cash flow (year 0, grown from here)"),
+        free_cash_flow: z
+          .number()
+          .describe(
+            "Annual unlevered free cash flow — free cash flow to the firm (FCFF): operating cash flow after tax, capex and working capital, before interest and debt repayments. It is discounted at WACC, so it must be FCFF, not free cash flow to equity. Year 0, grown from here.",
+          ),
         growth_rate_pct: z.number().min(-50).max(100).default(10).describe("Annual FCF growth for years 1–5, percent"),
-        discount_rate_pct: z.number().min(0).max(100).default(12).describe("Discount rate (WACC), percent"),
+        discount_rate_pct: z
+          .number()
+          .min(0)
+          .max(100)
+          .optional()
+          .describe("Discount rate (WACC), percent. Defaults to the industry's cost_of_capital_pct when `industry` is given, otherwise 12. The rate used is echoed in `discount_rate_used_pct`"),
         terminal_growth_pct: z.number().min(-10).max(20).default(2.5).describe("Growth after year 5, percent; must be below the discount rate"),
         industry: z.enum(INDUSTRIES.map((i) => i.id) as [string, ...string[]]).optional().describe("Industry id for default multiples"),
         ev_ebitda_multiple: z.number().min(0).optional().describe("Overrides the industry EV/EBITDA multiple"),
         ev_sales_multiple: z.number().min(0).optional().describe("Overrides the industry EV/Sales multiple"),
-        pe_ratio: z.number().min(0).optional().describe("Overrides the industry P/E"),
+        pe_ratio: z.number().min(0).optional().describe("Overrides the industry P/E. The industry figure is a forward P/E (price over next year's expected earnings) for US listed companies"),
         net_debt: z.number().default(0).describe("Debt minus cash; negative if the company holds more cash than debt"),
+        private_discount_pct: z
+          .number()
+          .min(0)
+          .max(90)
+          .default(0)
+          .describe("Optional discount for a private, illiquid company, percent, as in startup_valuation. Taken off enterprise value before net debt, so cash isn't discounted. Nothing is applied unless given"),
       },
       annotations: readOnly,
     },
@@ -194,10 +209,11 @@ export function createFinancePlotsServer() {
           "EBITDA, net income and free cash flow are all zero or negative, so the DCF, EV/EBITDA and P/E methods give no meaningful value. Use startup_valuation instead: its DCF projects the path from losses to a mature margin, and its revenue multiple works without profits.",
         );
       }
-      if (a.terminal_growth_pct >= a.discount_rate_pct) {
-        return error("terminal_growth_pct must be lower than discount_rate_pct, or the terminal value is infinite.");
-      }
       const ind = INDUSTRIES.find((i) => i.id === a.industry);
+      const discountRate = a.discount_rate_pct ?? ind?.costOfCapital ?? 12;
+      if (a.terminal_growth_pct >= discountRate) {
+        return error(`terminal_growth_pct must be lower than the discount rate (${discountRate}%), or the terminal value is infinite.`);
+      }
       // Same defaults as the valuation page when no industry is chosen.
       const ebitdaMultiple = a.ev_ebitda_multiple ?? ind?.ebitda ?? 8;
       const evSalesMultiple = a.ev_sales_multiple ?? ind?.evSales ?? 2;
@@ -208,12 +224,13 @@ export function createFinancePlotsServer() {
         netIncome: a.net_income,
         fcf: a.free_cash_flow,
         growthRatePct: a.growth_rate_pct,
-        discountRatePct: a.discount_rate_pct,
+        discountRatePct: discountRate,
         terminalGrowthPct: a.terminal_growth_pct,
         ebitdaMultiple,
         evSalesMultiple,
         peRatio,
         netDebt: a.net_debt,
+        privateDiscountPct: a.private_discount_pct,
       });
       const byMethod = (m: typeof r.equity) => ({ dcf: m.dcf, ev_ebitda: m.evEbitda, ev_sales: m.evSales, pe: m.pe, average: m.average });
       const methodKey = { dcf: "dcf", evEbitda: "ev_ebitda", evSales: "ev_sales", pe: "pe" } as const;
@@ -224,11 +241,23 @@ export function createFinancePlotsServer() {
           `Only ${valid} of the four methods has a meaningful input, so the "average" is a single method, not a cross-check. For a loss-making company, startup_valuation is the better tool.`,
         );
       }
+      // Highest over lowest valid method, on enterprise value so net debt can't flip a sign.
+      const evs = [r.enterprise.dcf, r.enterprise.evEbitda, r.enterprise.evSales, r.enterprise.pe].filter((x): x is number => x !== null && x > 0);
+      const dispersion = evs.length >= 2 ? round2(Math.max(...evs) / Math.min(...evs)) : null;
+      if (dispersion !== null && dispersion > 2) {
+        warnings.push(
+          `The methods disagree materially: the highest is ${dispersion}x the lowest, so read the average with caution. Check the growth and discount rate against the multiples, which come from listed companies.`,
+        );
+      }
       return json({
         equity_value: byMethod(r.equity),
         enterprise_value: byMethod(r.enterprise),
         excluded_methods: r.excluded.map((e) => ({ method: methodKey[e.method], reason: e.reason })),
+        dispersion,
         net_debt: a.net_debt,
+        discount_rate_used_pct: discountRate,
+        discount_rate_source: a.discount_rate_pct !== undefined ? "given" : ind ? `${ind.label} cost of capital` : "default",
+        private_discount_pct: a.private_discount_pct,
         multiples_used: { ev_ebitda: ebitdaMultiple, ev_sales: evSalesMultiple, pe: peRatio, industry: ind?.label ?? null },
         dcf_detail: { years: r.dcfRows, pv_of_terminal_value: r.pvTerminal },
         ...(warnings.length > 0 && { warnings }),
