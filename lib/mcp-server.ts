@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
+import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, realValue, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
 import { fetchIndicators } from "@/lib/fred";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
@@ -83,22 +83,32 @@ export function createFinancePlotsServer() {
     {
       title: "Compound interest",
       description:
-        "Grows an initial sum plus a fixed monthly contribution at an assumed annual return, compounded monthly. Returns the final value, total contributed, interest earned and a year-by-year table. The return is an assumption the user supplies, not a forecast.",
+        "Grows an initial sum plus a fixed monthly contribution at an assumed annual return, compounded monthly. Returns the final value, total contributed, interest earned and a year-by-year table; with `inflation_pct`, also the final value in today's money. The return is an assumption the user supplies, not a forecast.",
       inputSchema: {
         initial_capital: z.number().min(0).describe("Starting amount"),
         monthly_contribution: z.number().min(0).describe("Amount added at the end of every month"),
         annual_return_pct: z.number().min(-50).max(100).describe("Assumed annual return in percent, e.g. 7"),
         years: z.number().int().min(1).max(80).describe("Number of years"),
+        inflation_pct: z
+          .number()
+          .min(-5)
+          .max(50)
+          .optional()
+          .describe("Assumed annual inflation, percent; adds real_final_value, the final value in today's money"),
       },
       annotations: readOnly,
     },
-    async ({ initial_capital, monthly_contribution, annual_return_pct, years }) => {
+    async ({ initial_capital, monthly_contribution, annual_return_pct, years, inflation_pct }) => {
       const r = compoundGrowth(initial_capital, monthly_contribution, years, annual_return_pct);
       return json({
         final_value: r.finalValue,
         total_contributed: r.totalInvested,
         interest_earned: r.totalInterest,
         return_multiple: round2(r.returnMultiple),
+        ...(inflation_pct !== undefined && {
+          inflation_pct,
+          real_final_value: Math.round(realValue(r.finalValue, inflation_pct, years)),
+        }),
         yearly: r.rows,
         tool_page: `${SITE}/tools/compound-interest`,
       });

@@ -68,6 +68,11 @@ export function compoundGrowth(initialCapital: number, monthlyContribution: numb
   return { rows, finalValue: Math.round(balance), totalInvested, totalInterest: Math.round(totalInt), returnMultiple };
 }
 
+/** A future amount in today's money, deflated at a constant annual inflation rate. */
+export function realValue(nominal: number, inflationPct: number, years: number) {
+  return nominal / Math.pow(1 + inflationPct / 100, years);
+}
+
 // ── Break-even ──────────────────────────────────────────────────────────────
 
 export function breakEven(totalFixed: number, sellingPrice: number, variableCost: number, currentUnits: number) {

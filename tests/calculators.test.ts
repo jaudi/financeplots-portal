@@ -27,3 +27,14 @@ describe("break_even", () => {
     expect(r.json.margin_of_safety_pct).toBeCloseTo(16.67, 1);
   });
 });
+
+describe("compound_interest — inflation (item 8)", () => {
+  it("deflates the final value to today's money", async () => {
+    const args = { initial_capital: 10_000, monthly_contribution: 500, annual_return_pct: 6, years: 20 };
+    const nominal = (await callTool("compound_interest", args)).json;
+    expect(nominal.real_final_value).toBeUndefined();
+    const r = (await callTool("compound_interest", { ...args, inflation_pct: 2.5 })).json;
+    expect(r.final_value).toBe(nominal.final_value);
+    expect(r.real_final_value).toBe(Math.round(nominal.final_value / 1.025 ** 20));
+  });
+});
