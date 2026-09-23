@@ -95,6 +95,12 @@ describe("business_valuation — consistency with startup_valuation (item 2)", (
     expect(r.json.discount_rate_used_pct).toBe(8.22); // Healthcare IT
     expect(r.json.discount_rate_source).toMatch(/Healthcare IT/);
     expect(r.json.enterprise_value.dcf).toBeGreaterThan(14_598_360); // lower rate, higher DCF
+    expect(r.json.warnings).toContainEqual(expect.stringMatching(/US listed Healthcare IT companies/));
+  });
+
+  it("doesn't warn about the rate when the caller set it", async () => {
+    const r = await callTool("business_valuation", PROFITABLE);
+    expect(r.json.warnings ?? []).not.toContainEqual(expect.stringMatching(/cost of capital of US listed/));
   });
 
   it("keeps 12% when there is no industry, and echoes a given rate", async () => {

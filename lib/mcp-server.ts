@@ -265,6 +265,11 @@ export function createFinancePlotsServer() {
           `Only ${valid} of the four methods has a meaningful input, so the "average" is a single method, not a cross-check. For a loss-making company, startup_valuation is the better tool.`,
         );
       }
+      if (a.discount_rate_pct === undefined && ind) {
+        warnings.push(
+          `The discount rate (${discountRate}%) is the average cost of capital of US listed ${ind.label} companies. A small or private company is riskier and usually warrants a higher rate, which lowers the DCF; pass discount_rate_pct to set one.`,
+        );
+      }
       // Highest over lowest valid method, on enterprise value so net debt can't flip a sign.
       const evs = [r.enterprise.dcf, r.enterprise.evEbitda, r.enterprise.evSales, r.enterprise.pe].filter((x): x is number => x !== null && x > 0);
       const dispersion = evs.length >= 2 ? round2(Math.max(...evs) / Math.min(...evs)) : null;
