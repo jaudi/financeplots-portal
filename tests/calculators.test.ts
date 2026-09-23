@@ -56,3 +56,11 @@ describe("loan_repayment — overpaying (item 8)", () => {
     expect(r.interest_saved).toBeCloseTo(base.total_interest - r.total_interest, 1);
   });
 });
+
+describe("industry_multiples (item 8)", () => {
+  it("says the figures are US listed-company averages", async () => {
+    const r = (await callTool("industry_multiples")).json;
+    expect(r.note).toMatch(/US listed companies/);
+    expect(r.industries.find((i: { id: string }) => i.id === "healthcare-it")).toMatchObject({ ev_sales: 5.3, cost_of_capital_pct: 8.22 });
+  });
+});

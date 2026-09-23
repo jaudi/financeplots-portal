@@ -168,13 +168,14 @@ export function createFinancePlotsServer() {
     {
       title: "Industry valuation multiples",
       description:
-        "Industry averages by industry (Damodaran, January 2026): EV/EBITDA, EV/Sales and forward P/E multiples, plus pre-tax operating margin, sales-to-invested-capital and cost of capital. Use an id with business_valuation or startup_valuation.",
+        "Industry averages for US listed companies (Damodaran, January 2026): EV/EBITDA, EV/Sales and forward P/E multiples, plus pre-tax operating margin, sales-to-invested-capital and cost of capital. Use an id with business_valuation or startup_valuation.",
       inputSchema: {},
       annotations: readOnly,
     },
     async () =>
       json({
         source: "Aswath Damodaran, NYU Stern — US industry averages, January 2026",
+        note: "Averages for US listed companies. A private or smaller company usually trades at lower multiples and has a higher cost of capital; the P/E is a forward P/E (next year's expected earnings).",
         industries: INDUSTRIES.map((i) => ({
           id: i.id,
           label: i.label,
