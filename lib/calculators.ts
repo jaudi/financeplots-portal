@@ -139,7 +139,13 @@ export interface ValuationInputs {
   netDebt: number;
 }
 
-export interface MethodValues { dcf: number; evEbitda: number; evSales: number; pe: number; average: number }
+export type ValuationMethod = "dcf" | "evEbitda" | "evSales" | "pe";
+
+/** null = the method's driver is zero or negative, so it has no meaningful
+ *  value; `average` is over the other methods, null if none is left. */
+export interface MethodValues { dcf: number | null; evEbitda: number | null; evSales: number | null; pe: number | null; average: number | null }
+
+export interface ExcludedMethod { method: ValuationMethod; reason: string }
 
 /** Five-year DCF with a Gordon-growth terminal value, next to three multiples.
  *
@@ -147,43 +153,63 @@ export interface MethodValues { dcf: number; evEbitda: number; evSales: number; 
  *  enterprise value — the business including its debt — while P/E gives an
  *  equity value. Averaging the four as they come mixes the two, so each is
  *  converted with net debt (equity = enterprise − net debt) and both sets are
- *  returned, each with its own average. */
+ *  returned, each with its own average.
+ *
+ *  A method whose driver is zero or negative is left out (null, listed in
+ *  `excluded`): a multiple of a loss isn't a value, and growing a negative FCF
+ *  only makes the loss bigger. The DCF isn't projected at all in that case. */
 export function valuation(v: ValuationInputs) {
   const r  = v.discountRatePct   / 100;
   const g  = v.growthRatePct     / 100;
   const tg = v.terminalGrowthPct / 100;
 
+  const excluded: ExcludedMethod[] = [];
+  if (v.fcf <= 0)       excluded.push({ method: "dcf",      reason: "Free cash flow is zero or negative; projecting it forward only compounds the loss." });
+  if (v.ebitda <= 0)    excluded.push({ method: "evEbitda", reason: "EBITDA is zero or negative, so an EV/EBITDA multiple gives no meaningful value." });
+  if (v.revenue <= 0)   excluded.push({ method: "evSales",  reason: "Revenue is zero." });
+  if (v.netIncome <= 0) excluded.push({ method: "pe",       reason: "Net income is zero or negative, so a P/E multiple gives no meaningful value." });
+  const usable = (m: ValuationMethod) => !excluded.some((e) => e.method === m);
+
   let cumPV = 0;
   let projectedFCF = v.fcf;
   const dcfRows: { year: number; fcf: number; discountedFCF: number; cumulativePV: number }[] = [];
+  let pvTerminal: number | null = null;
 
-  for (let yr = 1; yr <= 5; yr++) {
-    projectedFCF = projectedFCF * (1 + g);
-    const discountedFCF = projectedFCF / Math.pow(1 + r, yr);
-    cumPV += discountedFCF;
-    dcfRows.push({ year: yr, fcf: Math.round(projectedFCF), discountedFCF: Math.round(discountedFCF), cumulativePV: Math.round(cumPV) });
+  if (usable("dcf")) {
+    for (let yr = 1; yr <= 5; yr++) {
+      projectedFCF = projectedFCF * (1 + g);
+      const discountedFCF = projectedFCF / Math.pow(1 + r, yr);
+      cumPV += discountedFCF;
+      dcfRows.push({ year: yr, fcf: Math.round(projectedFCF), discountedFCF: Math.round(discountedFCF), cumulativePV: Math.round(cumPV) });
+    }
+    const terminalValue = (projectedFCF * (1 + tg)) / (r - tg);
+    pvTerminal = terminalValue / Math.pow(1 + r, 5);
   }
 
-  const terminalValue = (projectedFCF * (1 + tg)) / (r - tg);
-  const pvTerminal    = terminalValue / Math.pow(1 + r, 5);
-
-  const dcfEV      = cumPV + pvTerminal;
-  const evEbitdaEV = v.ebitda * v.ebitdaMultiple;
-  const evSalesEV  = v.revenue * v.evSalesMultiple;
-  const peEquity   = v.netIncome * v.peRatio;
-
-  const methods = (dcf: number, evEbitda: number, evSales: number, pe: number): MethodValues => ({
-    dcf: Math.round(dcf),
-    evEbitda: Math.round(evEbitda),
-    evSales: Math.round(evSales),
-    pe: Math.round(pe),
-    average: Math.round((dcf + evEbitda + evSales + pe) / 4),
-  });
   const nd = v.netDebt;
-  const enterprise = methods(dcfEV, evEbitdaEV, evSalesEV, peEquity + nd);
-  const equity     = methods(dcfEV - nd, evEbitdaEV - nd, evSalesEV - nd, peEquity);
+  // Every method as an enterprise value; P/E gives equity, so add net debt back.
+  const ev: Record<ValuationMethod, number> = {
+    dcf: cumPV + (pvTerminal ?? 0),
+    evEbitda: v.ebitda * v.ebitdaMultiple,
+    evSales: v.revenue * v.evSalesMultiple,
+    pe: v.netIncome * v.peRatio + nd,
+  };
 
-  return { dcfRows, pvTerminal: Math.round(pvTerminal), enterprise, equity };
+  const methods = (x: Record<ValuationMethod, number>): MethodValues => {
+    const val = (m: ValuationMethod) => (usable(m) ? x[m] : null);
+    const valid = (["dcf", "evEbitda", "evSales", "pe"] as const).filter(usable).map((m) => x[m]);
+    return {
+      dcf: val("dcf") === null ? null : Math.round(x.dcf),
+      evEbitda: val("evEbitda") === null ? null : Math.round(x.evEbitda),
+      evSales: val("evSales") === null ? null : Math.round(x.evSales),
+      pe: val("pe") === null ? null : Math.round(x.pe),
+      average: valid.length ? Math.round(valid.reduce((s, n) => s + n, 0) / valid.length) : null,
+    };
+  };
+  const enterprise = methods(ev);
+  const equity     = methods({ dcf: ev.dcf - nd, evEbitda: ev.evEbitda - nd, evSales: ev.evSales - nd, pe: ev.pe - nd });
+
+  return { dcfRows, pvTerminal: pvTerminal === null ? null : Math.round(pvTerminal), enterprise, equity, excluded };
 }
 
 // ── Startup valuation ───────────────────────────────────────────────────────

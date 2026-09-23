@@ -170,7 +170,8 @@ export function createFinancePlotsServer() {
     {
       title: "Business valuation (DCF + multiples)",
       description:
-        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. Multiples come from `industry` (see industry_multiples) unless given explicitly. Needs positive profits and cash flow; for a loss-making or early-stage company use startup_valuation. For planning and education; not a fairness opinion.",
+        "Values a private business four ways — a five-year discounted cash flow with a terminal value, EV/EBITDA, EV/Sales and P/E — and averages them. The DCF and EV multiples give enterprise value and P/E gives equity value, so each is converted with `net_debt` and both an equity value (what the shares are worth) and an enterprise value are returned, each with its own average. Multiples come from `industry` (see industry_multiples) unless given explicitly. " +
+        "A method whose driver is zero or negative (FCF for the DCF, EBITDA for EV/EBITDA, net income for P/E) returns null, is listed in `excluded_methods` with the reason and is left out of the average; if EBITDA, net income and free cash flow are all zero or negative the call is rejected — use startup_valuation for a loss-making or early-stage company. For planning and education; not a fairness opinion.",
       inputSchema: {
         revenue: z.number().min(0).describe("Annual revenue"),
         ebitda: z.number().describe("Annual EBITDA"),
@@ -188,6 +189,11 @@ export function createFinancePlotsServer() {
       annotations: readOnly,
     },
     async (a) => {
+      if (a.ebitda <= 0 && a.net_income <= 0 && a.free_cash_flow <= 0) {
+        return error(
+          "EBITDA, net income and free cash flow are all zero or negative, so the DCF, EV/EBITDA and P/E methods give no meaningful value. Use startup_valuation instead: its DCF projects the path from losses to a mature margin, and its revenue multiple works without profits.",
+        );
+      }
       if (a.terminal_growth_pct >= a.discount_rate_pct) {
         return error("terminal_growth_pct must be lower than discount_rate_pct, or the terminal value is infinite.");
       }
@@ -210,12 +216,22 @@ export function createFinancePlotsServer() {
         netDebt: a.net_debt,
       });
       const byMethod = (m: typeof r.equity) => ({ dcf: m.dcf, ev_ebitda: m.evEbitda, ev_sales: m.evSales, pe: m.pe, average: m.average });
+      const methodKey = { dcf: "dcf", evEbitda: "ev_ebitda", evSales: "ev_sales", pe: "pe" } as const;
+      const warnings: string[] = [];
+      const valid = 4 - r.excluded.length;
+      if (valid < 2) {
+        warnings.push(
+          `Only ${valid} of the four methods has a meaningful input, so the "average" is a single method, not a cross-check. For a loss-making company, startup_valuation is the better tool.`,
+        );
+      }
       return json({
         equity_value: byMethod(r.equity),
         enterprise_value: byMethod(r.enterprise),
+        excluded_methods: r.excluded.map((e) => ({ method: methodKey[e.method], reason: e.reason })),
         net_debt: a.net_debt,
         multiples_used: { ev_ebitda: ebitdaMultiple, ev_sales: evSalesMultiple, pe: peRatio, industry: ind?.label ?? null },
         dcf_detail: { years: r.dcfRows, pv_of_terminal_value: r.pvTerminal },
+        ...(warnings.length > 0 && { warnings }),
         tool_page: `${SITE}/tools/valuation`,
       });
     },

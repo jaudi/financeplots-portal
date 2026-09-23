@@ -11,6 +11,8 @@ import {
 } from "recharts";
 
 const fmt  = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
+/** Money, or "n/a" for a method left out because its input is a loss. */
+const gbp  = (n: number | null) => (n === null ? "n/a" : `£${fmt(n)}`);
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const fmtX = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
@@ -103,8 +105,8 @@ export default function ValuationPage() {
 
   // Every figure on the page is an equity value (what the shares are worth);
   // the enterprise-value average is shown alongside for reference.
-  const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation, enterpriseAvg } = useMemo(() => {
-    const { dcfRows, equity, enterprise } = valuation({
+  const { dcfRows, dcfValue, epsValue, evValue, evSalesValue, avgValuation, enterpriseAvg, methodsAveraged } = useMemo(() => {
+    const { dcfRows, equity, enterprise, excluded } = valuation({
       revenue, ebitda, netIncome, fcf,
       growthRatePct: growthRate, discountRatePct: discountRate, terminalGrowthPct: terminalGrowth,
       ebitdaMultiple, evSalesMultiple, peRatio, netDebt,
@@ -117,6 +119,7 @@ export default function ValuationPage() {
       evSalesValue: equity.evSales,
       avgValuation: equity.average,
       enterpriseAvg: enterprise.average,
+      methodsAveraged: 4 - excluded.length,
     };
   }, [fcf, growthRate, discountRate, terminalGrowth, netIncome, peRatio, ebitda, ebitdaMultiple, revenue, evSalesMultiple, netDebt]);
 
@@ -316,18 +319,18 @@ export default function ValuationPage() {
               <div className="grid grid-cols-2 xl:grid-cols-5 gap-3">
                 <KpiCard
                   label="Average Valuation"
-                  value={`£${fmt(avgValuation)}`}
-                  sub="4-method average"
+                  value={gbp(avgValuation)}
+                  sub={methodsAveraged === 4 ? "4-method average" : `${methodsAveraged} of 4 methods — n/a ones have a loss as input`}
                   color="gold"
                 />
-                <KpiCard label="DCF"        value={`£${fmt(dcfValue)}`}     sub={`${discountRate}% WACC`}       color="blue"   />
-                <KpiCard label="EV/EBITDA"  value={`£${fmt(evValue)}`}      sub={`${fmtX(ebitdaMultiple)}×`}   color="purple" />
-                <KpiCard label="EV/Revenue" value={`£${fmt(evSalesValue)}`} sub={`${fmtX(evSalesMultiple)}×`}  color="blue"   />
-                <KpiCard label="P/E"        value={`£${fmt(epsValue)}`}     sub={`${fmtX(peRatio)}× earnings`} color="green"  />
+                <KpiCard label="DCF"        value={gbp(dcfValue)}     sub={`${discountRate}% WACC`}       color="blue"   />
+                <KpiCard label="EV/EBITDA"  value={gbp(evValue)}      sub={`${fmtX(ebitdaMultiple)}×`}   color="purple" />
+                <KpiCard label="EV/Revenue" value={gbp(evSalesValue)} sub={`${fmtX(evSalesMultiple)}×`}  color="blue"   />
+                <KpiCard label="P/E"        value={gbp(epsValue)}     sub={`${fmtX(peRatio)}× earnings`} color="green"  />
               </div>
               <p className="text-xs text-gray-500 -mt-3">
                 All figures are equity value — what the shares are worth. Including debt, the business
-                (enterprise value) averages £{fmt(enterpriseAvg)}; net debt £{fmt(netDebt)}.
+                (enterprise value) averages {gbp(enterpriseAvg)}; net debt £{fmt(netDebt)}.
               </p>
 
               {/* Valuation comparison chart */}
@@ -358,7 +361,7 @@ export default function ValuationPage() {
 
               {/* Valuation range insight */}
               {(() => {
-                const vals = [dcfValue, evValue, evSalesValue, epsValue].filter(v => v > 0);
+                const vals = [dcfValue, evValue, evSalesValue, epsValue].filter((v): v is number => v !== null && v > 0);
                 const lo = Math.min(...vals);
                 const hi = Math.max(...vals);
                 const spread = hi > 0 ? ((hi - lo) / hi) * 100 : 0;
@@ -372,17 +375,17 @@ export default function ValuationPage() {
                     <div className="flex items-center gap-4 mb-4">
                       <div className="flex-1 text-center bg-[#111827] rounded-xl p-4">
                         <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Low</div>
-                        <div className="text-2xl font-extrabold text-white">£{fmt(lo)}</div>
+                        <div className="text-2xl font-extrabold text-white">{vals.length ? gbp(lo) : "n/a"}</div>
                       </div>
                       <div className="text-gray-600 text-xl">—</div>
                       <div className="flex-1 text-center bg-[#111827] rounded-xl p-4">
                         <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">High</div>
-                        <div className="text-2xl font-extrabold text-white">£{fmt(hi)}</div>
+                        <div className="text-2xl font-extrabold text-white">{vals.length ? gbp(hi) : "n/a"}</div>
                       </div>
                       <div className="text-gray-600 text-xl">—</div>
                       <div className="flex-1 text-center bg-blue-600/10 border border-blue-600/30 rounded-xl p-4">
                         <div className="text-xs text-blue-400 uppercase tracking-wider mb-1">Mid (Average)</div>
-                        <div className="text-2xl font-extrabold text-white">£{fmt(avgValuation)}</div>
+                        <div className="text-2xl font-extrabold text-white">{gbp(avgValuation)}</div>
                       </div>
                     </div>
                     <p className={`text-sm font-semibold ${verdict.color}`}>{verdict.text}</p>

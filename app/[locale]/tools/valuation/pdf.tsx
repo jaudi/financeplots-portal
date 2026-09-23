@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
 });
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
+const gbp = (n: number | null) => (n === null ? "n/a" : `£${fmt(n)}`);
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 interface DCFRow { year: number; fcf: number; discountedFCF: number; cumulativePV: number }
@@ -43,12 +44,13 @@ interface Props {
   terminalGrowth: number;
   ebitdaMultiple: number;
   peRatio: number;
-  dcfValue: number;
-  epsValue: number;
-  evValue: number;
-  avgValuation: number;
+  // null: left out because its input is a loss
+  dcfValue: number | null;
+  epsValue: number | null;
+  evValue: number | null;
+  avgValuation: number | null;
   netDebt: number;
-  enterpriseAvg: number;
+  enterpriseAvg: number | null;
   dcfRows: DCFRow[];
 }
 
@@ -80,22 +82,22 @@ export default function ValuationPDF({
         <View style={styles.kpiRow}>
           <View style={[styles.kpiCard, styles.kpiCardGold]}>
             <Text style={styles.kpiLabel}>Average Valuation</Text>
-            <Text style={styles.kpiValue}>£{fmt(avgValuation)}</Text>
+            <Text style={styles.kpiValue}>{gbp(avgValuation)}</Text>
             <Text style={styles.kpiSub}>4-method average, equity value</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>DCF Value</Text>
-            <Text style={styles.kpiValue}>£{fmt(dcfValue)}</Text>
+            <Text style={styles.kpiValue}>{gbp(dcfValue)}</Text>
             <Text style={styles.kpiSub}>{discountRate}% WACC</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>EV/EBITDA Value</Text>
-            <Text style={styles.kpiValue}>£{fmt(evValue)}</Text>
+            <Text style={styles.kpiValue}>{gbp(evValue)}</Text>
             <Text style={styles.kpiSub}>{ebitdaMultiple}× multiple</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>P/E Value</Text>
-            <Text style={styles.kpiValue}>£{fmt(epsValue)}</Text>
+            <Text style={styles.kpiValue}>{gbp(epsValue)}</Text>
             <Text style={styles.kpiSub}>{peRatio}× earnings</Text>
           </View>
         </View>
@@ -113,7 +115,7 @@ export default function ValuationPDF({
               ["Net Income", `£${fmt(netIncome)} (${fmtM(netMargin)}%)`],
               ["Free Cash Flow", `£${fmt(fcf)}`],
               ["Net Debt (debt − cash)", `£${fmt(netDebt)}`],
-              ["Enterprise Value (avg)", `£${fmt(enterpriseAvg)}`],
+              ["Enterprise Value (avg)", gbp(enterpriseAvg)],
             ].map(([label, value], idx) => (
               <View key={label} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
                 <Text style={[styles.tableCell, { flex: 2 }]}>{label}</Text>
