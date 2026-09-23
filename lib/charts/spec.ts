@@ -49,7 +49,7 @@ export function compact(n: number): string {
   const a = Math.abs(n);
   if (a === 0) return "0";
   const sign = n < 0 ? "−" : "";
-  const trim = (s: string) => s.replace(/\.0$/, "");
+  const trim = (s: string) => (s.includes(".") ? s.replace(/\.?0+$/, "") : s);
   if (a >= 1e9) return `${sign}${trim((a / 1e9).toFixed(1))}bn`;
   if (a >= 1e6) return `${sign}${trim((a / 1e6).toFixed(1))}M`;
   if (a >= 1e4) return `${sign}${Math.round(a / 1e3)}k`;

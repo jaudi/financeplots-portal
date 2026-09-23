@@ -320,16 +320,28 @@ export function layoutChart(spec: ChartSpec, opts: { width: number; height: numb
   if (spec.note) texts.push({ x: pad, y: height - 14, text: spec.note, size: 11, color: theme.muted, anchor: "start" });
 
   // ── Hover bands ──
+  // A bare number ("26") reads better with its axis name ("Year 26").
+  const hitLabel = (l: string) => (spec.x.title && /^[\d.,]+$/.test(l) ? `${spec.x.title} ${l}` : l);
+  const stackedGroups = groups.filter((g) => g.length > 1);
   const hits: Hit[] = spec.x.labels.map((label, x) => ({
     index: x,
     x: plot.x + band * x,
     w: band,
     cx: CX(x),
-    label,
-    rows: spec.series.map((s, i) => {
-      const v = s.values[x] ?? null;
-      return { name: s.name, value: fmt(v, "full"), color: color(i), y: v === null || s.type === "bar" ? null : Y(v) };
-    }),
+    label: hitLabel(label),
+    rows: [
+      ...spec.series.map((s, i) => {
+        const v = s.values[x] ?? null;
+        return { name: s.name, value: fmt(v, "full"), color: color(i), y: v === null || s.type === "bar" ? null : Y(v) };
+      }),
+      // A stack's total, since the tooltip otherwise shows only its parts.
+      ...stackedGroups.map((g) => ({
+        name: "Total",
+        value: fmt(g.reduce((sum, i) => sum + (spec.series[i].values[x] ?? 0), 0), "full"),
+        color: "transparent",
+        y: null,
+      })),
+    ],
   }));
 
   return { width, height, theme, plot, shapes, texts, hits };

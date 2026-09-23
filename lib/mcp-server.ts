@@ -1,3 +1,4 @@
+import { RESOURCE_MIME_TYPE, registerAppResource } from "@modelcontextprotocol/ext-apps/server";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, payoffWithExtra, realValue, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
@@ -5,6 +6,7 @@ import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type ChartSpec } from "@/lib/charts/spec";
 import { breakEvenChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, valuationChart } from "@/lib/charts/tool-charts";
 import { fetchIndicators } from "@/lib/fred";
+import { CHART_VIEW_HTML } from "@/lib/mcp-app/chart-view-html.generated";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
 import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
@@ -37,6 +39,12 @@ function error(message: string) {
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
+// Interactive charts for hosts that support MCP Apps (Claude, ChatGPT…): tools
+// that chart point at this view, which draws the specs in the result's _meta.
+// Other clients ignore it and show the PNGs.
+const CHART_VIEW_URI = "ui://financeplots/charts.html";
+const chartUi = { ui: { resourceUri: CHART_VIEW_URI }, "ui/resourceUri": CHART_VIEW_URI };
+
 const chartParam = z
   .boolean()
   .default(true)
@@ -64,6 +72,16 @@ export function createFinancePlotsServer() {
     { instructions: INSTRUCTIONS },
   );
 
+  registerAppResource(
+    server,
+    "FinancePlots chart",
+    CHART_VIEW_URI,
+    { description: "Interactive chart for FinancePlots tool results: hover for values, show the data as a table." },
+    async () => ({
+      contents: [{ uri: CHART_VIEW_URI, mimeType: RESOURCE_MIME_TYPE, text: CHART_VIEW_HTML, _meta: { ui: { prefersBorder: false } } }],
+    }),
+  );
+
   // ── Calculators ──────────────────────────────────────────────────────────
 
   server.registerTool(
@@ -80,6 +98,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: readOnly,
+      _meta: chartUi,
     },
     async ({ amount, annual_rate_pct, years, extra_monthly_payment, chart }) => {
       const schedule = buildSchedule(annual_rate_pct / 100, years, amount);
@@ -136,6 +155,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: readOnly,
+      _meta: chartUi,
     },
     async ({ initial_capital, monthly_contribution, annual_return_pct, years, inflation_pct, chart }) => {
       const r = compoundGrowth(initial_capital, monthly_contribution, years, annual_return_pct);
@@ -169,6 +189,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: readOnly,
+      _meta: chartUi,
     },
     async ({ fixed_costs, selling_price, variable_cost, current_units, chart }) => {
       const r = breakEven(fixed_costs, selling_price, variable_cost, current_units ?? 0);
@@ -256,6 +277,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: readOnly,
+      _meta: chartUi,
     },
     async (a) => {
       if (a.ebitda <= 0 && a.net_income <= 0 && a.free_cash_flow <= 0) {
@@ -364,6 +386,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: readOnly,
+      _meta: chartUi,
     },
     async (a) => {
       const ind = INDUSTRIES.find((i) => i.id === a.industry);
@@ -582,6 +605,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: { ...readOnly, openWorldHint: true },
+      _meta: chartUi,
     },
     async ({ symbol, range, max_points, chart }) => {
       const s = normaliseSymbol(symbol);
@@ -638,6 +662,7 @@ export function createFinancePlotsServer() {
         chart: chartParam,
       },
       annotations: { ...readOnly, openWorldHint: true },
+      _meta: chartUi,
     },
     async ({ holdings, range, risk_free_pct, base_currency, chart }) => {
       const symbols = holdings.map((h) => normaliseSymbol(h.symbol));

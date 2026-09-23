@@ -7,11 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:mcp-app": "node scripts/build-mcp-app.mjs",
+    "predev": "npm run build:mcp-app",
+    "prebuild": "npm run build:mcp-app",
+    "pretest": "npm run build:mcp-app"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
     "@giscus/react": "^3.1.0",
+    "@modelcontextprotocol/ext-apps": "^1.7.5",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@react-pdf/renderer": "^4.3.2",
     "@vercel/analytics": "^2.0.1",
@@ -32,6 +37,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
