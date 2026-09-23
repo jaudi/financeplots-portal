@@ -452,7 +452,7 @@ export function createFinancePlotsServer() {
     {
       title: "US macro indicators",
       description:
-        "Latest US macro data from FRED: real GDP, industrial production, CPI, core CPI and PCE inflation (year-on-year %), unemployment, the Fed funds rate (daily effective rate) and the 10-year Treasury yield, each with its change from the prior reading and its date. Monthly and quarterly series report the latest published period, which can be a month or more behind today.",
+        "Latest US macro data from FRED: real GDP, industrial production, CPI, core CPI, PCE and core PCE inflation (year-on-year %; core PCE is the measure the Fed's 2% target refers to), unemployment, the Fed funds rate (daily effective rate) and the 10-year Treasury yield, each with its change from the prior reading and its date. Monthly and quarterly series report the latest published period, which can be a month or more behind today.",
       inputSchema: {},
       annotations: { ...readOnly, openWorldHint: true },
     },
