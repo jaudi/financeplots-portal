@@ -474,14 +474,16 @@ export function createFinancePlotsServer() {
     {
       title: "Market snapshot",
       description:
-        "Latest level and daily change for major stock indices (S&P 500, Nasdaq, Dow Jones, FTSE 100, DAX), FX (EUR/USD, GBP/USD, USD/JPY), gold, WTI oil, Bitcoin, the US 10-year yield and the VIX. Delayed quotes from Yahoo Finance.",
+        "Latest level and daily change for major stock indices (S&P 500, Nasdaq, Dow Jones, FTSE 100, DAX), FX (EUR/USD, GBP/USD, USD/JPY), gold, WTI oil, Bitcoin, the US 10-year yield and the VIX (group \"Volatility\"). Delayed quotes from Yahoo Finance; `as_of` (UTC) gives the time of each quote, and of the latest one for the response. For the 10-year yield, price is the yield in percent and `change_bp` is its daily move in basis points; its change_pct is a percentage of the yield itself (a move from 4.00% to 4.12% is +3%), kept for compatibility but not how yields are usually quoted.",
       inputSchema: {},
       annotations: { ...readOnly, openWorldHint: true },
     },
     async () => {
       const quotes = await getMarketQuotes();
+      const times = quotes.map((q) => q.time).filter((t): t is string => t !== null).sort();
       return json({
         source: "Yahoo Finance (delayed)",
+        as_of: times.at(-1) ?? null,
         quotes: quotes.map((q) => ({
           label: q.label,
           symbol: q.symbol,
@@ -490,7 +492,10 @@ export function createFinancePlotsServer() {
           // FX moves are often under 0.005, which two decimals would show as 0
           change: q.change === null ? null : q.group === "FX" ? Math.round(q.change * 1e4) / 1e4 : round2(q.change),
           change_pct: q.changePct === null ? null : round2(q.changePct),
+          // A yield's move in basis points: 4.00% → 4.12% is +12 bp
+          ...(q.group === "Rates" && { change_bp: q.change === null ? null : Math.round(q.change * 1000) / 10 }),
           currency: q.currency,
+          as_of: q.time,
         })),
       });
     },
