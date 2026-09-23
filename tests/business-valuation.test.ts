@@ -91,15 +91,14 @@ describe("business_valuation — loss-making inputs (item 1)", () => {
 
 describe("business_valuation — consistency with startup_valuation (item 2)", () => {
   it("defaults the discount rate to the industry cost of capital and echoes it", async () => {
-    const { discount_rate_pct: _, ...noRate } = PROFITABLE;
-    const r = await callTool("business_valuation", noRate);
+    const r = await callTool("business_valuation", { ...PROFITABLE, discount_rate_pct: undefined });
     expect(r.json.discount_rate_used_pct).toBe(8.22); // Healthcare IT
     expect(r.json.discount_rate_source).toMatch(/Healthcare IT/);
     expect(r.json.enterprise_value.dcf).toBeGreaterThan(14_598_360); // lower rate, higher DCF
   });
 
   it("keeps 12% when there is no industry, and echoes a given rate", async () => {
-    const { industry: _, discount_rate_pct: __, ...noIndustry } = PROFITABLE;
+    const noIndustry = { ...PROFITABLE, industry: undefined, discount_rate_pct: undefined };
     expect((await callTool("business_valuation", noIndustry)).json.discount_rate_used_pct).toBe(12);
     const given = await callTool("business_valuation", PROFITABLE);
     expect(given.json.discount_rate_used_pct).toBe(12);

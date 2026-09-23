@@ -273,7 +273,7 @@ export function createFinancePlotsServer() {
       description:
         "Values a young, early-stage or loss-making company. Four parts, each computed only when its inputs are given — pass whatever is known: " +
         "(1) dcf — Aswath Damodaran's intrinsic valuation for young companies: 10 years of revenue growth (the rate given for years 1–5, stepping down to terminal growth by year 10), an operating margin moving from today's to a mature target, reinvestment set by the sales-to-capital ratio, tax losses carried forward, a cost of capital falling to a mature level, and a probability that the business fails before maturing. Needs revenue, revenue_growth_pct and current_operating_margin_pct; target margin, sales-to-capital and cost of capital default to the `industry` averages (see industry_multiples). For a young firm the initial cost of capital is usually set above the industry average. " +
-        "(2) revenue_multiple — revenue × EV/Sales from `industry` or `ev_sales_multiple`, plus net cash, with an optional private-company discount. " +
+        "(2) revenue_multiple — revenue × EV/Sales from `industry` or `ev_sales_multiple`, with an optional private-company discount taken off that enterprise value, plus net cash (cash is never discounted). An industry EV/Sales assumes mature margins, so it flatters a company that is still loss-making. " +
         "(3) funding_round — the post-money valuation implied by the latest round: price_per_share × shares_outstanding, or investment ÷ stake_pct. That is a price paid for preferred shares with investor protections, not an intrinsic value, and usually overstates what an ordinary share is worth. " +
         "(4) runway — months of cash left: cash ÷ annual_burn.",
       inputSchema: {
@@ -293,7 +293,7 @@ export function createFinancePlotsServer() {
         failure_proceeds: z.number().min(0).default(0).describe("DCF: amount recovered if it fails"),
         options_value: z.number().min(0).default(0).describe("DCF: value of employee options outstanding, subtracted from equity"),
         ev_sales_multiple: z.number().min(0).optional().describe("Revenue multiple: overrides the industry EV/Sales"),
-        private_discount_pct: z.number().min(0).max(90).optional().describe("Revenue multiple: optional discount for a private, illiquid company, percent. Nothing is applied unless given."),
+        private_discount_pct: z.number().min(0).max(90).optional().describe("Revenue multiple: optional discount for a private, illiquid company, percent, taken off enterprise value before net cash is added. Nothing is applied unless given."),
         net_cash: z.number().default(0).describe("Cash minus debt (negative if net debt), added to reach equity value in the DCF and revenue multiple"),
         price_per_share: z.number().positive().optional().describe("Funding round: price paid per share"),
         shares_outstanding: z.number().positive().optional().describe("Shares in issue after the round (fully diluted if known); also gives the DCF a value per share"),
@@ -392,6 +392,14 @@ export function createFinancePlotsServer() {
         annualBurn: a.annual_burn,
       });
 
+      const warnings: string[] = [];
+      const margin = a.current_operating_margin_pct;
+      if (s.revenueMultiple && margin !== undefined && (margin < 0 || (ind !== undefined && margin < ind.opMargin / 2))) {
+        warnings.push(
+          `The revenue multiple assumes mature margins: an industry EV/Sales reflects listed companies earning about ${ind ? `${ind.opMargin}%` : "a normal"} operating margin, against ${margin}% here, so it likely overstates the value. The DCF, which models the path to those margins, is the better guide.`,
+        );
+      }
+
       if (!dcf && !s.round && !s.revenueMultiple && s.runwayMonths === null) {
         return error(
           [
@@ -426,6 +434,7 @@ export function createFinancePlotsServer() {
         }),
         ...(s.runwayMonths !== null && { runway_months: Math.round(s.runwayMonths * 10) / 10 }),
         ...(skipped.length > 0 && { skipped }),
+        ...(warnings.length > 0 && { warnings }),
         notes: [
           "DCF method: A. Damodaran, 'Valuing Young, Start-up and Growth Companies' (2009). Industry inputs are US averages for listed companies, January 2026.",
           "The DCF is only as good as its growth, margin and failure assumptions; small changes move the value a lot.",

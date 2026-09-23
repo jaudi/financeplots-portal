@@ -257,7 +257,9 @@ export function startupValuation(v: StartupInputs) {
   if (v.revenue !== undefined && v.evSalesMultiple !== undefined) {
     const enterpriseValue = v.revenue * v.evSalesMultiple;
     const equityValue = enterpriseValue + (v.netCash ?? 0);
-    const afterDiscount = equityValue * (1 - (v.privateDiscountPct ?? 0) / 100);
+    // The discount is for an illiquid operating business: it comes off
+    // enterprise value, and cash is added back in full.
+    const afterDiscount = enterpriseValue * (1 - (v.privateDiscountPct ?? 0) / 100) + (v.netCash ?? 0);
     revenueMultiple = { enterpriseValue, equityValue, afterDiscount };
   }
 
