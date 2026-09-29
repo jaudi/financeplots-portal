@@ -6,7 +6,7 @@ export default function Comments() {
   return (
     <div className="mt-16 pt-8 border-t border-white/10">
       <Giscus
-        repo="jaudi/easyvisuals-portal"
+        repo="jaudi/financeplots-portal"
         repoId="R_kgDORhn9Nw"
         category="General"
         categoryId="DIC_kwDORhn9N84DAe9B"
