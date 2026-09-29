@@ -26,9 +26,11 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
+    "read-excel-file": "^9.3.10",
     "recharts": "^3.8.1",
     "remark-gfm": "^4.0.1",
     "resend": "^6.9.4",
+    "write-excel-file": "^4.1.1",
     "yahoo-finance2": "^3.14.0",
     "zod": "^4.6.5"
   },

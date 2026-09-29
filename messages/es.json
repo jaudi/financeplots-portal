@@ -372,7 +372,19 @@
     "screenerDisclaimerPast": "Este cribado se apoya en parte en la evolución pasada del precio. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
     "alsoTry": "También puedes usar",
     "backPersonal": "← Particulares",
-    "backBusiness": "← Empresas"
+    "backBusiness": "← Empresas",
+    "sheetTitle": "Tu hoja de cálculo",
+    "sheetHelp": "Importa tus cifras desde Excel o CSV en lugar de escribirlas. Descarga la plantilla para ver el formato: viene rellenada con los valores de la pantalla.",
+    "sheetImport": "⬆ Importar Excel / CSV",
+    "sheetTemplate": "⬇ Descargar plantilla Excel",
+    "sheetImported": "{count, plural, one {Importado # dato} other {Importados # datos}}.",
+    "sheetKept": "No estaban en el archivo y se quedan como estaban: {fields}.",
+    "sheetNothingFound": "Ninguna fila coincide. Deja las etiquetas de la columna A como vienen en la plantilla.",
+    "sheetUnreadable": "No se ha podido leer el archivo. Guárdalo como .xlsx o .csv y vuelve a intentarlo.",
+    "sheetWrongType": "Usa un archivo .xlsx o .csv. Si es .xls o Numbers, guarda antes una copia como .xlsx.",
+    "sheetTooBig": "El archivo pasa de 5 MB. Deja solo la hoja con tus datos.",
+    "sheetPrivacy": "El archivo se lee en tu navegador y nunca se sube a ningún servidor.",
+    "sheetKeptCount": "Los otros {count} datos no estaban en el archivo y se quedan como estaban."
   },
   "breakEven": {
     "title": "⚖️ Análisis del Punto de Equilibrio",
@@ -602,7 +614,8 @@
     "colOpEx": "OpEx",
     "colEBITDA": "EBITDA",
     "colNetIncome": "Beneficio Neto",
-    "rowTotal": "TOTAL"
+    "rowTotal": "TOTAL",
+    "sheetRatesNote": "El presupuesto aplica un único porcentaje de coste a todos los meses, así que tus costes mensuales se han convertido en un porcentaje de los ingresos del año — {rates}. Los ingresos mensuales pasan a ser el mes base más la estacionalidad."
   },
   "cashFlow": {
     "title": "💧 Previsión de Caja a 13 Semanas",

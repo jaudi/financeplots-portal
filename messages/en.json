@@ -386,7 +386,19 @@
     "screenerDisclaimerPast": "This screen ranks partly on past price performance. Past performance is not a guide to future returns, and the value of investments can fall as well as rise.",
     "alsoTry": "Also try",
     "backPersonal": "← Individuals",
-    "backBusiness": "← Companies"
+    "backBusiness": "← Companies",
+    "sheetTitle": "Your spreadsheet",
+    "sheetHelp": "Import your figures from Excel or CSV instead of typing them. Download the template to see the layout — it comes filled with the values on screen.",
+    "sheetImport": "⬆ Import Excel / CSV",
+    "sheetTemplate": "⬇ Download Excel template",
+    "sheetImported": "Imported {count} {count, plural, one {input} other {inputs}}.",
+    "sheetKept": "Not in the file, left as they were: {fields}.",
+    "sheetNothingFound": "No rows matched. Keep the labels in column A as they are in the template.",
+    "sheetUnreadable": "This file couldn't be read. Save it as .xlsx or .csv and try again.",
+    "sheetWrongType": "Use an .xlsx or .csv file. For .xls or Numbers, save a copy as .xlsx first.",
+    "sheetTooBig": "The file is over 5 MB. Keep just the sheet with your inputs.",
+    "sheetPrivacy": "Your file is read in your browser and is never uploaded.",
+    "sheetKeptCount": "The other {count} inputs weren’t in the file and were left as they were."
   },
   "breakEven": {
     "title": "⚖️ Break-Even Analysis",
@@ -616,7 +628,8 @@
     "colOpEx": "OpEx",
     "colEBITDA": "EBITDA",
     "colNetIncome": "Net Income",
-    "rowTotal": "TOTAL"
+    "rowTotal": "TOTAL",
+    "sheetRatesNote": "The budget uses one cost rate for every month, so your monthly costs were turned into a share of the year’s revenue — {rates}. Monthly revenue became the base month plus seasonality."
   },
   "cashFlow": {
     "title": "💧 13-Week Cash Flow Forecast",

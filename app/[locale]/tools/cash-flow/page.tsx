@@ -4,6 +4,8 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import SpreadsheetIO from "@/components/SpreadsheetIO";
+import type { SheetField } from "@/lib/spreadsheet-io";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, ReferenceLine,
@@ -41,6 +43,16 @@ function NumInput({ label, value, onChange, prefix = "£", step = 1000 }: {
     </div>
   );
 }
+
+const WEEKS = Array.from({ length: 13 }, (_, i) => `W${i + 1}`);
+
+// Inputs as spreadsheet rows (components/SpreadsheetIO.tsx).
+const SHEET_FIELDS: SheetField[] = [
+  { key: "name", kind: "text", label: { en: "Forecast name", es: "Nombre de la previsión" } },
+  { key: "opening", kind: "number", label: { en: "Opening cash balance", es: "Saldo de caja inicial" } },
+  { key: "inflows", kind: "series", periods: WEEKS, label: { en: "Cash inflows", es: "Cobros" } },
+  { key: "outflows", kind: "series", periods: WEEKS, label: { en: "Cash outflows", es: "Pagos" } },
+];
 
 const WEEK_LABELS = [
   "Jan W1", "Jan W2", "Jan W3", "Jan W4",
@@ -171,6 +183,18 @@ export default function CashFlowPage() {
             {/* Sidebar */}
             <aside className="lg:w-72 xl:w-80 shrink-0">
               <div className="lg:sticky lg:top-[133px] flex flex-col gap-4">
+                <SpreadsheetIO
+                  title={`13-week cash flow forecast — ${forecastName}`}
+                  fileName="cash-flow-forecast"
+                  fields={SHEET_FIELDS}
+                  getValues={() => ({ name: forecastName, opening: openingBalance, inflows: weeklyInflows, outflows: weeklyOutflows })}
+                  onImport={v => {
+                    if (typeof v.name === "string") setForecastName(v.name);
+                    if (typeof v.opening === "number") setOpeningBalance(v.opening);
+                    if (Array.isArray(v.inflows)) setWeeklyInflows(v.inflows);
+                    if (Array.isArray(v.outflows)) setWeeklyOutflows(v.outflows);
+                  }}
+                />
                 {/* Settings */}
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3">{t("sectionSettings")}</h3>

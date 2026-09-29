@@ -4,6 +4,8 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import SpreadsheetIO from "@/components/SpreadsheetIO";
+import type { SheetField, SheetValues } from "@/lib/spreadsheet-io";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line,
@@ -13,6 +15,21 @@ const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Inputs as spreadsheet rows (components/SpreadsheetIO.tsx). The budget is
+// driver-based, so monthly figures come in as revenue + seasonality and one
+// cost rate each — see applySheet.
+const SHEET_FIELDS: SheetField[] = [
+  { key: "company", kind: "text", label: { en: "Company name", es: "Nombre de la empresa" } },
+  { key: "year", kind: "number", label: { en: "Budget year", es: "Año del presupuesto" } },
+  { key: "taxRate", kind: "number", unit: "%", label: { en: "Tax rate", es: "Tipo impositivo" } },
+  { key: "revenue", kind: "series", periods: MONTHS, label: { en: "Revenue", es: "Ingresos" } },
+  { key: "cogs", kind: "series", periods: MONTHS, label: { en: "Cost of sales", es: "Coste de ventas" } },
+  { key: "opex", kind: "series", periods: MONTHS, label: { en: "Operating expenses", es: "Gastos operativos" } },
+];
+
+const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
+const round = (n: number, dp: number) => Math.round(n * 10 ** dp) / 10 ** dp;
 
 function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: string; sub: string; color?: "blue" | "green" | "red" }) {
   const border = color === "green" ? "border-l-green-500" : color === "red" ? "border-l-red-500" : "border-l-blue-500";
@@ -56,6 +73,39 @@ export default function AnnualBudgetPage() {
   const [opexRate, setOpexRate] = useState(30);
   const [taxRate, setTaxRate] = useState(25);
   const [isExporting, setIsExporting] = useState(false);
+
+  // Monthly revenue → a base (the average month) and a seasonality multiplier
+  // per month. Monthly costs → one rate each, as a share of the year's revenue.
+  function applySheet(v: SheetValues): string | void {
+    if (typeof v.company === "string") setCompanyName(v.company);
+    if (typeof v.year === "number") setYear(Math.round(v.year));
+    if (typeof v.taxRate === "number") setTaxRate(v.taxRate);
+    let annualRevenue = sum(months.map(m => m.revenue));
+    if (Array.isArray(v.revenue)) {
+      const avg = sum(v.revenue) / 12;
+      annualRevenue = sum(v.revenue);
+      if (avg > 0) {
+        setBaseRevenue(Math.round(avg));
+        const mult = v.revenue.map(r => round(r / avg, 3));
+        setSeasonality(mult);
+        setSeasonalityEnabled(mult.some(m => m !== 1));
+      }
+    }
+    const notes: string[] = [];
+    if (annualRevenue > 0) {
+      if (Array.isArray(v.cogs)) {
+        const rate = round((sum(v.cogs) / annualRevenue) * 100, 1);
+        setCogsRate(rate);
+        notes.push(`${t("rowCOGS")}: ${rate}%`);
+      }
+      if (Array.isArray(v.opex)) {
+        const rate = round((sum(v.opex) / annualRevenue) * 100, 1);
+        setOpexRate(rate);
+        notes.push(`${t("rowOpEx")}: ${rate}%`);
+      }
+    }
+    if (notes.length) return t("sheetRatesNote", { rates: notes.join(", ") });
+  }
 
   const months = useMemo(() => {
     return MONTHS.map((month, i) => {
@@ -167,6 +217,20 @@ export default function AnnualBudgetPage() {
             {/* Sidebar */}
             <aside className="lg:w-72 xl:w-80 shrink-0">
               <div className="lg:sticky lg:top-[133px] flex flex-col gap-4">
+                <SpreadsheetIO
+                  title={`${companyName} — annual budget ${year}`}
+                  fileName="annual-budget"
+                  fields={SHEET_FIELDS}
+                  getValues={() => ({
+                    company: companyName,
+                    year,
+                    taxRate,
+                    revenue: months.map(m => m.revenue),
+                    cogs: months.map(m => m.cogs),
+                    opex: months.map(m => m.opex),
+                  })}
+                  onImport={applySheet}
+                />
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3">{t("sectionCompany")}</h3>
                   <div className="flex flex-col gap-3">

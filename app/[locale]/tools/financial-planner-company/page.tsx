@@ -4,10 +4,43 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import SpreadsheetIO from "@/components/SpreadsheetIO";
+import type { SheetField, SheetValues } from "@/lib/spreadsheet-io";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, Legend,
 } from "recharts";
+
+// Every input of the five steps as spreadsheet rows (components/SpreadsheetIO.tsx).
+// Labels match the on-screen ones in both languages, so either imports.
+const SHEET_FIELDS: SheetField[] = [
+  { key: "revenue", kind: "number", label: { en: "Annual Revenue", es: "Ingresos anuales" } },
+  { key: "cogs", kind: "number", label: { en: "Cost of Goods Sold (COGS)", es: "Coste de ventas (COGS)" } },
+  { key: "salaries", kind: "number", label: { en: "Salaries & Wages", es: "Salarios" } },
+  { key: "rent", kind: "number", label: { en: "Rent & Facilities", es: "Alquiler / Instalaciones" } },
+  { key: "marketing", kind: "number", label: { en: "Marketing", es: "Marketing" } },
+  { key: "software", kind: "number", label: { en: "Software & IT", es: "Software / TI" } },
+  { key: "otherOpex", kind: "number", label: { en: "Other OpEx", es: "Otros gastos operativos" } },
+  { key: "da", kind: "number", label: { en: "Depreciation & Amortisation", es: "Depreciación y amortización" } },
+  { key: "interest", kind: "number", label: { en: "Interest Expense", es: "Gastos financieros" } },
+  { key: "taxRate", kind: "number", unit: "%", label: { en: "Tax Rate", es: "Tipo impositivo" } },
+  { key: "arDays", kind: "number", unit: "days", label: { en: "Accounts Receivable Days", es: "Días de cobro a clientes" } },
+  { key: "apDays", kind: "number", unit: "days", label: { en: "Accounts Payable Days", es: "Días de pago a proveedores" } },
+  { key: "invDays", kind: "number", unit: "days", label: { en: "Inventory Days (0 if services)", es: "Días de inventario (0 si es servicios)" } },
+  { key: "capex", kind: "number", label: { en: "Annual CapEx", es: "CapEx anual" } },
+  { key: "debtRepay", kind: "number", label: { en: "Debt Repayments", es: "Amortización de deuda" } },
+  { key: "bsCash", kind: "number", label: { en: "Cash & Equivalents", es: "Efectivo y equivalentes" } },
+  { key: "otherCurrentAssets", kind: "number", label: { en: "Other Current Assets", es: "Otros activos corrientes" } },
+  { key: "fixedAssets", kind: "number", label: { en: "Fixed Assets (Net)", es: "Activos fijos (neto)" } },
+  { key: "stDebt", kind: "number", label: { en: "Short-term Debt", es: "Deuda a corto plazo" } },
+  { key: "ltDebt", kind: "number", label: { en: "Long-term Debt", es: "Deuda a largo plazo" } },
+  { key: "otherLiabilities", kind: "number", label: { en: "Other Liabilities", es: "Otros pasivos" } },
+  { key: "evEbitdaMult", kind: "number", unit: "x", label: { en: "EV/EBITDA Multiple", es: "Múltiplo EV/EBITDA" } },
+  { key: "revMult", kind: "number", unit: "x", label: { en: "Revenue Multiple", es: "Múltiplo sobre ingresos" } },
+  { key: "peMult", kind: "number", unit: "x", label: { en: "P/E Multiple", es: "Múltiplo P/E" } },
+  { key: "discountRate", kind: "number", unit: "%", label: { en: "Discount Rate (WACC)", es: "Tasa de descuento (WACC)" } },
+  { key: "termGrowth", kind: "number", unit: "%", label: { en: "Terminal Growth Rate", es: "Tasa de crecimiento terminal" } },
+];
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => {
@@ -137,6 +170,36 @@ export default function FinancialPlannerCompanyPage() {
   const [peMult, setPeMult]             = useState(12);
   const [discountRate, setDiscountRate] = useState(10);
   const [termGrowth, setTermGrowth]     = useState(3);
+
+  const sheetValues = (): SheetValues => ({ revenue, cogs, salaries, rent, marketing, software, otherOpex, da, interest, taxRate, arDays, apDays, invDays, capex, debtRepay, bsCash, otherCurrentAssets, fixedAssets, stDebt, ltDebt, otherLiabilities, evEbitdaMult, revMult, peMult, discountRate, termGrowth });
+  function applySheet(v: SheetValues) {
+    if (typeof v.revenue === "number") setRevenue(v.revenue);
+    if (typeof v.cogs === "number") setCogs(v.cogs);
+    if (typeof v.salaries === "number") setSalaries(v.salaries);
+    if (typeof v.rent === "number") setRent(v.rent);
+    if (typeof v.marketing === "number") setMarketing(v.marketing);
+    if (typeof v.software === "number") setSoftware(v.software);
+    if (typeof v.otherOpex === "number") setOtherOpex(v.otherOpex);
+    if (typeof v.da === "number") setDa(v.da);
+    if (typeof v.interest === "number") setInterest(v.interest);
+    if (typeof v.taxRate === "number") setTaxRate(v.taxRate);
+    if (typeof v.arDays === "number") setArDays(v.arDays);
+    if (typeof v.apDays === "number") setApDays(v.apDays);
+    if (typeof v.invDays === "number") setInvDays(v.invDays);
+    if (typeof v.capex === "number") setCapex(v.capex);
+    if (typeof v.debtRepay === "number") setDebtRepay(v.debtRepay);
+    if (typeof v.bsCash === "number") setBsCash(v.bsCash);
+    if (typeof v.otherCurrentAssets === "number") setOtherCurrentAssets(v.otherCurrentAssets);
+    if (typeof v.fixedAssets === "number") setFixedAssets(v.fixedAssets);
+    if (typeof v.stDebt === "number") setStDebt(v.stDebt);
+    if (typeof v.ltDebt === "number") setLtDebt(v.ltDebt);
+    if (typeof v.otherLiabilities === "number") setOtherLiabilities(v.otherLiabilities);
+    if (typeof v.evEbitdaMult === "number") setEvEbitdaMult(v.evEbitdaMult);
+    if (typeof v.revMult === "number") setRevMult(v.revMult);
+    if (typeof v.peMult === "number") setPeMult(v.peMult);
+    if (typeof v.discountRate === "number") setDiscountRate(v.discountRate);
+    if (typeof v.termGrowth === "number") setTermGrowth(v.termGrowth);
+  }
 
   // ── Step 1 calculations ────────────────────────────────────────────────────
   const totalOpex = salaries + rent + marketing + software + otherOpex;
@@ -376,6 +439,13 @@ export default function FinancialPlannerCompanyPage() {
             <div className="flex flex-col lg:flex-row gap-6">
               <aside className="lg:w-72 xl:w-80 shrink-0">
                 <div className="lg:sticky lg:top-[140px] flex flex-col gap-4">
+                  <SpreadsheetIO
+                    title={`${t("pageTitle")} (${currency})`}
+                    fileName="company-financial-plan"
+                    fields={SHEET_FIELDS}
+                    getValues={sheetValues}
+                    onImport={applySheet}
+                  />
                   {/* Currency */}
                   <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-5">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3">{t("sectionCurrency")}</h3>
