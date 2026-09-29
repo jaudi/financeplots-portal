@@ -8,6 +8,7 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 - next-intl for i18n (`en` / `es`) — every page lives under `app/[locale]/`
 - Tailwind v4
 - Hosted on Vercel, auto-deploys on push to `master`
+- `package.json` `overrides` pins `@swc/core` (pulled in by next-intl's config plugin) to 1.15.21: 1.16.12, published 2026-09-29, validates the permissions of its native-binding cache folder and refused to load, so `next build` failed at `next.config.ts`. Try removing the pin when a later 1.16.x is out, and run `npm run build` before pushing.
 
 ## Layout
 
