@@ -121,6 +121,13 @@
     },
     "articles": [
       {
+        "slug": "famous-investor-playbooks",
+        "title": "Diez inversores famosos, diez formas de mantener una acción",
+        "date": "Septiembre 2026",
+        "description": "(Artículo en inglés) Simons, Buffett, Graham, Lynch, O’Neil y cinco más, con Paramés como bonus: qué busca cada uno, cuándo vende y cuánto tiempo espera mantener — y por qué tu horizonte debe elegir el método.",
+        "tag": "Guía"
+      },
+      {
         "slug": "claude-artifacts-vs-power-bi",
         "title": "Claude Artifacts vs Power BI: Pros and Cons for Finance Teams",
         "date": "Septiembre 2026",

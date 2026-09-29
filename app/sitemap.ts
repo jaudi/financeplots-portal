@@ -14,6 +14,7 @@ const BLOG_SLUGS = [
   "control-is-the-whole-game",
   "dcf-valuation-guide",
   "ecb-rate-hike-mistake",
+  "famous-investor-playbooks",
   "finance-dashboard-problem",
   "financial-forecasting",
   "ifrs-ias-standards-guide",

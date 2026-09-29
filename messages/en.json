@@ -121,6 +121,13 @@
     },
     "articles": [
       {
+        "slug": "famous-investor-playbooks",
+        "title": "Ten Famous Investors, Ten Ways to Hold a Share",
+        "date": "September 2026",
+        "description": "Simons, Buffett, Graham, Lynch, O'Neil and five more: what each one looks for, when they sell, and how long they expect to hold — and why your holding period should choose the method.",
+        "tag": "Guide"
+      },
+      {
         "slug": "claude-artifacts-vs-power-bi",
         "title": "Claude Artifacts vs Power BI: Pros and Cons for Finance Teams",
         "date": "September 2026",
