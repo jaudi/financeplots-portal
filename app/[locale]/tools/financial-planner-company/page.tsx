@@ -314,7 +314,7 @@ export default function FinancialPlannerCompanyPage() {
     <div className="fixed top-[65px] left-0 right-0 z-40 bg-[#0d1426]/95 backdrop-blur border-b border-gray-800 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 shrink-0">
-          <Link href="/tools" className="text-gray-400 hover:text-white text-sm transition">{t("backToTools")}</Link>
+          <Link href="/tools/business" className="text-gray-400 hover:text-white text-sm transition">{t("backToTools")}</Link>
           <span className="text-gray-700 hidden md:block">|</span>
           <span className="text-white font-bold text-sm hidden md:block">{t("pageTitle")}</span>
         </div>
@@ -996,7 +996,7 @@ export default function FinancialPlannerCompanyPage() {
                   >
                     {pdfLoading ? "Generating…" : t("exportPdf")}
                   </button>
-                  <Link href="/tools" className="bg-[#0d1426] border border-gray-700 hover:border-blue-500 text-gray-300 hover:text-white font-semibold px-6 py-3 rounded-xl transition text-sm">
+                  <Link href="/tools/business" className="bg-[#0d1426] border border-gray-700 hover:border-blue-500 text-gray-300 hover:text-white font-semibold px-6 py-3 rounded-xl transition text-sm">
                     {t("backToAllTools")}
                   </Link>
                 </div>

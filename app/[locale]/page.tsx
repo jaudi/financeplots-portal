@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
+import AudienceDoors from "@/components/AudienceDoors";
 
 export const metadata: Metadata = {
   title: "FinancePlots — Independent Writing on Markets, Macro & FP&A",
@@ -43,8 +44,6 @@ export default async function Home() {
   const t = await getTranslations("home");
   const tBlog = await getTranslations("blog");
 
-  const personalTools = t.raw("personalTools") as [string, string, string, string][];
-  const professionalTools = t.raw("professionalTools") as [string, string, string, string][];
   const articles = tBlog.raw("articles") as Article[];
 
   const featured = articles[0];
@@ -84,132 +83,24 @@ export default async function Home() {
             </Link>
           </p>
 
-          {/* Featured: Financial Journey Planners */}
-          <div className="grid md:grid-cols-2 gap-4 mb-10">
-            {/* Individual */}
-            <Link
-              href="/tools/financial-planner"
-              className="block bg-gradient-to-br from-blue-900/40 to-purple-900/20 border border-blue-700/40 hover:border-blue-500 rounded-2xl p-7 transition group"
-            >
-              <div className="flex items-start gap-4 overflow-hidden">
-                <span className="text-4xl shrink-0">🗺️</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2 flex-wrap">
-                    <h3 className="text-white font-bold text-lg md:text-xl group-hover:text-blue-300 transition">{t("featuredToolTitle")}</h3>
-                    <span className="text-xs bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-semibold">{t("featuredBadge")}</span>
-                  </div>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {t("featuredToolDesc")}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-4 text-xs text-gray-500">
-                    <span>💰 Budget</span>
-                    <span>→</span>
-                    <span>💳 Debt</span>
-                    <span>→</span>
-                    <span>📈 Compounding</span>
-                    <span>→</span>
-                    <span>🎯 Allocation</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            {/* Company */}
-            <Link
-              href="/tools/financial-planner-company"
-              className="block bg-gradient-to-br from-green-900/40 to-teal-900/20 border border-green-700/40 hover:border-green-500 rounded-2xl p-7 transition group"
-            >
-              <div className="flex items-start gap-4 overflow-hidden">
-                <span className="text-4xl shrink-0">🏢</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2 flex-wrap">
-                    <h3 className="text-white font-bold text-lg md:text-xl group-hover:text-green-300 transition">{t("featuredToolTitleCompany")}</h3>
-                    <span className="text-xs bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-semibold">{t("featuredBadge")}</span>
-                  </div>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {t("featuredToolDescCompany")}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-4 text-xs text-gray-500">
-                    <span>📊 P&amp;L</span>
-                    <span>→</span>
-                    <span>💧 Cash Flow</span>
-                    <span>→</span>
-                    <span>⚖️ Balance Sheet</span>
-                    <span>→</span>
-                    <span>💎 Valuation</span>
-                    <span>→</span>
-                    <span>🚀 Exit</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
+          {/* Individuals and companies are two audiences with two separate hubs */}
+          <AudienceDoors />
 
-          <div className="grid md:grid-cols-2 gap-10">
-
-            {/* Personal */}
-            <div>
-              <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-800">
-                <span className="text-2xl">👤</span>
-                <div>
-                  <h3 className="text-white font-bold">{t("personalFinanceTitle")}</h3>
-                  <p className="text-gray-500 text-xs">{t("personalFinanceSubtitle")}</p>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                {personalTools.map(([icon, name, desc, href]) => (
-                  <li key={name}>
-                    <Link href={href} className="flex gap-3 items-start bg-[#0d1426] border border-gray-800 rounded-xl p-4 hover:border-blue-700/50 transition group">
-                      <span className="text-xl mt-0.5">{icon}</span>
-                      <div>
-                        <p className="text-white font-semibold text-sm group-hover:text-blue-300 transition">{name}</p>
-                        <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{desc}</p>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Professional */}
-            <div>
-              <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-800">
-                <span className="text-2xl">🏢</span>
-                <div>
-                  <h3 className="text-white font-bold">{t("professionalTitle")}</h3>
-                  <p className="text-gray-500 text-xs">{t("professionalSubtitle")}</p>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                {professionalTools.map(([icon, name, desc, href]) => (
-                  <li key={name}>
-                    <Link href={href} className="flex gap-3 items-start bg-[#0d1426] border border-gray-800 rounded-xl p-4 hover:border-blue-700/50 transition group">
-                      <span className="text-xl mt-0.5">{icon}</span>
-                      <div>
-                        <p className="text-white font-semibold text-sm group-hover:text-blue-300 transition">{name}</p>
-                        <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{desc}</p>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              {/* How it works */}
-              <div className="mt-6 bg-blue-600/5 border border-blue-700/20 rounded-xl p-5">
-                <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-3">{t("howItWorksLabel")}</p>
-                <ol className="space-y-2">
-                  {[
-                    t("howItWorks1"),
-                    t("howItWorks2"),
-                    t("howItWorks3"),
-                    t("howItWorks4"),
-                  ].map((step, i) => (
-                    <li key={i} className="flex gap-2 text-gray-400 text-sm">
-                      <span className="text-blue-400 font-bold shrink-0">{i + 1}.</span>{step}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
+          {/* How it works */}
+          <div className="mt-6 bg-blue-600/5 border border-blue-700/20 rounded-xl p-5">
+            <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-3">{t("howItWorksLabel")}</p>
+            <ol className="grid md:grid-cols-4 gap-3">
+              {[
+                t("howItWorks1"),
+                t("howItWorks2"),
+                t("howItWorks3"),
+                t("howItWorks4"),
+              ].map((step, i) => (
+                <li key={i} className="flex gap-2 text-gray-400 text-sm">
+                  <span className="text-blue-400 font-bold shrink-0">{i + 1}.</span>{step}
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>

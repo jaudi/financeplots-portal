@@ -52,6 +52,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     { url: BASE, priority: 1.0, changeFrequency: "weekly" as const },
     { url: `${BASE}/tools`, priority: 0.9, changeFrequency: "weekly" as const },
+    { url: `${BASE}/tools/personal`, priority: 0.9, changeFrequency: "weekly" as const },
+    { url: `${BASE}/tools/business`, priority: 0.9, changeFrequency: "weekly" as const },
     { url: `${BASE}/blog`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE}/observer`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE}/map`, priority: 0.7, changeFrequency: "monthly" as const },
@@ -62,6 +64,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/about`, priority: 0.6, changeFrequency: "yearly" as const },
     { url: `${BASE}/es`, priority: 0.9, changeFrequency: "weekly" as const },
     { url: `${BASE}/es/tools`, priority: 0.8, changeFrequency: "weekly" as const },
+    { url: `${BASE}/es/tools/personal`, priority: 0.8, changeFrequency: "weekly" as const },
+    { url: `${BASE}/es/tools/business`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE}/es/blog`, priority: 0.7, changeFrequency: "weekly" as const },
   ];
 

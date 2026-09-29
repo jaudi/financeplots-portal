@@ -504,7 +504,7 @@ export default function PitchDeckPage() {
 
         {/* Header */}
         <div className="mb-10">
-          <Link href="/tools" className="text-blue-400 text-sm hover:underline mb-4 inline-block">← All Tools</Link>
+          <Link href="/tools/business" className="text-blue-400 text-sm hover:underline mb-4 inline-block">← Tools for companies</Link>
           <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">Fundraising</p>
           <h1 className="text-4xl font-extrabold mb-3">🎯 Pitch Deck Builder</h1>
           <p className="text-gray-400 max-w-2xl">

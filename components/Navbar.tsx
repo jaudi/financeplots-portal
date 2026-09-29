@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useTransition } from "react";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
+import { AUDIENCE_KEYS, AUDIENCES, audienceSlugs, type Audience, type CatalogEntry } from "@/lib/audiences";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -12,7 +13,9 @@ export default function Navbar() {
   const t = useTranslations("nav");
   const tm = useTranslations("mcp");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState<"fpa" | "market" | null>(null);
+  const ta = useTranslations("audiences");
+  const tc = useTranslations("tools");
+  const [openMenu, setOpenMenu] = useState<Audience | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -39,26 +42,22 @@ export default function Navbar() {
     });
   }
 
-  const FPA_TOOLS = [
-    { label: `🗺️ ${t("financialJourney")}`, href: "/tools/financial-planner", featured: true },
-    { label: `⚖️ ${t("breakEven")}`,         href: "/tools/break-even"         },
-    { label: `📈 ${t("financialModel")}`,    href: "/tools/financial-model"    },
-    { label: `💰 ${t("annualBudget")}`,      href: "/tools/annual-budget"      },
-    { label: `💧 ${t("cashFlow")}`,          href: "/tools/cash-flow"          },
-    { label: `🏢 ${t("valuation")}`,         href: "/tools/valuation"          },
-    { label: `🏦 ${t("lending")}`,           href: "/tools/lending"            },
-    { label: `💸 ${t("personalBudget")}`,    href: "/tools/personal-budget"    },
-    { label: `💹 ${t("compoundInterest")}`,  href: "/tools/compound-interest"  },
-  ];
-
-  const MARKET_TOOLS = [
-    { label: `📊 ${t("portfolioAnalysis")}`, href: "/tools/portfolio-analysis" },
-    { label: `📉 ${t("stockComparison")}`,   href: "/tools/stock-comparison"   },
-    { label: `📈 ${t("stockAnalysis")}`,     href: "/tools/stock-analysis"     },
-    { label: `🔎 ${t("stockScreener")}`,     href: "/tools/stock-screener"     },
-    { label: `📊 ${t("macroDashboard")}`,    href: "/tools/macro-dashboard"    },
-    { label: `🌐 ${t("marketIndices")}`,     href: "/tools/market-indices"     },
-  ];
+  // One menu per audience (lib/audiences.ts): individuals and companies are
+  // kept apart, each menu opening with its own planner.
+  const catalog = tc.raw("catalog") as Record<string, CatalogEntry>;
+  const MENUS = AUDIENCE_KEYS.map(audience => {
+    const a = AUDIENCES[audience];
+    return {
+      key: audience,
+      label: ta(`${audience}.nav`),
+      hub: a.href,
+      items: audienceSlugs(audience).map(slug => ({
+        label: `${catalog[slug].icon} ${catalog[slug].name}`,
+        href: `/tools/${slug}`,
+        featured: slug === a.planner,
+      })),
+    };
+  });
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0f1e]/95 backdrop-blur border-b border-gray-800">
@@ -72,13 +71,10 @@ export default function Navbar() {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-1 text-sm text-gray-400">
 
-          {/* FP&A and Market dropdowns */}
+          {/* Individuals and Companies dropdowns */}
           <div ref={dropdownRef} className="flex items-center gap-1">
-            {([
-              { key: "fpa",    label: t("fpaSectionLabel"),    items: FPA_TOOLS    },
-              { key: "market", label: t("marketSectionLabel"), items: MARKET_TOOLS },
-            ] as const).map(menu => {
-              const active = menu.items.some(tool => pathname === tool.href);
+            {MENUS.map(menu => {
+              const active = pathname === menu.hub || menu.items.some(tool => pathname === tool.href);
               const open = openMenu === menu.key;
               return (
                 <div key={menu.key} className="relative">
@@ -105,7 +101,7 @@ export default function Navbar() {
                             key={tool.href}
                             href={tool.href}
                             className={
-                              "featured" in tool
+                              tool.featured
                                 ? "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-blue-300 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/20 mb-2 transition"
                                 : `flex items-center px-3 py-2 rounded-lg text-sm transition ${
                                     pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white hover:bg-white/5"
@@ -141,10 +137,10 @@ export default function Navbar() {
                             🤖 {tm("navLabel")}
                           </Link>
                           <Link
-                            href="/tools"
+                            href={menu.hub}
                             className="flex items-center justify-center px-3 py-2 rounded-lg text-xs text-blue-400 hover:text-blue-300 transition"
                           >
-                            {t("viewAllTools")}
+                            {ta("viewAll", { count: menu.items.length })}
                           </Link>
                         </div>
                       </div>
@@ -194,7 +190,7 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/tools/financial-planner"
+            href="/tools"
             className="ml-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-lg font-semibold transition shadow-lg shadow-blue-600/20"
           >
             {t("getStarted")}
@@ -217,22 +213,25 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-[#0d1426] border-t border-gray-800 px-4 py-4 flex flex-col gap-1 text-sm max-h-[80vh] overflow-y-auto">
-          <Link href="/tools/financial-planner" className="flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-blue-300 bg-blue-600/10 border border-blue-600/20 mb-2">
-            🗺️ {t("financialJourney")}
-          </Link>
-
-          <p className="text-xs text-gray-600 font-bold uppercase tracking-wider px-4 py-1">{t("fpaSectionLabel")}</p>
-          {FPA_TOOLS.filter(t => !t.featured).map(tool => (
-            <Link key={tool.href} href={tool.href} className={`px-4 py-2.5 rounded-lg transition ${pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>
-              {tool.label}
-            </Link>
-          ))}
-
-          <p className="text-xs text-gray-600 font-bold uppercase tracking-wider px-4 py-1 mt-2">{t("marketSectionLabel")}</p>
-          {MARKET_TOOLS.map(tool => (
-            <Link key={tool.href} href={tool.href} className={`px-4 py-2.5 rounded-lg transition ${pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`}>
-              {tool.label}
-            </Link>
+          {MENUS.map(menu => (
+            <div key={menu.key} className="flex flex-col gap-1 mb-2">
+              <Link href={menu.hub} className="text-xs text-gray-500 hover:text-white font-bold uppercase tracking-wider px-4 py-1">
+                {menu.label} →
+              </Link>
+              {menu.items.map(tool => (
+                <Link
+                  key={tool.href}
+                  href={tool.href}
+                  className={
+                    tool.featured
+                      ? "flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-blue-300 bg-blue-600/10 border border-blue-600/20"
+                      : `px-4 py-2.5 rounded-lg transition ${pathname === tool.href ? "text-white bg-blue-600/15" : "text-gray-300 hover:text-white"}`
+                  }
+                >
+                  {tool.label}
+                </Link>
+              ))}
+            </div>
           ))}
 
           <Link

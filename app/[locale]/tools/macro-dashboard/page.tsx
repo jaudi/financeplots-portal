@@ -134,7 +134,7 @@ export default function MacroDashboardPage() {
       {/* Top bar */}
       <div className="fixed top-[65px] left-0 right-0 z-40 bg-[#0d1426]/95 backdrop-blur border-b border-gray-800 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center gap-3">
-          <Link href="/tools" className="text-gray-400 hover:text-white text-sm transition">{tc("allTools")}</Link>
+          <Link href="/tools/business" className="text-gray-400 hover:text-white text-sm transition">{tc("backBusiness")}</Link>
           <span className="text-gray-700">|</span>
           <h1 className="text-white font-bold hidden sm:block">📊 US Macro Dashboard</h1>
           <span className="ml-auto text-xs text-gray-600 hidden md:block">{tc("disclaimer")}</span>

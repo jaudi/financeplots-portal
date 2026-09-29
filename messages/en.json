@@ -6,26 +6,7 @@
     "quiz": "Quiz",
     "contact": "Contact",
     "getStarted": "Get Started",
-    "financialJourney": "Financial Journey",
-    "fpaSectionLabel": "FP&A Tools",
-    "marketSectionLabel": "Market Tools",
-    "viewAllTools": "View all tools →",
-    "breakEven": "Break-Even",
-    "financialModel": "Financial Model",
-    "annualBudget": "Annual Budget",
-    "cashFlow": "Cash Flow Forecast",
-    "valuation": "Business Valuation",
-    "lending": "Lending Calculator",
-    "personalBudget": "Personal Budget",
-    "compoundInterest": "Compound Interest",
-    "portfolioAnalysis": "Portfolio Analysis",
-    "stockComparison": "Stock Comparison",
-    "stockAnalysis": "Stock Analysis",
-    "macroDashboard": "US Macro",
-    "stockScreener": "Stock Screener",
-    "marketIndices": "World Indices",
-    "observer": "The Observer",
-    "glossary": "Glossary"
+    "observer": "The Observer"
   },
   "home": {
     "badge": "Free FP&A Tools · No Signup · Works Instantly",
@@ -61,89 +42,11 @@
     "mcpNoteBadge": "New",
     "mcpNote": "Use these tools inside Claude",
     "featuredBadge": "Featured",
-    "featuredToolTitle": "Financial Journey — Individuals",
-    "featuredToolDesc": "A 4-step interactive guide — build your budget, calculate your debt, project your savings with compound interest, and set your asset allocation. Everything connected in one journey.",
-    "featuredToolTitleCompany": "Financial Journey — Companies",
-    "featuredToolDescCompany": "A 5-step company planner — link your P&L, Cash Flow and Balance Sheet, get a valuation estimate, and build your exit strategy.",
-    "personalFinanceTitle": "Personal Finance",
-    "personalFinanceSubtitle": "For individuals managing money & investments",
-    "professionalTitle": "Professional FP&A",
-    "professionalSubtitle": "For finance teams, CFOs and analysts",
     "howItWorksLabel": "How it works",
     "howItWorks1": "Click any tool — opens instantly in your browser",
     "howItWorks2": "Enter your data in the sidebar",
     "howItWorks3": "See live charts and KPIs update in real time",
     "howItWorks4": "Export to PDF or Excel",
-    "personalTools": [
-      [
-        "💰",
-        "Personal Budget",
-        "Monthly income, expense categories, savings rate and spending breakdown.",
-        "/tools/personal-budget"
-      ],
-      [
-        "📊",
-        "Portfolio Analysis",
-        "Enter your holdings and weights — return, volatility, Sharpe ratio, VaR and each holding's share of risk.",
-        "/tools/portfolio-analysis"
-      ],
-      [
-        "📉",
-        "Stock Comparison",
-        "Compare up to four tickers on one chart — returns, volatility, largest fall and correlation.",
-        "/tools/stock-comparison"
-      ],
-      [
-        "📈",
-        "Stock Analysis",
-        "Price history, moving averages and cumulative return for any ticker.",
-        "/tools/stock-analysis"
-      ],
-      [
-        "💹",
-        "Compound Interest",
-        "See how your capital and monthly contributions grow.",
-        "/tools/compound-interest"
-      ],
-      [
-        "🏠",
-        "Mortgage & Loans",
-        "Amortisation schedule and mortgage payment calculator.",
-        "/tools/lending"
-      ]
-    ],
-    "professionalTools": [
-      [
-        "🏦",
-        "Financial Model",
-        "5-year P&L, cash flow and balance sheet with Excel export.",
-        "/tools/financial-model"
-      ],
-      [
-        "📋",
-        "Annual Budget",
-        "Build and visualise your company budget month by month.",
-        "/tools/annual-budget"
-      ],
-      [
-        "💧",
-        "Cash Flow Forecast",
-        "13-week rolling cash forecast with PDF export.",
-        "/tools/cash-flow"
-      ],
-      [
-        "⚖️",
-        "Break-Even",
-        "Fixed costs, variable costs, contribution margin and margin of safety.",
-        "/tools/break-even"
-      ],
-      [
-        "💎",
-        "DCF Valuation",
-        "Discounted cash flow model with terminal value and sensitivity table.",
-        "/tools/valuation"
-      ]
-    ],
     "freeBadge": "Always Free",
     "freeTitle": "No pricing. No plans. No catch.",
     "freeDesc": "Every tool on FinancePlots is free — including PDF and Excel exports. No account, no credit card, no time limit. Finance tools should be accessible to everyone.",
@@ -376,111 +279,94 @@
   "tools": {
     "label": "Free tools",
     "title": "Finance Tools",
-    "subtitle": "12 free tools. No signup. No install. Works instantly in your browser.",
-    "featuredTitle": "Financial Journey — Individuals",
-    "featuredTitleCompany": "Financial Journey — Companies",
-    "featuredBadge": "Featured",
-    "featuredDesc": "A 4-step interactive guide — build your budget, calculate your debt, project your savings with compound interest, and set your asset allocation. Everything connected in one journey.",
-    "featuredDescCompany": "A 5-step company financial planner — link your P&L, Cash Flow and Balance Sheet, get a valuation estimate, and build your exit strategy.",
-    "stockSectionTitle": "Stock & Market Tools",
-    "stockSectionSubtitle": "Live market data powered by Yahoo Finance",
-    "fpaSectionTitle": "FP&A & Planning Tools",
-    "fpaSectionSubtitle": "Browser-native tools with PDF export — no server required",
-    "liveBadge": "Live",
-    "stockTools": [
-      {
-        "icon": "🌐",
-        "name": "World Market Indices",
-        "desc": "Live prices for 25+ global indices — S&P 500, FTSE 100, Nikkei, DAX, Hang Seng and more.",
-        "href": "/tools/market-indices"
+    "subtitle": "17 free tools, split by who they are for. No signup. No install. Works instantly in your browser.",
+    "catalog": {
+      "financial-planner": {
+        "icon": "🗺️",
+        "name": "Financial Journey — Individuals",
+        "desc": "A 4-step interactive guide — build your budget, calculate your debt, project your savings with compound interest, and set your asset allocation. Everything connected in one journey."
       },
-      {
-        "icon": "📊",
-        "name": "US Macro Dashboard",
-        "desc": "Key US macroeconomic indicators — GDP, CPI, unemployment, Fed Funds and 10Y Treasury. Sourced from FRED.",
-        "href": "/tools/macro-dashboard"
-      },
-      {
-        "icon": "🔎",
-        "name": "Stock Screener",
-        "desc": "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter the S&P 500, Nasdaq-100 or IBEX 35. Nothing is ranked or picked for you.",
-        "href": "/tools/stock-screener"
-      },
-      {
-        "icon": "📊",
-        "name": "Portfolio Analysis",
-        "desc": "Enter your holdings and weights — return, volatility, Sharpe ratio, VaR and each holding's share of risk.",
-        "href": "/tools/portfolio-analysis"
-      },
-      {
-        "icon": "📉",
-        "name": "Stock Comparison",
-        "desc": "Compare up to four tickers on one chart — returns, volatility, largest fall and correlation.",
-        "href": "/tools/stock-comparison"
-      },
-      {
-        "icon": "📈",
-        "name": "Stock Analysis",
-        "desc": "Price history, moving averages, volume and cumulative return for any ticker.",
-        "href": "/tools/stock-analysis"
-      }
-    ],
-    "fpaTools": [
-      {
-        "icon": "⚖️",
-        "name": "Break-Even Analysis",
-        "desc": "Fixed costs, variable costs, contribution margin, break-even units and margin of safety.",
-        "href": "/tools/break-even"
-      },
-      {
-        "icon": "📈",
-        "name": "5-Year Financial Model",
-        "desc": "Project revenue, costs and profits over 5 years with full income statement and margin analysis.",
-        "href": "/tools/financial-model"
-      },
-      {
-        "icon": "💰",
-        "name": "Annual Budget",
-        "desc": "Monthly P&L with seasonality support, revenue growth and cost structure.",
-        "href": "/tools/annual-budget"
-      },
-      {
-        "icon": "💧",
-        "name": "13-Week Cash Flow Forecast",
-        "desc": "Rolling weekly cash forecast with inflows, outflows, closing balance and negative-week alerts.",
-        "href": "/tools/cash-flow"
-      },
-      {
-        "icon": "🏢",
-        "name": "Business Valuation",
-        "desc": "DCF, EV/EBITDA and P/E — three-method blended valuation with 5-year DCF breakdown.",
-        "href": "/tools/valuation"
-      },
-      {
-        "icon": "🏦",
-        "name": "Lending Calculator",
-        "desc": "Loan amortisation schedule and mortgage analysis with early repayment strategy.",
-        "href": "/tools/lending"
-      },
-      {
-        "icon": "💸",
-        "name": "Personal Budget",
-        "desc": "Monthly income, 8 expense categories, savings rate and spending breakdown.",
-        "href": "/tools/personal-budget"
-      },
-      {
-        "icon": "💹",
-        "name": "Compound Interest",
-        "desc": "See how initial capital and monthly contributions grow. Historical market benchmarks included.",
-        "href": "/tools/compound-interest"
-      },
-      {
+      "financial-planner-company": {
         "icon": "🏢",
         "name": "Financial Journey — Companies",
-        "desc": "Link P&L, Cash Flow, Balance Sheet and Valuation. Get an exit price estimate and exit readiness roadmap.",
-        "href": "/tools/financial-planner-company"
+        "desc": "Link P&L, Cash Flow, Balance Sheet and Valuation. Get an exit price estimate and exit readiness roadmap."
+      },
+      "market-indices": {
+        "icon": "🌐",
+        "name": "World Market Indices",
+        "desc": "Live prices for 25+ global indices — S&P 500, FTSE 100, Nikkei, DAX, Hang Seng and more."
+      },
+      "macro-dashboard": {
+        "icon": "📊",
+        "name": "US Macro Dashboard",
+        "desc": "Key US macroeconomic indicators — GDP, CPI, unemployment, Fed Funds and 10Y Treasury. Sourced from FRED."
+      },
+      "stock-screener": {
+        "icon": "🔎",
+        "name": "Stock Screener",
+        "desc": "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter the S&P 500, Nasdaq-100 or IBEX 35. Nothing is ranked or picked for you."
+      },
+      "portfolio-analysis": {
+        "icon": "📊",
+        "name": "Portfolio Analysis",
+        "desc": "Enter your holdings and weights — return, volatility, Sharpe ratio, VaR and each holding's share of risk."
+      },
+      "stock-comparison": {
+        "icon": "📉",
+        "name": "Stock Comparison",
+        "desc": "Compare up to four tickers on one chart — returns, volatility, largest fall and correlation."
+      },
+      "stock-analysis": {
+        "icon": "📈",
+        "name": "Stock Analysis",
+        "desc": "Price history, moving averages, volume and cumulative return for any ticker."
+      },
+      "break-even": {
+        "icon": "⚖️",
+        "name": "Break-Even Analysis",
+        "desc": "Fixed costs, variable costs, contribution margin, break-even units and margin of safety."
+      },
+      "financial-model": {
+        "icon": "📈",
+        "name": "5-Year Financial Model",
+        "desc": "Project revenue, costs and profits over 5 years with full income statement and margin analysis."
+      },
+      "annual-budget": {
+        "icon": "💰",
+        "name": "Annual Budget",
+        "desc": "Monthly P&L with seasonality support, revenue growth and cost structure."
+      },
+      "cash-flow": {
+        "icon": "💧",
+        "name": "13-Week Cash Flow Forecast",
+        "desc": "Rolling weekly cash forecast with inflows, outflows, closing balance and negative-week alerts."
+      },
+      "valuation": {
+        "icon": "🏢",
+        "name": "Business Valuation",
+        "desc": "DCF, EV/EBITDA and P/E — three-method blended valuation with 5-year DCF breakdown."
+      },
+      "lending": {
+        "icon": "🏦",
+        "name": "Lending Calculator",
+        "desc": "Loan amortisation schedule and mortgage analysis with early repayment strategy."
+      },
+      "personal-budget": {
+        "icon": "💸",
+        "name": "Personal Budget",
+        "desc": "Monthly income, 8 expense categories, savings rate and spending breakdown."
+      },
+      "compound-interest": {
+        "icon": "💹",
+        "name": "Compound Interest",
+        "desc": "See how initial capital and monthly contributions grow. Historical market benchmarks included."
+      },
+      "pitch-deck": {
+        "icon": "🎯",
+        "name": "Pitch Deck Builder",
+        "desc": "9-slide investor pitch deck — problem, solution, market, business model, traction, financials, team and the ask. Download as editable PowerPoint."
       }
-    ]
+    }
   },
   "toolCommon": {
     "allTools": "← All Tools",
@@ -491,7 +377,9 @@
     "screenerDisclaimerTitle": "Not financial advice",
     "screenerDisclaimer": "This is a personal project, not professional investment research. The underlying market data may be delayed or incorrect. Nothing here is a recommendation to buy or sell any security. Always do your own research and consult a qualified professional before investing.",
     "screenerDisclaimerPast": "This screen ranks partly on past price performance. Past performance is not a guide to future returns, and the value of investments can fall as well as rise.",
-    "alsoTry": "Also try"
+    "alsoTry": "Also try",
+    "backPersonal": "← Individuals",
+    "backBusiness": "← Companies"
   },
   "breakEven": {
     "title": "⚖️ Break-Even Analysis",
@@ -983,7 +871,7 @@
     "s5TitleAllocation": "Asset Allocation"
   },
   "companyPlanner": {
-    "backToTools": "← All Tools",
+    "backToTools": "← Companies",
     "pageTitle": "Financial Journey — Companies",
     "stepPL": "P&L",
     "stepCashFlow": "Cash Flow",
@@ -1181,7 +1069,7 @@
     "actionDocumentContracts": "Document all customer contracts and revenue recognition — recurring, contracted revenue commands the highest multiples in any sale process.",
     "disclaimerTitle": "Disclaimer:",
     "disclaimerText": "This tool is for illustrative and planning purposes only. The valuations and insights above are indicative estimates based on simplified models. They do not constitute financial advice, a formal valuation or an offer to buy or sell any business. Consult a qualified M&A advisor, corporate finance professional or accountant before making any decisions related to a business sale, acquisition or restructuring.",
-    "backToAllTools": "← Back to All Tools",
+    "backToAllTools": "← Back to tools for companies",
     "exportPdf": "📄 Export PDF"
   },
   "emailCapture": {
@@ -1285,5 +1173,59 @@
     "bannerDesc": "Connect our calculators and market data to your AI assistant and ask in plain English.",
     "bannerCta": "How to connect →",
     "navLabel": "Use in Claude"
+  },
+  "audiences": {
+    "chooserTitle": "Who are you planning for?",
+    "chooserSubtitle": "Your own money and a company's finances are different jobs, so the tools live in two separate spaces.",
+    "toolsCount": "{count} tools",
+    "enter": "Open →",
+    "viewAll": "See all {count} tools →",
+    "featuredBadge": "Start here",
+    "personal": {
+      "nav": "Individuals",
+      "label": "For individuals",
+      "title": "Tools for individuals",
+      "subtitle": "Budget, borrow, save and invest — your own money, planned step by step.",
+      "metaTitle": "Free Personal Finance Tools — Budget, Loans, Savings & Investing",
+      "metaDescription": "Free tools for your own money: a step-by-step financial plan, personal budget, compound interest, mortgage and loan calculator, and portfolio and stock analysis. No signup.",
+      "back": "← Individuals",
+      "otherSide": "Planning for a company instead?",
+      "otherSideCta": "Go to tools for companies →",
+      "groups": {
+        "plan": {
+          "title": "Plan your money",
+          "subtitle": "Budget, debt and savings"
+        },
+        "invest": {
+          "title": "Invest",
+          "subtitle": "Market data from Yahoo Finance. Nothing is recommended — you choose the tickers."
+        }
+      }
+    },
+    "business": {
+      "nav": "Companies",
+      "label": "For companies",
+      "title": "Tools for companies",
+      "subtitle": "Budgets, cash flow, valuation and fundraising — for finance teams, CFOs and founders.",
+      "metaTitle": "Free FP&A Tools for Companies — Budget, Cash Flow, Valuation",
+      "metaDescription": "Free tools for company finance: a linked P&L, cash flow and balance sheet planner, annual budget, 13-week cash forecast, break-even, 5-year model, business valuation and pitch deck. No signup.",
+      "back": "← Companies",
+      "otherSide": "Planning your own money instead?",
+      "otherSideCta": "Go to tools for individuals →",
+      "groups": {
+        "plan": {
+          "title": "FP&A and planning",
+          "subtitle": "Budget, forecast, model and value the business"
+        },
+        "context": {
+          "title": "Economic context",
+          "subtitle": "Macro indicators and markets to frame your assumptions"
+        },
+        "funding": {
+          "title": "Fundraising",
+          "subtitle": "Raise capital with confidence"
+        }
+      }
+    }
   }
 }

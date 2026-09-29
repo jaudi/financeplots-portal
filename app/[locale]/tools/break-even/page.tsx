@@ -253,10 +253,10 @@ export default function BreakEvenPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
-              href="/tools"
+              href="/tools/business"
               className="text-gray-400 hover:text-white text-sm transition"
             >
-              {tc("allTools")}
+              {tc("backBusiness")}
             </Link>
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">

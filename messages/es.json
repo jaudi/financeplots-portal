@@ -6,26 +6,7 @@
     "quiz": "Quiz",
     "contact": "Contacto",
     "getStarted": "Comenzar",
-    "financialJourney": "Plan Financiero",
-    "fpaSectionLabel": "Herramientas FP&A",
-    "marketSectionLabel": "Herramientas de Mercado",
-    "viewAllTools": "Ver todas las herramientas →",
-    "breakEven": "Punto de Equilibrio",
-    "financialModel": "Modelo Financiero",
-    "annualBudget": "Presupuesto Anual",
-    "cashFlow": "Previsión de Caja",
-    "valuation": "Valoración de Empresa",
-    "lending": "Calculadora de Préstamos",
-    "personalBudget": "Presupuesto Personal",
-    "compoundInterest": "Interés Compuesto",
-    "portfolioAnalysis": "Análisis de Cartera",
-    "stockComparison": "Comparación de Acciones",
-    "stockAnalysis": "Análisis de Acciones",
-    "macroDashboard": "Macro EE.UU.",
-    "stockScreener": "Screener de Acciones",
-    "marketIndices": "Índices Mundiales",
-    "observer": "The Observer",
-    "glossary": "Glosario"
+    "observer": "The Observer"
   },
   "home": {
     "badge": "Herramientas FP&A Gratuitas · Sin Registro · Funciona Al Instante",
@@ -61,89 +42,11 @@
     "mcpNoteBadge": "Nuevo",
     "mcpNote": "Usa estas herramientas dentro de Claude",
     "featuredBadge": "Destacada",
-    "featuredToolTitle": "Plan Financiero — Particulares",
-    "featuredToolDesc": "Una guía interactiva de 4 pasos — crea tu presupuesto, calcula tu deuda, proyecta tu ahorro con interés compuesto y define tu asignación de activos. Todo conectado en un solo recorrido.",
-    "featuredToolTitleCompany": "Plan Financiero — Empresas",
-    "featuredToolDescCompany": "Un planificador empresarial de 5 pasos — vincula tu cuenta de resultados, flujo de caja y balance, obtén una estimación de valoración y diseña tu estrategia de salida.",
-    "personalFinanceTitle": "Finanzas Personales",
-    "personalFinanceSubtitle": "Para particulares que gestionan dinero e inversiones",
-    "professionalTitle": "FP&A Profesional",
-    "professionalSubtitle": "Para equipos de finanzas, CFOs y analistas",
     "howItWorksLabel": "Cómo funciona",
     "howItWorks1": "Haz clic en cualquier herramienta — se abre al instante en tu navegador",
     "howItWorks2": "Introduce tus datos en el panel lateral",
     "howItWorks3": "Los gráficos e indicadores se actualizan en tiempo real",
     "howItWorks4": "Exporta a PDF o Excel",
-    "personalTools": [
-      [
-        "💰",
-        "Presupuesto Personal",
-        "Ingresos mensuales, categorías de gasto, tasa de ahorro y desglose del gasto.",
-        "/tools/personal-budget"
-      ],
-      [
-        "📊",
-        "Análisis de Cartera",
-        "Introduce tus posiciones y pesos — rentabilidad, volatilidad, ratio de Sharpe, VaR y cuánto riesgo aporta cada una.",
-        "/tools/portfolio-analysis"
-      ],
-      [
-        "📉",
-        "Comparación de Acciones",
-        "Compara hasta cuatro tickers en un mismo gráfico — rentabilidad, volatilidad, caída máxima y correlación.",
-        "/tools/stock-comparison"
-      ],
-      [
-        "📈",
-        "Análisis de Acciones",
-        "Historial de precios, medias móviles y rentabilidad acumulada para cualquier ticker.",
-        "/tools/stock-analysis"
-      ],
-      [
-        "💹",
-        "Interés Compuesto",
-        "Visualiza cómo crece tu capital con aportaciones mensuales.",
-        "/tools/compound-interest"
-      ],
-      [
-        "🏠",
-        "Hipotecas y Préstamos",
-        "Cuadro de amortización y calculadora de cuotas hipotecarias.",
-        "/tools/lending"
-      ]
-    ],
-    "professionalTools": [
-      [
-        "🏦",
-        "Modelo Financiero",
-        "P&G, flujo de caja y balance a 5 años con exportación a Excel.",
-        "/tools/financial-model"
-      ],
-      [
-        "📋",
-        "Presupuesto Anual",
-        "Crea y visualiza el presupuesto de tu empresa mes a mes.",
-        "/tools/annual-budget"
-      ],
-      [
-        "💧",
-        "Previsión de Caja",
-        "Previsión de caja rodante a 13 semanas con exportación a PDF.",
-        "/tools/cash-flow"
-      ],
-      [
-        "⚖️",
-        "Punto de Equilibrio",
-        "Costes fijos, costes variables, margen de contribución y margen de seguridad.",
-        "/tools/break-even"
-      ],
-      [
-        "💎",
-        "Valoración DCF",
-        "Modelo de flujo de caja descontado con valor terminal y tabla de sensibilidad.",
-        "/tools/valuation"
-      ]
-    ],
     "freeBadge": "Siempre Gratis",
     "freeTitle": "Sin precios. Sin planes. Sin trampa.",
     "freeDesc": "Todas las herramientas de FinancePlots son gratuitas — incluyendo las exportaciones a PDF y Excel. Sin cuenta, sin tarjeta de crédito, sin límite de tiempo. Las herramientas financieras deben ser accesibles para todos.",
@@ -362,105 +265,94 @@
   "tools": {
     "label": "Herramientas gratuitas",
     "title": "Herramientas Financieras",
-    "subtitle": "12 herramientas gratuitas. Sin registro. Sin instalación. Funciona al instante en tu navegador.",
-    "featuredTitle": "Plan Financiero — Particulares",
-    "featuredTitleCompany": "Plan Financiero — Empresas",
-    "featuredBadge": "Destacada",
-    "featuredDesc": "Una guía interactiva de 4 pasos — crea tu presupuesto, calcula tu deuda, proyecta tu ahorro con interés compuesto y define tu asignación de activos. Todo conectado en un solo recorrido.",
-    "featuredDescCompany": "Un planificador financiero empresarial de 5 pasos — vincula tu cuenta de resultados, flujo de caja y balance, obtén una estimación de valoración y diseña tu estrategia de salida.",
-    "stockSectionTitle": "Herramientas de Acciones y Mercado",
-    "stockSectionSubtitle": "Datos de mercado en tiempo real de Yahoo Finance",
-    "fpaSectionTitle": "Herramientas FP&A y de Planificación",
-    "fpaSectionSubtitle": "Herramientas nativas en el navegador con exportación a PDF — sin servidor",
-    "liveBadge": "En Vivo",
-    "stockTools": [
-      {
+    "subtitle": "17 herramientas gratuitas, separadas según para quién son. Sin registro. Sin instalación. Funciona al instante en tu navegador.",
+    "catalog": {
+      "financial-planner": {
+        "icon": "🗺️",
+        "name": "Plan Financiero — Particulares",
+        "desc": "Una guía interactiva de 4 pasos — crea tu presupuesto, calcula tu deuda, proyecta tu ahorro con interés compuesto y define tu asignación de activos. Todo conectado en un solo recorrido."
+      },
+      "financial-planner-company": {
+        "icon": "🏢",
+        "name": "Plan Financiero — Empresas",
+        "desc": "Un planificador financiero empresarial de 5 pasos — vincula tu cuenta de resultados, flujo de caja y balance, obtén una estimación de valoración y diseña tu estrategia de salida."
+      },
+      "market-indices": {
         "icon": "🌐",
         "name": "Índices Mundiales",
-        "desc": "Precios en tiempo real de más de 25 índices globales — S&P 500, FTSE 100, Nikkei, DAX, Hang Seng y más.",
-        "href": "/tools/market-indices"
+        "desc": "Precios en tiempo real de más de 25 índices globales — S&P 500, FTSE 100, Nikkei, DAX, Hang Seng y más."
       },
-      {
+      "macro-dashboard": {
         "icon": "📊",
         "name": "Panel Macro EE.UU.",
-        "desc": "Indicadores macroeconómicos clave de EE.UU. — PIB, IPC, desempleo, tipos de la Fed y bono 10 años. Datos de FRED.",
-        "href": "/tools/macro-dashboard"
+        "desc": "Indicadores macroeconómicos clave de EE.UU. — PIB, IPC, desempleo, tipos de la Fed y bono 10 años. Datos de FRED."
       },
-      {
+      "stock-screener": {
         "icon": "🔎",
         "name": "Screener de Acciones",
-        "desc": "Elige tus propios criterios — valoración, rentabilidad, deuda, crecimiento y tendencia del precio — y filtra el S&P 500, el Nasdaq-100 o el IBEX 35. Nada se ordena ni se elige por ti.",
-        "href": "/tools/stock-screener"
+        "desc": "Elige tus propios criterios — valoración, rentabilidad, deuda, crecimiento y tendencia del precio — y filtra el S&P 500, el Nasdaq-100 o el IBEX 35. Nada se ordena ni se elige por ti."
       },
-      {
+      "portfolio-analysis": {
         "icon": "📊",
         "name": "Análisis de Cartera",
-        "desc": "Introduce tus posiciones y pesos — rentabilidad, volatilidad, ratio de Sharpe, VaR y cuánto riesgo aporta cada una.",
-        "href": "/tools/portfolio-analysis"
+        "desc": "Introduce tus posiciones y pesos — rentabilidad, volatilidad, ratio de Sharpe, VaR y cuánto riesgo aporta cada una."
       },
-      {
+      "stock-comparison": {
         "icon": "📉",
         "name": "Comparación de Acciones",
-        "desc": "Compara hasta cuatro tickers en un mismo gráfico — rentabilidad, volatilidad, caída máxima y correlación.",
-        "href": "/tools/stock-comparison"
+        "desc": "Compara hasta cuatro tickers en un mismo gráfico — rentabilidad, volatilidad, caída máxima y correlación."
       },
-      {
+      "stock-analysis": {
         "icon": "📈",
         "name": "Análisis de Acciones",
-        "desc": "Historial de precios, medias móviles, volumen y rentabilidad acumulada para cualquier ticker.",
-        "href": "/tools/stock-analysis"
-      }
-    ],
-    "fpaTools": [
-      {
+        "desc": "Historial de precios, medias móviles, volumen y rentabilidad acumulada para cualquier ticker."
+      },
+      "break-even": {
         "icon": "⚖️",
         "name": "Análisis del Punto de Equilibrio",
-        "desc": "Costes fijos, costes variables, margen de contribución, unidades de equilibrio y margen de seguridad.",
-        "href": "/tools/break-even"
+        "desc": "Costes fijos, costes variables, margen de contribución, unidades de equilibrio y margen de seguridad."
       },
-      {
+      "financial-model": {
         "icon": "📈",
         "name": "Modelo Financiero a 5 Años",
-        "desc": "Proyecta ingresos, costes y beneficios a 5 años con cuenta de resultados completa y análisis de márgenes.",
-        "href": "/tools/financial-model"
+        "desc": "Proyecta ingresos, costes y beneficios a 5 años con cuenta de resultados completa y análisis de márgenes."
       },
-      {
+      "annual-budget": {
         "icon": "💰",
         "name": "Presupuesto Anual",
-        "desc": "P&G mensual con soporte de estacionalidad, crecimiento de ingresos y estructura de costes.",
-        "href": "/tools/annual-budget"
+        "desc": "P&G mensual con soporte de estacionalidad, crecimiento de ingresos y estructura de costes."
       },
-      {
+      "cash-flow": {
         "icon": "💧",
         "name": "Previsión de Caja a 13 Semanas",
-        "desc": "Previsión semanal de caja con entradas, salidas, saldo final y alertas de semanas negativas.",
-        "href": "/tools/cash-flow"
+        "desc": "Previsión semanal de caja con entradas, salidas, saldo final y alertas de semanas negativas."
       },
-      {
+      "valuation": {
         "icon": "🏢",
         "name": "Valoración de Empresa",
-        "desc": "DCF, EV/EBITDA y P/E — valoración combinada de tres métodos con desglose DCF a 5 años.",
-        "href": "/tools/valuation"
+        "desc": "DCF, EV/EBITDA y P/E — valoración combinada de tres métodos con desglose DCF a 5 años."
       },
-      {
+      "lending": {
         "icon": "🏦",
         "name": "Calculadora de Préstamos",
-        "desc": "Cuadro de amortización y análisis hipotecario con estrategia de amortización anticipada.",
-        "href": "/tools/lending"
+        "desc": "Cuadro de amortización y análisis hipotecario con estrategia de amortización anticipada."
       },
-      {
+      "personal-budget": {
         "icon": "💸",
         "name": "Presupuesto Personal",
-        "desc": "Ingresos mensuales, 8 categorías de gasto, tasa de ahorro y desglose del gasto.",
-        "href": "/tools/personal-budget"
+        "desc": "Ingresos mensuales, 8 categorías de gasto, tasa de ahorro y desglose del gasto."
       },
-      {
+      "compound-interest": {
         "icon": "💹",
         "name": "Interés Compuesto",
-        "desc": "Visualiza cómo crece el capital inicial y las aportaciones mensuales. Con referencias históricas del mercado.",
-        "href": "/tools/compound-interest"
+        "desc": "Visualiza cómo crece el capital inicial y las aportaciones mensuales. Con referencias históricas del mercado."
+      },
+      "pitch-deck": {
+        "icon": "🎯",
+        "name": "Creador de Pitch Deck",
+        "desc": "Presentación de 9 diapositivas para inversores — problema, solución, mercado, modelo de negocio, tracción, finanzas, equipo y la ronda. Descárgala en PowerPoint editable."
       }
-    ]
+    }
   },
   "toolCommon": {
     "allTools": "← Herramientas",
@@ -471,7 +363,9 @@
     "screenerDisclaimerTitle": "No es asesoramiento financiero",
     "screenerDisclaimer": "Este es un proyecto personal, no análisis de inversión profesional. Los datos de mercado de origen pueden estar desactualizados o ser incorrectos. Nada de lo publicado aquí es una recomendación de compra o venta de ningún valor. Haz siempre tu propio análisis y consulta a un profesional cualificado antes de invertir.",
     "screenerDisclaimerPast": "Este cribado se apoya en parte en la evolución pasada del precio. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
-    "alsoTry": "También puedes usar"
+    "alsoTry": "También puedes usar",
+    "backPersonal": "← Particulares",
+    "backBusiness": "← Empresas"
   },
   "breakEven": {
     "title": "⚖️ Análisis del Punto de Equilibrio",
@@ -963,7 +857,7 @@
     "s5TitleAllocation": "Asignación de activos"
   },
   "companyPlanner": {
-    "backToTools": "← Herramientas",
+    "backToTools": "← Empresas",
     "pageTitle": "Plan Financiero — Empresas",
     "stepPL": "Cuenta de resultados",
     "stepCashFlow": "Flujo de caja",
@@ -1161,7 +1055,7 @@
     "actionDocumentContracts": "Documenta todos los contratos de clientes y el reconocimiento de ingresos — los ingresos recurrentes y contractuales cotizan a los múltiplos más altos en cualquier proceso de venta.",
     "disclaimerTitle": "Aviso legal:",
     "disclaimerText": "Esta herramienta es solo para fines ilustrativos y de planificación. Las valoraciones e información presentadas son estimaciones indicativas basadas en modelos simplificados. No constituyen asesoramiento financiero, una valoración formal ni una oferta de compra o venta de ningún negocio. Consulta a un asesor de fusiones y adquisiciones cualificado, a un profesional de finanzas corporativas o a un contable antes de tomar cualquier decisión relacionada con la venta, adquisición o reestructuración de una empresa.",
-    "backToAllTools": "← Volver a todas las herramientas",
+    "backToAllTools": "← Volver a herramientas para empresas",
     "exportPdf": "📄 Exportar PDF"
   },
   "emailCapture": {
@@ -1265,5 +1159,59 @@
     "bannerDesc": "Conecta nuestras calculadoras y datos de mercado a tu asistente de IA y pregunta con tus palabras.",
     "bannerCta": "Cómo conectarlo →",
     "navLabel": "Usar en Claude"
+  },
+  "audiences": {
+    "chooserTitle": "¿Para quién planificas?",
+    "chooserSubtitle": "Tu dinero y las finanzas de una empresa son trabajos distintos, así que las herramientas están en dos espacios separados.",
+    "toolsCount": "{count} herramientas",
+    "enter": "Entrar →",
+    "viewAll": "Ver las {count} herramientas →",
+    "featuredBadge": "Empieza aquí",
+    "personal": {
+      "nav": "Particulares",
+      "label": "Para particulares",
+      "title": "Herramientas para particulares",
+      "subtitle": "Presupuesto, préstamos, ahorro e inversión: tu dinero, planificado paso a paso.",
+      "metaTitle": "Herramientas gratuitas de finanzas personales — presupuesto, préstamos, ahorro e inversión",
+      "metaDescription": "Herramientas gratuitas para tu dinero: plan financiero paso a paso, presupuesto personal, interés compuesto, calculadora de hipotecas y préstamos, y análisis de cartera y acciones. Sin registro.",
+      "back": "← Particulares",
+      "otherSide": "¿Planificas para una empresa?",
+      "otherSideCta": "Ir a herramientas para empresas →",
+      "groups": {
+        "plan": {
+          "title": "Planifica tu dinero",
+          "subtitle": "Presupuesto, deuda y ahorro"
+        },
+        "invest": {
+          "title": "Invierte",
+          "subtitle": "Datos de mercado de Yahoo Finance. No recomendamos nada: tú eliges los valores."
+        }
+      }
+    },
+    "business": {
+      "nav": "Empresas",
+      "label": "Para empresas",
+      "title": "Herramientas para empresas",
+      "subtitle": "Presupuestos, tesorería, valoración y financiación — para equipos financieros, CFOs y fundadores.",
+      "metaTitle": "Herramientas FP&A gratuitas para empresas — presupuesto, tesorería, valoración",
+      "metaDescription": "Herramientas gratuitas para las finanzas de una empresa: planificador con cuenta de resultados, flujo de caja y balance vinculados, presupuesto anual, previsión de caja a 13 semanas, punto de equilibrio, modelo a 5 años, valoración y pitch deck. Sin registro.",
+      "back": "← Empresas",
+      "otherSide": "¿Planificas tu propio dinero?",
+      "otherSideCta": "Ir a herramientas para particulares →",
+      "groups": {
+        "plan": {
+          "title": "FP&A y planificación",
+          "subtitle": "Presupuesta, prevé, modeliza y valora el negocio"
+        },
+        "context": {
+          "title": "Contexto económico",
+          "subtitle": "Indicadores macro y mercados para enmarcar tus hipótesis"
+        },
+        "funding": {
+          "title": "Financiación",
+          "subtitle": "Levanta capital con confianza"
+        }
+      }
+    }
   }
 }

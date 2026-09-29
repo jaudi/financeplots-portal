@@ -24,7 +24,7 @@ const RELATED: Record<string, string[]> = {
   "financial-planner-company": ["break-even", "cash-flow", "valuation"],
   "break-even":                ["financial-model", "cash-flow", "financial-planner-company"],
   "financial-model":           ["break-even", "annual-budget", "valuation"],
-  "annual-budget":             ["financial-model", "cash-flow", "personal-budget"],
+  "annual-budget":             ["financial-model", "cash-flow", "financial-planner-company"],
   "cash-flow":                 ["annual-budget", "break-even", "financial-planner-company"],
   "valuation":                 ["financial-model", "break-even", "financial-planner-company"],
   "lending":                   ["financial-planner", "compound-interest", "personal-budget"],
