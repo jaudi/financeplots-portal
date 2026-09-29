@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Area, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PRICE_RANGES, SYMBOL_PATTERN, type PriceHistory, type PriceRange } from "@/lib/price-types";
+import TickerSearch from "@/components/TickerSearch";
 
 // Neutral by construction, like the stock screener: nothing is shown until the
 // visitor enters a ticker, no ticker is suggested or featured, and moves are
@@ -86,8 +87,8 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
     };
   }, [symbol, range]);
 
-  function submit(e: FormEvent | KeyboardEvent) {
-    e.preventDefault();
+  function submit(e?: FormEvent) {
+    e?.preventDefault();
     const s = input.trim().toUpperCase();
     if (!s) return setInputError("Enter a ticker first.");
     if (!SYMBOL_PATTERN.test(s)) return setInputError(ERRORS.invalid_symbol);
@@ -106,28 +107,22 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
         <div className="flex-1">
           <label htmlFor="ticker" className="text-xs text-gray-400 font-medium">Ticker</label>
           <div className="flex gap-2 mt-1">
-            <input
+            <TickerSearch
               id="ticker"
               value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
+              onChange={(v) => {
+                setInput(v);
                 setInputError(null);
               }}
-              // Explicit, so Enter works even where implicit form submission doesn't fire
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.nativeEvent.isComposing) submit(e);
-              }}
-              placeholder="Yahoo Finance symbol"
-              autoCapitalize="characters"
-              autoComplete="off"
-              spellCheck={false}
-              className="flex-1 min-w-0 bg-[#111827] border border-gray-700 focus:border-blue-500 rounded-lg px-3 py-2 text-white text-sm uppercase outline-none transition"
+              onPick={(sym) => setSymbol(sym)}
+              onEnter={() => submit()}
+              placeholder="Company name or ticker"
             />
             <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold px-5 py-2 rounded-lg text-sm transition">
               Show
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-1.5">Outside the US, add the exchange suffix: .MC Madrid, .L London, .PA Paris, .DE Xetra. Indices start with ^.</p>
+          <p className="text-xs text-gray-500 mt-1.5">Type a company name and pick it from the list, or enter a ticker. Tickers outside the US need the exchange suffix: .MC Madrid, .L London, .PA Paris, .DE Xetra. Indices start with ^.</p>
         </div>
         <div className="flex gap-1 bg-[#111827] border border-gray-700 rounded-lg p-1 self-start md:self-auto" role="group" aria-label="Period">
           {PRICE_RANGES.map((r) => (

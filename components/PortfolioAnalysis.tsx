@@ -6,6 +6,7 @@ import {
   Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis,
 } from "recharts";
 import { SYMBOL_PATTERN, type PriceHistory, type PriceRange } from "@/lib/price-types";
+import TickerSearch from "@/components/TickerSearch";
 import { analysePortfolio } from "@/lib/portfolio-stats";
 
 // Neutral like the other market tools: opens with empty rows and no suggested
@@ -214,26 +215,22 @@ export default function PortfolioAnalysis({
       <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-5 flex flex-col gap-5">
         <div>
           <div className="grid grid-cols-[1fr_110px_36px] gap-2 text-xs text-gray-400 font-medium mb-1.5">
-            <span>Ticker</span>
+            <span>Company or ticker</span>
             <span>Weight</span>
             <span />
           </div>
           <div className="flex flex-col gap-2">
             {rows.map((r, i) => (
               <div key={i} className="grid grid-cols-[1fr_110px_36px] gap-2 items-center">
-                <input
-                  aria-label={`Ticker ${i + 1}`}
+                <TickerSearch
+                  ariaLabel={`Ticker ${i + 1}`}
                   value={r.symbol}
-                  onChange={(e) => {
-                    setRows(rows.map((x, j) => (j === i ? { ...x, symbol: e.target.value } : x)));
+                  onChange={(v) => {
+                    setRows((prev) => prev.map((x, j) => (j === i ? { ...x, symbol: v } : x)));
                     setFormError(null);
                   }}
-                  onKeyDown={(e) => e.key === "Enter" && !e.nativeEvent.isComposing && analyse()}
-                  placeholder="Yahoo Finance symbol"
-                  autoCapitalize="characters"
-                  autoComplete="off"
-                  spellCheck={false}
-                  className="min-w-0 bg-[#111827] border border-gray-700 focus:border-blue-500 rounded-lg px-3 py-2 text-white text-sm uppercase outline-none transition"
+                  onEnter={analyse}
+                  placeholder="Company name or ticker"
                 />
                 <div className="flex items-center bg-[#111827] border border-gray-700 focus-within:border-blue-500 rounded-lg px-3 py-2 transition">
                   <input

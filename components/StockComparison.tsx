@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PRICE_RANGES, SYMBOL_PATTERN, type PriceHistory, type PriceRange } from "@/lib/price-types";
 import { commonStart, correlation, rebase, seriesStats } from "@/lib/price-stats";
+import TickerSearch from "@/components/TickerSearch";
 
 // Neutral like the screener and Stock Analysis: opens empty, suggests no
 // tickers, keeps them in the order the visitor typed, colours follow that order
@@ -89,8 +90,8 @@ export default function StockComparison({ initialSymbols, initialRange }: { init
     };
   }, [symbols, range]);
 
-  function submit(e: FormEvent | KeyboardEvent) {
-    e.preventDefault();
+  function submit(e?: FormEvent) {
+    e?.preventDefault();
     const list = parseTickers(input);
     if (list.length < 2) return setError("Enter at least two tickers, separated by commas or spaces.");
     if (list.length > MAX_TICKERS) return setError(`Compare up to ${MAX_TICKERS} tickers at a time.`);
@@ -125,28 +126,22 @@ export default function StockComparison({ initialSymbols, initialRange }: { init
         <div className="flex-1">
           <label htmlFor="tickers" className="text-xs text-gray-400 font-medium">Tickers (2 to {MAX_TICKERS})</label>
           <div className="flex gap-2 mt-1">
-            <input
+            <TickerSearch
               id="tickers"
+              multi
               value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
+              onChange={(v) => {
+                setInput(v);
                 setError(null);
               }}
-              // Explicit, so Enter works even where implicit form submission doesn't fire
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.nativeEvent.isComposing) submit(e);
-              }}
-              placeholder="Yahoo Finance symbols, separated by commas"
-              autoCapitalize="characters"
-              autoComplete="off"
-              spellCheck={false}
-              className="flex-1 min-w-0 bg-[#111827] border border-gray-700 focus:border-blue-500 rounded-lg px-3 py-2 text-white text-sm uppercase outline-none transition"
+              onEnter={() => submit()}
+              placeholder="Company names or tickers, separated by commas"
             />
             <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold px-5 py-2 rounded-lg text-sm transition">
               Compare
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-1.5">Outside the US, add the exchange suffix: .MC Madrid, .L London, .PA Paris, .DE Xetra. Indices start with ^.</p>
+          <p className="text-xs text-gray-500 mt-1.5">Type a company name and pick it from the list, or enter a ticker. Tickers outside the US need the exchange suffix: .MC Madrid, .L London, .PA Paris, .DE Xetra. Indices start with ^.</p>
         </div>
         <div className="flex gap-1 bg-[#111827] border border-gray-700 rounded-lg p-1 self-start md:self-auto" role="group" aria-label="Period">
           {PRICE_RANGES.map((r) => (
