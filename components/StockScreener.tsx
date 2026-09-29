@@ -101,7 +101,13 @@ function positionIn(sorted: number[], value: number) {
   return ((below + equal / 2) / sorted.length) * 100;
 }
 
-export default function StockScreener({ initialIndex }: { initialIndex: UniverseScreen }) {
+export default function StockScreener({
+  initialIndex,
+  highlighted = [],
+}: {
+  initialIndex: UniverseScreen;
+  highlighted?: MetricKey[];
+}) {
   const [index, setIndex] = useState<UniverseScreen>(initialIndex);
   const [data, setData] = useState<UniverseData | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -111,6 +117,9 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
   const [ran, setRan] = useState<Criteria | null>(null);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "ticker", dir: 1 });
   const [view, setView] = useState<"snowflakes" | "table">("snowflakes");
+  // Measures a link asked to point out (?measures=, e.g. from a blog article).
+  // Only which measures — the limits are always left for the visitor to set.
+  const [focus, setFocus] = useState<MetricKey[]>(highlighted);
 
   useEffect(() => {
     let cancelled = false;
@@ -319,6 +328,19 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
           </div>
         </div>
 
+        {focus.length > 0 && (
+          <div className="mb-6 bg-blue-600/5 border border-blue-500/30 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <p className="text-xs text-gray-300 leading-relaxed flex-1">
+              <span className="font-semibold text-white">Highlighted below:</span>{" "}
+              {focus.map((k) => METRICS.find((m) => m.key === k)?.short).join(", ")} — the measures from the page you
+              came from. The limits are yours to set: FinancePlots doesn&apos;t suggest any values.
+            </p>
+            <button onClick={() => setFocus([])} className="text-xs text-gray-500 hover:text-white transition shrink-0 self-start sm:self-auto">
+              Remove highlight
+            </button>
+          </div>
+        )}
+
         <p className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-1">Your limits</p>
         <p className="text-xs text-gray-500 mb-5">
           Fill in a minimum, a maximum or both for any measure you care about. Leave the rest empty.
@@ -331,8 +353,12 @@ export default function StockScreener({ initialIndex }: { initialIndex: Universe
               {METRICS.filter((m) => m.group === group).map((m) => {
                 const b = bounds[m.key] ?? { min: "", max: "" };
                 const problem = problems.has(m.key);
+                const pointed = focus.includes(m.key);
                 return (
-                  <div key={m.key}>
+                  <div
+                    key={m.key}
+                    className={pointed ? "-mx-2 px-2 py-2 rounded-lg bg-blue-600/10 ring-1 ring-blue-500/40" : undefined}
+                  >
                     <div className="flex items-baseline justify-between gap-2">
                       <span className="text-xs font-semibold text-gray-300">{m.label}</span>
                       {m.glossary && (

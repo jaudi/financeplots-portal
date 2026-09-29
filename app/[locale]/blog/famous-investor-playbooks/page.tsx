@@ -58,70 +58,73 @@ interface Playbook {
   idea: string;
   looks: string;
   exit: string;
+  measures: string; // screener ?measures= — which measures to highlight, never limits
 }
 
 const PLAYBOOKS: Playbook[] = [
   {
-    who: "Jim Simons", style: "Short-term statistical patterns", horizon: "short", weeks: [1.5, 5],
+    who: "Jim Simons", measures: "rsi,distance_ma200_pct,return_6m", style: "Short-term statistical patterns", horizon: "short", weeks: [1.5, 5],
     idea: "Pure mathematics, no opinions about companies. Find tiny, repeatable patterns in prices and trade thousands of them at once, so a small edge adds up.",
     looks: "Price only — short-term oversold readings (RSI), distance from moving averages, recent volatility. Valuation is ignored.",
     exit: "Mechanical and fast. The pattern plays out within days or the position is closed.",
   },
   {
-    who: "Paul Tudor Jones", style: "Trend-following", horizon: "short", weeks: [2, 13],
+    who: "Paul Tudor Jones", measures: "distance_ma200_pct,return_12m,earnings_growth", style: "Trend-following", horizon: "short", weeks: [2, 13],
     idea: "A macro trader obsessed with defence: follow the trend, look for trades that can pay five times what they risk, and cut losers without debate.",
     looks: "Price above its 200-day moving average and a strong established trend, ideally backed by rising earnings.",
     exit: "“Nothing good happens below the 200-day.” A close under the average ends the trade.",
   },
   {
-    who: "William O'Neil", style: "CAN SLIM growth leaders", horizon: "short", weeks: [3, 26],
+    who: "William O'Neil", measures: "earnings_growth,roe,return_12m,distance_ma200_pct", style: "CAN SLIM growth leaders", horizon: "short", weeks: [3, 26],
     idea: "Buy the fastest-growing companies in the leading industry groups as they break out to new highs.",
     looks: "Strong current and annual earnings growth, price near its highs, a leading industry group — but not stretched far above its averages.",
     exit: "Sell any position that falls 7–8% below the buy price. No exceptions.",
   },
   {
-    who: "Stanley Druckenmiller", style: "Macro-driven concentrated bets", horizon: "short", weeks: [3, 52],
+    who: "Stanley Druckenmiller", measures: "roic,earnings_growth,distance_ma200_pct,rsi", style: "Macro-driven concentrated bets", horizon: "short", weeks: [3, 52],
     idea: "Top-down macro: find the dominant economic and liquidity theme, concentrate heavily in it, and protect capital first.",
     looks: "The companies at the centre of that theme — high returns on capital, fast earnings growth, momentum that has cooled rather than overheated.",
     exit: "When the macro thesis changes — rates, liquidity, the cycle — get out fast, whatever the position has done.",
   },
   {
-    who: "Peter Lynch", style: "Growth at a reasonable price", horizon: "medium", weeks: [26, 156],
+    who: "Peter Lynch", measures: "pe,earnings_growth,fcf_yield", style: "Growth at a reasonable price", horizon: "medium", weeks: [26, 156],
     idea: "Buy what you know, and sort companies into types — fast growers, stalwarts, cyclicals — because each needs a different approach.",
     looks: "A PEG ratio (P/E divided by earnings growth) below 1, a business you understand, and cash flow that backs up the reported earnings.",
     exit: "When the story changes: growth slows, the P/E runs far ahead of growth, or the reason you bought no longer holds.",
   },
   {
-    who: "Joel Greenblatt", style: "The Magic Formula", horizon: "long", weeks: [52, 60],
+    who: "Joel Greenblatt", measures: "roic,ev_ebit", style: "The Magic Formula", horizon: "long", weeks: [52, 60],
     idea: "Rank companies on two numbers at once, buy a basket of the best-ranked, and stick with it through bad stretches.",
     looks: "High return on capital plus a high earnings yield (EBIT divided by enterprise value), ranked together across the market.",
     exit: "Rebalance after about a year. Built for a basket of 20–30 shares, and can lag the market two or three years running.",
   },
   {
-    who: "Benjamin Graham", style: "Deep value, margin of safety", horizon: "long", weeks: [52, 156],
+    who: "Benjamin Graham", measures: "pe,price_to_book,debt_to_equity", style: "Deep value, margin of safety", horizon: "long", weeks: [52, 156],
     idea: "The father of value investing: buy well below intrinsic or book value, diversify widely, and treat Mr. Market's mood swings as opportunities.",
     looks: "P/E × price-to-book below 22.5 (his published ceiling), low debt, and a long record of profits and dividends.",
     exit: "When the price reaches a fair estimate of value — or after two to three years if it never does.",
   },
   {
-    who: "Howard Marks", style: "Contrarian, cycle-aware", horizon: "long", weeks: [104, 260],
+    who: "Howard Marks", measures: "pe,fcf_yield,return_12m", style: "Contrarian, cycle-aware", horizon: "long", weeks: [104, 260],
     idea: "Second-level thinking: know where we are in the cycle, control risk before chasing return, and be greedy only when the pendulum has swung to fear.",
     looks: "Solid businesses priced as if they are shrinking — low P/E, high free-cash-flow yield, heavy falls amid widespread pessimism.",
     exit: "When the consensus has come round and the price no longer offers a margin of safety.",
   },
   {
-    who: "Cathie Wood", style: "Disruptive innovation", horizon: "long", weeks: [156, 260],
+    who: "Cathie Wood", measures: "revenue_growth,return_12m", style: "Disruptive innovation", horizon: "long", weeks: [156, 260],
     idea: "Back the companies expected to define the next decade, on a five-year view, and accept extreme volatility along the way.",
     looks: "Very fast revenue growth in new technology platforms. Current profits and valuation matter less than the size of the opportunity.",
     exit: "Rarely on price — the approach adds on weakness. Out when the innovation thesis itself breaks.",
   },
   {
-    who: "Warren Buffett", style: "Quality at a fair price", horizon: "long", weeks: [260, 520],
+    who: "Warren Buffett", measures: "roic,operating_margin,debt_to_equity,pe", style: "Quality at a fair price", horizon: "long", weeks: [260, 520],
     idea: "Wonderful businesses at fair prices: durable competitive advantages, honest management and high returns on capital.",
     looks: "Consistently high return on capital, stable margins, low debt, and a price that is fair rather than cheap.",
     exit: "“Our favourite holding period is forever” — sell only if the business itself deteriorates.",
   },
 ];
+
+const screenerLink = (measures: string) => `/tools/stock-screener?measures=${measures}`;
 
 const HORIZON_STYLE: Record<Horizon, { bar: string; pill: string; label: string }> = {
   short: { bar: "bg-teal-400", pill: "bg-teal-500/10 text-teal-300 border-teal-500/30", label: "Weeks" },
@@ -191,6 +194,9 @@ function PlaybookCard({ p }: { p: Playbook }) {
         <p className="text-[11px] font-bold uppercase tracking-wider text-gray-500">When they get out</p>
         <p className="text-sm text-gray-300 mt-0.5">{p.exit}</p>
       </div>
+      <Link href={screenerLink(p.measures)} className="mt-auto text-xs font-semibold text-blue-400 hover:text-blue-300 transition">
+        Try these measures in the screener →
+      </Link>
     </div>
   );
 }
@@ -267,6 +273,9 @@ export default function ArticleFamousInvestorPlaybooks() {
               <li><strong className="text-white">Gets out:</strong> when the price approaches that value, rotating the money into whatever now offers the most upside — so the portfolio changes even though each thesis is long-term.</li>
               <li><strong className="text-white">Horizon:</strong> years, typically three to five, with a willingness to look wrong for a long time before being proved right.</li>
             </ul>
+            <Link href={screenerLink("ev_ebit,pe,fcf_yield,debt_to_equity")} className="inline-block mt-3 text-xs font-semibold text-blue-400 hover:text-blue-300 transition">
+              Try these measures in the screener →
+            </Link>
           </div>
 
           <h2 className="text-2xl font-bold text-white mt-10">What running all ten side by side teaches</h2>
@@ -289,8 +298,9 @@ export default function ArticleFamousInvestorPlaybooks() {
           <p>
             Every &ldquo;what a screen looks for&rdquo; line above can be tested on the{" "}
             <Link href="/tools/stock-screener" className="text-blue-400 hover:text-blue-300">FinancePlots stock screener</Link>{" "}
-            against the S&amp;P 500, Nasdaq-100 or IBEX 35. It starts empty and suggests nothing: you choose each
-            criterion and the matches come back in alphabetical order. Then ask the question this article is really
+            against the S&amp;P 500, Nasdaq-100 or IBEX 35. It starts empty and suggests nothing: the links on each card
+            above only highlight the measures that method looks at — you choose every limit, and the matches come
+            back in alphabetical order. Then ask the question this article is really
             about — how long would I hold it, and what would make me sell?
           </p>
 

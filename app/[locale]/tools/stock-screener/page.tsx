@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import StockScreener from "@/components/StockScreener";
 import RelatedTools from "@/components/RelatedTools";
 import { UNIVERSE_SCREENS, type UniverseScreen } from "@/lib/universe";
+import { parseMetricList } from "@/lib/stock-metrics";
 
 export const metadata: Metadata = {
   title: "Stock Screener — Set Your Own Criteria for the S&P 500, Nasdaq-100 and IBEX 35",
@@ -11,10 +12,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.financeplots.com/tools/stock-screener" },
 };
 
-type Props = { searchParams: Promise<{ index?: string }> };
+type Props = { searchParams: Promise<{ index?: string; measures?: string }> };
 
 export default async function StockScreenerPage({ searchParams }: Props) {
-  const { index } = await searchParams;
+  const { index, measures } = await searchParams;
   // The retired index screener URLs redirect here with ?index= so the visitor
   // lands on the index they came for. Anything else falls back to the S&P 500.
   const initialIndex: UniverseScreen = UNIVERSE_SCREENS.includes(index as UniverseScreen)
@@ -63,7 +64,8 @@ export default async function StockScreenerPage({ searchParams }: Props) {
             <p className="text-gray-300 text-sm leading-relaxed">{tc("screenerDisclaimer")}</p>
           </div>
 
-          <StockScreener initialIndex={initialIndex} />
+          {/* ?measures= (from the blog) only highlights measures; limits stay empty. */}
+          <StockScreener initialIndex={initialIndex} highlighted={parseMetricList(measures)} />
         </div>
       </div>
 

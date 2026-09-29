@@ -40,6 +40,11 @@ construction. Keep these properties when you change it:
 
 - **Nothing renders until the user runs a screen** with at least one criterion.
   No default, featured or "popular" list, and no suggested threshold values.
+- `?measures=pe,price_to_book,…` (keys or English aliases, `parseMetricList`)
+  only **highlights** measures — used by the investor cards in the
+  `famous-investor-playbooks` post. It must never fill in a limit, and the
+  screener itself shows no investor names: the educational context stays in
+  the article (decided 2026-09-29).
 - **Results are alphabetical by ticker**, and the user can sort by any column
   they filtered on. No site score, percentile, rank or recommendation wording,
   and no green/red colouring that reads as good or bad.

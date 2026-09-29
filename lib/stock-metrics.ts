@@ -123,3 +123,15 @@ export const METRICS: MetricDef[] = [
   { key: "rsi", label: "RSI (14-day)", short: "RSI", unit: "", group: "Price & trend", glossary: "rsi",
     help: "A 0–100 gauge comparing recent price rises with recent falls." },
 ];
+
+/** A comma-separated list of metric keys or English aliases (the screener's
+ *  ?measures= parameter) → the valid, distinct keys it names. Unknown names are
+ *  dropped. Only ever used to highlight measures — never to fill in limits. */
+export function parseMetricList(param: string | undefined): MetricKey[] {
+  if (!param) return [];
+  const keys = param
+    .split(",")
+    .map((s) => resolveMetric(s.trim() as MetricKey | MetricAlias))
+    .filter((k): k is MetricKey => (METRIC_KEYS as readonly string[]).includes(k));
+  return Array.from(new Set(keys));
+}
