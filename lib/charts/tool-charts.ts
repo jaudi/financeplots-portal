@@ -216,3 +216,19 @@ export function takeHomeChart(v: TakeHomeInputs): ChartSpec {
     note: `${SOURCE} · standard tax code 1257L`,
   };
 }
+
+/** Company history from annual reports: revenue and net profit by fiscal year. */
+export function companyHistoryChart(name: string, years: { end: string; revenue: number | null; netIncome: number | null }[]): ChartSpec {
+  const hasRevenue = years.some((y) => y.revenue !== null);
+  return {
+    title: `${name}: ${hasRevenue ? "revenue and net profit" : "net profit"}`,
+    subtitle: `Fiscal years ${years[0].end.slice(0, 4)}–${years.at(-1)!.end.slice(0, 4)}, as reported (10-K)`,
+    x: { labels: years.map((y) => `FY${y.end.slice(0, 4)}`), title: "Fiscal year" },
+    y: { format: "money", currency: "USD" },
+    series: [
+      ...(hasRevenue ? [{ name: "Revenue", type: "bar" as const, slot: 0, values: years.map((y) => y.revenue) }] : []),
+      { name: "Net profit", type: "bar" as const, slot: 1, values: years.map((y) => y.netIncome) },
+    ],
+    note: `${SOURCE} · SEC EDGAR`,
+  };
+}

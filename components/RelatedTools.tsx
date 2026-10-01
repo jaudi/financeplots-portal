@@ -16,7 +16,6 @@ const ALL_TOOLS: { slug: string; icon: string; name: string }[] = [
   { slug: "portfolio-analysis",        icon: "📊", name: "Portfolio Analysis" },
   { slug: "stock-comparison",          icon: "📉", name: "Stock Comparison" },
   { slug: "stock-analysis",            icon: "📈", name: "Stock Analysis" },
-  { slug: "market-indices",            icon: "🌐", name: "World Market Indices" },
   { slug: "stock-screener",            icon: "🔎", name: "Stock Screener" },
 ];
 
@@ -33,11 +32,10 @@ const RELATED: Record<string, string[]> = {
   "take-home-pay":             ["personal-budget", "compound-interest", "financial-planner"],
   "personal-budget":           ["take-home-pay", "financial-planner", "compound-interest"],
   "compound-interest":         ["personal-budget", "lending", "portfolio-analysis"],
-  "stocks":                    ["market-indices", "compound-interest", "financial-planner"],
-  "portfolio-analysis":        ["market-indices", "stock-comparison", "stock-screener"],
-  "stock-comparison":          ["market-indices", "stock-analysis", "stock-screener"],
+  "stocks":                    ["take-home-pay", "compound-interest", "financial-planner"],
+  "portfolio-analysis":        ["stocks", "stock-comparison", "stock-screener"],
+  "stock-comparison":          ["stocks", "stock-analysis", "stock-screener"],
   "stock-analysis":            ["stock-screener", "stock-comparison", "portfolio-analysis"],
-  "market-indices":            ["stock-comparison", "stock-analysis", "portfolio-analysis"],
   "stock-screener":            ["stock-analysis", "stock-comparison", "portfolio-analysis"],
 };
 

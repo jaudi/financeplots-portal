@@ -3,7 +3,7 @@
 // /tools/business) and its own menu. Copy lives in the `audiences` and
 // `tools.catalog` message namespaces.
 //
-// A tool may appear in both audiences (market indices), but each planner
+// A tool may appear in both audiences (the Stocks area), but each planner
 // belongs to exactly one — the two journeys are deliberately kept apart.
 
 export type Audience = "personal" | "business";
@@ -21,7 +21,7 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     planner: "financial-planner",
     groups: [
       { key: "plan", icon: "💸", slugs: ["take-home-pay", "personal-budget", "compound-interest", "lending"] },
-      { key: "invest", icon: "📈", slugs: ["stocks", "market-indices"] },
+      { key: "invest", icon: "📈", slugs: ["stocks"] },
     ],
   },
   business: {
@@ -30,7 +30,7 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     planner: "financial-planner-company",
     groups: [
       { key: "plan", icon: "🧮", slugs: ["annual-budget", "cash-flow", "break-even", "financial-model", "valuation"] },
-      { key: "context", icon: "📡", slugs: ["macro-dashboard", "market-indices"] },
+      { key: "context", icon: "📡", slugs: ["macro-dashboard", "stocks"] },
       { key: "funding", icon: "🎯", slugs: ["pitch-deck"] },
     ],
   },

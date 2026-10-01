@@ -4,7 +4,9 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, payoffWithExtra, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type ChartSpec } from "@/lib/charts/spec";
-import { breakEvenChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { breakEvenChart, companyHistoryChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { getCompanyProfile } from "@/lib/company";
+import { tryFinancialHistory } from "@/lib/edgar";
 import { fetchIndicators } from "@/lib/fred";
 import { CHART_VIEW_HTML } from "@/lib/mcp-app/chart-view-html.generated";
 import { getMarketQuotes } from "@/lib/markets";
@@ -26,7 +28,7 @@ const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
 Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
-Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
+Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
 function json(data: unknown) {
@@ -840,6 +842,83 @@ export function createFinancePlotsServer() {
 
   // Either the data's own key (partly Spanish: per, deuda_neta_ebitda…) or its English alias.
   const metricName = z.enum([...METRIC_KEYS, ...(Object.keys(METRIC_ALIASES) as (keyof typeof METRIC_ALIASES)[])]);
+
+  server.registerTool(
+    "company_profile",
+    {
+      title: "Company profile",
+      description:
+        "One company's figures, as on its FinancePlots company page: the screener's ratios (valuation, profitability, debt, growth — weekly snapshot) with, for each, the share of its index with a lower figure (`higher_than_pct_of_index`), and for US listings up to ten fiscal years from the annual reports (10-K) via SEC EDGAR: revenue, net profit, operating and free cash flow, cash and long-term debt. Covers S&P 500, Nasdaq-100 and IBEX 35 companies (history for any US filer). Positions are per measure — higher is not better, and nothing is combined into a score, ranked or recommended. No share price: use price_history for that.",
+      inputSchema: {
+        ticker: z.string().min(1).max(15).describe("Yahoo Finance ticker, e.g. AAPL, BRK-B, SAN.MC"),
+        history: z.boolean().default(true).describe("Include the annual-report history (US listings); false returns the ratios only"),
+        chart: chartParam,
+      },
+      annotations: { ...readOnly, openWorldHint: true },
+      _meta: chartUi,
+    },
+    async ({ ticker: raw, history: withHistory, chart }) => {
+      const ticker = normaliseSymbol(raw);
+      if (!ticker) return error(`"${raw}" is not a valid ticker.`);
+      const [profile, history] = await Promise.all([
+        getCompanyProfile(ticker),
+        withHistory ? tryFinancialHistory(ticker) : Promise.resolve(null),
+      ]);
+      if (!profile && (history === null || history === "unavailable")) {
+        return error(
+          history === "unavailable"
+            ? `The SEC didn't answer just now and ${ticker} isn't in the S&P 500, Nasdaq-100 or IBEX 35 data. Try again in a minute.`
+            : `No figures for ${ticker}: company_profile covers S&P 500, Nasdaq-100 and IBEX 35 companies, plus annual-report history for US filers. For its share price, use price_history.`,
+        );
+      }
+      const result = json({
+        ticker,
+        name: profile?.company.nombre ?? null,
+        sector: profile?.company.sector ?? null,
+        ...(profile && {
+          index: profile.index,
+          member_of: profile.memberOf,
+          figures_as_of: profile.generatedAt,
+          measures: profile.groups.flatMap(({ group, measures }) =>
+            measures.map((m) => ({
+              key: m.metric.key,
+              alias: englishKey(m.metric.key),
+              label: m.metric.label,
+              group,
+              unit: m.metric.unit,
+              value: m.value,
+              higher_than_pct_of_index: m.position === null ? null : round2(m.position),
+              companies_in_index_with_figure: m.peers,
+            })),
+          ),
+        }),
+        history:
+          history === "unavailable"
+            ? { unavailable: "The SEC didn't answer just now; try again in a minute." }
+            : history && {
+                source: history.source,
+                currency: "USD",
+                shown: history.available,
+                years: history.years.map((y) => ({
+                  fiscal_year_end: y.end,
+                  revenue: y.revenue,
+                  net_income: y.netIncome,
+                  operating_cash_flow: y.operatingCashFlow,
+                  capital_expenditure: y.capex,
+                  free_cash_flow: y.freeCashFlow,
+                  cash: y.cash,
+                  long_term_debt: y.debt,
+                })),
+              },
+        note: "Figures as reported. Positions say where a figure sits in the index, not whether it is good or bad. Not a recommendation.",
+        tool_page: `${SITE}/tools/stocks/${encodeURIComponent(ticker)}`,
+      });
+      const specs = history && history !== "unavailable" && (history.available.revenue || history.available.netIncome)
+        ? [companyHistoryChart(profile?.company.nombre ?? ticker, history.years)]
+        : [];
+      return withCharts(result, specs, chart);
+    },
+  );
 
   server.registerTool(
     "screener_metrics",

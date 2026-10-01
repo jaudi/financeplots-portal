@@ -284,11 +284,6 @@
         "name": "Plan Financiero — Empresas",
         "desc": "Un planificador financiero empresarial de 5 pasos — vincula tu cuenta de resultados, flujo de caja y balance, obtén una estimación de valoración y diseña tu estrategia de salida."
       },
-      "market-indices": {
-        "icon": "🌐",
-        "name": "Índices Mundiales",
-        "desc": "Precios en tiempo real de más de 25 índices globales — S&P 500, FTSE 100, Nikkei, DAX, Hang Seng y más."
-      },
       "macro-dashboard": {
         "icon": "📊",
         "name": "Panel Macro EE.UU.",
@@ -1175,6 +1170,10 @@
           {
             "name": "S&P 500, Nasdaq-100 e IBEX 35",
             "desc": "Filtra por las medidas que elijas, como PER, rentabilidad sobre fondos propios, deuda o crecimiento. Los resultados salen por orden alfabético."
+          },
+          {
+            "name": "Ficha de empresa",
+            "desc": "Los ratios de una empresa frente al resto de su índice y, para las cotizadas en EE. UU., hasta diez años de ingresos, beneficio, flujo de caja y deuda de sus informes anuales."
           }
         ],
         "example": "Muéstrame las empresas del IBEX 35 con rentabilidad sobre fondos propios superior al 15 % y PER inferior a 15."

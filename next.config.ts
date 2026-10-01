@@ -28,6 +28,13 @@ const nextConfig: NextConfig = {
       { source: "/dashboard", destination: "/tools", permanent: true },
       { source: "/es/dashboard", destination: "/es/tools", permanent: true },
       { source: "/tools/etf-screener", destination: "/tools", permanent: true },
+      // Deleted 2026-10-01. Market Indices was a TradingView embed — the Stocks
+      // area, the Observer and the MCP's market_snapshot cover it; /map was a
+      // tool directory the audience hubs replaced. Both were in the sitemap.
+      { source: "/tools/market-indices", destination: "/tools/stocks", permanent: true },
+      { source: "/es/tools/market-indices", destination: "/es/tools/stocks", permanent: true },
+      { source: "/map", destination: "/tools", permanent: true },
+      { source: "/es/map", destination: "/es/tools", permanent: true },
       { source: "/es/tools/etf-screener", destination: "/es/tools", permanent: true },
       // Deleted 2026-09-14 along with the screeners they described (UK MAR).
       // Both were in the sitemap, so send readers to the blog.

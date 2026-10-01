@@ -298,11 +298,6 @@
         "name": "Financial Journey — Companies",
         "desc": "Link P&L, Cash Flow, Balance Sheet and Valuation. Get an exit price estimate and exit readiness roadmap."
       },
-      "market-indices": {
-        "icon": "🌐",
-        "name": "World Market Indices",
-        "desc": "Live prices for 25+ global indices — S&P 500, FTSE 100, Nikkei, DAX, Hang Seng and more."
-      },
       "macro-dashboard": {
         "icon": "📊",
         "name": "US Macro Dashboard",
@@ -1189,6 +1184,10 @@
           {
             "name": "S&P 500, Nasdaq-100 and IBEX 35",
             "desc": "Filter by measures you choose, such as P/E, return on equity, debt or growth. Matches come back alphabetically."
+          },
+          {
+            "name": "Company profile",
+            "desc": "One company’s ratios against the rest of its index, plus up to ten years of revenue, profit, cash flow and debt from US annual reports."
           }
         ],
         "example": "Show IBEX 35 companies with return on equity above 15% and P/E below 15."

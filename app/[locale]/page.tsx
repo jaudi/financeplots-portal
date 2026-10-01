@@ -275,26 +275,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── Map ── */}
-      <section className="py-16 px-6">
-        <div className="max-w-md mx-auto">
-          <Link
-            href="/map"
-            className="group flex flex-col gap-4 bg-[#0d1426] border border-gray-800 hover:border-blue-600/40 rounded-2xl p-8 transition"
-          >
-            <div className="text-4xl">🗺️</div>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2">Tools Map</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                See all FinancePlots tools in one place — navigate by category and find the right tool instantly.
-              </p>
-            </div>
-            <span className="text-blue-400 text-sm font-semibold group-hover:gap-2 flex items-center gap-1 transition-all">
-              Explore the map →
-            </span>
-          </Link>
-        </div>
-      </section>
 
       {/* ── Book ── */}
       <section className="py-16 px-6">
