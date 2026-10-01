@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { listEditions } from "@/lib/observer";
+import { getUniverse } from "@/lib/universe";
 
 const BASE = "https://www.financeplots.com";
 
@@ -51,7 +52,7 @@ const TOOL_SLUGS = [
   "valuation",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     { url: BASE, priority: 1.0, changeFrequency: "weekly" as const },
     { url: `${BASE}/tools`, priority: 0.9, changeFrequency: "weekly" as const },
@@ -89,11 +90,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "yearly" as const,
   }));
 
+  // Company pages for US-listed index members: the ones that can carry ten years
+  // of SEC history, which is what makes them indexable (a page without it is
+  // noindex — see app/[locale]/tools/stocks/[ticker]/page.tsx). English only.
+  const universes = await Promise.all([getUniverse("sp500"), getUniverse("nasdaq100")]);
+  const usTickers = [...new Set(universes.flatMap((u) => u?.companies.map((c) => c.ticker) ?? []))].filter((t) => !t.includes(".")).sort();
+  const companyPages = usTickers.map((t) => ({
+    url: `${BASE}/tools/stocks/${encodeURIComponent(t)}`,
+    priority: 0.5,
+    changeFrequency: "weekly" as const,
+  }));
+
   return [
     ...staticPages,
     ...blogPages,
     ...observerPages,
     ...toolPages,
+    ...companyPages,
   ].map((page) => ({
     url: page.url,
     lastModified: new Date(),

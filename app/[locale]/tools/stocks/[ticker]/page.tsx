@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import StockAnalysis from "@/components/StockAnalysis";
+import CompanyHistory from "@/components/CompanyHistory";
 import CompareWith from "@/components/CompareWith";
 import { AddToListButton } from "@/components/MyList";
 import StocksNav from "@/components/StocksNav";
 import { getCompanyProfile, getCompanyProfiles, INDEX_LABELS, type CompanyMeasure, type CompanyProfile } from "@/lib/company";
+import { tryFinancialHistory } from "@/lib/edgar";
 import { normaliseSymbol } from "@/lib/price-types";
 import { formatMetric, MAX_VS, type MetricKey } from "@/lib/stock-metrics";
 
@@ -15,19 +17,26 @@ import { formatMetric, MAX_VS, type MetricKey } from "@/lib/stock-metrics";
 // verdicts. "Further right" means a higher figure, never a better one.
 // Ratios come from the weekly screener snapshot; price only from the live chart.
 //
-// noindex until the page carries more than one snapshot of figures (phase 3,
-// SEC EDGAR history): ~600 near-identical template pages would read as thin.
+// US companies also get ten years from their annual reports (SEC EDGAR). Only
+// pages with that history are indexed: without it a page is one snapshot of
+// figures in a template, which reads as thin content.
 
 type Props = { params: Promise<{ ticker: string }>; searchParams: Promise<{ vs?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ticker = normaliseSymbol(decodeURIComponent((await params).ticker)) ?? "";
-  const profile = ticker ? await getCompanyProfile(ticker) : null;
+  const [profile, history] = ticker ? await Promise.all([getCompanyProfile(ticker), tryFinancialHistory(ticker)]) : [null, null];
   const name = profile?.company.nombre ?? ticker;
+  // If the SEC didn't answer just now, don't tell crawlers to drop a US page
+  // that normally has its history.
+  const indexable =
+    profile !== null &&
+    (history === "unavailable" ? !ticker.includes(".") : history !== null && history.years.length >= 3);
   return {
     title: `${name} (${ticker}) — Price History and Key Figures`,
     description: `${name}: share price history, valuation, profitability, debt and growth figures, each shown against the rest of its index. Figures only — not a recommendation.`,
-    robots: { index: false, follow: true },
+    robots: { index: indexable, follow: true },
+    ...(indexable && { alternates: { canonical: `https://www.financeplots.com/tools/stocks/${encodeURIComponent(ticker)}` } }),
   };
 }
 
@@ -139,7 +148,9 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   // ?vs=MSFT,GOOGL: compare mode. Order as typed; never suggested by the site.
   const vs = [...new Set(((await searchParams).vs ?? "").split(",").map((t) => normaliseSymbol(t.trim())).filter((t): t is string => !!t && t !== ticker))].slice(0, MAX_VS);
   const tc = await getTranslations({ locale: "en", namespace: "toolCommon" });
-  const [profile, ...vsProfiles] = ticker ? await getCompanyProfiles([ticker, ...vs]) : [null];
+  const [[profile, ...vsProfiles], history] = ticker
+    ? await Promise.all([getCompanyProfiles([ticker, ...vs]), tryFinancialHistory(ticker)])
+    : [[null], null];
   const indexLabel = profile ? INDEX_LABELS[profile.index] : "";
   const asOf = profile?.generatedAt
     ? new Date(profile.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
@@ -175,6 +186,12 @@ export default async function CompanyPage({ params, searchParams }: Props) {
               </header>
 
               <StockAnalysis initialSymbol={ticker} initialRange="1y" fixed />
+
+              {history === "unavailable" ? (
+                <p className="mt-10 text-sm text-gray-500">Figures from the annual reports are unavailable right now — please try again in a minute.</p>
+              ) : (
+                history && <CompanyHistory history={history} />
+              )}
 
               {profile && (
                 <section className="mt-10">
