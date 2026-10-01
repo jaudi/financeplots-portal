@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { MyListPanel } from "@/components/MyList";
 import TickerSearch from "@/components/TickerSearch";
 import { tabHref, type StocksTab } from "@/components/StocksNav";
 
@@ -56,6 +57,7 @@ export default function StocksHub() {
       {tickers.length > 4 && (
         <p className="text-xs text-gray-500 mt-2">Compare shows the first four; a portfolio takes up to eight.</p>
       )}
+      <MyListPanel />
       <p className="text-sm text-gray-400 mt-8 text-center">
         Don&apos;t have a company in mind?{" "}
         <Link href="/tools/stock-screener" className="text-blue-400 hover:text-blue-300 font-semibold">

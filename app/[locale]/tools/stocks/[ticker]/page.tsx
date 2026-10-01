@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import StockAnalysis from "@/components/StockAnalysis";
+import CompareWith from "@/components/CompareWith";
+import { AddToListButton } from "@/components/MyList";
 import StocksNav from "@/components/StocksNav";
-import { getCompanyProfile, INDEX_LABELS, type CompanyMeasure } from "@/lib/company";
+import { getCompanyProfile, getCompanyProfiles, INDEX_LABELS, type CompanyMeasure, type CompanyProfile } from "@/lib/company";
 import { normaliseSymbol } from "@/lib/price-types";
-import { formatMetric, type MetricKey } from "@/lib/stock-metrics";
+import { formatMetric, MAX_VS, type MetricKey } from "@/lib/stock-metrics";
 
 // A page per company, Simply Wall St-style but neutral (UK MAR, CLAUDE.md):
 // the reported figures, a plain-English line for each, and where each sits in
@@ -16,7 +18,7 @@ import { formatMetric, type MetricKey } from "@/lib/stock-metrics";
 // noindex until the page carries more than one snapshot of figures (phase 3,
 // SEC EDGAR history): ~600 near-identical template pages would read as thin.
 
-type Props = { params: Promise<{ ticker: string }> };
+type Props = { params: Promise<{ ticker: string }>; searchParams: Promise<{ vs?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ticker = normaliseSymbol(decodeURIComponent((await params).ticker)) ?? "";
@@ -24,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const name = profile?.company.nombre ?? ticker;
   return {
     title: `${name} (${ticker}) — Price History and Key Figures`,
-    description: `${name}: share price history, valuation, profitability, debt, growth and price-trend figures, each shown against the rest of its index. Figures only — not a recommendation.`,
+    description: `${name}: share price history, valuation, profitability, debt and growth figures, each shown against the rest of its index. Figures only — not a recommendation.`,
     robots: { index: false, follow: true },
   };
 }
@@ -71,11 +73,73 @@ function PositionBar({ m, indexLabel }: { m: CompanyMeasure; indexLabel: string 
   );
 }
 
-export default async function CompanyPage({ params }: Props) {
+/** Compare mode: one column per company, in the order typed. Each figure keeps
+ *  its own position within that company's index; no cell is highlighted as the
+ *  highest or lowest, and nothing is totalled. */
+function SideBySide({ columns }: { columns: { ticker: string; profile: CompanyProfile | null }[] }) {
+  const base = columns[0].profile!;
+  const pricesHref = `/tools/stock-comparison?symbols=${columns.map((c) => encodeURIComponent(c.ticker)).join(",")}`;
+  return (
+    <div className="mt-4 bg-[#0d1426] border border-gray-800 rounded-2xl p-5">
+      <div className="flex flex-wrap items-end justify-between gap-2 mb-4">
+        <h2 className="text-lg font-bold text-white">Side by side</h2>
+        <Link href={pricesHref} className="text-sm text-blue-400 hover:text-blue-300 font-semibold">Compare their prices on one chart →</Link>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-700 align-bottom">
+              <th className="text-left py-2 pr-4 text-xs text-gray-500 font-semibold">Measure</th>
+              {columns.map(({ ticker, profile }) => (
+                <th key={ticker} className="text-right py-2 px-3 min-w-[9rem]">
+                  <Link href={`/tools/stocks/${encodeURIComponent(ticker)}`} className="font-mono text-blue-300 hover:text-blue-200">{ticker}</Link>
+                  <span className="block text-[11px] text-gray-500 font-normal truncate max-w-[10rem] ml-auto">
+                    {profile ? `${profile.company.nombre} · ${INDEX_LABELS[profile.index]}` : "no figures for this ticker"}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {base.groups.map(({ group, measures }) => [
+              <tr key={group}>
+                <td colSpan={columns.length + 1} className="pt-4 pb-1 text-[11px] font-bold uppercase tracking-wider text-blue-400">{group}</td>
+              </tr>,
+              ...measures.map((m, i) => (
+                <tr key={m.metric.key} className="border-b border-gray-800/60">
+                  <td className="py-2 pr-4 text-gray-300">{m.metric.label}</td>
+                  {columns.map(({ ticker, profile }) => {
+                    const cell = profile?.groups.find((g) => g.group === group)?.measures[i];
+                    return (
+                      <td key={ticker} className="py-2 px-3 text-right">
+                        <span className="font-mono text-gray-200">{cell ? formatMetric(cell.value, cell.metric) : "—"}</span>
+                        {cell?.position != null && profile && (
+                          <span className="block text-[11px] text-gray-500">higher than {Math.round(cell.position)}% of the {INDEX_LABELS[profile.index]}</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              )),
+            ])}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-xs text-gray-500 mt-3">
+        Each position is within that company&apos;s own index, so positions in different indices aren&apos;t directly comparable.
+        Higher is not better: nothing here ranks the companies.
+      </p>
+    </div>
+  );
+}
+
+export default async function CompanyPage({ params, searchParams }: Props) {
   const raw = decodeURIComponent((await params).ticker);
   const ticker = normaliseSymbol(raw);
+  // ?vs=MSFT,GOOGL: compare mode. Order as typed; never suggested by the site.
+  const vs = [...new Set(((await searchParams).vs ?? "").split(",").map((t) => normaliseSymbol(t.trim())).filter((t): t is string => !!t && t !== ticker))].slice(0, MAX_VS);
   const tc = await getTranslations({ locale: "en", namespace: "toolCommon" });
-  const profile = ticker ? await getCompanyProfile(ticker) : null;
+  const [profile, ...vsProfiles] = ticker ? await getCompanyProfiles([ticker, ...vs]) : [null];
   const indexLabel = profile ? INDEX_LABELS[profile.index] : "";
   const asOf = profile?.generatedAt
     ? new Date(profile.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
@@ -106,10 +170,18 @@ export default async function CompanyPage({ params }: Props) {
                   <Link href={`/tools/portfolio-analysis?h=${encodeURIComponent(ticker)}:1`} className="bg-[#111827] border border-gray-700 hover:border-blue-500 text-gray-200 px-4 py-2 rounded-lg text-sm font-semibold transition">
                     📊 Analyse in a portfolio
                   </Link>
+                  <AddToListButton ticker={ticker} />
                 </div>
               </header>
 
               <StockAnalysis initialSymbol={ticker} initialRange="1y" fixed />
+
+              {profile && (
+                <section className="mt-10">
+                  <CompareWith ticker={ticker} vs={vs} />
+                  {vs.length > 0 && <SideBySide columns={[{ ticker, profile }, ...vs.map((t, i) => ({ ticker: t, profile: vsProfiles[i] ?? null }))]} />}
+                </section>
+              )}
 
               {profile ? (
                 <section className="mt-10">

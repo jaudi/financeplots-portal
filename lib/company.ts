@@ -1,5 +1,5 @@
 import { METRIC_GROUPS, METRICS, positionIn, type MetricDef, type MetricGroup } from "@/lib/stock-metrics";
-import { getUniverse, UNIVERSE_SCREENS, type UniverseCompany, type UniverseScreen } from "@/lib/universe";
+import { getUniverse, UNIVERSE_SCREENS, type UniverseCompany, type UniverseData, type UniverseScreen } from "@/lib/universe";
 
 // What the company page shows about one ticker: its reported figures, and for
 // each one where it sits within its index — "higher than 72% of the S&P 500".
@@ -33,8 +33,21 @@ export interface CompanyProfile {
   groups: { group: MetricGroup; measures: CompanyMeasure[] }[];
 }
 
+async function loadUniverses() {
+  return (await Promise.all(UNIVERSE_SCREENS.map((s) => getUniverse(s)))).filter((u) => u !== null);
+}
+
 export async function getCompanyProfile(ticker: string): Promise<CompanyProfile | null> {
-  const universes = (await Promise.all(UNIVERSE_SCREENS.map((s) => getUniverse(s)))).filter((u) => u !== null);
+  return profileFrom(await loadUniverses(), ticker);
+}
+
+/** Several companies at once (compare mode), in the order given; null where we have no figures. */
+export async function getCompanyProfiles(tickers: string[]): Promise<(CompanyProfile | null)[]> {
+  const universes = await loadUniverses();
+  return tickers.map((t) => profileFrom(universes, t));
+}
+
+function profileFrom(universes: UniverseData[], ticker: string): CompanyProfile | null {
   const memberOf = universes.filter((u) => u.companies.some((c) => c.ticker === ticker));
   if (memberOf.length === 0) return null;
 

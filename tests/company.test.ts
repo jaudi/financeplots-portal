@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { getCompanyProfile } from "@/lib/company";
+import { getCompanyProfile, getCompanyProfiles } from "@/lib/company";
 import { positionIn } from "@/lib/stock-metrics";
 
 // Uses the snapshot committed in data/universe/, never the live data repo.
@@ -45,6 +45,17 @@ describe("company page data", () => {
       }
     }
     expect(Object.keys(p).sort()).toEqual(["company", "generatedAt", "groups", "index", "memberOf"]);
+  });
+});
+
+describe("compare mode", () => {
+  it("keeps the order given, each company measured against its own index", async () => {
+    const [aapl, san, spy, msft] = await getCompanyProfiles(["AAPL", "SAN.MC", "SPY", "MSFT"]);
+    expect([aapl?.company.ticker, san?.company.ticker, spy, msft?.company.ticker]).toEqual(["AAPL", "SAN.MC", null, "MSFT"]);
+    expect(san?.index).toBe("ibex35");
+    // Same measures in the same order for every company, so the table lines up.
+    const keys = (p: typeof aapl) => p!.groups.flatMap((g) => g.measures.map((m) => m.metric.key));
+    expect(keys(san)).toEqual(keys(aapl));
   });
 });
 

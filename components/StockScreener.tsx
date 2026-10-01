@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AddToListButton } from "@/components/MyList";
 import { useEffect, useMemo, useState } from "react";
 import NeutralSnowflake from "@/components/NeutralSnowflake";
 import { formatMetric as formatValue, METRIC_GROUPS, METRICS, positionIn, type MetricKey } from "@/lib/stock-metrics";
@@ -464,6 +465,7 @@ export default function StockScreener({
                     <Link href={`/tools/stocks/${encodeURIComponent(c.ticker)}`} className="font-mono font-bold text-gray-200 hover:text-blue-300 transition">
                       {c.ticker} <span className="text-gray-600 text-xs font-sans font-normal">company page →</span>
                     </Link>
+                    <div className="float-right"><AddToListButton ticker={c.ticker} compact /></div>
                     <p className="text-white text-sm font-semibold truncate" title={c.nombre}>
                       {c.nombre}
                     </p>
@@ -517,6 +519,7 @@ export default function StockScreener({
                   <thead>
                     <tr className="border-b border-gray-800 text-gray-500 text-xs">
                       <SortHeader k="ticker" label="Ticker" />
+                      <th className="px-2 py-3"><span className="sr-only">My list</span></th>
                       <SortHeader k="nombre" label="Name" />
                       <SortHeader k="sector" label="Sector" />
                       {columns.map((m) => (
@@ -532,6 +535,7 @@ export default function StockScreener({
                             {c.ticker}
                           </Link>
                         </td>
+                        <td className="px-2 py-3"><AddToListButton ticker={c.ticker} compact /></td>
                         <td className="px-4 py-3 text-gray-200">{c.nombre}</td>
                         <td className="px-4 py-3 text-gray-400">{c.sector ?? "—"}</td>
                         {columns.map((m) => (

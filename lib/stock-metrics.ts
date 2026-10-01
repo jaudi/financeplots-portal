@@ -165,3 +165,6 @@ export function positionIn(sorted: number[], value: number) {
   const equal = lo - below;
   return ((below + equal / 2) / sorted.length) * 100;
 }
+
+/** Companies a company page can be compared with (four columns in all). */
+export const MAX_VS = 3;
