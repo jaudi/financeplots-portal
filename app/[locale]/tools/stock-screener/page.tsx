@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import StockScreener from "@/components/StockScreener";
 import RelatedTools from "@/components/RelatedTools";
+import StocksNav from "@/components/StocksNav";
 import { UNIVERSE_SCREENS, type UniverseScreen } from "@/lib/universe";
 import { parseMetricList } from "@/lib/stock-metrics";
 
@@ -47,6 +48,7 @@ export default async function StockScreenerPage({ searchParams }: Props) {
 
       <div className="pt-[100px] pb-20 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <StocksNav current="screen" />
           <div className="text-center mb-10">
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Stock Screener</p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">

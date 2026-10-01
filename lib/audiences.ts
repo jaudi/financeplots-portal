@@ -20,8 +20,8 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     icon: "👤",
     planner: "financial-planner",
     groups: [
-      { key: "plan", icon: "💸", slugs: ["personal-budget", "compound-interest", "lending"] },
-      { key: "invest", icon: "📈", slugs: ["portfolio-analysis", "stock-screener", "stock-analysis", "stock-comparison", "market-indices"] },
+      { key: "plan", icon: "💸", slugs: ["take-home-pay", "personal-budget", "compound-interest", "lending"] },
+      { key: "invest", icon: "📈", slugs: ["stocks", "market-indices"] },
     ],
   },
   business: {

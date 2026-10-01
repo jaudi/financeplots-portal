@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
@@ -154,6 +154,14 @@ export default function PersonalBudgetPage() {
   );
   const [isExporting, setIsExporting] = useState(false);
   const [pdfError, setPdfError] = useState<string>("");
+
+  // ?salary= (monthly take-home) arrives from the Take-Home Pay tool's "Plan your budget" link.
+  useEffect(() => {
+    const salary = Number(new URLSearchParams(window.location.search).get("salary"));
+    if (Number.isFinite(salary) && salary > 0 && salary <= 1_000_000) {
+      setIncome(prev => ({ ...prev, salary: Math.round(salary) }));
+    }
+  }, []);
 
   const toggleGroup = (cat: string) =>
     setOpenGroups(prev => ({ ...prev, [cat]: !prev[cat] }));

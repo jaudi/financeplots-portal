@@ -313,6 +313,11 @@
         "name": "Stock Screener",
         "desc": "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter the S&P 500, Nasdaq-100 or IBEX 35. Nothing is ranked or picked for you."
       },
+      "stocks": {
+        "icon": "📈",
+        "name": "Stocks",
+        "desc": "Search any company, chart its price, compare up to four, analyse a portfolio or filter an index by measures you choose — all in one place."
+      },
       "portfolio-analysis": {
         "icon": "📊",
         "name": "Portfolio Analysis",
@@ -357,6 +362,11 @@
         "icon": "🏦",
         "name": "Lending Calculator",
         "desc": "Loan amortisation schedule and mortgage analysis with early repayment strategy."
+      },
+      "take-home-pay": {
+        "icon": "🧾",
+        "name": "Take-Home Pay",
+        "desc": "UK salary after income tax, NI, pension and student loan — or the salary you need for a take-home target."
       },
       "personal-budget": {
         "icon": "💸",
@@ -1126,6 +1136,10 @@
         "icon": "🧮",
         "title": "Calculators",
         "items": [
+          {
+            "name": "UK take-home pay",
+            "desc": "Salary after income tax, National Insurance, pension and student loan, or the salary needed to take home a set amount each month."
+          },
           {
             "name": "Loans and mortgages",
             "desc": "Monthly payment, total interest and a year-by-year schedule."

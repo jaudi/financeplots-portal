@@ -299,6 +299,11 @@
         "name": "Screener de Acciones",
         "desc": "Elige tus propios criterios — valoración, rentabilidad, deuda, crecimiento y tendencia del precio — y filtra el S&P 500, el Nasdaq-100 o el IBEX 35. Nada se ordena ni se elige por ti."
       },
+      "stocks": {
+        "icon": "📈",
+        "name": "Acciones",
+        "desc": "Busca cualquier empresa, mira su precio, compara hasta cuatro, analiza una cartera o filtra un índice con los criterios que elijas, todo en un mismo sitio."
+      },
       "portfolio-analysis": {
         "icon": "📊",
         "name": "Análisis de Cartera",
@@ -343,6 +348,11 @@
         "icon": "🏦",
         "name": "Calculadora de Préstamos",
         "desc": "Cuadro de amortización y análisis hipotecario con estrategia de amortización anticipada."
+      },
+      "take-home-pay": {
+        "icon": "🧾",
+        "name": "Salario neto (Reino Unido)",
+        "desc": "Lo que queda de un salario británico tras impuestos, Seguridad Social (NI), pensión y préstamo de estudios, o el bruto necesario para un neto objetivo."
       },
       "personal-budget": {
         "icon": "💸",
@@ -1112,6 +1122,10 @@
         "icon": "🧮",
         "title": "Calculadoras",
         "items": [
+          {
+            "name": "Salario neto en Reino Unido",
+            "desc": "El sueldo tras el impuesto sobre la renta, la National Insurance, la pensión y el préstamo de estudios, o el bruto necesario para cobrar una cantidad al mes."
+          },
           {
             "name": "Préstamos e hipotecas",
             "desc": "Cuota mensual, intereses totales y cuadro año a año."

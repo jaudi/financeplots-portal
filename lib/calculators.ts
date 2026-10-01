@@ -397,3 +397,150 @@ export function youngCompanyDcf(v: YoungDcfInputs) {
 
   return { years, pvOfCashFlows: pvSum, terminalValue, pvTerminal, goingConcern, operatingValue, equityValue };
 }
+
+// ── UK take-home pay ─────────────────────────────────────────────────────────
+// Employees on PAYE with the standard tax code (1257L). Rates for 2026/27 from
+// GOV.UK "Rates and thresholds for employers 2026 to 2027" (checked 1 Oct 2026).
+// Change them together each April, and the TAX_YEAR label with them.
+//
+// Not modelled: other tax codes, benefits in kind, the marriage allowance,
+// higher-rate pension relief claimed through self-assessment, and
+// period-by-period rounding (figures are annual, monthly = annual / 12).
+
+export const TAX_YEAR = "2026/27";
+
+export type UkRegion = "england_wales_ni" | "scotland";
+export type PensionMethod = "salary_sacrifice" | "net_pay" | "relief_at_source";
+export type StudentLoanPlan = "plan1" | "plan2" | "plan4" | "plan5";
+
+const PERSONAL_ALLOWANCE = 12_570;
+const TAPER_START = 100_000; // allowance falls £1 for every £2 of adjusted net income above this
+
+/** Bands of taxable income (after the personal allowance): [upper limit, rate]. */
+const INCOME_TAX_BANDS: Record<UkRegion, [number, number][]> = {
+  england_wales_ni: [[37_700, 0.2], [125_140, 0.4], [Infinity, 0.45]],
+  scotland: [[3_967, 0.19], [16_956, 0.2], [31_092, 0.21], [62_430, 0.42], [125_140, 0.45], [Infinity, 0.48]],
+};
+
+const NI_PRIMARY_THRESHOLD = 12_570;
+const NI_UPPER_EARNINGS_LIMIT = 50_270;
+const NI_MAIN_RATE = 0.08;
+const NI_UPPER_RATE = 0.02;
+
+export const STUDENT_LOAN_THRESHOLDS: Record<StudentLoanPlan, number> = {
+  plan1: 26_900,
+  plan2: 29_385,
+  plan4: 33_795,
+  plan5: 25_000,
+};
+const STUDENT_LOAN_RATE = 0.09;
+const POSTGRAD_THRESHOLD = 21_000;
+const POSTGRAD_RATE = 0.06;
+const BASIC_RATE_RELIEF = 0.2; // relief at source: the provider claims 20% back from HMRC
+
+export interface TakeHomeInputs {
+  grossSalary: number;
+  region?: UkRegion;
+  /** Employee pension contribution, % of gross salary. */
+  pensionPct?: number;
+  pensionMethod?: PensionMethod;
+  studentLoan?: StudentLoanPlan | null;
+  postgradLoan?: boolean;
+}
+
+export interface TakeHomeResult {
+  grossSalary: number;
+  personalAllowance: number;
+  taxableIncome: number;
+  incomeTax: number;
+  nationalInsurance: number;
+  studentLoan: number;
+  postgradLoan: number;
+  /** What leaves the employee's pay for the pension (relief at source: 80% of the gross contribution). */
+  pensionFromPay: number;
+  /** What lands in the pension pot, including basic-rate relief at source. */
+  pensionTotal: number;
+  takeHome: number;
+  /** Tax, NI and loan repayments as a share of gross salary, percent (pension not counted). */
+  effectiveRatePct: number;
+  /** Share of the next £100 of salary lost to tax, NI and loans, percent. */
+  marginalRatePct: number;
+}
+
+function incomeTaxOn(taxable: number, region: UkRegion) {
+  let tax = 0;
+  let lower = 0;
+  for (const [upper, rate] of INCOME_TAX_BANDS[region]) {
+    if (taxable <= lower) break;
+    tax += (Math.min(taxable, upper) - lower) * rate;
+    lower = upper;
+  }
+  return tax;
+}
+
+function deductions(v: TakeHomeInputs) {
+  const region = v.region ?? "england_wales_ni";
+  const method = v.pensionMethod ?? "salary_sacrifice";
+  const gross = Math.max(0, v.grossSalary);
+  const contribution = (gross * Math.max(0, v.pensionPct ?? 0)) / 100;
+
+  const sacrifice = method === "salary_sacrifice" ? contribution : 0;
+  const netPay = method === "net_pay" ? contribution : 0;
+  const reliefAtSource = method === "relief_at_source" ? contribution : 0;
+
+  const niablePay = gross - sacrifice; // salary sacrifice also lowers NI and student loan earnings
+  const taxablePay = niablePay - netPay;
+  const adjustedNetIncome = taxablePay - reliefAtSource;
+  const allowance = Math.max(0, PERSONAL_ALLOWANCE - Math.floor(Math.max(0, adjustedNetIncome - TAPER_START) / 2));
+  const taxableIncome = Math.max(0, taxablePay - allowance);
+  const incomeTax = incomeTaxOn(taxableIncome, region);
+
+  const ni =
+    Math.max(0, Math.min(niablePay, NI_UPPER_EARNINGS_LIMIT) - NI_PRIMARY_THRESHOLD) * NI_MAIN_RATE +
+    Math.max(0, niablePay - NI_UPPER_EARNINGS_LIMIT) * NI_UPPER_RATE;
+
+  const studentLoan = v.studentLoan ? Math.floor(Math.max(0, niablePay - STUDENT_LOAN_THRESHOLDS[v.studentLoan]) * STUDENT_LOAN_RATE) : 0;
+  const postgradLoan = v.postgradLoan ? Math.floor(Math.max(0, niablePay - POSTGRAD_THRESHOLD) * POSTGRAD_RATE) : 0;
+
+  const pensionFromPay = sacrifice + netPay + reliefAtSource * (1 - BASIC_RATE_RELIEF);
+  const takeHome = gross - pensionFromPay - incomeTax - ni - studentLoan - postgradLoan;
+  return { gross, allowance, taxableIncome, incomeTax, ni, studentLoan, postgradLoan, pensionFromPay, pensionTotal: contribution, takeHome };
+}
+
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
+export function takeHomePay(v: TakeHomeInputs): TakeHomeResult {
+  const d = deductions(v);
+  const next = deductions({ ...v, grossSalary: d.gross + 100 });
+  // The extra £100 also raises the pension contribution; count only what goes to tax, NI and loans.
+  const lostOnNext100 = 100 - (next.takeHome - d.takeHome) - (next.pensionFromPay - d.pensionFromPay);
+  const charges = d.incomeTax + d.ni + d.studentLoan + d.postgradLoan;
+  return {
+    grossSalary: r2(d.gross),
+    personalAllowance: d.allowance,
+    taxableIncome: r2(d.taxableIncome),
+    incomeTax: r2(d.incomeTax),
+    nationalInsurance: r2(d.ni),
+    studentLoan: d.studentLoan,
+    postgradLoan: d.postgradLoan,
+    pensionFromPay: r2(d.pensionFromPay),
+    pensionTotal: r2(d.pensionTotal),
+    takeHome: r2(d.takeHome),
+    effectiveRatePct: d.gross > 0 ? r2((charges / d.gross) * 100) : 0,
+    marginalRatePct: r2(lostOnNext100),
+  };
+}
+
+/** The gross salary that leaves `targetTakeHome` a year, by bisection
+ *  (take-home rises with gross at every level, so the answer is unique). */
+export function grossForTakeHome(targetTakeHome: number, v: Omit<TakeHomeInputs, "grossSalary">): number {
+  let lo = 0;
+  let hi = 5_000_000;
+  if (deductions({ ...v, grossSalary: hi }).takeHome < targetTakeHome) return NaN;
+  while (hi - lo > 0.005) {
+    const mid = (lo + hi) / 2;
+    if (deductions({ ...v, grossSalary: mid }).takeHome < targetTakeHome) lo = mid;
+    else hi = mid;
+  }
+  return Math.ceil(hi * 100) / 100;
+}

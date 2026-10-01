@@ -488,7 +488,9 @@ export default function StockScreener({
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {results.rows.map((c) => (
                   <div key={c.ticker} className="bg-[#0d1426] border border-gray-800 rounded-2xl p-5">
-                    <p className="font-mono font-bold text-gray-200">{c.ticker}</p>
+                    <Link href={`/tools/stock-analysis?symbol=${encodeURIComponent(c.ticker)}`} className="font-mono font-bold text-gray-200 hover:text-blue-300 transition">
+                      {c.ticker} <span className="text-gray-600 text-xs font-sans font-normal">price →</span>
+                    </Link>
                     <p className="text-white text-sm font-semibold truncate" title={c.nombre}>
                       {c.nombre}
                     </p>
@@ -552,7 +554,11 @@ export default function StockScreener({
                   <tbody>
                     {results.rows.map((c) => (
                       <tr key={c.ticker} className="border-b border-gray-800/60 last:border-0">
-                        <td className="px-4 py-3 font-mono text-gray-200">{c.ticker}</td>
+                        <td className="px-4 py-3 font-mono">
+                          <Link href={`/tools/stock-analysis?symbol=${encodeURIComponent(c.ticker)}`} className="text-gray-200 hover:text-blue-300 underline decoration-gray-700 underline-offset-2 transition">
+                            {c.ticker}
+                          </Link>
+                        </td>
                         <td className="px-4 py-3 text-gray-200">{c.nombre}</td>
                         <td className="px-4 py-3 text-gray-400">{c.sector ?? "—"}</td>
                         {columns.map((m) => (

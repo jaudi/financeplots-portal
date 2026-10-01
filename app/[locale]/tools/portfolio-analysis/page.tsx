@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import PortfolioAnalysis, { type HoldingRow } from "@/components/PortfolioAnalysis";
 import RelatedTools from "@/components/RelatedTools";
+import StocksNav from "@/components/StocksNav";
 import { fetchIndicators } from "@/lib/fred";
 import { normaliseSymbol, type PriceRange } from "@/lib/price-types";
 
@@ -77,6 +78,7 @@ export default async function PortfolioAnalysisPage({ searchParams }: Props) {
 
       <div className="pt-[100px] pb-20 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <StocksNav current="portfolio" />
           <div className="text-center mb-10">
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Portfolio Analysis</p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">How your portfolio behaved</h1>

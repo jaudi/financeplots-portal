@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import StockComparison from "@/components/StockComparison";
 import RelatedTools from "@/components/RelatedTools";
+import StocksNav from "@/components/StocksNav";
 import { normaliseSymbol, PRICE_RANGES, type PriceRange } from "@/lib/price-types";
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default async function StockComparisonPage({ searchParams }: Props) {
 
       <div className="pt-[100px] pb-20 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <StocksNav current="compare" />
           <div className="text-center mb-10">
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Stock Comparison</p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Compare how prices moved</h1>

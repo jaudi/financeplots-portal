@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import StockAnalysis from "@/components/StockAnalysis";
 import RelatedTools from "@/components/RelatedTools";
+import StocksNav from "@/components/StocksNav";
 import { normaliseSymbol, PRICE_RANGES, type PriceRange } from "@/lib/price-types";
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default async function StockAnalysisPage({ searchParams }: Props) {
 
       <div className="pt-[100px] pb-20 flex-1">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <StocksNav current="analysis" />
           <div className="text-center mb-10">
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Stock Analysis</p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Price history for any ticker</h1>

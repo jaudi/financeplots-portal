@@ -1,4 +1,4 @@
-import type { CompoundRow } from "@/lib/calculators";
+import { takeHomePay, type CompoundRow, type TakeHomeInputs } from "@/lib/calculators";
 import { formatValue, type ChartSpec } from "@/lib/charts/spec";
 import type { PricePoint } from "@/lib/price-types";
 
@@ -187,4 +187,32 @@ export function portfolioCharts(
       note: `${SOURCE} · holdings in the order given`,
     },
   ];
+}
+
+/** Where each pound of salary goes, at salaries around the user's, with a
+ *  marker on theirs. Series keep their slots whatever the inputs. */
+export function takeHomeChart(v: TakeHomeInputs): ChartSpec {
+  const gross = Math.max(0, v.grossSalary);
+  const top = Math.max(40_000, gross * 2);
+  const mag = 10 ** Math.floor(Math.log10(top / 10));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= top / 10) ?? top / 10;
+  const grid = Array.from({ length: Math.ceil(top / step) + 1 }, (_, i) => i * step);
+  const rows = grid.map((g) => takeHomePay({ ...v, grossSalary: g }));
+  const anyLoan = rows.some((r) => r.studentLoan + r.postgradLoan > 0);
+  const anyPension = rows.some((r) => r.pensionFromPay > 0);
+  return {
+    title: "Where the salary goes",
+    subtitle: `UK ${v.region === "scotland" ? "(Scotland)" : "(England, Wales, NI)"} · tax year 2026/27, per year`,
+    x: { labels: grid.map((g) => formatValue(g, "money", "GBP")), title: "Gross salary" },
+    y: { format: "money", currency: "GBP", zeroBased: true },
+    series: [
+      { name: "Take-home", type: "bar", stack: "s", slot: 0, values: rows.map((r) => r.takeHome) },
+      { name: "Income tax", type: "bar", stack: "s", slot: 1, values: rows.map((r) => r.incomeTax) },
+      { name: "National Insurance", type: "bar", stack: "s", slot: 2, values: rows.map((r) => r.nationalInsurance) },
+      ...(anyLoan ? [{ name: "Student loan", type: "bar" as const, stack: "s", slot: 3, values: rows.map((r) => r.studentLoan + r.postgradLoan) }] : []),
+      ...(anyPension ? [{ name: "Pension", type: "bar" as const, stack: "s", slot: 4, values: rows.map((r) => r.pensionFromPay) }] : []),
+    ],
+    markers: gross > 0 ? [{ index: gross / step, label: `You: ${formatValue(gross, "money", "GBP")}` }] : [],
+    note: `${SOURCE} · standard tax code 1257L`,
+  };
 }

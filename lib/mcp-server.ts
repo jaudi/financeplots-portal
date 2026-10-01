@@ -1,10 +1,10 @@
 import { RESOURCE_MIME_TYPE, registerAppResource } from "@modelcontextprotocol/ext-apps/server";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { breakEven, buildSchedule, compoundGrowth, INDUSTRIES, payoffWithExtra, realValue, startupValuation, valuation, youngCompanyDcf } from "@/lib/calculators";
+import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, payoffWithExtra, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type ChartSpec } from "@/lib/charts/spec";
-import { breakEvenChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, valuationChart } from "@/lib/charts/tool-charts";
+import { breakEvenChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
 import { fetchIndicators } from "@/lib/fred";
 import { CHART_VIEW_HTML } from "@/lib/mcp-app/chart-view-html.generated";
 import { getMarketQuotes } from "@/lib/markets";
@@ -25,7 +25,7 @@ import { getUniverse, UNCLASSIFIED, UNIVERSE_SCREENS } from "@/lib/universe";
 const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
-Calculators: loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
+Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
 Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
@@ -83,6 +83,90 @@ export function createFinancePlotsServer() {
   );
 
   // ── Calculators ──────────────────────────────────────────────────────────
+
+  server.registerTool(
+    "take_home_pay",
+    {
+      title: "UK take-home pay",
+      description:
+        `UK take-home pay for an employee on PAYE with the standard tax code, tax year ${TAX_YEAR}: income tax (England, Wales and Northern Ireland, or Scotland's bands), National Insurance, student and postgraduate loan repayments and an employee pension contribution. Give either \`gross_salary\` or \`target_monthly_take_home\` — the second returns the gross salary needed to take that home. Returns yearly and monthly figures, the effective rate and the marginal rate on the next £100 (it shows the 60% band where the personal allowance is withdrawn between £100,000 and £125,140), with a chart of where the salary goes. Not modelled: other tax codes, benefits in kind, bonuses taxed in a single month, higher-rate pension relief claimed through self-assessment.`,
+      inputSchema: {
+        gross_salary: z.number().min(0).max(10_000_000).optional().describe("Annual gross salary in GBP, before any deductions"),
+        target_monthly_take_home: z
+          .number()
+          .positive()
+          .max(500_000)
+          .optional()
+          .describe("Instead of gross_salary: the monthly take-home wanted; returns the gross salary needed"),
+        region: z
+          .enum(["england_wales_ni", "scotland"])
+          .default("england_wales_ni")
+          .describe("Income tax bands: 'scotland' for Scottish taxpayers, otherwise England, Wales and Northern Ireland"),
+        pension_pct: z.number().min(0).max(100).default(0).describe("Employee pension contribution, percent of gross salary, e.g. 5"),
+        pension_method: z
+          .enum(["salary_sacrifice", "net_pay", "relief_at_source"])
+          .default("salary_sacrifice")
+          .describe("How the pension is paid: salary sacrifice (saves tax and NI), net pay (saves tax), relief at source (paid from net pay, provider adds 20%)"),
+        student_loan: z
+          .enum(["none", "plan1", "plan2", "plan4", "plan5"])
+          .default("none")
+          .describe(`Undergraduate student loan plan. Thresholds ${TAX_YEAR}: ${Object.entries(STUDENT_LOAN_THRESHOLDS).map(([k, v]) => `${k} £${v.toLocaleString("en-GB")}`).join(", ")}`),
+        postgrad_loan: z.boolean().default(false).describe("Also repaying a postgraduate loan (6% above £21,000)"),
+        chart: chartParam,
+      },
+      annotations: readOnly,
+      _meta: chartUi,
+    },
+    async ({ gross_salary, target_monthly_take_home, region, pension_pct, pension_method, student_loan, postgrad_loan, chart }) => {
+      if ((gross_salary === undefined) === (target_monthly_take_home === undefined)) {
+        return error("Give exactly one of gross_salary or target_monthly_take_home.");
+      }
+      const options = {
+        region,
+        pensionPct: pension_pct,
+        pensionMethod: pension_method,
+        studentLoan: student_loan === "none" ? null : (student_loan as StudentLoanPlan),
+        postgradLoan: postgrad_loan,
+      };
+      let gross = gross_salary;
+      if (target_monthly_take_home !== undefined) {
+        gross = grossForTakeHome(target_monthly_take_home * 12, options);
+        if (!Number.isFinite(gross)) return error("That take-home is out of range for this calculator.");
+      }
+      const r = takeHomePay({ ...options, grossSalary: gross! });
+      const monthly = (n: number) => round2(n / 12);
+      const result = json({
+        tax_year: TAX_YEAR,
+        region,
+        ...(target_monthly_take_home !== undefined && { target_monthly_take_home, gross_salary_needed: r.grossSalary }),
+        yearly: {
+          gross_salary: r.grossSalary,
+          personal_allowance: r.personalAllowance,
+          taxable_income: r.taxableIncome,
+          income_tax: r.incomeTax,
+          national_insurance: r.nationalInsurance,
+          student_loan: r.studentLoan,
+          postgrad_loan: r.postgradLoan,
+          pension_from_pay: r.pensionFromPay,
+          take_home: r.takeHome,
+        },
+        monthly: {
+          gross_salary: monthly(r.grossSalary),
+          income_tax: monthly(r.incomeTax),
+          national_insurance: monthly(r.nationalInsurance),
+          student_loan: monthly(r.studentLoan + r.postgradLoan),
+          pension_from_pay: monthly(r.pensionFromPay),
+          take_home: monthly(r.takeHome),
+        },
+        pension_into_pot: r.pensionTotal,
+        effective_rate_pct: r.effectiveRatePct,
+        marginal_rate_pct: r.marginalRatePct,
+        assumptions: "Standard tax code 1257L, annual figures (monthly = yearly / 12), pension as a percent of the whole gross salary.",
+        tool_page: `${SITE}/tools/take-home-pay`,
+      });
+      return withCharts(result, [takeHomeChart({ ...options, grossSalary: r.grossSalary })], chart);
+    },
+  );
 
   server.registerTool(
     "loan_repayment",

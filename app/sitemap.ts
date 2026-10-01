@@ -46,6 +46,8 @@ const TOOL_SLUGS = [
   "stock-analysis",
   "stock-screener",
   "stock-comparison",
+  "stocks",
+  "take-home-pay",
   "valuation",
 ];
 

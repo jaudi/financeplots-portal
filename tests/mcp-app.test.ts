@@ -8,7 +8,7 @@ import { createFinancePlotsServer } from "@/lib/mcp-server";
 // serves as a self-contained HTML page.
 
 const VIEW = "ui://financeplots/charts.html";
-const CHARTING = ["loan_repayment", "compound_interest", "break_even", "business_valuation", "startup_valuation", "price_history", "portfolio_analysis"];
+const CHARTING = ["take_home_pay", "loan_repayment", "compound_interest", "break_even", "business_valuation", "startup_valuation", "price_history", "portfolio_analysis"];
 
 async function connect() {
   const [c, s] = InMemoryTransport.createLinkedPair();
