@@ -135,3 +135,33 @@ export function parseMetricList(param: string | undefined): MetricKey[] {
     .filter((k): k is MetricKey => (METRIC_KEYS as readonly string[]).includes(k));
   return Array.from(new Set(keys));
 }
+
+/** A metric's figure with its unit, e.g. "18.4x" or "12.5%". */
+export function formatMetric(value: number | null, m: MetricDef) {
+  if (value === null) return "—";
+  const decimals = m.key === "precio_actual" ? 2 : 1;
+  const body = value.toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return `${body}${m.unit}`;
+}
+
+/** Share of the index below this figure, 0–100, counting ties as half. A plain
+ *  position — it says "higher than", never "better than". */
+export function positionIn(sorted: number[], value: number) {
+  if (sorted.length === 0) return 0;
+  let lo = 0;
+  let hi = sorted.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (sorted[mid] < value) lo = mid + 1;
+    else hi = mid;
+  }
+  const below = lo;
+  hi = sorted.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (sorted[mid] <= value) lo = mid + 1;
+    else hi = mid;
+  }
+  const equal = lo - below;
+  return ((below + equal / 2) / sorted.length) * 100;
+}

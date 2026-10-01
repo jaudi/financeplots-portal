@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import NeutralSnowflake from "@/components/NeutralSnowflake";
-import { METRIC_GROUPS, METRICS, type MetricDef, type MetricKey } from "@/lib/stock-metrics";
+import { formatMetric as formatValue, METRIC_GROUPS, METRICS, positionIn, type MetricKey } from "@/lib/stock-metrics";
 import type { UniverseCompany, UniverseData, UniverseScreen } from "@/lib/universe";
 
 // A neutral screen. The user sets every criterion, nothing is shown until they
@@ -56,12 +56,6 @@ function readCriteria(bounds: Bounds, sector: string, query: string) {
   return { criteria, problems };
 }
 
-function formatValue(value: number | null, m: MetricDef) {
-  if (value === null) return "—";
-  const decimals = m.key === "precio_actual" ? 2 : 1;
-  const body = value.toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-  return `${body}${m.unit}`;
-}
 
 function formatDate(iso: string | null) {
   if (!iso) return null;
@@ -79,27 +73,6 @@ function compare(a: UniverseCompany, b: UniverseCompany, key: SortKey, dir: 1 | 
   return order * dir || a.ticker.localeCompare(b.ticker);
 }
 
-/** Share of the index below this figure, 0–100, counting ties as half. A plain
- *  position — it says "higher than", never "better than". */
-function positionIn(sorted: number[], value: number) {
-  if (sorted.length === 0) return 0;
-  let lo = 0;
-  let hi = sorted.length;
-  while (lo < hi) {
-    const mid = (lo + hi) >> 1;
-    if (sorted[mid] < value) lo = mid + 1;
-    else hi = mid;
-  }
-  const below = lo;
-  hi = sorted.length;
-  while (lo < hi) {
-    const mid = (lo + hi) >> 1;
-    if (sorted[mid] <= value) lo = mid + 1;
-    else hi = mid;
-  }
-  const equal = lo - below;
-  return ((below + equal / 2) / sorted.length) * 100;
-}
 
 export default function StockScreener({
   initialIndex,
@@ -488,8 +461,8 @@ export default function StockScreener({
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {results.rows.map((c) => (
                   <div key={c.ticker} className="bg-[#0d1426] border border-gray-800 rounded-2xl p-5">
-                    <Link href={`/tools/stock-analysis?symbol=${encodeURIComponent(c.ticker)}`} className="font-mono font-bold text-gray-200 hover:text-blue-300 transition">
-                      {c.ticker} <span className="text-gray-600 text-xs font-sans font-normal">price →</span>
+                    <Link href={`/tools/stocks/${encodeURIComponent(c.ticker)}`} className="font-mono font-bold text-gray-200 hover:text-blue-300 transition">
+                      {c.ticker} <span className="text-gray-600 text-xs font-sans font-normal">company page →</span>
                     </Link>
                     <p className="text-white text-sm font-semibold truncate" title={c.nombre}>
                       {c.nombre}
@@ -555,7 +528,7 @@ export default function StockScreener({
                     {results.rows.map((c) => (
                       <tr key={c.ticker} className="border-b border-gray-800/60 last:border-0">
                         <td className="px-4 py-3 font-mono">
-                          <Link href={`/tools/stock-analysis?symbol=${encodeURIComponent(c.ticker)}`} className="text-gray-200 hover:text-blue-300 underline decoration-gray-700 underline-offset-2 transition">
+                          <Link href={`/tools/stocks/${encodeURIComponent(c.ticker)}`} className="text-gray-200 hover:text-blue-300 underline decoration-gray-700 underline-offset-2 transition">
                             {c.ticker}
                           </Link>
                         </td>

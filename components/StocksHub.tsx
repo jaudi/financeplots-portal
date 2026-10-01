@@ -15,10 +15,14 @@ export default function StocksHub() {
   const [value, setValue] = useState("");
   const tickers = [...new Set(value.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean))];
 
+  const locale = () => (window.location.pathname.startsWith("/es/") ? "/es" : "");
   const open = (tab: StocksTab) => {
     if (tickers.length === 0) return;
-    const locale = window.location.pathname.startsWith("/es/") ? "/es" : "";
-    router.push(locale + tabHref(tab, tickers, null));
+    router.push(locale() + tabHref(tab, tickers, null));
+  };
+  // One ticker opens its company page: price history plus key figures where we have them.
+  const openCompany = () => {
+    if (tickers.length === 1) router.push(`${locale()}/tools/stocks/${encodeURIComponent(tickers[0])}`);
   };
 
   const button = "px-4 py-2.5 rounded-lg text-sm font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed";
@@ -33,14 +37,14 @@ export default function StocksHub() {
         multi
         value={value}
         onChange={setValue}
-        onEnter={() => open(tickers.length > 1 ? "compare" : "analysis")}
+        onEnter={() => (tickers.length > 1 ? open("compare") : openCompany())}
         placeholder="e.g. Apple, or AAPL, MSFT"
         ariaLabel="Search stocks"
         className="w-full"
       />
       <div className="flex flex-wrap gap-2 mt-3">
-        <button onClick={() => open("analysis")} disabled={tickers.length !== 1} className={`${button} bg-blue-600 hover:bg-blue-500 text-white`}>
-          📈 Price history
+        <button onClick={openCompany} disabled={tickers.length !== 1} className={`${button} bg-blue-600 hover:bg-blue-500 text-white`}>
+          🏢 Company page
         </button>
         <button onClick={() => open("compare")} disabled={tickers.length < 2} className={`${button} bg-[#111827] border border-gray-700 text-gray-200 hover:text-white`}>
           📉 Compare {tickers.length > 1 ? tickers.length : ""}

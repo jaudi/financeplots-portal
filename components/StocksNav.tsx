@@ -50,6 +50,9 @@ export default function StocksNav({ current }: { current: StocksTab | "hub" }) {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
     e.preventDefault();
     const params = new URLSearchParams(window.location.search);
+    // A company page (/tools/stocks/AAPL) carries its ticker in the path.
+    const onCompany = window.location.pathname.match(/\/tools\/stocks\/([^/]+)$/);
+    if (onCompany && !params.has("symbol")) params.set("symbol", decodeURIComponent(onCompany[1]));
     const locale = window.location.pathname.startsWith("/es/") || window.location.pathname === "/es" ? "/es" : "";
     router.push(locale + tabHref(tab, tickersFromParams(params), params.get("range")));
   };

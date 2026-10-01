@@ -46,7 +46,9 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
   );
 }
 
-export default function StockAnalysis({ initialSymbol, initialRange }: { initialSymbol: string | null; initialRange: PriceRange }) {
+/** `fixed`: the ticker is set by the page (a company page) — no ticker box, and
+ *  the URL is left alone. */
+export default function StockAnalysis({ initialSymbol, initialRange, fixed = false }: { initialSymbol: string | null; initialRange: PriceRange; fixed?: boolean }) {
   const [input, setInput] = useState(initialSymbol ?? "");
   const [symbol, setSymbol] = useState<string | null>(initialSymbol);
   const [range, setRange] = useState<PriceRange>(initialRange);
@@ -75,7 +77,7 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
       }
       if (!current) return;
       setResult({ key: `${symbol}|${range}`, ...next });
-      if (next.data) {
+      if (next.data && !fixed) {
         const url = new URL(window.location.href);
         url.searchParams.set("symbol", symbol);
         url.searchParams.set("range", range);
@@ -85,7 +87,7 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
     return () => {
       current = false;
     };
-  }, [symbol, range]);
+  }, [symbol, range, fixed]);
 
   function submit(e?: FormEvent) {
     e?.preventDefault();
@@ -103,7 +105,8 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
   return (
     <div className="flex flex-col gap-6">
       {/* Ticker + range */}
-      <form onSubmit={submit} className="bg-[#0d1426] border border-gray-800 rounded-xl p-5 flex flex-col md:flex-row md:items-end gap-4">
+      <form onSubmit={submit} className={fixed ? "flex justify-end" : "bg-[#0d1426] border border-gray-800 rounded-xl p-5 flex flex-col md:flex-row md:items-end gap-4"}>
+        {!fixed && (
         <div className="flex-1">
           <label htmlFor="ticker" className="text-xs text-gray-400 font-medium">Ticker</label>
           <div className="flex gap-2 mt-1">
@@ -124,6 +127,7 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
           </div>
           <p className="text-xs text-gray-500 mt-1.5">Type a company name and pick it from the list, or enter a ticker. Tickers outside the US need the exchange suffix: .MC Madrid, .L London, .PA Paris, .DE Xetra. Indices start with ^.</p>
         </div>
+        )}
         <div className="flex gap-1 bg-[#111827] border border-gray-700 rounded-lg p-1 self-start md:self-auto" role="group" aria-label="Period">
           {PRICE_RANGES.map((r) => (
             <button
@@ -153,7 +157,7 @@ export default function StockAnalysis({ initialSymbol, initialRange }: { initial
         <div className={`flex flex-col gap-6 transition-opacity ${loading ? "opacity-50" : ""}`}>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-extrabold text-white">{data.name}</h2>
+              {!fixed && <h2 className="text-2xl font-extrabold text-white">{data.name}</h2>}
               <p className="text-gray-400 text-sm">
                 {data.symbol}
                 {data.exchange && ` · ${data.exchange}`}
