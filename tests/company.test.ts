@@ -19,6 +19,11 @@ describe("company page data", () => {
     expect((await getCompanyProfile("SAN.MC"))?.index).toBe("ibex35");
   });
 
+  it("shows the names people know, not the source's (Inditex came through as its ticker)", async () => {
+    const [itx, ibe, tef] = await getCompanyProfiles(["ITX.MC", "IBE.MC", "TEF.MC"]);
+    expect([itx?.company.nombre, ibe?.company.nombre, tef?.company.nombre]).toEqual(["Inditex", "Iberdrola", "Telefónica"]);
+  });
+
   it("returns null outside the three indices", async () => {
     expect(await getCompanyProfile("SPY")).toBeNull();
   });

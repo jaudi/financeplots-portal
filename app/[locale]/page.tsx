@@ -16,12 +16,21 @@ import HeroSnowflake from "@/components/HeroSnowflake";
 // illustration with invented positions, the search suggests nothing until the
 // visitor types, and no example uses a real ticker.
 
-export const metadata: Metadata = {
-  title: "FinancePlots — Free Finance Tools You Can See",
-  description:
-    "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100 and IBEX 35 company. No signup, no ads. Works inside Claude.",
-  alternates: { canonical: "https://www.financeplots.com" },
-};
+const BASE = "https://www.financeplots.com";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+  const url = locale === "es" ? `${BASE}/es` : BASE;
+  const title = t("metaTitle");
+  const description = t("metaDescription");
+  return {
+    title,
+    description,
+    alternates: { canonical: url, languages: { en: BASE, es: `${BASE}/es` } },
+    openGraph: { title, description, url, siteName: "FinancePlots", type: "website" },
+  };
+}
 
 type Article = {
   slug: string;

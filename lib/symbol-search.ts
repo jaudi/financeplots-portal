@@ -30,12 +30,17 @@ export interface SymbolMatch {
 // gets wrong (the pipeline has no name for Inditex). Matching only — the order
 // of results is unaffected.
 const LOCAL_FIXES: Record<string, { name?: string; also?: string }> = {
-  "ITX.MC": { name: "Industria de Diseño Textil, S.A.", also: "Inditex Zara" },
-  "IBE.MC": { name: "Iberdrola, S.A." },
-  "IAG.MC": { also: "IAG Iberia British Airways" },
+  // Display names come from lib/company-names.ts; these keep the legal names
+  // and brands findable too.
+  "ITX.MC": { also: "Industria de Diseño Textil Zara" },
+  "IAG.MC": { also: "International Consolidated Airlines Iberia British Airways" },
   "RED.MC": { also: "Red Eléctrica REE" },
-  "LOG.MC": { also: "Logista" },
-  "ANE.MC": { also: "Acciona Energía" },
+  "LOG.MC": { also: "Compañía de Distribución Integral" },
+  "ANE.MC": { also: "Corporación Acciona Energías Renovables" },
+  "BBVA.MC": { also: "Banco Bilbao Vizcaya Argentaria" },
+  "ACS.MC": { also: "Actividades de Construcción y Servicios" },
+  "ROVI.MC": { also: "Laboratorios Farmacéuticos" },
+  "SLR.MC": { also: "Solaria Energía y Medio Ambiente" },
   "TEF.MC": { also: "Movistar" },
   "MTS.MC": { also: "Arcelor" },
   GOOGL: { also: "Google" },

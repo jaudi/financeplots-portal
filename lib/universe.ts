@@ -1,3 +1,4 @@
+import { displayName } from "@/lib/company-names";
 import { METRIC_KEYS, type MetricKey } from "@/lib/stock-metrics";
 import ibex35Snapshot from "@/data/universe/universe-ibex35.json";
 import nasdaq100Snapshot from "@/data/universe/universe-nasdaq100.json";
@@ -101,7 +102,7 @@ export async function getUniverse(screen: UniverseScreen): Promise<UniverseData 
       .map((c) => {
         const row = {
           ticker: c.ticker as string,
-          nombre: typeof c.nombre === "string" ? c.nombre : (c.ticker as string),
+          nombre: displayName(c.ticker as string, typeof c.nombre === "string" ? c.nombre : null),
           sector: cleanSector(c.sector),
         } as UniverseCompany;
         for (const key of METRIC_KEYS) row[key] = numberOrNull(c[key]);

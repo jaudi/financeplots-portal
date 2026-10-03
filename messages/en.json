@@ -144,7 +144,9 @@
     "mcpChatTool": "Used FinancePlots · take_home_pay",
     "mcpChatReply": "Here's the monthly breakdown — income tax, National Insurance, pension and what lands in your account — with a chart of where each pound goes.",
     "mcpChatMore": "+ 10 more",
-    "contactCtaShort": "Email us →"
+    "contactCtaShort": "Email us →",
+    "metaTitle": "FinancePlots — Free Finance Tools You Can See",
+    "metaDescription": "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100 and IBEX 35 company. No signup, no ads. Works inside Claude."
   },
   "blog": {
     "title": "Blog",

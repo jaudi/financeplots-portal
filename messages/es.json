@@ -144,7 +144,9 @@
     "mcpChatTool": "Usó FinancePlots · take_home_pay",
     "mcpChatReply": "Aquí tienes el desglose mensual (impuesto sobre la renta, National Insurance, pensión y lo que llega a tu cuenta) con un gráfico de adónde va cada libra.",
     "mcpChatMore": "+ 10 más",
-    "contactCtaShort": "Escríbenos →"
+    "contactCtaShort": "Escríbenos →",
+    "metaTitle": "FinancePlots — Herramientas financieras gratis que se pueden ver",
+    "metaDescription": "Herramientas financieras gratuitas para tu dinero y tu empresa —presupuesto, caja, valoración, préstamos, interés compuesto— y una página visual para cada empresa del S&P 500, el Nasdaq-100 y el IBEX 35. Sin registro y sin anuncios."
   },
   "blog": {
     "title": "Blog",
