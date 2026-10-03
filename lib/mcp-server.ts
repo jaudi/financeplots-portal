@@ -3,16 +3,16 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, payoffWithExtra, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
-import { CHARTS_META_KEY, type ChartSpec } from "@/lib/charts/spec";
-import { breakEvenChart, companyHistoryChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
-import { getCompanyProfile } from "@/lib/company";
+import { CHARTS_META_KEY, type AnyChartSpec } from "@/lib/charts/spec";
+import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { getCompanyProfile, getCompanyProfiles } from "@/lib/company";
 import { tryFinancialHistory } from "@/lib/edgar";
 import { fetchIndicators } from "@/lib/fred";
 import { CHART_VIEW_HTML } from "@/lib/mcp-app/chart-view-html.generated";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
 import { getPriceHistory, isUnknownSymbol, normaliseSymbol, PRICE_RANGES, thin } from "@/lib/prices";
-import { englishKey, METRIC_ALIASES, METRIC_KEYS, METRICS, resolveMetric } from "@/lib/stock-metrics";
+import { englishKey, MAX_VS, METRIC_ALIASES, METRIC_KEYS, METRICS, resolveMetric } from "@/lib/stock-metrics";
 import { getUniverse, UNCLASSIFIED, UNIVERSE_SCREENS } from "@/lib/universe";
 
 // The FinancePlots MCP server, served at /api/mcp. It exposes the same
@@ -28,7 +28,7 @@ const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
 Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
-Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR).
+Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR), company_snowflake (those ratios drawn as a snowflake, for one company or two on the same shape).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
 function json(data: unknown) {
@@ -55,7 +55,7 @@ const chartParam = z
 /** Adds each chart as a PNG, and the chart specs under `_meta` for an MCP App
  *  view. The JSON text stays first and complete: a chart that fails to render
  *  is dropped, never the figures. */
-async function withCharts(result: ReturnType<typeof json>, specs: ChartSpec[], chart: boolean) {
+async function withCharts(result: ReturnType<typeof json>, specs: AnyChartSpec[], chart: boolean) {
   if (!chart || specs.length === 0) return result;
   const images = await Promise.all(specs.map((s) => chartPng(s).catch(() => null)));
   return {
@@ -917,6 +917,60 @@ export function createFinancePlotsServer() {
         ? [companyHistoryChart(profile?.company.nombre ?? ticker, history.years)]
         : [];
       return withCharts(result, specs, chart);
+    },
+  );
+
+  server.registerTool(
+    "company_snowflake",
+    {
+      title: "Company snowflake",
+      description:
+        `Draws a company's ratios (valuation, profitability, debt, growth — weekly snapshot) as a snowflake: one spoke per ratio, each point at the share of the company's index with a lower figure. Pass one more ticker in compare_with to draw it as a second layer on the same snowflake. Returns the figures as JSON and the chart: a PNG, and in hosts with MCP Apps an interactive 3D view the user can turn and tap. Further out means a higher figure, never a better one (a high P/E or high debt sits far out too); the shape's size is not a score, and nothing is combined, ranked or recommended. Covers S&P 500, Nasdaq-100 and IBEX 35 companies.`,
+      inputSchema: {
+        ticker: z.string().min(1).max(15).describe("Yahoo Finance ticker, e.g. AAPL, BRK-B, SAN.MC"),
+        compare_with: z.array(z.string().min(1).max(15)).max(MAX_VS).default([]).describe("One more ticker to draw as a second layer (a list, for compatibility; at most one)"),
+        chart: chartParam,
+      },
+      annotations: { ...readOnly, openWorldHint: true },
+      _meta: chartUi,
+    },
+    async ({ ticker: raw, compare_with, chart }) => {
+      const ticker = normaliseSymbol(raw);
+      if (!ticker) return error(`"${raw}" is not a valid ticker.`);
+      const others = [...new Set(compare_with.map((t) => normaliseSymbol(t)).filter((t): t is string => !!t && t !== ticker))].slice(0, MAX_VS);
+      const profiles = await getCompanyProfiles([ticker, ...others]);
+      if (!profiles[0]) {
+        return error(`No figures for ${ticker}: company_snowflake covers S&P 500, Nasdaq-100 and IBEX 35 companies. For its share price, use price_history.`);
+      }
+      const tickers = [ticker, ...others];
+      const covered = tickers.flatMap((t, i) => (profiles[i] ? [{ ticker: t, profile: profiles[i]! }] : []));
+      const result = json({
+        companies: covered.map(({ ticker: t, profile }) => ({
+          ticker: t,
+          name: profile.company.nombre,
+          sector: profile.company.sector,
+          index: profile.index,
+          figures_as_of: profile.generatedAt,
+          measures: profile.groups.flatMap(({ group, measures }) =>
+            measures.map((m) => ({
+              alias: englishKey(m.metric.key),
+              label: m.metric.label,
+              group,
+              unit: m.metric.unit,
+              value: m.value,
+              higher_than_pct_of_index: m.position === null ? null : round2(m.position),
+            })),
+          ),
+        })),
+        ...(covered.length < tickers.length && {
+          not_covered: tickers.filter((_, i) => !profiles[i]),
+          not_covered_note: "Only S&P 500, Nasdaq-100 and IBEX 35 companies have these figures.",
+        }),
+        how_to_read:
+          "Each spoke is one ratio. A point's distance from the centre is the share of the company's own index with a lower figure: further out = higher, not better. The shape's size is not a score. Not a recommendation.",
+        tool_page: `${SITE}/tools/stocks/${encodeURIComponent(ticker)}${covered.length > 1 ? `?vs=${covered.slice(1).map((c) => encodeURIComponent(c.ticker)).join(",")}` : ""}`,
+      });
+      return withCharts(result, [companySnowflakeChart(covered)], chart);
     },
   );
 

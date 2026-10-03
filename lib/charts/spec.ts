@@ -6,6 +6,8 @@
 //
 // No DOM and no Node APIs here or in layout.ts: both run in the browser too.
 
+import type { RadarSpec } from "@/lib/charts/radar";
+
 export type ValueFormat = "money" | "pct" | "index" | "number" | "units";
 
 export interface ChartSeries {
@@ -36,6 +38,11 @@ export interface ChartSpec {
   /** Small print under the chart. */
   note?: string;
 }
+
+/** Any chart a tool can return: the cartesian kind above, or a snowflake. */
+export type AnyChartSpec = ChartSpec | RadarSpec;
+
+export const isRadar = (s: AnyChartSpec): s is RadarSpec => (s as RadarSpec).kind === "radar";
 
 /** Key under which a tool result's `_meta` carries its charts for the MCP App view. */
 export const CHARTS_META_KEY = "financeplots/charts";

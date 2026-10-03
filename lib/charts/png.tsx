@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { layoutChart, textWidth, THEMES } from "@/lib/charts/layout";
-import type { ChartSpec } from "@/lib/charts/spec";
+import { layoutRadar } from "@/lib/charts/radar";
+import { isRadar, type AnyChartSpec } from "@/lib/charts/spec";
 import { sceneToSvg } from "@/lib/charts/svg";
 
 // Rasterises a chart for clients without MCP Apps. The shapes go in as one SVG
@@ -8,9 +9,12 @@ import { sceneToSvg } from "@/lib/charts/svg";
 // gave, since SVG text would render without a font.
 
 export const PNG_SIZE = { width: 800, height: 450 } as const;
+/** A snowflake needs height more than width. Drawn flat: a still picture can't be turned. */
+export const RADAR_PNG_SIZE = { width: 800, height: 620 } as const;
 
-export async function chartPng(spec: ChartSpec): Promise<string> {
-  const scene = layoutChart(spec, { ...PNG_SIZE, theme: THEMES.dark });
+export async function chartPng(spec: AnyChartSpec): Promise<string> {
+  const size = isRadar(spec) ? RADAR_PNG_SIZE : PNG_SIZE;
+  const scene = isRadar(spec) ? layoutRadar(spec, { ...size, theme: THEMES.dark }) : layoutChart(spec, { ...size, theme: THEMES.dark });
   const svg = sceneToSvg(scene, { text: false });
   const res = new ImageResponse(
     (
@@ -45,7 +49,7 @@ export async function chartPng(spec: ChartSpec): Promise<string> {
         })}
       </div>
     ),
-    PNG_SIZE,
+    size,
   );
   return Buffer.from(await res.arrayBuffer()).toString("base64");
 }

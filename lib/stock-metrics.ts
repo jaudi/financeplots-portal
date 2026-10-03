@@ -166,5 +166,6 @@ export function positionIn(sorted: number[], value: number) {
   return ((below + equal / 2) / sorted.length) * 100;
 }
 
-/** Companies a company page can be compared with (four columns in all). */
-export const MAX_VS = 3;
+/** Companies a company page (and the MCP snowflake) can be compared with: one,
+ *  so two shapes on one snowflake stay readable (decided 2026-10-03). */
+export const MAX_VS = 1;

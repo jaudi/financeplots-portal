@@ -1,6 +1,9 @@
 import { takeHomePay, type CompoundRow, type TakeHomeInputs } from "@/lib/calculators";
 import { formatValue, type ChartSpec } from "@/lib/charts/spec";
+import type { RadarSpec } from "@/lib/charts/radar";
+import { INDEX_LABELS, type CompanyProfile } from "@/lib/company";
 import type { PricePoint } from "@/lib/price-types";
+import { formatMetric } from "@/lib/stock-metrics";
 
 // The chart each MCP tool returns, built from the same figures as its JSON.
 // Neutral by design (see CLAUDE.md): colours follow the series' position, never
@@ -230,5 +233,30 @@ export function companyHistoryChart(name: string, years: { end: string; revenue:
       { name: "Net profit", type: "bar" as const, slot: 1, values: years.map((y) => y.netIncome) },
     ],
     note: `${SOURCE} · SEC EDGAR`,
+  };
+}
+
+/** The snowflake: every ratio of one company, or of two on the same shape,
+ *  as positions within each company's own index. Never a score (see radar.ts). */
+export function companySnowflakeChart(
+  companies: { ticker: string; profile: CompanyProfile }[],
+): RadarSpec {
+  const measures = companies[0].profile.groups.flatMap((g) => g.measures.map((m) => ({ ...m, group: g.group })));
+  const names = companies.map((c) => c.ticker).join(", ");
+  return {
+    kind: "radar",
+    title: companies.length === 1 ? `${companies[0].profile.company.nombre} (${companies[0].ticker})` : names,
+    subtitle: companies.length === 1 ? `Each ratio against the rest of the ${INDEX_LABELS[companies[0].profile.index]}` : "Each ratio against the rest of each company's own index",
+    spokes: measures.map((m) => ({ label: m.metric.short, group: m.group })),
+    layers: companies.map(({ ticker, profile }) => {
+      const flat = profile.groups.flatMap((g) => g.measures);
+      return {
+        name: ticker,
+        within: INDEX_LABELS[profile.index],
+        positions: flat.map((m) => m.position),
+        values: flat.map((m) => formatMetric(m.value, m.metric)),
+      };
+    }),
+    note: `${SOURCE} · further out = a higher figure than more of the index, not a better one · not a score`,
   };
 }

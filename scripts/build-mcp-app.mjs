@@ -46,7 +46,11 @@ body { font-family: var(--font-sans, var(--font)); color: var(--text); font-size
 .sw { width: 8px; height: 8px; border-radius: 2px; flex: none; }
 .name { color: var(--text2); flex: 1; }
 .val { font-variant-numeric: tabular-nums; font-weight: 600; }
-.actions { display: flex; justify-content: flex-end; padding: 0 12px 10px; }
+.actions { display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 0 12px 10px; }
+.modes { display: flex; gap: 4px; margin-right: auto; }
+.modes .toggle[aria-pressed="true"] { color: #fff; background: #3987e5; border-color: #3987e5; }
+.hint { color: var(--text2); font-size: 11px; }
+.frame:focus-visible { outline: 2px solid #3987e5; outline-offset: -2px; }
 .toggle { font: inherit; font-size: 12px; color: var(--text2); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
 .toggle:hover { color: var(--text); }
 .table-wrap { max-height: 280px; overflow: auto; padding: 0 12px 12px; }

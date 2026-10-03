@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import TickerSearch from "@/components/TickerSearch";
 
 // The centrepiece of a company page: every ratio on the page as one spoke of a
-// snowflake, flat or tilted into 3D. In compare mode each company is a layer
-// stacked above the last, so their shapes can be turned and seen together.
+// snowflake, flat or tilted into 3D. The visitor can type one more company to
+// draw on the same snowflake (?vs=): in 3D each is a layer, one above the other.
 //
 // Same rules as NeutralSnowflake (UK MAR, CLAUDE.md), which is why it can exist:
 // - A point's distance from the centre is the share of the company's index with
@@ -30,7 +32,7 @@ export interface SnowflakeLayer {
   values: string[];
 }
 
-const LAYER_COLOURS = ["148 163 184", "129 140 248", "56 189 248", "232 121 249"]; // slate, indigo, sky, fuchsia
+const LAYER_COLOURS = ["148 163 184", "251 146 60"]; // slate, orange: easy to tell apart, neither reads as good or bad
 const MIN_DRAWN = 3; // a figure at the very bottom of the index stays visible
 const SIZE = 440;
 const R = 140; // radius of the 100% ring, in 3D units
@@ -56,7 +58,69 @@ function smoothPath(pts: [number, number][]) {
   return d + "Z";
 }
 
-export default function CompanySnowflake({ spokes, layers }: { spokes: SnowflakeSpoke[]; layers: SnowflakeLayer[] }) {
+/** Adds or removes the one company drawn alongside (?vs=). Typed by the
+ *  visitor; nothing is suggested before two characters (see TickerSearch). */
+function CompareControl({ ticker, vs, vsMissing }: { ticker: string; vs: string | null; vsMissing: boolean }) {
+  const router = useRouter();
+  const [value, setValue] = useState("");
+  const go = (other: string | null) => {
+    const t = other?.trim().toUpperCase();
+    const path = window.location.pathname;
+    router.push(t && t !== ticker ? `${path}?vs=${encodeURIComponent(t)}` : path, { scroll: false });
+    setValue("");
+  };
+
+  if (vs) {
+    return (
+      <div className="flex flex-wrap items-center gap-2 text-sm">
+        <span className="text-gray-400">Compared with</span>
+        <span className="inline-flex items-center gap-1 bg-[#111827] border border-orange-400/40 rounded-lg pl-3 pr-1 py-1">
+          <span className="font-mono text-orange-300">{vs}</span>
+          <button type="button" onClick={() => go(null)} aria-label={`Stop comparing with ${vs}`} className="text-gray-500 hover:text-white px-1.5">×</button>
+        </span>
+        {vsMissing && <span className="text-xs text-gray-500">No figures for {vs}: only S&amp;P 500, Nasdaq-100 and IBEX 35 companies have them.</span>}
+      </div>
+    );
+  }
+  return (
+    <form
+      className="flex flex-col sm:flex-row gap-2 w-full max-w-md"
+      onSubmit={(e) => {
+        e.preventDefault();
+        go(value);
+      }}
+    >
+      <TickerSearch
+        id="compare-with"
+        value={value}
+        onChange={setValue}
+        onPick={(symbol) => go(symbol)}
+        onEnter={() => go(value)}
+        placeholder={`Compare ${ticker} with… (name or ticker)`}
+        ariaLabel={`Compare ${ticker} with another company`}
+      />
+      <button type="submit" disabled={!value.trim()} className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#111827] border border-gray-700 text-gray-200 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed">
+        Compare
+      </button>
+    </form>
+  );
+}
+
+export default function CompanySnowflake({
+  spokes,
+  layers,
+  ticker,
+  vs = null,
+  vsMissing = false,
+}: {
+  spokes: SnowflakeSpoke[];
+  layers: SnowflakeLayer[];
+  ticker: string;
+  /** The company drawn alongside, if the visitor chose one. */
+  vs?: string | null;
+  /** That company has no figures (outside the three indices). */
+  vsMissing?: boolean;
+}) {
   const [mode, setMode] = useState<"flat" | "3d">("3d");
   // Where the view is heading (set by dragging) and where it is now (eased).
   const goal = useRef({ yaw: -0.5, pitch: PITCH });
@@ -141,7 +205,13 @@ export default function CompanySnowflake({ spokes, layers }: { spokes: Snowflake
     const d = drag.current;
     if (!d) return;
     if (!moved.current && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 5) return; // a press, not a drag
-    if (!moved.current) e.currentTarget.setPointerCapture?.(e.pointerId); // keep turning if the pointer leaves the chart
+    if (!moved.current) {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId); // keep turning if the pointer leaves the chart
+      } catch {
+        // the pointer is already gone
+      }
+    }
     moved.current = true;
     autoTurn.current = false;
     goal.current = { yaw: d.yaw - (e.clientX - d.x) * 0.008, pitch: Math.max(0.15, Math.min(1.3, d.pitch - (e.clientY - d.y) * 0.006)) };
@@ -171,6 +241,10 @@ export default function CompanySnowflake({ spokes, layers }: { spokes: Snowflake
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="mt-4">
+        <CompareControl ticker={ticker} vs={vs} vsMissing={vsMissing} />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 items-center justify-center mt-2">
@@ -203,7 +277,9 @@ export default function CompanySnowflake({ spokes, layers }: { spokes: Snowflake
               const a = a0 + ((a1 - a0) * k) / 16;
               pts.push(project([(R + 38) * Math.cos(a), (R + 38) * Math.sin(a), floorZ]));
             }
-            const mid = project([(R + 56) * Math.cos((a0 + a1) / 2), (R + 56) * Math.sin((a0 + a1) / 2), floorZ]);
+            // Between two spokes, so the group name never sits on a spoke's label.
+            const am = (a0 + a1) / 2 + ((g.to - g.from) % 2 === 0 ? Math.PI / n : 0);
+            const mid = project([(R + 56) * Math.cos(am), (R + 56) * Math.sin(am), floorZ]);
             return (
               <g key={g.name}>
                 <polyline points={pts.map((q) => q.join(",")).join(" ")} fill="none" stroke="rgb(59 130 246 / 0.45)" strokeWidth={2} strokeLinecap="round" />

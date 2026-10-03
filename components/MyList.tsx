@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
+import { MAX_VS } from "@/lib/stock-metrics";
 import { tabHref } from "@/components/StocksNav";
 
 // "My list": tickers the visitor collects across the Stocks area, kept in this
@@ -110,10 +111,10 @@ export function MyListPanel() {
       <div className="flex flex-wrap gap-2">
         {list.length > 1 && (
           <Link
-            href={`${locale}/tools/stocks/${encodeURIComponent(first)}?vs=${rest.slice(0, 3).map(encodeURIComponent).join(",")}`}
+            href={`${locale}/tools/stocks/${encodeURIComponent(first)}?vs=${rest.slice(0, MAX_VS).map(encodeURIComponent).join(",")}`}
             className={`${action} bg-blue-600 hover:bg-blue-500 text-white`}
           >
-            Compare figures{list.length > 4 ? " (first 4)" : ""}
+            Compare figures{list.length > 2 ? " (first 2)" : ""}
           </Link>
         )}
         {list.length > 1 && (

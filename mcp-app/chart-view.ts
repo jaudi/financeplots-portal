@@ -1,7 +1,9 @@
 import { App, applyHostFonts, applyHostStyleVariables, type McpUiHostContext } from "@modelcontextprotocol/ext-apps";
 import { layoutChart, THEMES, type Hit, type Scene } from "@/lib/charts/layout";
-import { CHARTS_META_KEY, formatValue, type ChartSpec } from "@/lib/charts/spec";
+import { CHARTS_META_KEY, formatValue, isRadar, type AnyChartSpec, type ChartSpec } from "@/lib/charts/spec";
 import { FONT_STACK, sceneToSvg } from "@/lib/charts/svg";
+import { el, tableToggle } from "./dom";
+import { radarCard } from "./radar-view";
 
 // The interactive chart view for MCP Apps hosts (Claude, ChatGPT…). The host
 // renders this page in a sandboxed iframe next to a FinancePlots tool call and
@@ -12,17 +14,9 @@ import { FONT_STACK, sceneToSvg } from "@/lib/charts/svg";
 // Bundled into one inline HTML page by scripts/build-mcp-app.mjs: no network.
 
 const root = document.getElementById("root")!;
-let specs: ChartSpec[] | null = null;
-/** Charts whose data table is open; kept across re-renders (theme, width). */
-const openTables = new Set<number>();
+let specs: AnyChartSpec[] | null = null;
 let lastWidth = 0;
 let themeName: "light" | "dark" = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-
-function el<K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLElementTagNameMap[K]> = {}, ...children: (Node | string)[]) {
-  const e = Object.assign(document.createElement(tag), props);
-  e.append(...children);
-  return e;
-}
 
 function message(text: string) {
   root.replaceChildren(el("p", { className: "message", textContent: text }));
@@ -34,7 +28,7 @@ function render() {
   document.documentElement.dataset.theme = themeName;
   const width = Math.max(320, Math.floor(root.clientWidth || window.innerWidth));
   lastWidth = width;
-  root.replaceChildren(...specs.map((spec, k) => chartCard(spec, k, width, theme)));
+  root.replaceChildren(...specs.map((spec, k) => (isRadar(spec) ? radarCard(spec, k, width, theme) : chartCard(spec, k, width, theme))));
 }
 
 function chartCard(spec: ChartSpec, k: number, width: number, theme: (typeof THEMES)["dark"]) {
@@ -54,24 +48,8 @@ function chartCard(spec: ChartSpec, k: number, width: number, theme: (typeof THE
   frame.append(tip);
   wireHover(svg, scene, tip);
 
-  const tableId = `table-${k}`;
   const table = dataTable(spec);
-  table.id = tableId;
-  table.hidden = !openTables.has(k);
-  const toggle = el("button", { className: "toggle", type: "button" });
-  toggle.setAttribute("aria-controls", tableId);
-  const sync = () => {
-    toggle.textContent = table.hidden ? "Show table" : "Hide table";
-    toggle.setAttribute("aria-expanded", String(!table.hidden));
-  };
-  toggle.onclick = () => {
-    table.hidden = !table.hidden;
-    if (table.hidden) openTables.delete(k);
-    else openTables.add(k);
-    sync();
-  };
-  sync();
-  return el("section", { className: "card" }, frame, el("div", { className: "actions" }, toggle), table);
+  return el("section", { className: "card" }, frame, el("div", { className: "actions" }, tableToggle(table, k)), table);
 }
 
 /** Crosshair and tooltip for the x band under the pointer; arrow keys step through bands. */
@@ -159,7 +137,7 @@ app.ontoolresult = (result) => {
   const charts = (result._meta as Record<string, unknown> | undefined)?.[CHARTS_META_KEY];
   if (result.isError) return message("No chart: the tool returned an error.");
   if (!Array.isArray(charts) || charts.length === 0) return message("No chart for this result.");
-  specs = charts as ChartSpec[];
+  specs = charts as AnyChartSpec[];
   render();
 };
 app.onhostcontextchanged = (ctx) => {

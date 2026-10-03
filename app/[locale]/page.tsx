@@ -2,12 +2,24 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
+import { AUDIENCE_KEYS, audienceSlugs } from "@/lib/audiences";
 import AudienceDoors from "@/components/AudienceDoors";
+import HeroSearch from "@/components/HeroSearch";
+import HeroSnowflake from "@/components/HeroSnowflake";
+
+// The homepage, laid out as a landing page (2026-10-03): one promise and one
+// action above the fold, then proof, then the two audiences, then what makes
+// the site different, then the weekly writing. Copy lives in the `home`
+// namespace of the message files.
+//
+// UK MAR (CLAUDE.md): the homepage names no share. The hero snowflake is an
+// illustration with invented positions, the search suggests nothing until the
+// visitor types, and no example uses a real ticker.
 
 export const metadata: Metadata = {
-  title: "FinancePlots — Independent Writing on Markets, Macro & FP&A",
+  title: "FinancePlots — Free Finance Tools You Can See",
   description:
-    "Independent writing on markets, macro and corporate finance, plus 17 free FP&A tools — personal budget, portfolio analysis, DCF valuation, cash flow forecast and more. No signup.",
+    "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100 and IBEX 35 company. No signup, no ads. Works inside Claude.",
   alternates: { canonical: "https://www.financeplots.com" },
 };
 
@@ -45,70 +57,123 @@ export default async function Home() {
   const tBlog = await getTranslations("blog");
 
   const articles = tBlog.raw("articles") as Article[];
-
-  const featured = articles[0];
-  const recent = articles.slice(1, 7); // next 6 after the featured one
+  const recent = articles.slice(0, 3);
   const totalArticles = articles.length;
+  const toolCount = new Set(AUDIENCE_KEYS.flatMap((a) => audienceSlugs(a))).size;
   const [observer] = listEditions();
   const dateLocale = (await getLocale()) === "es" ? "es-ES" : "en-GB";
+
+  const features = [
+    { icon: "❄️", title: t("feature1Title"), desc: t("feature1Desc"), href: "/tools/stocks", cta: t("feature1Cta") },
+    { icon: "📐", title: t("feature2Title"), desc: t("feature2Desc"), href: "/tools", cta: t("feature2Cta") },
+    { icon: "🎓", title: t("feature3Title"), desc: t("feature3Desc"), href: "/blog", cta: t("feature3Cta") },
+  ];
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
 
-      {/* ── Tools ── */}
-      <section className="px-6 pt-32 pb-20">
-        <div className="max-w-5xl mx-auto">
-          {observer && (
-            <Link
-              href={`/observer/${observer.slug}`}
-              className="group flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 max-w-3xl mx-auto mb-12 bg-blue-600/10 border border-blue-500/30 hover:border-blue-400 rounded-2xl sm:rounded-full px-5 py-3 transition"
-            >
-              <span className="flex items-center gap-2 shrink-0">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                <span className="text-blue-300 text-xs font-bold uppercase tracking-wider">{t("observerTitle")}</span>
-                <span className="text-gray-500 text-xs">· {t("observerWeekOf", { date: formatEditionDate(observer.date, dateLocale) })}</span>
-              </span>
-              <span className="text-gray-200 text-sm font-medium truncate group-hover:text-white transition">
-                {observer.title} <span className="text-blue-400">→</span>
-              </span>
-            </Link>
-          )}
-          <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("toolsLabel")}</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-3">{t("toolsTitle")}</h1>
-          <p className="text-gray-400 text-center mb-3">{t("toolsSubtitle")}</p>
-          <p className="text-center mb-10">
-            <Link href="/mcp" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-500/15 text-orange-300 border border-orange-500/30 rounded-full px-2 py-0.5">{t("mcpNoteBadge")}</span>
-              {t("mcpNote")} <span className="text-blue-400">→</span>
-            </Link>
-          </p>
+      {/* ── Hero: one promise, one action ── */}
+      <section className="relative px-4 sm:px-6 pt-28 md:pt-32 pb-12 overflow-hidden">
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto grid lg:grid-cols-[1.05fr_1fr] gap-10 items-center">
+          <div>
+            <p className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-blue-300 bg-blue-500/10 border border-blue-500/25 rounded-full px-3.5 py-1.5 mb-6">
+              {t("heroEyebrow")}
+            </p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight mb-5">
+              {t("heroLine1")}{" "}
+              <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">{t("heroLine2")}</span>
+            </h1>
+            <p className="text-gray-400 text-lg leading-relaxed mb-8 max-w-xl">{t("heroSub")}</p>
 
-          {/* Individuals and companies are two audiences with two separate hubs */}
+            <HeroSearch label={t("heroSearchLabel")} placeholder={t("heroSearchPlaceholder")} cta={t("heroSearchCta")} />
+
+            <p className="text-sm text-gray-400 mt-6">
+              {t("heroOr")}{" "}
+              <Link href="/tools/personal" className="text-blue-400 hover:text-blue-300 font-semibold">{t("heroForYou")}</Link>
+              {" · "}
+              <Link href="/tools/business" className="text-green-400 hover:text-green-300 font-semibold">{t("heroForCompany")}</Link>
+            </p>
+          </div>
+
+          <HeroSnowflake caption={t("heroSnowflakeCaption")} />
+        </div>
+
+        {/* Proof strip */}
+        <dl className="relative max-w-6xl mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-800/60 border border-gray-800 rounded-2xl overflow-hidden">
+          {[
+            [String(toolCount), t("proofTools")],
+            ["0", t("proofSignup")],
+            ["3", t("proofIndices")],
+            [String(totalArticles), t("proofArticles")],
+          ].map(([value, label]) => (
+            <div key={label} className="flex flex-col bg-[#0b1122] px-5 py-4">
+              <dt className="text-gray-500 text-xs uppercase tracking-wider order-2">{label}</dt>
+              <dd className="text-2xl md:text-3xl font-extrabold text-white order-1">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* ── Two audiences ── */}
+      <section className="px-4 sm:px-6 py-16">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("doorsLabel")}</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-3">{t("doorsTitle")}</h2>
+          <p className="text-gray-400 text-center mb-10 max-w-2xl mx-auto">{t("doorsSub")}</p>
           <AudienceDoors />
+        </div>
+      </section>
 
-          {/* How it works */}
-          <div className="mt-6 bg-blue-600/5 border border-blue-700/20 rounded-xl p-5">
-            <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-3">{t("howItWorksLabel")}</p>
-            <ol className="grid md:grid-cols-4 gap-3">
-              {[
-                t("howItWorks1"),
-                t("howItWorks2"),
-                t("howItWorks3"),
-                t("howItWorks4"),
-              ].map((step, i) => (
-                <li key={i} className="flex gap-2 text-gray-400 text-sm">
-                  <span className="text-blue-400 font-bold shrink-0">{i + 1}.</span>{step}
-                </li>
-              ))}
-            </ol>
+      {/* ── What makes it different ── */}
+      <section className="px-4 sm:px-6 py-16 bg-[#0d1426] border-y border-gray-800/60">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("whyLabel")}</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-12">{t("whyTitle")}</h2>
+          <div className="grid md:grid-cols-3 gap-5">
+            {features.map((f) => (
+              <Link key={f.title} href={f.href} className="group flex flex-col bg-[#0a0f1e] border border-gray-800 hover:border-blue-600/60 rounded-2xl p-7 transition">
+                <span className="text-3xl mb-4">{f.icon}</span>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-blue-300 transition">{f.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6">{f.desc}</p>
+                <span className="mt-auto text-blue-400 text-sm font-semibold">{f.cta}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* Inside Claude: the connector, shown as a conversation */}
+          <div className="mt-12 grid lg:grid-cols-2 gap-8 items-center bg-gradient-to-br from-orange-500/10 to-blue-600/5 border border-orange-500/20 rounded-2xl p-7 md:p-10">
+            <div>
+              <p className="text-orange-300 text-xs font-bold uppercase tracking-widest mb-3">{t("mcpLabel")}</p>
+              <h2 className="text-2xl md:text-3xl font-extrabold mb-3">{t("mcpTitle")}</h2>
+              <p className="text-gray-400 leading-relaxed mb-6">{t("mcpDesc")}</p>
+              <Link href="/mcp" className="inline-block bg-white text-[#0a0f1e] hover:bg-gray-200 font-bold px-6 py-3 rounded-xl transition">
+                {t("mcpCta")}
+              </Link>
+            </div>
+            <div className="bg-[#0a0f1e] border border-gray-800 rounded-2xl p-5 space-y-3 text-sm" aria-hidden="true">
+              <div className="ml-auto max-w-[85%] bg-blue-600/20 border border-blue-500/30 rounded-2xl rounded-br-sm px-4 py-2.5 text-gray-100">
+                {t("mcpChatUser")}
+              </div>
+              <div className="max-w-[90%] bg-[#111827] border border-gray-800 rounded-2xl rounded-bl-sm px-4 py-3 text-gray-300">
+                <p className="text-[11px] text-orange-300 font-semibold mb-1.5">⚙ {t("mcpChatTool")}</p>
+                {t("mcpChatReply")}
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {["take_home_pay", "company_snowflake", "business_valuation", "loan_repayment", "us_macro_indicators"].map((name) => (
+                  <span key={name} className="font-mono text-[11px] text-gray-400 bg-black/30 border border-gray-800 rounded-md px-2 py-0.5">{name}</span>
+                ))}
+                <span className="text-[11px] text-gray-500 px-1 py-0.5">{t("mcpChatMore")}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── The Observer: latest weekly edition ── */}
       {observer && (
-        <section className="px-6 pb-20">
-          <div className="max-w-5xl mx-auto">
+        <section className="px-4 sm:px-6 py-16">
+          <div className="max-w-6xl mx-auto">
             <div className="flex items-end justify-between mb-6 flex-wrap gap-4">
               <div>
                 <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("observerLabel")}</p>
@@ -132,7 +197,7 @@ export default async function Home() {
                   <span className="text-gray-400 text-xs">· 🎧 {formatDuration(observer.audio.durationSeconds)}</span>
                 )}
               </div>
-              <h3 className="text-2xl md:text-4xl font-extrabold leading-tight mb-3 group-hover:text-blue-300 transition">
+              <h3 className="text-2xl md:text-3xl font-extrabold leading-tight mb-3 group-hover:text-blue-300 transition">
                 {observer.title}
               </h3>
               <p className="text-gray-400 leading-relaxed mb-6">{observer.dek}</p>
@@ -167,67 +232,10 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── Hero: featured article ── */}
-      <section className="relative px-6 py-20 overflow-hidden">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-4xl mx-auto relative">
-          <div className="flex items-center gap-3 mb-6 flex-wrap">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-blue-400 bg-blue-400/10 border border-blue-400/20 rounded-full px-4 py-1.5">
-              {t("featuredArticleBadge")}
-            </span>
-            <span className={`text-xs font-semibold uppercase tracking-wider ${TAG_COLORS[featured.tag] ?? "text-blue-400"}`}>
-              {featured.tag}
-            </span>
-            <span className="text-gray-500 text-xs">{featured.date}</span>
-          </div>
-
-          <Link
-            href={`/blog/${featured.slug}`}
-            className="block group"
-          >
-                        <h2 className="text-4xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight group-hover:text-blue-300 transition">
-              {featured.title}
-            </h2>
-            <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-3xl">
-              {featured.description}
-            </p>
-          </Link>
-
-          <div className="flex gap-4 flex-wrap">
-            <Link
-              href={`/blog/${featured.slug}`}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl text-base transition shadow-lg shadow-blue-600/25"
-            >
-              {t("heroCtaArticle")}
-            </Link>
-            <Link
-              href="/tools"
-              className="bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-600 text-gray-200 font-semibold px-8 py-4 rounded-xl text-base transition"
-            >
-              {t("heroCtaTools")}
-            </Link>
-          </div>
-
-          {/* Stats bar */}
-          <div className="flex flex-wrap gap-8 md:gap-12 mt-16 pt-10 border-t border-gray-800">
-            {[
-              [String(totalArticles), t("stat3Label")],
-              ["17", t("stat1Label")],
-            ].map(([num, label]) => (
-              <div key={label}>
-                <div className="text-3xl font-extrabold text-white">{num}</div>
-                <div className="text-gray-500 text-xs uppercase tracking-wider mt-1">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Blog grid: recent articles ── */}
-      <section className="bg-[#0d1426] py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+      {/* ── Latest articles ── */}
+      <section className="px-4 sm:px-6 pb-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
             <div>
               <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("blogLabel")}</p>
               <h2 className="text-3xl font-bold">{t("latestArticlesTitle")}</h2>
@@ -237,91 +245,48 @@ export default async function Home() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-3 gap-5">
             {recent.map((a) => (
               <Link
                 key={a.slug}
                 href={`/blog/${a.slug}`}
-                className="block bg-[#111827] border border-gray-800 rounded-2xl p-6 hover:border-blue-700/50 transition group"
+                className="flex flex-col bg-[#111827] border border-gray-800 rounded-2xl p-6 hover:border-blue-700/50 transition group"
               >
                 <span className={`text-xs font-bold uppercase tracking-wider ${TAG_COLORS[a.tag] ?? "text-blue-400"}`}>
                   {a.tag}
                 </span>
-                <h3 className="text-white font-semibold mt-2 mb-2 text-base leading-snug group-hover:text-blue-300 transition">
+                <h3 className="text-white font-semibold mt-2 mb-2 leading-snug group-hover:text-blue-300 transition">
                   {a.title}
                 </h3>
-                <p className="text-gray-500 text-xs mb-3 leading-relaxed line-clamp-2">{a.description}</p>
-                <span className="text-gray-600 text-xs">{a.date}</span>
+                <p className="text-gray-500 text-sm mb-4 leading-relaxed line-clamp-3">{a.description}</p>
+                <span className="mt-auto text-gray-600 text-xs">{a.date}</span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Promo video ── */}
-      <section className="px-6 py-20">
-        <div className="max-w-sm mx-auto">
-          <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-blue-700/30 shadow-2xl shadow-blue-600/10 bg-[#0d1426]">
-            <video
-              src="/financeplots-top-tools.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
-
-      {/* ── Book ── */}
-      <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-[#0d1426] border border-blue-700/30 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8">
-            <div className="text-6xl shrink-0">📖</div>
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("bookLabel")}</p>
-              <h2 className="text-2xl font-bold text-white mb-2">{t("bookTitle")}</h2>
-              <p className="text-gray-400 text-sm leading-relaxed mb-5">
-                {t("bookDesc")}
-              </p>
-              <a
-                href="https://www.amazon.co.uk/Your-money-rules-Javier-Audibert-ebook/dp/B0GT78FLKJ/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold px-7 py-3 rounded-xl transition shadow-lg shadow-blue-600/25 text-sm"
-              >
-                {t("bookCta")}
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Contact ── */}
-      <section id="contact" className="py-20 px-6">
-        <div className="max-w-xl mx-auto">
-          <p className="text-blue-400 text-xs font-bold uppercase tracking-widest text-center mb-3">{t("contactLabel")}</p>
-          <h2 className="text-3xl font-bold text-center mb-3">{t("contactTitle")}</h2>
-          <p className="text-gray-400 text-center mb-10 text-sm">
-            {t("contactDesc")}
-          </p>
-          <div className="text-center">
-            <a
-              href="mailto:hello@financeplots.com"
-              className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition shadow-lg shadow-blue-600/25"
-            >
-              {t("contactCta")}
-            </a>
+      <section id="contact" className="px-4 sm:px-6 pb-20">
+        <div className="max-w-3xl mx-auto bg-[#0d1426] border border-gray-800 rounded-2xl p-7 md:p-8 flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+          <div className="text-5xl shrink-0">✉️</div>
+          <div className="flex-1">
+            <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-2">{t("contactLabel")}</p>
+            <h2 className="text-xl font-bold text-white mb-1">{t("contactTitle")}</h2>
+            <p className="text-gray-400 text-sm leading-relaxed">{t("contactDesc")}</p>
           </div>
+          <a
+            href="mailto:hello@financeplots.com"
+            className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition text-sm"
+          >
+            {t("contactCtaShort")}
+          </a>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-800 py-10 px-6">
-        <div className="max-w-5xl mx-auto">
+      <footer className="border-t border-gray-800 py-10 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <div className="text-white font-bold text-xl mb-1">
@@ -329,11 +294,13 @@ export default async function Home() {
               </div>
               <p className="text-gray-500 text-xs">{t("footerTagline")}</p>
             </div>
-            <div className="flex gap-8 text-sm text-gray-500">
-              <a href="/blog" className="hover:text-gray-300 transition">Blog</a>
-              <a href="/tools" className="hover:text-gray-300 transition">Tools</a>
-              <a href="/about" className="hover:text-gray-300 transition">About</a>
-              <a href="/#contact" className="hover:text-gray-300 transition">Contact</a>
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-gray-500">
+              <Link href="/tools" className="hover:text-gray-300 transition">Tools</Link>
+              <Link href="/tools/stocks" className="hover:text-gray-300 transition">Stocks</Link>
+              <Link href="/observer" className="hover:text-gray-300 transition">The Observer</Link>
+              <Link href="/blog" className="hover:text-gray-300 transition">Blog</Link>
+              <Link href="/mcp" className="hover:text-gray-300 transition">Claude connector</Link>
+              <Link href="/about" className="hover:text-gray-300 transition">About</Link>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-600 text-xs">
