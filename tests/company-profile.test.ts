@@ -51,9 +51,25 @@ describe("company_profile", () => {
     expect(r.history).toBeNull();
   });
 
-  it("charts the history", async () => {
+  it("charts the snowflake and the history", async () => {
     const r = await callTool("company_profile", { ticker: "AAPL" });
     expect(r.text).toContain("Apple");
+    expect(r.isError).toBe(false);
+    const { createFinancePlotsServer } = await import("@/lib/mcp-server");
+    const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+    const { InMemoryTransport } = await import("@modelcontextprotocol/sdk/inMemory.js");
+    const [c, s] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: "test", version: "0" });
+    await Promise.all([createFinancePlotsServer().connect(s), client.connect(c)]);
+    const res = await client.callTool({ name: "company_profile", arguments: { ticker: "AAPL" } });
+    await client.close();
+    const charts = (res._meta as Record<string, { kind?: string }[]>)["financeplots/charts"];
+    expect(charts.map((ch) => ch.kind ?? "cartesian")).toEqual(["radar", "cartesian"]);
+    expect((res.content as { type: string }[]).filter((x) => x.type === "image")).toHaveLength(2);
+  });
+
+  it("still draws the snowflake outside the US, where there is no history", async () => {
+    const r = await callTool("company_profile", { ticker: "SAN.MC" });
     expect(r.isError).toBe(false);
   });
 

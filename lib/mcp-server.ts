@@ -848,7 +848,7 @@ export function createFinancePlotsServer() {
     {
       title: "Company profile",
       description:
-        "One company's figures, as on its FinancePlots company page: the screener's ratios (valuation, profitability, debt, growth — weekly snapshot) with, for each, the share of its index with a lower figure (`higher_than_pct_of_index`), and for US listings up to ten fiscal years from the annual reports (10-K) via SEC EDGAR: revenue, net profit, operating and free cash flow, cash and long-term debt. Covers S&P 500, Nasdaq-100 and IBEX 35 companies (history for any US filer). Positions are per measure — higher is not better, and nothing is combined into a score, ranked or recommended. No share price: use price_history for that.",
+        "One company's figures, as on its FinancePlots company page, with two charts — its ratios as a snowflake and its revenue and profit history: the screener's ratios (valuation, profitability, debt, growth — weekly snapshot) with, for each, the share of its index with a lower figure (`higher_than_pct_of_index`), and for US listings up to ten fiscal years from the annual reports (10-K) via SEC EDGAR: revenue, net profit, operating and free cash flow, cash and long-term debt. Covers S&P 500, Nasdaq-100 and IBEX 35 companies (history for any US filer). Positions are per measure — higher is not better, and nothing is combined into a score, ranked or recommended. No share price: use price_history for that.",
       inputSchema: {
         ticker: z.string().min(1).max(15).describe("Yahoo Finance ticker, e.g. AAPL, BRK-B, SAN.MC"),
         history: z.boolean().default(true).describe("Include the annual-report history (US listings); false returns the ratios only"),
@@ -913,9 +913,13 @@ export function createFinancePlotsServer() {
         note: "Figures as reported. Positions say where a figure sits in the index, not whether it is good or bad. Not a recommendation.",
         tool_page: `${SITE}/tools/stocks/${encodeURIComponent(ticker)}`,
       });
-      const specs = history && history !== "unavailable" && (history.available.revenue || history.available.netIncome)
-        ? [companyHistoryChart(profile?.company.nombre ?? ticker, history.years)]
-        : [];
+      // The snowflake first, as on the company page, then the annual-report history.
+      const specs: AnyChartSpec[] = [
+        ...(profile ? [companySnowflakeChart([{ ticker, profile }])] : []),
+        ...(history && history !== "unavailable" && (history.available.revenue || history.available.netIncome)
+          ? [companyHistoryChart(profile?.company.nombre ?? ticker, history.years)]
+          : []),
+      ];
       return withCharts(result, specs, chart);
     },
   );
