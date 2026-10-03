@@ -83,6 +83,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   footerText: { fontSize: 8, color: "#9ca3af" },
+  // Charts page
+  chartGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  chartCard: { width: "48.5%", marginBottom: 10 },
+  chartTitle: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#0a0f1e", marginBottom: 4 },
+  chartImg: { width: "100%", borderRadius: 6 },
 });
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
@@ -102,6 +107,9 @@ export interface PlannerPdfProps {
   risk: string;
   allocData: { name: string; value: number }[];
   recommendations: { icon: string; title: string; body: string; color: string }[];
+  /** The report's charts as PNG data URLs, drawn on the page (see charts.tsx). */
+  charts?: { src: string; title: string }[];
+  chartsTitle?: string;
   date: string;
 }
 
@@ -120,6 +128,8 @@ export function PlannerPdf({
   allocData,
   risk,
   recommendations,
+  charts = [],
+  chartsTitle = "Your plan in charts",
   date,
 }: PlannerPdfProps) {
   const snapshot = [
@@ -228,6 +238,25 @@ export function PlannerPdf({
         </View>
 
       </Page>
+
+      {charts.length > 0 && (
+        <Page size="A4" style={styles.page}>
+          <Text style={[styles.sectionLabel, { marginTop: 0 }]}>{chartsTitle}</Text>
+          <View style={styles.chartGrid}>
+            {charts.map((c, i) => (
+              <View key={i} style={styles.chartCard}>
+                <Text style={styles.chartTitle}>{c.title}</Text>
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <Image style={styles.chartImg} src={c.src} />
+              </View>
+            ))}
+          </View>
+          <View style={styles.footer} fixed>
+            <Text style={styles.footerText}>FinancePlots · financeplots.com</Text>
+            <Text style={styles.footerText}>Not financial advice · For informational purposes only</Text>
+          </View>
+        </Page>
+      )}
     </Document>
   );
 }

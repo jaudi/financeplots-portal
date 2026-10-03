@@ -205,10 +205,10 @@ export default function CompoundInterestPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* KPI Cards */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label={t("kpiFinal")} value={`£${fmt(finalValue)}`} sub={`${t("kpiFinalSub").replace("{years}", String(years))}`} />
+                <KpiCard label={t("kpiFinal")} value={`£${fmt(finalValue)}`} sub={`${t("kpiFinalSub", { years: String(years) })}`} />
                 <KpiCard label={t("kpiInvested")} value={`£${fmt(totalInvested)}`} sub={t("kpiInvestedSub")} />
                 <KpiCard label={t("kpiInterest")} value={`£${fmt(totalInterest)}`} sub={`${finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(0) : 0}% ${t("kpiInterestSub")}`} color="green" />
-                <KpiCard label={t("kpiMultiple")} value={`${returnMultiple.toFixed(1)}×`} sub={t("kpiMultipleSub").replace("{x}", returnMultiple.toFixed(2))} color="gold" />
+                <KpiCard label={t("kpiMultiple")} value={`${returnMultiple.toFixed(1)}×`} sub={t("kpiMultipleSub", { x: returnMultiple.toFixed(2) })} color="gold" />
               </div>
 
               {/* Growth Chart */}

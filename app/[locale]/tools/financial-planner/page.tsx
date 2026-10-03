@@ -1,14 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
-import {
-  PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
-  AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  BarChart, Bar,
-} from "recharts";
+import { allocationAt, debtSchedule, glidePath, growthPath, RETIREMENT_AGE, RISK_PROFILES, type RiskKey } from "@/lib/planner";
+import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from "./charts";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -47,12 +44,6 @@ const RATE_PRESETS = [
   { labelKey: "presetCustom", rate: null },
 ];
 
-const RISK_PROFILES = {
-  conservative: { labelKey: "riskConservative", stocks: 30, bonds: 50, cash: 15, alternatives: 5  },
-  moderate:     { labelKey: "riskModerate",     stocks: 60, bonds: 30, cash:  7, alternatives: 3  },
-  aggressive:   { labelKey: "riskAggressive",   stocks: 85, bonds: 10, cash:  3, alternatives: 2  },
-};
-
 function NumInput({ label, value, onChange, prefix = "£", step = 100, note }: {
   label: string; value: number; onChange: (v: number) => void;
   prefix?: string; step?: number; note?: string;
@@ -83,8 +74,6 @@ function KpiCard({ label, value, sub, colorClass }: { label: string; value: stri
   );
 }
 
-type RiskKey = "conservative" | "moderate" | "aggressive";
-
 export default function FinancialPlannerPage() {
   const t = useTranslations("financialPlanner");
   const tc = useTranslations("toolCommon");
@@ -92,6 +81,7 @@ export default function FinancialPlannerPage() {
   const [step, setStep] = useState(1);
   const [currency, setCurrency] = useState("£");
   const [pdfLoading, setPdfLoading] = useState(false);
+  const reportCharts = useRef<HTMLDivElement>(null);
 
   // Step 1 — Budget
   const [income, setIncome] = useState(4000);
@@ -121,28 +111,17 @@ export default function FinancialPlannerPage() {
   const netSavings = income - totalExpenses;
   const savingsRate = income > 0 ? (netSavings / income) * 100 : 0;
 
-  const budgetDonutData = EXPENSE_CATS
-    .filter(c => expenses[c.key] > 0)
-    .map(c => ({ name: t(c.labelKey as TKey), value: expenses[c.key], color: c.color }));
+  const flowCategories = EXPENSE_CATS.map(c => ({ name: t(c.labelKey as TKey), value: expenses[c.key] ?? 0, color: c.color }));
+  const flowLabels = { income: t("flowIncome"), spending: t("flowSpending"), savings: t("flowSavings"), shortfall: t("flowShortfall") };
 
   // ── Step 2 calculations ──────────────────────────────────────────────────
   const totalDebt = useMemo(() => Object.values(debts).reduce((a, b) => a + b, 0), [debts]);
-  const totalInterestCost = useMemo(() =>
-    DEBT_ITEMS.reduce((sum, d) => {
-      const bal = debts[d.key] ?? 0;
-      if (bal === 0) return sum;
-      return sum + bal * (d.rate / 100) * (d.term / 2);
-    }, 0),
-  [debts]);
-
-  const debtBarData = DEBT_ITEMS
-    .filter(d => (debts[d.key] ?? 0) > 0)
-    .map(d => ({
-      name: t(d.labelKey as TKey),
-      Balance: debts[d.key],
-      estInterest: Math.round(debts[d.key] * (d.rate / 100) * (d.term / 2)),
-      color: d.color,
-    }));
+  const schedule = useMemo(
+    () => debtSchedule(DEBT_ITEMS.map(d => ({ key: d.key, balance: debts[d.key] ?? 0, rate: d.rate, term: d.term }))),
+    [debts],
+  );
+  const totalInterestCost = schedule.totalInterest;
+  const debtSeries = DEBT_ITEMS.filter(d => (debts[d.key] ?? 0) > 0).map(d => ({ key: d.key, name: t(d.labelKey as TKey), color: d.color }));
 
   const highestRateDebt = DEBT_ITEMS
     .filter(d => debts[d.key] > 0)
@@ -152,38 +131,36 @@ export default function FinancialPlannerPage() {
   const annualRate = RATE_PRESETS[ratePreset].rate ?? customRate;
   const monthlyContrib = Math.max(0, netSavings);
 
-  const { compoundData, finalValue, finalInterest } = useMemo(() => {
-    const r = annualRate / 100 / 12;
-    let balance = 0;
-    let totalContrib = 0;
-    let totalInt = 0;
-    const rows: { year: number; "Contributions": number; "Interest Earned": number }[] = [];
-    for (let m = 1; m <= years * 12; m++) {
-      const interest = balance * r;
-      balance = balance + interest + monthlyContrib;
-      totalInt += interest;
-      totalContrib += monthlyContrib;
-      if (m % 12 === 0) {
-        rows.push({ year: m / 12, "Contributions": Math.round(totalContrib), "Interest Earned": Math.round(totalInt) });
-      }
-    }
-    const last = rows[rows.length - 1];
-    return {
-      compoundData: rows,
-      finalValue: last ? last["Contributions"] + last["Interest Earned"] : 0,
-      finalInterest: last ? last["Interest Earned"] : 0,
-    };
-  }, [annualRate, monthlyContrib, years]);
+  const growth = useMemo(() => growthPath(monthlyContrib, annualRate, years), [monthlyContrib, annualRate, years]);
+  const lastGrowth = growth.rows[growth.rows.length - 1];
+  const finalValue = lastGrowth?.value ?? 0;
+  const finalInterest = lastGrowth?.interest ?? 0;
+  const growthLabels = {
+    paidIn: t("s3LegendPaidIn"),
+    growth: t("s3LegendGrowth"),
+    low: t("s3ScenarioLine", { rate: String(Math.max(0, annualRate - 3)) }),
+    high: t("s3ScenarioLine", { rate: String(annualRate + 3) }),
+    crossover: growth.crossover !== null ? t("s3Crossover", { year: String(growth.crossover) }) : "",
+    year: t("s3YearLabel"),
+  };
 
   // ── Step 4 calculations ──────────────────────────────────────────────────
   const profile = RISK_PROFILES[risk];
-  const ageAdj = Math.max(0, Math.min(20, age - 30)) * 0.5;
+  const mix = allocationAt(risk, age);
   const allocData = [
-    { name: t("allocStocks"),       value: Math.round(Math.max(10, profile.stocks - ageAdj)) },
-    { name: t("allocBonds"),        value: Math.round(Math.min(70, profile.bonds + ageAdj * 0.7)) },
-    { name: t("allocCash"),         value: profile.cash },
-    { name: t("allocAlternatives"), value: profile.alternatives },
+    { name: t("allocStocks"),       value: mix.stocks },
+    { name: t("allocBonds"),        value: mix.bonds },
+    { name: t("allocCash"),         value: mix.cash },
+    { name: t("allocAlternatives"), value: mix.alternatives },
   ];
+  const glide = useMemo(() => glidePath(risk, age), [risk, age]);
+  const glideSeries = [
+    { key: "stocks" as const,       name: t("allocStocks"),       color: "#3b82f6" },
+    { key: "bonds" as const,        name: t("allocBonds"),        color: "#22c55e" },
+    { key: "cash" as const,         name: t("allocCash"),         color: "#f59e0b" },
+    { key: "alternatives" as const, name: t("allocAlternatives"), color: "#8b5cf6" },
+  ];
+  const glideLabels = { you: t("s4You"), retirement: t("s4Retirement"), age: t("s4AgeAxis") };
 
   const ALLOC_COLORS: Record<string, string> = {
     [t("allocStocks")]:       "#3b82f6",
@@ -200,21 +177,21 @@ export default function FinancialPlannerPage() {
     recommendations.push({
       icon: "💸",
       title: t("s5TitleSavingsLow"),
-      body: t("s5RecSavingsLow").replace("{rate}", savingsRate.toFixed(1)),
+      body: t("s5RecSavingsLow", { rate: savingsRate.toFixed(1) }),
       color: "red",
     });
   } else if (savingsRate < 20) {
     recommendations.push({
       icon: "💰",
       title: t("s5TitleSavingsOk"),
-      body: t("s5RecSavingsOk").replace("{rate}", savingsRate.toFixed(1)),
+      body: t("s5RecSavingsOk", { rate: savingsRate.toFixed(1) }),
       color: "amber",
     });
   } else {
     recommendations.push({
       icon: "🏆",
       title: t("s5TitleSavingsGood"),
-      body: t("s5RecSavingsGood").replace("{rate}", savingsRate.toFixed(1)),
+      body: t("s5RecSavingsGood", { rate: savingsRate.toFixed(1) }),
       color: "green",
     });
   }
@@ -223,9 +200,7 @@ export default function FinancialPlannerPage() {
   recommendations.push({
     icon: "🛡️",
     title: t("s5TitleEmergency"),
-    body: t("s5RecEmergencyFund")
-      .replace("{currency}", currency)
-      .replace("{amount}", fmt(totalExpenses * 3)),
+    body: t("s5RecEmergencyFund", { currency: currency, amount: fmt(totalExpenses * 3) }),
     color: "amber",
   });
 
@@ -234,8 +209,7 @@ export default function FinancialPlannerPage() {
     recommendations.push({
       icon: "🔥",
       title: t("s5TitleHighDebt"),
-      body: t("s5RecHighDebt")
-        .replace(/{rate}/g, String(highestRateDebt.rate)),
+      body: t("s5RecHighDebt", { rate: String(highestRateDebt.rate) }),
       color: "red",
     });
   }
@@ -248,7 +222,7 @@ export default function FinancialPlannerPage() {
       recommendations.push({
         icon: "⚠️",
         title: t("s5TitleDebtRatio"),
-        body: t("s5RecDebtHigh").replace("{x}", dtiRatio.toFixed(1)),
+        body: t("s5RecDebtHigh", { x: dtiRatio.toFixed(1) }),
         color: "amber",
       });
     } else if (dtiRatio <= 1) {
@@ -265,13 +239,7 @@ export default function FinancialPlannerPage() {
   recommendations.push({
     icon: "📈",
     title: t("s5TitleCompound"),
-    body: t("s5RecCompound")
-      .replace("{currency}", currency)
-      .replace("{monthly}", fmt(monthlyContrib))
-      .replace("{rate}", String(annualRate))
-      .replace("{years}", String(years))
-      .replace("{currency}", currency)
-      .replace("{final}", fmt(finalValue)),
+    body: t("s5RecCompound", { currency: currency, monthly: fmt(monthlyContrib), rate: String(annualRate), years: String(years), final: fmt(finalValue) }),
     color: "green",
   });
 
@@ -292,6 +260,8 @@ export default function FinancialPlannerPage() {
     setPdfLoading(true);
     const { pdf } = await import("@react-pdf/renderer");
     const { PlannerPdf } = await import("./pdf");
+    const images = reportCharts.current ? await chartImages(reportCharts.current).catch(() => []) : [];
+    const chartTitles = [t("s1FlowTitle"), t("s2PayoffTitle"), t("s3ChartTitle", { years: String(years) }), t("s4GlideTitle")];
     const blob = await pdf(
       <PlannerPdf
         currency={currency}
@@ -308,6 +278,8 @@ export default function FinancialPlannerPage() {
         risk={risk}
         allocData={allocData}
         recommendations={recommendations}
+        charts={images.map((src, i) => ({ src, title: chartTitles[i] ?? "" }))}
+        chartsTitle={t("s5ChartsTitle")}
         date={new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
       />
     ).toBlob();
@@ -426,33 +398,18 @@ export default function FinancialPlannerPage() {
                   <KpiCard
                     label={t("s1KpiSavings")}
                     value={`${currency}${fmt(Math.abs(netSavings))}`}
-                    sub={t("s1KpiSavingsRate").replace("{x}", savingsRate.toFixed(1))}
+                    sub={t("s1KpiSavingsRate", { x: savingsRate.toFixed(1) })}
                     colorClass={netSavings >= 0 ? "border-l-blue-500" : "border-l-red-500"}
                   />
                 </div>
 
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                  <h2 className="text-white font-bold mb-1">{t("s1ChartTitle")}</h2>
-                  <p className="text-gray-500 text-xs mb-4">{t("s1ChartSub")}</p>
-                  {budgetDonutData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={360}>
-                      <PieChart>
-                        <Pie
-                          data={budgetDonutData}
-                          cx="50%" cy="50%"
-                          innerRadius={90} outerRadius={140}
-                          paddingAngle={2} dataKey="value"
-                          label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                          labelLine={{ stroke: "#374151" }}
-                        >
-                          {budgetDonutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                        </Pie>
-                        <Tooltip
-                          contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", fontSize: 12 }}
-                          formatter={(v: unknown) => [`${currency}${fmt(Number(v))}`, undefined]}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
+                  <h2 className="text-white font-bold mb-1">{t("s1FlowTitle")}</h2>
+                  <p className="text-gray-500 text-xs mb-2">{t("s1FlowSub")}</p>
+                  {income > 0 || totalExpenses > 0 ? (
+                    <div className="overflow-x-auto"><div className="min-w-[560px]">
+                      <BudgetFlow currency={currency} income={income} categories={flowCategories} labels={flowLabels} />
+                    </div></div>
                   ) : (
                     <div className="h-[360px] flex items-center justify-center text-gray-500">{t("s1EmptyState")}</div>
                   )}
@@ -460,12 +417,12 @@ export default function FinancialPlannerPage() {
 
                 {netSavings < 0 && (
                   <div className="bg-red-900/20 border border-red-700/40 rounded-xl p-4 text-sm text-red-300">
-                    ⚠️ {t("s1WarningOverspend").replace("{amount}", `${currency}${fmt(Math.abs(netSavings))}`)}
+                    ⚠️ {t("s1WarningOverspend", { amount: `${currency}${fmt(Math.abs(netSavings))}` })}
                   </div>
                 )}
                 {netSavings > 0 && savingsRate >= 20 && (
                   <div className="bg-green-900/20 border border-green-700/40 rounded-xl p-4 text-sm text-green-300">
-                    ✅ {t("s1SuccessSavings").replace("{x}", savingsRate.toFixed(1))}
+                    ✅ {t("s1SuccessSavings", { x: savingsRate.toFixed(1) })}
                   </div>
                 )}
 
@@ -515,27 +472,17 @@ export default function FinancialPlannerPage() {
                 </div>
 
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                  <h2 className="text-white font-bold mb-1">{t("s2ChartTitle")}</h2>
-                  <p className="text-gray-500 text-xs mb-4">{t("s2ChartSub")}</p>
-                  {debtBarData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={280}>
-                      <BarChart data={debtBarData} layout="vertical" margin={{ left: 10, right: 30, top: 10, bottom: 10 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
-                        <XAxis
-                          type="number" stroke="#374151"
-                          tick={{ fill: "#6b7280", fontSize: 11 }}
-                          tickFormatter={v => `${currency}${(v / 1000).toFixed(0)}k`}
-                        />
-                        <YAxis type="category" dataKey="name" stroke="#374151" tick={{ fill: "#9ca3af", fontSize: 11 }} width={95} />
-                        <Tooltip
-                          contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", fontSize: 12 }}
-                          formatter={(v: unknown) => [`${currency}${fmt(Number(v))}`, undefined]}
-                        />
-                        <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 8 }} />
-                        <Bar dataKey="Balance" name={t("s2BalanceLabel")} fill="#3b82f6" stackId="a" />
-                        <Bar dataKey="estInterest" name={t("s2KpiInterest")} fill="#ef4444" stackId="a" radius={[0, 4, 4, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
+                  <h2 className="text-white font-bold mb-1">{t("s2PayoffTitle")}</h2>
+                  <p className="text-gray-500 text-xs mb-4">{t("s2PayoffSub")}</p>
+                  {debtSeries.length > 0 ? (
+                    <DebtPayoff
+                      currency={currency}
+                      rows={schedule.rows}
+                      debts={debtSeries}
+                      debtFreeYears={schedule.debtFreeYears}
+                      debtFreeLabel={t("s2DebtFreeIn", { years: String(schedule.debtFreeYears) })}
+                      yearLabel={t("s3YearLabel")}
+                    />
                   ) : (
                     <div className="h-[280px] flex items-center justify-center text-green-400 font-semibold">
                       {t("s2DebtFree")}
@@ -545,9 +492,7 @@ export default function FinancialPlannerPage() {
 
                 {highestRateDebt && (
                   <div className="bg-amber-900/20 border border-amber-700/40 rounded-xl p-4 text-sm text-amber-300">
-                    {t("s2AvalancheTip")
-                      .replace("{debt}", t(highestRateDebt.labelKey as TKey))
-                      .replace("{rate}", String(highestRateDebt.rate))}
+                    {t("s2AvalancheTip", { debt: t(highestRateDebt.labelKey as TKey), rate: String(highestRateDebt.rate) })}
                   </div>
                 )}
 
@@ -571,7 +516,7 @@ export default function FinancialPlannerPage() {
                     <div className="bg-[#111827] border border-gray-700 rounded-lg p-3 mb-3">
                       <div className="text-xs text-gray-400 mb-1">{t("s3MonthlySavingsLabel")}</div>
                       <div className={`text-2xl font-extrabold ${netSavings >= 0 ? "text-green-400" : "text-red-400"}`}>
-                        £{fmt(Math.max(0, netSavings))}<span className="text-sm font-normal text-gray-400">/mo</span>
+                        {currency}{fmt(Math.max(0, netSavings))}<span className="text-sm font-normal text-gray-400">/mo</span>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
@@ -615,45 +560,26 @@ export default function FinancialPlannerPage() {
                 <div className="grid grid-cols-3 gap-3">
                   <KpiCard label={t("s3KpiContrib")} value={`${currency}${fmt(monthlyContrib)}`} sub={t("s3KpiContribSub")} colorClass="border-l-blue-500" />
                   <KpiCard
-                    label={t("s3KpiValue").replace("{years}", String(years))}
+                    label={t("s3KpiValue", { years: String(years) })}
                     value={`${currency}${fmt(finalValue)}`}
-                    sub={t("s3KpiValueSub").replace("{rate}", String(annualRate))}
+                    sub={t("s3KpiValueSub", { rate: String(annualRate) })}
                     colorClass="border-l-green-500"
                   />
                   <KpiCard
                     label={t("s3KpiInterest")}
                     value={`${currency}${fmt(finalInterest)}`}
-                    sub={t("s3KpiInterestSub").replace("{pct}", finalValue > 0 ? ((finalInterest / finalValue) * 100).toFixed(0) : "0")}
+                    sub={t("s3KpiInterestSub", { pct: finalValue > 0 ? ((finalInterest / finalValue) * 100).toFixed(0) : "0" })}
                     colorClass="border-l-yellow-400"
                   />
                 </div>
 
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                  <h2 className="text-white font-bold mb-1">{t("s3ChartTitle").replace("{years}", String(years))}</h2>
+                  <h2 className="text-white font-bold mb-1">{t("s3ChartTitle", { years: String(years) })}</h2>
                   <p className="text-gray-500 text-xs mb-4">
-                    {t("s3ChartSub").replace("{amount}", `${currency}${fmt(monthlyContrib)}`).replace("{rate}", String(annualRate))}
+                    {t("s3ChartSub", { amount: `${currency}${fmt(monthlyContrib)}`, rate: String(annualRate) })}
                   </p>
-                  <ResponsiveContainer width="100%" height={340}>
-                    <AreaChart data={compoundData} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis
-                        dataKey="year" stroke="#374151"
-                        tick={{ fill: "#6b7280", fontSize: 11 }}
-                        label={{ value: t("s3YearLabel"), position: "insideBottom", offset: -10, fill: "#6b7280", fontSize: 11 }}
-                      />
-                      <YAxis
-                        stroke="#374151" tick={{ fill: "#6b7280", fontSize: 11 }} width={75}
-                        tickFormatter={v => v >= 1000000 ? `${currency}${(v / 1000000).toFixed(1)}M` : `${currency}${(v / 1000).toFixed(0)}k`}
-                      />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", fontSize: 12 }}
-                        formatter={(v: unknown) => [`${currency}${fmt(Number(v))}`, undefined]}
-                      />
-                      <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 16 }} />
-                      <Area type="monotone" dataKey="Contributions" stackId="1" stroke="#1d4ed8" fill="#1d4ed8" fillOpacity={0.75} />
-                      <Area type="monotone" dataKey="Interest Earned" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.75} />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  <GrowthChart currency={currency} rows={growth.rows} crossover={growth.crossover} labels={growthLabels} />
+                  <p className="text-gray-600 text-xs mt-2">{t("s3ScenarioNote")}</p>
                 </div>
 
                 <div className="flex justify-between items-center">
@@ -726,30 +652,14 @@ export default function FinancialPlannerPage() {
                   ))}
                 </div>
 
-                {/* Allocation donut */}
+                {/* Model mix from today to retirement */}
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                  <h2 className="text-white font-bold mb-1">{t("s4AllocTitle")}</h2>
+                  <h2 className="text-white font-bold mb-1">{t("s4GlideTitle")}</h2>
                   <p className="text-gray-500 text-xs mb-4">
-                    {t("s4AllocSub").replace("{profile}", t(profile.labelKey as TKey)).replace("{age}", String(age))}
+                    {t("s4AllocSub", { profile: t(profile.labelKey as TKey), age: String(age) })}
                   </p>
-                  <ResponsiveContainer width="100%" height={320}>
-                    <PieChart>
-                      <Pie
-                        data={allocData}
-                        cx="50%" cy="50%"
-                        innerRadius={90} outerRadius={130}
-                        paddingAngle={3} dataKey="value"
-                        label={({ name, value }) => `${name} ${value}%`}
-                        labelLine={{ stroke: "#374151" }}
-                      >
-                        {allocData.map((entry, i) => <Cell key={i} fill={ALLOC_COLORS[entry.name]} />)}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", fontSize: 12 }}
-                        formatter={(v: unknown) => [`${Number(v)}%`, undefined]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <GlidePathChart rows={glide} age={age} retirementAge={RETIREMENT_AGE} series={glideSeries} labels={glideLabels} />
+                  <p className="text-amber-300/80 text-xs mt-3 bg-amber-900/10 border border-amber-700/30 rounded-lg px-3 py-2">{t("s4ModelNote")}</p>
                 </div>
 
                 {/* Final journey summary */}
@@ -761,28 +671,28 @@ export default function FinancialPlannerPage() {
                         icon: "💰",
                         label: t("s4SumSurplus"),
                         value: `${currency}${fmt(Math.max(0, netSavings))}`,
-                        sub: t("s4SumSavingsRate").replace("{x}", savingsRate.toFixed(1)),
+                        sub: t("s4SumSavingsRate", { x: savingsRate.toFixed(1) }),
                         color: netSavings >= 0 ? "text-green-400" : "text-red-400",
                       },
                       {
                         icon: "💳",
                         label: t("s4SumDebt"),
                         value: `${currency}${fmt(totalDebt)}`,
-                        sub: t("s4SumEstInterest").replace("{amount}", `${currency}${fmt(totalInterestCost)}`),
+                        sub: t("s4SumEstInterest", { amount: `${currency}${fmt(totalInterestCost)}` }),
                         color: "text-red-400",
                       },
                       {
                         icon: "📈",
-                        label: t("s4SumWealth").replace("{years}", String(years)),
-                        value: `£${fmt(finalValue)}`,
-                        sub: t("s4SumAtRate").replace("{rate}", String(annualRate)),
+                        label: t("s4SumWealth", { years: String(years) }),
+                        value: `${currency}${fmt(finalValue)}`,
+                        sub: t("s4SumAtRate", { rate: String(annualRate) }),
                         color: "text-blue-300",
                       },
                       {
                         icon: "🎯",
                         label: t("s4SumAlloc"),
                         value: `${allocData[0].value}${t("s4StocksPct")}`,
-                        sub: t("s4SumProfile").replace("{profile}", t(profile.labelKey as TKey)),
+                        sub: t("s4SumProfile", { profile: t(profile.labelKey as TKey) }),
                         color: "text-white",
                       },
                     ].map(card => (
@@ -832,7 +742,7 @@ export default function FinancialPlannerPage() {
                   <KpiCard
                     label={t("s4SumSurplus")}
                     value={`${currency}${fmt(Math.max(0, netSavings))}`}
-                    sub={t("s4SumSavingsRate").replace("{x}", savingsRate.toFixed(1))}
+                    sub={t("s4SumSavingsRate", { x: savingsRate.toFixed(1) })}
                     colorClass={netSavings >= 0 ? "border-l-green-500" : "border-l-red-500"}
                   />
                   <KpiCard
@@ -844,7 +754,7 @@ export default function FinancialPlannerPage() {
                   <KpiCard
                     label={t("s4SumDebt")}
                     value={`${currency}${fmt(totalDebt)}`}
-                    sub={t("s4SumEstInterest").replace("{amount}", `${currency}${fmt(totalInterestCost)}`)}
+                    sub={t("s4SumEstInterest", { amount: `${currency}${fmt(totalInterestCost)}` })}
                     colorClass="border-l-red-500"
                   />
                   <KpiCard
@@ -854,17 +764,47 @@ export default function FinancialPlannerPage() {
                     colorClass="border-l-orange-500"
                   />
                   <KpiCard
-                    label={t("s4SumWealth").replace("{years}", String(years))}
+                    label={t("s4SumWealth", { years: String(years) })}
                     value={`${currency}${fmt(finalValue)}`}
-                    sub={t("s5KpiAtRate").replace("{rate}", String(annualRate))}
+                    sub={t("s5KpiAtRate", { rate: String(annualRate) })}
                     colorClass="border-l-blue-500"
                   />
                   <KpiCard
                     label={t("s5KpiAllocProfile")}
                     value={risk.charAt(0).toUpperCase() + risk.slice(1)}
-                    sub={t("s5KpiStocksPct").replace("{pct}", String(allocData[0].value))}
+                    sub={t("s5KpiStocksPct", { pct: String(allocData[0].value) })}
                     colorClass="border-l-purple-500"
                   />
+                </div>
+              </div>
+
+              {/* A2 — The plan in charts (also copied into the PDF) */}
+              <div>
+                <h2 className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-4">{t("s5ChartsTitle")}</h2>
+                <div ref={reportCharts} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-4 min-w-0">
+                    <p className="text-white text-sm font-semibold mb-1">{t("s1FlowTitle")}</p>
+                    <div className="overflow-x-auto"><div className="min-w-[440px]">
+                      <BudgetFlow currency={currency} income={income} categories={flowCategories} labels={flowLabels} height={250} />
+                    </div></div>
+                  </div>
+                  <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-4 min-w-0">
+                    <p className="text-white text-sm font-semibold mb-1">{t("s2PayoffTitle")}</p>
+                    {debtSeries.length > 0 ? (
+                      <DebtPayoff currency={currency} rows={schedule.rows} debts={debtSeries} debtFreeYears={schedule.debtFreeYears}
+                        debtFreeLabel={t("s2DebtFreeIn", { years: String(schedule.debtFreeYears) })} yearLabel={t("s3YearLabel")} height={250} compact />
+                    ) : (
+                      <div className="h-[250px] flex items-center justify-center text-green-400 font-semibold text-sm">{t("s2DebtFree")}</div>
+                    )}
+                  </div>
+                  <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-4 min-w-0">
+                    <p className="text-white text-sm font-semibold mb-1">{t("s3ChartTitle", { years: String(years) })}</p>
+                    <GrowthChart currency={currency} rows={growth.rows} crossover={growth.crossover} labels={growthLabels} height={250} compact />
+                  </div>
+                  <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-4 min-w-0">
+                    <p className="text-white text-sm font-semibold mb-1">{t("s4GlideTitle")}</p>
+                    <GlidePathChart rows={glide} age={age} retirementAge={RETIREMENT_AGE} series={glideSeries} labels={glideLabels} height={250} compact />
+                  </div>
                 </div>
               </div>
 
