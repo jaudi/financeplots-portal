@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
 import { allocationAt, debtSchedule, glidePath, growthPath, RETIREMENT_AGE, RISK_PROFILES, type RiskKey } from "@/lib/planner";
 import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from "./charts";
+import PlannerChat from "./PlannerChat";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -878,7 +879,18 @@ export default function FinancialPlannerPage() {
 
         </div>
       </div>
-            <RelatedTools current="financial-planner" />
+      <PlannerChat
+        api={{
+          currency, income, expenses, debts, years, age,
+          setCurrency, setIncome, setYears, setRatePreset, setCustomRate, setAge, setRisk, setStep,
+          setExpense: (key, v) => setExpenses(p => ({ ...p, [key]: v })),
+          setDebt: (key, v) => setDebts(p => ({ ...p, [key]: v })),
+        }}
+        expenseCats={EXPENSE_CATS.map(c => ({ key: c.key, label: t(c.labelKey as TKey) }))}
+        debtItems={DEBT_ITEMS.map(d => ({ key: d.key, label: t(d.labelKey as TKey) }))}
+        ratePresets={RATE_PRESETS.map(r => ({ label: "labelKey" in r ? t(r.labelKey as TKey) : r.label, rate: r.rate }))}
+      />
+      <RelatedTools current="financial-planner" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>
   );

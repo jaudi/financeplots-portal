@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allocationAt, debtSchedule, glidePath, growthPath, monthlyPayment } from "@/lib/planner";
+import { allocationAt, debtSchedule, glidePath, growthPath, monthlyPayment, parseAmount } from "@/lib/planner";
 
 describe("debt schedule", () => {
   it("charges a 25-year £200k mortgage at 4.5% the standard repayment interest", () => {
@@ -63,5 +63,25 @@ describe("model allocation", () => {
     const g = glidePath("moderate", 35);
     expect(g[0].age).toBe(35);
     expect(g.at(-1)!.age).toBe(67);
+  });
+});
+
+describe("chat answers", () => {
+  it.each([
+    ["4000", 4000], ["£4,000", 4000], ["4.000", 4000], ["4.000 €", 4000], ["3,5", 3.5], ["7.5", 7.5],
+    ["1,250,000", 1_250_000], ["1.250.000,50", 1_250_000.5], ["4k", 4000], ["2 mil", 2000],
+    ["1.5 million", 1_500_000], ["cuatro mil", 4000], ["none", 0], ["nada", 0], ["0", 0], ["35 years", 35],
+  ])("%s → %d", (input, expected) => {
+    expect(parseAmount(input)).toBe(expected);
+  });
+
+  it("returns null when there is no amount", () => {
+    expect(parseAmount("")).toBeNull();
+    expect(parseAmount("not sure")).toBeNull();
+    // "no" alone is zero, but not when it is part of "I don't know".
+    expect(parseAmount("no se")).toBeNull();
+    expect(parseAmount("no lo sé")).toBeNull();
+    expect(parseAmount("no tengo")).toBe(0);
+    expect(parseAmount("I have none")).toBe(0);
   });
 });

@@ -143,3 +143,65 @@ export function glidePath(risk: RiskKey, age: number) {
     return { age: from + i, stocks: r1(m.stocks), bonds: r1(m.bonds), cash: r1(m.cash), alternatives: m.alternatives };
   });
 }
+
+// ── Chat answers ────────────────────────────────────────────────────────────
+
+const WORD_NUMBERS: Record<string, number> = {
+  zero: 0, none: 0, nothing: 0, no: 0, cero: 0, nada: 0, ninguno: 0, ninguna: 0,
+  one: 1, un: 1, uno: 1, una: 1, two: 2, dos: 2, three: 3, tres: 3, four: 4, cuatro: 4, five: 5, cinco: 5,
+  six: 6, seis: 6, seven: 7, siete: 7, eight: 8, ocho: 8, nine: 9, nueve: 9, ten: 10, diez: 10,
+  twenty: 20, veinte: 20, thirty: 30, treinta: 30, forty: 40, cuarenta: 40, fifty: 50, cincuenta: 50,
+  hundred: 100, cien: 100, ciento: 100,
+};
+const MULTIPLIERS: [RegExp, number][] = [
+  // Letter boundaries rather than \b, so "4k" and "2m" match too.
+  [/(?<![a-zñ])(millions?|millones|mill[oó]n|m)(?![a-zñ])/, 1e6],
+  [/(?<![a-zñ])(thousands?|mil|k|grand)(?![a-zñ])/, 1e3],
+];
+
+/** A typed or spoken amount → a number, or null if there is none: "4000",
+ *  "£4,000", "4.000" (Spanish thousands), "3,5" (Spanish decimal), "4k",
+ *  "2 mil", "1.5 million", "cuatro mil", "none". */
+export function parseAmount(raw: string): number | null {
+  let s = raw.toLowerCase().replace(/[£$€¥₹%]/g, " ").replace(/\s+/g, " ").trim();
+  if (!s) return null;
+  let mult = 1;
+  for (const [re, m] of MULTIPLIERS) {
+    if (re.test(s)) {
+      mult = m;
+      s = s.replace(re, " ").trim();
+      break;
+    }
+  }
+  const digits = s.match(/\d[\d.,]*/);
+  if (digits) {
+    let n = digits[0].replace(/[.,]$/, "");
+    const dots = (n.match(/\./g) ?? []).length;
+    const commas = (n.match(/,/g) ?? []).length;
+    if (dots && commas) {
+      // Whichever comes last is the decimal mark.
+      const dec = n.lastIndexOf(".") > n.lastIndexOf(",") ? "." : ",";
+      n = n.split(dec === "." ? "," : ".").join("").replace(",", ".");
+    } else if (dots + commas > 0) {
+      const sep = dots ? "." : ",";
+      const parts = n.split(sep);
+      // "4.000" or "1,250,000": groups of three are thousands; otherwise a decimal.
+      const thousands = parts.length > 2 || (parts.length === 2 && parts[1].length === 3 && mult === 1);
+      n = thousands ? parts.join("") : parts.join(".");
+    }
+    const v = parseFloat(n);
+    return Number.isFinite(v) ? v * mult : null;
+  }
+  // Words only: "cuatro mil", "twenty", "none".
+  // Every word must be a number or filler, so "no tengo" is 0 but "no sé" is not understood.
+  const tokens = s.split(/[\s-]+/).filter(Boolean);
+  if (tokens.some((w) => !(w in WORD_NUMBERS) && !FILLER.has(w))) return null;
+  const words = tokens.filter((w) => w in WORD_NUMBERS).map((w) => WORD_NUMBERS[w]);
+  if (words.length === 0) return mult > 1 ? mult : null;
+  return words.reduce((a, b) => a + b, 0) * mult;
+}
+
+const FILLER = new Set([
+  "and", "a", "i", "have", "per", "month", "year", "years", "pounds", "dollars", "euros", "debt", "debts", "zero",
+  "y", "de", "al", "mes", "año", "años", "tengo", "libras", "dolares", "dólares", "deuda", "deudas", "about", "unos", "unas",
+]);
