@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
 import { allocationAt, debtSchedule, glidePath, growthPath, RETIREMENT_AGE, RISK_PROFILES, type RiskKey } from "@/lib/planner";
 import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from "./charts";
@@ -77,6 +77,7 @@ function KpiCard({ label, value, sub, colorClass }: { label: string; value: stri
 
 export default function FinancialPlannerPage() {
   const t = useTranslations("financialPlanner");
+  const locale = useLocale();
   const tc = useTranslations("toolCommon");
 
   const [step, setStep] = useState(1);
@@ -263,31 +264,40 @@ export default function FinancialPlannerPage() {
     const { PlannerPdf } = await import("./pdf");
     const images = reportCharts.current ? await chartImages(reportCharts.current).catch(() => []) : [];
     const chartTitles = [t("s1FlowTitle"), t("s2PayoffTitle"), t("s3ChartTitle", { years: String(years) }), t("s4GlideTitle")];
+    // Helvetica (the PDF's font) has no emojis and no rupee sign.
+    const safe = (x: string) => x.replace(/\p{Extended_Pictographic}|\uFE0F/gu, "").replace(/₹/g, "Rs ").trim();
+    const cur = safe(currency);
+    const m = (v: number) => `${cur}${fmt(v)}`;
+    const rating = savingsRate >= 20 ? t("s5RatingExcellent") : savingsRate >= 10 ? t("s5RatingGood") : t("s5RatingBelowTarget");
     const blob = await pdf(
       <PlannerPdf
-        currency={currency}
-        income={income}
-        totalExpenses={totalExpenses}
-        netSavings={netSavings}
-        savingsRate={savingsRate}
-        totalDebt={totalDebt}
-        totalInterestCost={totalInterestCost}
-        finalValue={finalValue}
-        annualRate={annualRate}
-        years={years}
-        monthlyContrib={monthlyContrib}
-        risk={risk}
-        allocData={allocData}
-        recommendations={recommendations}
-        charts={images.map((src, i) => ({ src, title: chartTitles[i] ?? "" }))}
-        chartsTitle={t("s5ChartsTitle")}
-        date={new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+        text={{
+          title: t("s5Title"),
+          generated: t("pdfGenerated", { date: new Date().toLocaleDateString(locale === "es" ? "es-ES" : "en-GB", { day: "numeric", month: "long", year: "numeric" }) }),
+          snapshot: t("s5SnapshotTitle"),
+          recommendations: t("s5RecommTitle"),
+          bestPractices: t("s5BestPracticesTitle"),
+          charts: t("s5ChartsTitle"),
+          footerLeft: "FinancePlots · financeplots.com",
+          footerRight: t("pdfFooter"),
+        }}
+        snapshot={[
+          { label: t("s4SumSurplus"), value: m(Math.max(0, netSavings)), sub: t("pdfIncomeExpenses", { income: m(income), expenses: m(totalExpenses) }), color: "green" },
+          { label: t("s5KpiSavingsRate"), value: `${savingsRate.toFixed(1)}%`, sub: rating, color: savingsRate >= 20 ? "green" : savingsRate >= 10 ? "amber" : "red" },
+          { label: t("s4SumDebt"), value: m(totalDebt), sub: t("s4SumEstInterest", { amount: m(totalInterestCost) }), color: "red" },
+          { label: t("s5KpiEstInterest"), value: m(totalInterestCost), sub: t("s5KpiDebtSub"), color: "amber" },
+          { label: t("s4SumWealth", { years: String(years) }), value: m(finalValue), sub: t("pdfAtRateMonthly", { rate: String(annualRate), monthly: m(monthlyContrib) }), color: "blue" },
+          { label: t("s5KpiAllocProfile"), value: t(RISK_PROFILES[risk].labelKey as TKey), sub: t("s5KpiStocksPct", { pct: String(allocData[0].value) }), color: "purple" },
+        ]}
+        recommendations={recommendations.map(r => ({ title: safe(r.title), body: safe(r.body).replace(/₹/g, "Rs "), color: r.color }))}
+        bestPractices={(t.raw("s5BestPractices") as string[]).map(safe)}
+        charts={images.map((src, i) => ({ src, title: safe(chartTitles[i] ?? "") }))}
       />
     ).toBlob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "financial-plan.pdf";
+    a.download = locale === "es" ? "plan-financiero.pdf" : "financial-plan.pdf";
     a.click();
     URL.revokeObjectURL(url);
     setPdfLoading(false);

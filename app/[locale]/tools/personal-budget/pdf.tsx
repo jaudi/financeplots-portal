@@ -27,7 +27,18 @@ const styles = StyleSheet.create({
 
 interface BudgetRow { category: string; item: string; monthly: number; annual: number; pctExpenses: number }
 
+/** Every label, already translated by the page. Helvetica (the PDF's font) has
+ *  no emojis or ₹, so the page passes "Rs" for rupees. */
+export interface BudgetPdfText {
+  title: string; generated: string; summary: string;
+  income: string; incomeSub: string; expenses: string; expensesSub: string;
+  savings: string; savingsSub: string; rate: string; rateSub: string;
+  breakdown: string; colCategory: string; colItem: string; colMonthly: string; colAnnual: string; colPct: string;
+  footer: string;
+}
+
 interface Props {
+  text: BudgetPdfText;
   budgetName: string;
   currency: string;
   totalIncome: number;
@@ -39,52 +50,51 @@ interface Props {
 
 const fmtC = (n: number, cur: string) => `${cur}${Math.abs(n).toLocaleString("en-GB", { maximumFractionDigits: 0 })}`;
 
-export default function PersonalBudgetPDF({ budgetName, currency, totalIncome, totalExpenses, netSaving, savingRate, rows }: Props) {
-  const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+export default function PersonalBudgetPDF({ text, budgetName, currency, totalIncome, totalExpenses, netSaving, savingRate, rows }: Props) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerTitle}>Personal Budget Planner</Text>
+            <Text style={styles.headerTitle}>{text.title}</Text>
             <Text style={styles.headerSub}>{budgetName}</Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.headerMeta}>Generated {date}</Text>
+            <Text style={styles.headerMeta}>{text.generated}</Text>
             <Image style={styles.logoImg} src="https://www.financeplots.com/logo-sm.png" />
           </View>
         </View>
 
-        <Text style={styles.sectionLabel}>Monthly Summary</Text>
+        <Text style={styles.sectionLabel}>{text.summary}</Text>
         <View style={styles.kpiRow}>
           <View style={styles.kpiCard}>
-            <Text style={styles.kpiLabel}>Monthly Income</Text>
+            <Text style={styles.kpiLabel}>{text.income}</Text>
             <Text style={styles.kpiValue}>{fmtC(totalIncome, currency)}</Text>
-            <Text style={styles.kpiSub}>All sources</Text>
+            <Text style={styles.kpiSub}>{text.incomeSub}</Text>
           </View>
           <View style={[styles.kpiCard, styles.kpiCardRed]}>
-            <Text style={styles.kpiLabel}>Monthly Expenses</Text>
+            <Text style={styles.kpiLabel}>{text.expenses}</Text>
             <Text style={styles.kpiValue}>{fmtC(totalExpenses, currency)}</Text>
-            <Text style={styles.kpiSub}>All categories</Text>
+            <Text style={styles.kpiSub}>{text.expensesSub}</Text>
           </View>
           <View style={[styles.kpiCard, netSaving >= 0 ? styles.kpiCardGreen : styles.kpiCardRed]}>
-            <Text style={styles.kpiLabel}>Monthly Savings</Text>
+            <Text style={styles.kpiLabel}>{text.savings}</Text>
             <Text style={styles.kpiValue}>{fmtC(netSaving, currency)}</Text>
-            <Text style={styles.kpiSub}>Net after expenses</Text>
+            <Text style={styles.kpiSub}>{text.savingsSub}</Text>
           </View>
           <View style={[styles.kpiCard, savingRate >= 20 ? styles.kpiCardGreen : savingRate >= 10 ? styles.kpiCard : styles.kpiCardRed]}>
-            <Text style={styles.kpiLabel}>Savings Rate</Text>
+            <Text style={styles.kpiLabel}>{text.rate}</Text>
             <Text style={styles.kpiValue}>{savingRate.toFixed(1)}%</Text>
-            <Text style={styles.kpiSub}>Target: 20%+</Text>
+            <Text style={styles.kpiSub}>{text.rateSub}</Text>
           </View>
         </View>
 
         {rows.length > 0 && (
           <>
-            <Text style={styles.sectionLabel}>Detailed Breakdown</Text>
+            <Text style={styles.sectionLabel}>{text.breakdown}</Text>
             <View style={styles.tableHeader}>
-              {["Category", "Item", "Monthly", "Annual", "% of Expenses"].map(h => (
-                <Text key={h} style={[styles.tableHeaderCell, h === "Item" ? { flex: 2 } : {}]}>{h}</Text>
+              {[text.colCategory, text.colItem, text.colMonthly, text.colAnnual, text.colPct].map((h, i) => (
+                <Text key={i} style={[styles.tableHeaderCell, i === 1 ? { flex: 2 } : {}]}>{h}</Text>
               ))}
             </View>
             {rows.map((row, idx) => (
@@ -101,7 +111,7 @@ export default function PersonalBudgetPDF({ budgetName, currency, totalIncome, t
 
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>FinancePlots · financeplots.com</Text>
-          <Text style={styles.footerText}>For informational purposes only · Not financial advice</Text>
+          <Text style={styles.footerText}>{text.footer}</Text>
         </View>
       </Page>
     </Document>

@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import BudgetChat from "./BudgetChat";
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -140,6 +141,7 @@ function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: 
 export default function PersonalBudgetPage() {
   const t = useTranslations("personalBudget");
   const tc = useTranslations("toolCommon");
+  const locale = useLocale();
 
   const [budgetName, setBudgetName] = useState("My Budget");
   const [currency, setCurrency] = useState("£");
@@ -208,8 +210,20 @@ export default function PersonalBudgetPage() {
       const { default: PersonalBudgetPDF } = await import("./pdf");
       const blob = await pdf(
         <PersonalBudgetPDF
+          text={{
+            title: t("title"),
+            generated: t("pdfGenerated", { date: new Date().toLocaleDateString(locale === "es" ? "es-ES" : "en-GB", { day: "numeric", month: "long", year: "numeric" }) }),
+            summary: t("pdfSummary"),
+            income: t("pdfIncome"), incomeSub: t("pdfIncomeSub"),
+            expenses: t("pdfExpenses"), expensesSub: t("pdfExpensesSub"),
+            savings: t("pdfSavings"), savingsSub: t("pdfSavingsSub"),
+            rate: t("pdfRate"), rateSub: t("pdfRateSub"),
+            breakdown: t("pdfBreakdown"),
+            colCategory: t("pdfColCategory"), colItem: t("pdfColItem"), colMonthly: t("colMonthly"), colAnnual: t("colAnnual"), colPct: t("pdfColPct"),
+            footer: t("pdfFooter"),
+          }}
           budgetName={budgetName}
-          currency={currency}
+          currency={currency.replace("₹", "Rs ")}
           totalIncome={totalIncome}
           totalExpenses={totalExpenses}
           netSaving={netSaving}
@@ -220,7 +234,7 @@ export default function PersonalBudgetPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "personal-budget.pdf";
+      a.download = locale === "es" ? "presupuesto-personal.pdf" : "personal-budget.pdf";
       a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
@@ -228,7 +242,7 @@ export default function PersonalBudgetPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [budgetName, currency, totalIncome, totalExpenses, netSaving, savingRate, pdfRows]);
+  }, [budgetName, currency, totalIncome, totalExpenses, netSaving, savingRate, pdfRows, t, locale]);
 
   const fmtC = (n: number) => `${currency}${fmt(Math.abs(n))}`;
 
@@ -514,6 +528,17 @@ export default function PersonalBudgetPage() {
           ))}
         </div>
       </div>
+            <BudgetChat
+              currency={currency}
+              setCurrency={setCurrency}
+              incomeItems={INCOME_ITEMS.map(i => ({ key: i.key, label: t(i.labelKey as Parameters<typeof t>[0]) }))}
+              income={income}
+              setIncome={(key, v) => setIncome(p => ({ ...p, [key]: v }))}
+              groups={EXPENSE_GROUPS.map(g => ({ category: g.category, label: t(g.catKey as Parameters<typeof t>[0]), items: g.items.map(i => ({ key: i.key, label: t(i.labelKey as Parameters<typeof t>[0]) })) }))}
+              expenses={expenses}
+              setExpense={(key, v) => setExpenses(p => ({ ...p, [key]: v }))}
+              openGroup={cat => setOpenGroups(p => ({ ...p, [cat]: true }))}
+            />
             <RelatedTools current="personal-budget" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>
