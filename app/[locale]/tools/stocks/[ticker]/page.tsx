@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import StockAnalysis from "@/components/StockAnalysis";
 import CompanyHistory from "@/components/CompanyHistory";
 import CompareWith from "@/components/CompareWith";
+import CompanySnowflake, { type SnowflakeLayer } from "@/components/CompanySnowflake";
 import { AddToListButton } from "@/components/MyList";
 import StocksNav from "@/components/StocksNav";
 import { getCompanyProfile, getCompanyProfiles, INDEX_LABELS, type CompanyMeasure, type CompanyProfile } from "@/lib/company";
@@ -142,6 +143,26 @@ function SideBySide({ columns }: { columns: { ticker: string; profile: CompanyPr
   );
 }
 
+/** One snowflake layer per company with figures, in the order typed. */
+function snowflakeLayers(columns: { ticker: string; profile: CompanyProfile | null }[]): SnowflakeLayer[] {
+  return columns.flatMap(({ ticker, profile }) => {
+    if (!profile) return [];
+    const indexLabel = INDEX_LABELS[profile.index];
+    const measures = profile.groups.flatMap((g) => g.measures);
+    return [{
+      ticker,
+      indexLabel,
+      positions: measures.map((m) => m.position),
+      values: measures.map((m) => formatMetric(m.value, m.metric)),
+      titles: measures.map((m) =>
+        m.position === null
+          ? "No figure reported."
+          : `${formatMetric(m.value, m.metric)} — higher than ${Math.round(m.position)}% of the ${indexLabel}`,
+      ),
+    }];
+  });
+}
+
 export default async function CompanyPage({ params, searchParams }: Props) {
   const raw = decodeURIComponent((await params).ticker);
   const ticker = normaliseSymbol(raw);
@@ -184,6 +205,15 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                   <AddToListButton ticker={ticker} />
                 </div>
               </header>
+
+              {profile && (
+                <section className="mb-8">
+                  <CompanySnowflake
+                    spokes={profile.groups.flatMap((g) => g.measures.map((m) => ({ label: m.metric.short, group: g.group })))}
+                    layers={snowflakeLayers([{ ticker, profile }, ...vs.map((t, i) => ({ ticker: t, profile: vsProfiles[i] ?? null }))])}
+                  />
+                </section>
+              )}
 
               <StockAnalysis initialSymbol={ticker} initialRange="1y" fixed />
 
