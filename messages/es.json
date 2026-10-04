@@ -474,7 +474,26 @@
     "pieLabelInsurance": "Seguros",
     "pieLabelDepreciation": "Amortización",
     "pieLabelMarketing": "Marketing",
-    "pieLabelOther": "Otros Fijos"
+    "pieLabelOther": "Otros Fijos",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tu punto de equilibrio, pregunta a pregunta",
+      "askName": "¿Para qué producto o negocio es?",
+      "ask": {
+        "rent": "Primero los costes fijos, los que pagas vendas lo que vendas. ¿Cuánto se va en alquiler y suministros cada periodo (un mes, por ejemplo)?",
+        "payroll": "¿Y en nóminas?",
+        "insurance": "¿En seguros?",
+        "depreciation": "¿Amortización, el desgaste de los equipos repartido a lo largo de su vida?",
+        "marketing": "¿Marketing?",
+        "other": "¿Algún otro coste fijo? Di 0 si no hay.",
+        "price": "Ahora las ventas. ¿Cuánto cobras por una unidad?",
+        "unitCost": "¿Cuánto te cuesta fabricar o comprar cada unidad?",
+        "units": "¿Cuántas unidades vendes, o esperas vender, en el mismo periodo?"
+      },
+      "done": "Cubres costes a partir de unas {units} unidades por periodo. Cierra esta ventana para ver tu margen de seguridad y el gráfico.",
+      "doneNoMargin": "Cada unidad cuesta lo mismo que su precio o más, así que ninguna cifra de ventas cubre los costes fijos. Cierra esta ventana para ajustar el precio o el coste."
+    }
   },
   "personalBudget": {
     "title": "💸 Presupuesto Personal",
@@ -684,7 +703,26 @@
     "colEBITDA": "EBITDA",
     "colNetIncome": "Beneficio Neto",
     "rowTotal": "TOTAL",
-    "sheetRatesNote": "El presupuesto aplica un único porcentaje de coste a todos los meses, así que tus costes mensuales se han convertido en un porcentaje de los ingresos del año — {rates}. Los ingresos mensuales pasan a ser el mes base más la estacionalidad."
+    "sheetRatesNote": "El presupuesto aplica un único porcentaje de coste a todos los meses, así que tus costes mensuales se han convertido en un porcentaje de los ingresos del año — {rates}. Los ingresos mensuales pasan a ser el mes base más la estacionalidad.",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tu presupuesto anual, pregunta a pregunta",
+      "sectionSeasons": "Temporadas",
+      "sectionCosts": "Costes",
+      "askName": "¿Cómo se llama la empresa?",
+      "askYear": "¿Para qué año es el presupuesto?",
+      "askRevenue": "¿Cuánto vendes en un mes normal?",
+      "askSeasonal": "¿Las ventas son parecidas todos los meses, o siguen las temporadas?",
+      "flat": "Parecidas",
+      "seasonal": "Siguen las temporadas",
+      "askFirstMonth": "Comparado con un mes normal, ¿cómo es {month}? 1 es normal, 1,2 es un 20% más, 0,8 es un 20% menos.",
+      "askMonth": "¿Y {month}?",
+      "askCogs": "¿Qué parte de las ventas se va en el coste de lo que vendes (materiales, existencias), en %?",
+      "askOpex": "¿Y en mantener el negocio (sueldos, alquiler, marketing), en % de las ventas?",
+      "askTax": "¿Qué tipo impositivo pagas sobre el beneficio, en %?",
+      "done": "Tu presupuesto de {year} está listo: el beneficio neto del año sale en {profit}. Cierra esta ventana para verlo mes a mes."
+    }
   },
   "cashFlow": {
     "title": "💧 Previsión de Caja a 13 Semanas",
@@ -726,7 +764,20 @@
     "editTitle": "Editar Valores Semanales",
     "colWeek": "Semana",
     "colInflowsEdit": "Entradas (€)",
-    "colOutflowsEdit": "Salidas (€)"
+    "colOutflowsEdit": "Salidas (€)",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tus 13 semanas de caja, pregunta a pregunta",
+      "askName": "¿Cómo llamamos a esta previsión?",
+      "askOpening": "¿Cuánto efectivo tienes hoy en el banco? Si estás en descubierto, di «menos» delante.",
+      "askInflow": "¿Cuánto efectivo entra en una semana normal?",
+      "askInflowGrowth": "¿Crecerá o bajará cada semana? Di un % semanal: 2 para crecer, menos 1 para bajar, 0 para mantenerlo.",
+      "askOutflow": "¿Y cuánto sale en una semana normal?",
+      "askOutflowGrowth": "¿Crecerá o bajará cada semana? Otra vez un % semanal, o 0.",
+      "done": "Tus 13 semanas están rellenas. Lo más bajo que llega tu saldo es {lowest}. Cierra esta ventana para verlo semana a semana.",
+      "doneNegative": "Tus 13 semanas están rellenas. Tu saldo baja de cero, hasta {lowest}. Cierra esta ventana para ver en qué semanas."
+    }
   },
   "financialModel": {
     "title": "📈 Modelo Financiero a 5 Años",
@@ -765,7 +816,33 @@
     "tabBS": "Balance",
     "tabCF": "Flujo de Caja",
     "colMetric": "Métrica",
-    "colItem": "Concepto"
+    "colItem": "Concepto",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tu modelo a 5 años, pregunta a pregunta",
+      "sectionIncome": "Ventas y costes",
+      "sectionBalance": "Balance de hoy",
+      "sectionCash": "Ciclo de caja",
+      "askName": "¿Cómo se llama la empresa?",
+      "ask": {
+        "baseRevenue": "¿Cuánto esperas vender el año 1?",
+        "revenueGrowth": "¿Cuánto deberían crecer las ventas cada año a partir de ahí, en %? Di «menos» si bajan.",
+        "cogsRate": "¿Qué parte de las ventas se va en el coste de lo que vendes, en %?",
+        "opexRate": "¿Y en mantener el negocio (sueldos, alquiler, marketing), en % de las ventas?",
+        "daRate": "¿Depreciación y amortización, el desgaste anual de los equipos, en % de las ventas?",
+        "interestExpense": "¿Cuántos intereses pagas por préstamos al año?",
+        "taxRate": "¿Qué tipo impositivo pagas sobre el beneficio, en %?",
+        "startingCash": "¿Cuánto efectivo tiene hoy la empresa?",
+        "startingPPE": "¿Cuánto valen hoy sus equipos, vehículos e inmuebles, descontada la depreciación?",
+        "startingDebt": "¿Cuánto debe hoy en préstamos?",
+        "capexRate": "¿Cuánto gastas al año en equipos nuevos, en % de las ventas?",
+        "arDays": "De media, ¿cuántos días tardan tus clientes en pagarte?",
+        "apDays": "¿Y cuántos días tardas tú en pagar a proveedores?",
+        "debtRepayment": "¿Cuánto devuelves de tus préstamos cada año, sin contar intereses?"
+      },
+      "done": "Tu modelo a 5 años está listo: las ventas llegan a {revenue} el año 5. Cierra esta ventana para ver los tres estados."
+    }
   },
   "valuation": {
     "title": "💎 Calculadora de Valoración de Empresa",
@@ -803,7 +880,33 @@
     "colYear": "Año",
     "colFCF": "Flujo de Caja Libre",
     "colDiscountedFCF": "FCF Descontado",
-    "colCumulativePV": "VA Acumulado"
+    "colCumulativePV": "VA Acumulado",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tu valoración, pregunta a pregunta",
+      "sectionFigures": "Tus cifras",
+      "sectionRates": "Crecimiento y tasas",
+      "sectionMultiples": "Múltiplos",
+      "askName": "¿Cómo se llama la empresa?",
+      "askIndustry": "¿Qué sector se parece más al tuyo? Al elegirlo se rellenan sus múltiplos habituales, que puedes cambiar después.",
+      "noIndustry": "Saltar",
+      "ask": {
+        "revenue": "¿Cuánto vende la empresa en un año?",
+        "ebitda": "¿Su beneficio anual antes de intereses, impuestos, depreciación y amortización (EBITDA)? Si hay pérdidas, di «pérdida» o pon un signo menos.",
+        "netIncome": "¿Beneficio neto del año, después de todo? También puede ser negativo.",
+        "fcf": "Flujo de caja libre: ¿el efectivo que queda en un año tras los gastos y la inversión?",
+        "netDebt": "Deuda neta: préstamos menos efectivo. Si tienes más efectivo que deuda, di «menos».",
+        "growthRate": "¿Cuánto esperas que crezca el flujo de caja cada año durante los próximos cinco, en %?",
+        "discountRate": "¿A qué tasa anual, en %, descontamos el efectivo futuro (el WACC)?",
+        "terminalGrowth": "Pasados esos cinco años, ¿cuánto debería seguir creciendo cada año, en %?",
+        "ebitdaMultiple": "¿Qué múltiplo del EBITDA usamos en la valoración?",
+        "evSalesMultiple": "¿Qué múltiplo de las ventas anuales?",
+        "peRatio": "¿Y qué múltiplo del beneficio neto (PER)?"
+      },
+      "done": "Con la media de los métodos que aplican, la empresa sale en unos {value}. Cierra esta ventana para ver cada método.",
+      "doneNone": "Ningún método da un valor con estas cifras. Cierra esta ventana para ver por qué y ajustarlas."
+    }
   },
   "financialPlanner": {
     "title": "🗺️ Plan Financiero",

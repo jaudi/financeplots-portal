@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CashFlowChat from "./CashFlowChat";
 import SpreadsheetIO from "@/components/SpreadsheetIO";
 import type { SheetField } from "@/lib/spreadsheet-io";
 import {
@@ -437,6 +438,25 @@ export default function CashFlowPage() {
           ))}
         </div>
       </div>
+            <CashFlowChat
+              name={forecastName}
+              setName={setForecastName}
+              opening={openingBalance}
+              setOpening={setOpeningBalance}
+              inflow={weeklyInflows[0]}
+              inflowGrowth={inflowGrowth}
+              outflow={weeklyOutflows[0]}
+              outflowGrowth={outflowGrowth}
+              setInflows={(week1, g) => {
+                setInflowGrowth(g);
+                setWeeklyInflows(Array.from({ length: 13 }, (_, i) => Math.round(week1 * Math.pow(1 + g / 100, i))));
+              }}
+              setOutflows={(week1, g) => {
+                setOutflowGrowth(g);
+                setWeeklyOutflows(Array.from({ length: 13 }, (_, i) => Math.round(week1 * Math.pow(1 + g / 100, i))));
+              }}
+              minBalance={minBalance}
+            />
             <RelatedTools current="cash-flow" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

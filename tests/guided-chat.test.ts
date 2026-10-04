@@ -111,3 +111,12 @@ describe("tool finder phrases", () => {
     }
   });
 });
+
+describe("tool chats copy", () => {
+  const keys = (o: object, prefix = ""): string[] =>
+    Object.entries(o).flatMap(([k, v]) => (v && typeof v === "object" ? keys(v, `${prefix}${k}.`) : [`${prefix}${k}`])).sort();
+
+  it.each(["breakEven", "cashFlow", "annualBudget", "financialModel", "valuation"] as const)("%s has the same chat keys in English and Spanish", (ns) => {
+    expect(keys(es[ns].chat)).toEqual(keys(en[ns].chat));
+  });
+});

@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import ValuationChat from "./ValuationChat";
 import { INDUSTRIES, valuation, type Industry } from "@/lib/calculators";
 import {
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -449,6 +450,18 @@ export default function ValuationPage() {
         </div>
       </div>
 
+      <ValuationChat
+        name={companyName}
+        setName={setCompanyName}
+        applyIndustry={applyIndustry}
+        values={{ revenue, ebitda, netIncome, fcf, netDebt, growthRate, discountRate, terminalGrowth, ebitdaMultiple, evSalesMultiple, peRatio }}
+        setValue={(key, v) => ({
+          revenue: setRevenue, ebitda: setEbitda, netIncome: setNetIncome, fcf: setFcf, netDebt: setNetDebt, growthRate: setGrowthRate,
+          discountRate: setDiscountRate, terminalGrowth: setTerminalGrowth, ebitdaMultiple: setEbitdaMultiple,
+          evSalesMultiple: setEvSalesMultiple, peRatio: setPeRatio,
+        } as Record<string, (n: number) => void>)[key]?.(v)}
+        average={avgValuation}
+      />
       <RelatedTools current="valuation" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

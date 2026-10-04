@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import AnnualBudgetChat from "./AnnualBudgetChat";
 import SpreadsheetIO from "@/components/SpreadsheetIO";
 import type { SheetField, SheetValues } from "@/lib/spreadsheet-io";
 import {
@@ -446,6 +447,25 @@ export default function AnnualBudgetPage() {
           ))}
         </div>
       </div>
+            <AnnualBudgetChat
+              name={companyName}
+              setName={setCompanyName}
+              year={year}
+              setYear={setYear}
+              baseRevenue={baseRevenue}
+              setBaseRevenue={setBaseRevenue}
+              seasonal={seasonalityEnabled}
+              setSeasonal={setSeasonalityEnabled}
+              seasonality={seasonality}
+              setMonth={(i, v) => setSeasonality(prev => prev.map((x, j) => (j === i ? v : x)))}
+              cogsRate={cogsRate}
+              setCogsRate={setCogsRate}
+              opexRate={opexRate}
+              setOpexRate={setOpexRate}
+              taxRate={taxRate}
+              setTaxRate={setTaxRate}
+              netIncome={totals.netIncome}
+            />
             <RelatedTools current="annual-budget" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

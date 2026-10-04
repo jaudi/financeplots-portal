@@ -488,7 +488,26 @@
     "pieLabelInsurance": "Insurance",
     "pieLabelDepreciation": "Depreciation",
     "pieLabelMarketing": "Marketing",
-    "pieLabelOther": "Other Fixed"
+    "pieLabelOther": "Other Fixed",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your break-even, one question at a time",
+      "askName": "What product or business is this for?",
+      "ask": {
+        "rent": "Fixed costs first — the ones you pay whatever you sell. How much goes on rent and utilities each period (a month, say)?",
+        "payroll": "And on payroll?",
+        "insurance": "On insurance?",
+        "depreciation": "Depreciation — the wear on equipment you spread over its life?",
+        "marketing": "Marketing?",
+        "other": "Any other fixed costs? Say 0 if none.",
+        "price": "Now the sales. What do you charge for one unit?",
+        "unitCost": "What does each unit cost you to make or buy?",
+        "units": "How many units do you sell, or expect to sell, in the same period?"
+      },
+      "done": "You break even at about {units} units a period. Close this window to see your margin of safety and the chart.",
+      "doneNoMargin": "Each unit costs as much as its price or more, so no number of sales covers the fixed costs. Close this window to adjust the price or the cost."
+    }
   },
   "personalBudget": {
     "title": "💸 Personal Budget Planner",
@@ -698,7 +717,26 @@
     "colEBITDA": "EBITDA",
     "colNetIncome": "Net Income",
     "rowTotal": "TOTAL",
-    "sheetRatesNote": "The budget uses one cost rate for every month, so your monthly costs were turned into a share of the year’s revenue — {rates}. Monthly revenue became the base month plus seasonality."
+    "sheetRatesNote": "The budget uses one cost rate for every month, so your monthly costs were turned into a share of the year’s revenue — {rates}. Monthly revenue became the base month plus seasonality.",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your annual budget, one question at a time",
+      "sectionSeasons": "Seasons",
+      "sectionCosts": "Costs",
+      "askName": "What's the company called?",
+      "askYear": "Which year is this budget for?",
+      "askRevenue": "How much do you sell in a normal month?",
+      "askSeasonal": "Are sales about the same every month, or do they follow the seasons?",
+      "flat": "About the same",
+      "seasonal": "They follow the seasons",
+      "askFirstMonth": "Compared with a normal month, how is {month}? 1 means normal, 1.2 is 20% busier, 0.8 is 20% quieter.",
+      "askMonth": "And {month}?",
+      "askCogs": "What share of sales goes on the cost of what you sell (materials, stock), in %?",
+      "askOpex": "And on running the business — salaries, rent, marketing — in % of sales?",
+      "askTax": "What tax rate do you pay on profit, in %?",
+      "done": "Your {year} budget is ready: net profit for the year comes to {profit}. Close this window to see it month by month."
+    }
   },
   "cashFlow": {
     "title": "💧 13-Week Cash Flow Forecast",
@@ -740,7 +778,20 @@
     "editTitle": "Edit Weekly Values",
     "colWeek": "Week",
     "colInflowsEdit": "Inflows (£)",
-    "colOutflowsEdit": "Outflows (£)"
+    "colOutflowsEdit": "Outflows (£)",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your 13 weeks of cash, one question at a time",
+      "askName": "What should we call this forecast?",
+      "askOpening": "How much cash do you have in the bank today? If you're overdrawn, say “minus” first.",
+      "askInflow": "How much cash comes in during a typical week?",
+      "askInflowGrowth": "Will that grow or shrink each week? Give a % a week — 2 to grow, minus 1 to shrink, 0 to keep it flat.",
+      "askOutflow": "And how much goes out in a typical week?",
+      "askOutflowGrowth": "Will that grow or shrink each week? Again a % a week, or 0.",
+      "done": "Your 13 weeks are filled in. The lowest your balance gets is {lowest}. Close this window to see it week by week.",
+      "doneNegative": "Your 13 weeks are filled in. Your balance goes below zero, as low as {lowest}. Close this window to see which weeks."
+    }
   },
   "financialModel": {
     "title": "📈 5-Year Financial Model",
@@ -779,7 +830,33 @@
     "tabBS": "Balance Sheet",
     "tabCF": "Cash Flow",
     "colMetric": "Metric",
-    "colItem": "Item"
+    "colItem": "Item",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your 5-year model, one question at a time",
+      "sectionIncome": "Sales and costs",
+      "sectionBalance": "Balance sheet today",
+      "sectionCash": "Cash cycle",
+      "askName": "What's the company called?",
+      "ask": {
+        "baseRevenue": "How much do you expect to sell in year 1?",
+        "revenueGrowth": "How fast should sales grow each year after that, in %? Say minus for a fall.",
+        "cogsRate": "What share of sales goes on the cost of what you sell, in %?",
+        "opexRate": "And on running the business — salaries, rent, marketing — in % of sales?",
+        "daRate": "Depreciation and amortisation, the yearly wear on equipment, in % of sales?",
+        "interestExpense": "How much interest do you pay on loans in a year?",
+        "taxRate": "What tax rate do you pay on profit, in %?",
+        "startingCash": "How much cash does the company have today?",
+        "startingPPE": "What are its equipment, vehicles and property worth today, after depreciation?",
+        "startingDebt": "How much does it owe in loans today?",
+        "capexRate": "How much do you spend on new equipment each year, in % of sales?",
+        "arDays": "On average, how many days do customers take to pay you?",
+        "apDays": "And how many days do you take to pay suppliers?",
+        "debtRepayment": "How much of your loans do you pay back each year, not counting interest?"
+      },
+      "done": "Your 5-year model is ready: sales reach {revenue} in year 5. Close this window to see the three statements."
+    }
   },
   "valuation": {
     "title": "💎 Business Valuation Calculator",
@@ -817,7 +894,33 @@
     "colYear": "Year",
     "colFCF": "Free Cash Flow",
     "colDiscountedFCF": "Discounted FCF",
-    "colCumulativePV": "Cumulative PV"
+    "colCumulativePV": "Cumulative PV",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your valuation, one question at a time",
+      "sectionFigures": "Your figures",
+      "sectionRates": "Growth and rates",
+      "sectionMultiples": "Multiples",
+      "askName": "What's the company called?",
+      "askIndustry": "Which industry is closest to yours? Picking one fills in its typical multiples, which you can change later.",
+      "noIndustry": "Skip",
+      "ask": {
+        "revenue": "How much does the company sell in a year?",
+        "ebitda": "Its yearly profit before interest, tax, depreciation and amortisation (EBITDA)? For a loss, say “loss” or put a minus sign.",
+        "netIncome": "Net profit for the year, after everything? Again, a loss can be negative.",
+        "fcf": "Free cash flow: the cash left in a year after running costs and investment?",
+        "netDebt": "Net debt: loans minus cash. If you have more cash than debt, say minus.",
+        "growthRate": "How fast do you expect cash flow to grow each year for the next five, in %?",
+        "discountRate": "Which yearly rate, in %, should future cash be discounted at (the WACC)?",
+        "terminalGrowth": "After those five years, how fast should it keep growing each year, in %?",
+        "ebitdaMultiple": "Which multiple of EBITDA should the valuation use?",
+        "evSalesMultiple": "Which multiple of yearly sales?",
+        "peRatio": "And which multiple of net profit (P/E)?"
+      },
+      "done": "Averaging the methods that apply, the company comes out at about {value}. Close this window to see each method.",
+      "doneNone": "None of the methods gives a value with these figures. Close this window to see why and adjust them."
+    }
   },
   "financialPlanner": {
     "title": "🗺️ Financial Journey",

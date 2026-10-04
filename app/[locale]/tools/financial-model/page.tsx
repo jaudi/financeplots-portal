@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import FinancialModelChat from "./FinancialModelChat";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar,
@@ -591,6 +592,18 @@ export default function FinancialModelPage() {
           ))}
         </div>
       </div>
+            <FinancialModelChat
+              name={companyName}
+              setName={setCompanyName}
+              values={{ baseRevenue, revenueGrowth, cogsRate, opexRate, daRate, interestExpense, taxRate, startingCash, startingPPE, startingDebt, capexRate, arDays, apDays, debtRepayment }}
+              setValue={(key, v) => ({
+                baseRevenue: setBaseRevenue, revenueGrowth: setRevenueGrowth, cogsRate: setCogsRate, opexRate: setOpexRate, daRate: setDaRate,
+                interestExpense: setInterestExpense, taxRate: setTaxRate, startingCash: setStartingCash, startingPPE: setStartingPPE,
+                startingDebt: setStartingDebt, capexRate: setCapexRate, arDays: setArDays, apDays: setApDays, debtRepayment: setDebtRepayment,
+              } as Record<string, (n: number) => void>)[key]?.(v)}
+              setTab={setActiveTab}
+              year5Revenue={years[4].revenue}
+            />
             <RelatedTools current="financial-model" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

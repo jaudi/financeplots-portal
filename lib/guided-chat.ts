@@ -6,8 +6,8 @@
 export interface ChatOption { label: string; words: string[]; whole?: string[]; apply: () => void }
 
 /** How an amount is read back and rounded: money, days and plain counts are whole;
- *  percentages, multiples and decimals keep up to two decimals (2.5%, 1.5×, 2.5). */
-export type AmountUnit = "money" | "number" | "days" | "percent" | "multiple" | "decimal";
+ *  prices, percentages, multiples and decimals keep up to two decimals (£9.99, 2.5%, 1.5×, 2.5). */
+export type AmountUnit = "money" | "price" | "number" | "days" | "percent" | "multiple" | "decimal";
 
 const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 const norm = (s: string) => fold(s).replace(/[^a-z0-9&%£$€¥₹]+/g, " ").trim();
@@ -30,7 +30,7 @@ export function matchOption(options: ChatOption[], heard: string): ChatOption | 
 }
 
 export function roundForUnit(unit: AmountUnit, v: number): number {
-  return unit === "percent" || unit === "multiple" || unit === "decimal" ? Math.round(v * 100) / 100 : Math.round(v);
+  return unit === "money" || unit === "number" || unit === "days" ? Math.round(v) : Math.round(v * 100) / 100;
 }
 
 /** Answers that mean "nothing here", for optional questions. */

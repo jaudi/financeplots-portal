@@ -92,6 +92,7 @@ export default function GuidedChat({
   const num = (v: number) => v.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 2 });
   const show = (unit: AmountUnit, v: number) =>
     unit === "money" ? money(v)
+      : unit === "price" ? `${v < 0 ? "−" : ""}${currency}${Math.abs(v).toLocaleString(locale === "es" ? "es-ES" : "en-GB", { minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 })}`
       : unit === "percent" ? `${num(v)}%`
       : unit === "multiple" ? `${num(v)}×`
       : unit === "days" ? t("days", { n: v })

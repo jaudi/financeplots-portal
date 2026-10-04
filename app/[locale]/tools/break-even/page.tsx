@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import BreakEvenChat from "./BreakEvenChat";
 import { breakEven } from "@/lib/calculators";
 import {
   LineChart,
@@ -678,6 +679,19 @@ export default function BreakEvenPage() {
           ))}
         </div>
       </div>
+            <BreakEvenChat
+              name={companyName}
+              setName={setCompanyName}
+              fixed={fixed}
+              setFixed={setFixedKey}
+              price={sellingPrice}
+              setPrice={setSellingPrice}
+              unitCost={variableCost}
+              setUnitCost={setVariableCost}
+              units={currentUnits}
+              setUnits={setCurrentUnits}
+              bepUnits={calcs.bepUnits}
+            />
             <RelatedTools current="break-even" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>
