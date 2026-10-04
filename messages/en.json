@@ -1196,7 +1196,40 @@
     "disclaimerTitle": "Disclaimer:",
     "disclaimerText": "This tool is for illustrative and planning purposes only. The valuations and insights above are indicative estimates based on simplified models. They do not constitute financial advice, a formal valuation or an offer to buy or sell any business. Consult a qualified M&A advisor, corporate finance professional or accountant before making any decisions related to a business sale, acquisition or restructuring.",
     "backToAllTools": "← Back to tools for companies",
-    "exportPdf": "📄 Export PDF"
+    "exportPdf": "📄 Export PDF",
+    "chatOpen": "Fill in by chat or voice",
+    "chatTitle": "Your company plan, one question at a time",
+    "chatAskCurrency": "Which currency does the company report in?",
+    "chatAsk": {
+      "revenue": "How much does the company sell in a year?",
+      "cogs": "What do those sales cost to make or deliver in a year — materials, stock, direct labour?",
+      "salaries": "How much goes on salaries and wages in a year?",
+      "rent": "And on rent and premises?",
+      "marketing": "On marketing?",
+      "software": "On software and IT?",
+      "otherOpex": "Any other running costs in a year? Say 0 if none.",
+      "da": "What is the yearly wear-and-tear charge on equipment and other assets (depreciation and amortisation)?",
+      "interest": "How much interest does the company pay on its loans in a year?",
+      "taxRate": "What tax rate does the company pay on its profit, in %?",
+      "arDays": "On average, how many days do customers take to pay you?",
+      "apDays": "And how many days do you take to pay your suppliers?",
+      "invDays": "How many days of stock do you usually hold? Say 0 if you sell services.",
+      "capex": "How much do you spend in a year on new equipment, vehicles or premises?",
+      "debtRepay": "How much of your loans do you pay back in a year, not counting interest?",
+      "bsCash": "How much cash does the company have today?",
+      "otherCurrentAssets": "Anything else the company will turn into cash within a year, such as deposits or prepayments? Say 0 if none.",
+      "fixedAssets": "What are the company's equipment, vehicles and property worth today, after depreciation?",
+      "stDebt": "How much debt is due within a year?",
+      "ltDebt": "And debt due later than that?",
+      "otherLiabilities": "Anything else the company owes, such as tax due or unpaid bills? Say 0 if none.",
+      "evEbitdaMult": "For the valuation: what multiple of yearly profit before interest, tax and depreciation (EBITDA) should we use?",
+      "revMult": "What multiple of yearly sales?",
+      "peMult": "And what multiple of yearly net profit (P/E)?",
+      "discountRate": "What yearly rate, in %, should future cash be discounted at (the WACC)?",
+      "termGrowth": "In the long run, how fast do you expect the company's cash to grow each year, in %?"
+    },
+    "chatDone": "That's everything. Your exit-price estimate is ready behind this window — close it to see your plan.",
+    "chatSeeResult": "See my plan"
   },
   "emailCapture": {
     "placeholder": "Your email address",
@@ -1387,6 +1420,9 @@
     "hintAmount": "Type or tap 🎤 · Enter on an empty box keeps the figure shown",
     "hintChoice": "Tap an option, type it or tap 🎤",
     "readAloudOn": "Read questions aloud",
-    "readAloudOff": "Stop reading aloud"
+    "readAloudOff": "Stop reading aloud",
+    "days": "{n, plural, one {# day} other {# days}}",
+    "placeholderText": "Type or speak your answer",
+    "hintText": "Type or tap 🎤 · Enter on an empty box keeps what is shown"
   }
 }

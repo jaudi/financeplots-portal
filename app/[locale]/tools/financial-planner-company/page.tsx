@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
 import SpreadsheetIO from "@/components/SpreadsheetIO";
+import CompanyChat from "./CompanyChat";
 import type { SheetField, SheetValues } from "@/lib/spreadsheet-io";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -1076,6 +1077,14 @@ export default function FinancialPlannerCompanyPage() {
 
         </div>
       </div>
+      <CompanyChat
+        currency={currency}
+        setCurrency={setCurrency}
+        values={sheetValues()}
+        setValue={(key, v) => applySheet({ [key]: v })}
+        stepLabels={STEPS.map(s => s.label)}
+        setStep={setStep}
+      />
       <RelatedTools current="financial-planner-company" />
     </main>
   );

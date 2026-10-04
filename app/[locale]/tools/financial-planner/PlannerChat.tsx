@@ -74,7 +74,7 @@ export default function PlannerChat({
       }),
     ];
     if (askCustomRate) {
-      list.push(add(3, { kind: "amount", id: "custom-rate", ask: t("chatAskCustomRate"), current: 8, unit: "number", apply: api.setCustomRate, min: 0, max: 30 }));
+      list.push(add(3, { kind: "amount", id: "custom-rate", ask: t("chatAskCustomRate"), current: 8, unit: "percent", apply: api.setCustomRate, min: 0, max: 30 }));
     }
     list.push(
       add(4, { kind: "amount", id: "age", ask: t("chatAskAge"), current: api.age, unit: "number", apply: api.setAge, min: 18, max: 90 }),

@@ -1182,7 +1182,40 @@
     "disclaimerTitle": "Aviso legal:",
     "disclaimerText": "Esta herramienta es solo para fines ilustrativos y de planificación. Las valoraciones e información presentadas son estimaciones indicativas basadas en modelos simplificados. No constituyen asesoramiento financiero, una valoración formal ni una oferta de compra o venta de ningún negocio. Consulta a un asesor de fusiones y adquisiciones cualificado, a un profesional de finanzas corporativas o a un contable antes de tomar cualquier decisión relacionada con la venta, adquisición o reestructuración de una empresa.",
     "backToAllTools": "← Volver a herramientas para empresas",
-    "exportPdf": "📄 Exportar PDF"
+    "exportPdf": "📄 Exportar PDF",
+    "chatOpen": "Rellénalo por chat o por voz",
+    "chatTitle": "El plan de tu empresa, pregunta a pregunta",
+    "chatAskCurrency": "¿En qué moneda presenta sus cuentas la empresa?",
+    "chatAsk": {
+      "revenue": "¿Cuánto vende la empresa en un año?",
+      "cogs": "¿Cuánto cuesta producir o entregar esas ventas en un año: materiales, existencias, mano de obra directa?",
+      "salaries": "¿Cuánto se va en sueldos y salarios al año?",
+      "rent": "¿Y en alquiler y locales?",
+      "marketing": "¿En marketing?",
+      "software": "¿En software e informática?",
+      "otherOpex": "¿Algún otro gasto de funcionamiento al año? Di 0 si no hay.",
+      "da": "¿Cuál es el desgaste anual de equipos y otros activos (depreciación y amortización)?",
+      "interest": "¿Cuántos intereses paga la empresa por sus préstamos al año?",
+      "taxRate": "¿Qué tipo impositivo paga la empresa sobre su beneficio, en %?",
+      "arDays": "De media, ¿cuántos días tardan tus clientes en pagarte?",
+      "apDays": "¿Y cuántos días tardas tú en pagar a tus proveedores?",
+      "invDays": "¿Cuántos días de existencias sueles tener? Di 0 si vendes servicios.",
+      "capex": "¿Cuánto gastas al año en equipos, vehículos o locales nuevos?",
+      "debtRepay": "¿Cuánto devuelves de tus préstamos al año, sin contar intereses?",
+      "bsCash": "¿Cuánto efectivo tiene hoy la empresa?",
+      "otherCurrentAssets": "¿Algo más que la empresa convertirá en efectivo en menos de un año, como fianzas o pagos anticipados? Di 0 si no hay.",
+      "fixedAssets": "¿Cuánto valen hoy los equipos, vehículos e inmuebles de la empresa, descontada la depreciación?",
+      "stDebt": "¿Cuánta deuda vence en menos de un año?",
+      "ltDebt": "¿Y deuda que vence más tarde?",
+      "otherLiabilities": "¿Algo más que deba la empresa, como impuestos pendientes o facturas sin pagar? Di 0 si no hay.",
+      "evEbitdaMult": "Para la valoración: ¿qué múltiplo del beneficio anual antes de intereses, impuestos y amortizaciones (EBITDA) usamos?",
+      "revMult": "¿Qué múltiplo de las ventas anuales?",
+      "peMult": "¿Y qué múltiplo del beneficio neto anual (PER)?",
+      "discountRate": "¿A qué tasa anual, en %, descontamos el efectivo futuro (el WACC)?",
+      "termGrowth": "A largo plazo, ¿cuánto esperas que crezca el efectivo de la empresa cada año, en %?"
+    },
+    "chatDone": "Ya está todo. Tu estimación del precio de salida está lista detrás de esta ventana: ciérrala para ver tu plan.",
+    "chatSeeResult": "Ver mi plan"
   },
   "emailCapture": {
     "placeholder": "Tu dirección de email",
@@ -1373,6 +1406,9 @@
     "hintAmount": "Escribe o toca 🎤 · Enter con la casilla vacía mantiene la cifra",
     "hintChoice": "Toca una opción, escríbela o toca 🎤",
     "readAloudOn": "Leer las preguntas en voz alta",
-    "readAloudOff": "Dejar de leer en voz alta"
+    "readAloudOff": "Dejar de leer en voz alta",
+    "days": "{n, plural, one {# día} other {# días}}",
+    "placeholderText": "Escribe o di tu respuesta",
+    "hintText": "Escribe o pulsa 🎤 · Intro con la casilla vacía mantiene lo que se muestra"
   }
 }

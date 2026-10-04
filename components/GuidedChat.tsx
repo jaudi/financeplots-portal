@@ -2,31 +2,29 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { parseAmount } from "@/lib/planner";
+import { matchOption, roundForUnit, type AmountUnit, type ChatOption } from "@/lib/guided-chat";
 
 // A form filled in by answering one question at a time, typed or spoken —
-// used by the Financial Journey and the Personal Budget. Scripted, not AI:
+// used by the Financial Journeys and the Personal Budget. Scripted, not AI:
 // free, the same every time, and nothing is stored (speech is turned into text
 // by the browser's own service). Each answer is applied as it is given, so the
 // tool behind the panel updates as you go.
 
-/** `words`: what someone might say or type to pick this option, in either language. */
-export interface ChatOption { label: string; words: string[]; apply: () => void }
+export { matchOption, type ChatOption };
+
+/** `skip`: checked when the question comes up — true passes over it (e.g. a
+ *  mortgage question after choosing a loan). `section`: lets the visitor skip
+ *  every question of that section in one tap. */
+interface Common { id: string; ask: string; section?: string; skip?: () => boolean }
 
 export type ChatQuestion =
-  | { kind: "choice"; id: string; ask: string; options: ChatOption[]; section?: string }
-  | { kind: "amount"; id: string; ask: string; current: number; unit: "money" | "number"; apply: (v: number) => void; min?: number; max?: number; section?: string };
+  | (Common & { kind: "choice"; options: ChatOption[] })
+  | (Common & { kind: "amount"; current: number; unit: AmountUnit; apply: (v: number) => void; min?: number; max?: number })
+  | (Common & { kind: "text"; current: string; apply: (v: string) => void });
 
 interface Message { from: "bot" | "me"; text: string }
-
-const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-
-/** The option an answer names, if exactly one matches. */
-export function matchOption(options: ChatOption[], heard: string): ChatOption | null {
-  const h = ` ${fold(heard).replace(/[^a-z0-9&%£$€¥₹]+/g, " ")} `;
-  const hits = options.filter((o) => [o.label, ...o.words].some((w) => h.includes(` ${fold(w).trim()} `)));
-  return hits.length === 1 ? hits[0] : null;
-}
 
 const CURRENCY_WORDS: Record<string, string[]> = {
   "£": ["pound", "pounds", "sterling", "libra", "libras", "gbp"],
@@ -54,7 +52,7 @@ function makeRecognition(): Recognition | null {
 }
 
 export default function GuidedChat({
-  questions, currency, title, openLabel, doneText, doneButton, onAsk, onDone,
+  questions, currency, title, openLabel, doneText, doneButton, doneHref, startOpen, greeting, onAsk, onDone,
 }: {
   questions: ChatQuestion[];
   currency: string;
@@ -62,6 +60,12 @@ export default function GuidedChat({
   openLabel: string;
   doneText: string;
   doneButton: string;
+  /** Where the closing button goes; without it, the button just closes the chat. */
+  doneHref?: string;
+  /** Open the chat as soon as this turns true (e.g. arriving from another tool's chat). */
+  startOpen?: boolean;
+  /** A first message before the questions, e.g. what is already filled in. */
+  greeting?: string;
   /** Called with each question as it is asked (to show the matching part of the tool). */
   onAsk?: (q: ChatQuestion) => void;
   onDone?: () => void;
@@ -81,7 +85,14 @@ export default function GuidedChat({
   const input = useRef<HTMLInputElement>(null);
 
   const money = (v: number) => `${currency}${v.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 0 })}`;
-  const show = (q: ChatQuestion, v: number) => (q.kind === "amount" && q.unit === "money" ? money(v) : String(v));
+  const num = (v: number) => v.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 2 });
+  const show = (unit: AmountUnit, v: number) =>
+    unit === "money" ? money(v)
+      : unit === "percent" ? `${num(v)}%`
+      : unit === "multiple" ? `${num(v)}×`
+      : unit === "days" ? t("days", { n: v })
+      : String(v);
+  const shown = (q: ChatQuestion) => (q.kind === "amount" ? show(q.unit, q.current) : q.kind === "text" ? q.current : "");
   const q = questions[index] as ChatQuestion | undefined;
   const done = !q;
 
@@ -91,11 +102,19 @@ export default function GuidedChat({
     return () => recognition.current?.stop();
   }, []);
 
+  useEffect(() => {
+    if (startOpen) setOpen(true);
+  }, [startOpen]);
+
   // Ask the current question (once per question), and let the tool follow along.
   useEffect(() => {
     if (!open) return;
+    if (q?.skip?.()) return setIndex((i) => i + 1);
     const text = q ? q.ask : doneText;
-    setMessages((m) => (m.length && m[m.length - 1].from === "bot" && m[m.length - 1].text === text ? m : [...m, { from: "bot", text }]));
+    setMessages((m) => {
+      if (m.length && m[m.length - 1].from === "bot" && m[m.length - 1].text === text) return m;
+      return [...(m.length === 0 && greeting ? [{ from: "bot" as const, text: greeting }] : m), { from: "bot", text }];
+    });
     if (q) onAsk?.(q);
     else onDone?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,8 +157,13 @@ export default function GuidedChat({
       return reply(t("pickOne"));
     }
     if (!text) {
-      // Enter on an empty box keeps the figure shown.
-      say(t("kept", { value: show(q, q.current) }));
+      // Enter on an empty box keeps what is shown.
+      say(t("kept", { value: shown(q) }));
+      return next();
+    }
+    if (q.kind === "text") {
+      q.apply(text);
+      say(text);
       return next();
     }
     const v = parseAmount(text);
@@ -147,9 +171,9 @@ export default function GuidedChat({
       say(text);
       return reply(q.min !== undefined && q.max !== undefined ? t("notUnderstoodRange", { min: q.min, max: q.max }) : t("notUnderstood"));
     }
-    const clean = Math.round(v);
+    const clean = roundForUnit(q.unit, v);
     q.apply(clean);
-    say(show(q, clean));
+    say(show(q.unit, clean));
     next();
   };
 
@@ -257,7 +281,11 @@ export default function GuidedChat({
                 {t("skipSection", { section: q.section })}
               </button>
             )}
-            {done && (
+            {done && (doneHref ? (
+              <Link href={doneHref} className="self-start mt-1 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-full px-4 py-1.5">
+                {doneButton}
+              </Link>
+            ) : (
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -265,7 +293,7 @@ export default function GuidedChat({
               >
                 {doneButton}
               </button>
-            )}
+            ))}
             <div ref={bottom} />
           </div>
 
@@ -283,7 +311,11 @@ export default function GuidedChat({
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   inputMode={q.kind === "amount" ? "decimal" : "text"}
-                  placeholder={q.kind === "amount" ? t("placeholderAmount", { value: show(q, q.current) }) : t("placeholderChoice")}
+                  placeholder={
+                    q.kind === "choice" ? t("placeholderChoice")
+                      : q.kind === "text" && !q.current ? t("placeholderText")
+                      : t("placeholderAmount", { value: shown(q) })
+                  }
                   aria-label={q.ask}
                   className="flex-1 min-w-0 bg-[#111827] border border-gray-700 focus:border-blue-500 rounded-lg px-3 py-2 text-white text-sm outline-none"
                 />
@@ -302,7 +334,7 @@ export default function GuidedChat({
                   {t("send")}
                 </button>
               </div>
-              <p className="text-[11px] text-gray-500">{listening ? t("listening") : q.kind === "amount" ? t("hintAmount") : t("hintChoice")}</p>
+              <p className="text-[11px] text-gray-500">{listening ? t("listening") : q.kind === "amount" ? t("hintAmount") : q.kind === "text" ? t("hintText") : t("hintChoice")}</p>
             </form>
           )}
         </section>
