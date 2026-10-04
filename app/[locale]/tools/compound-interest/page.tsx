@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CompoundChat from "./CompoundChat";
 import { compoundGrowth } from "@/lib/calculators";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -286,6 +287,20 @@ export default function CompoundInterestPage() {
           ))}
         </div>
       </div>
+            <CompoundChat
+              initial={initialCapital}
+              setInitial={setInitialCapital}
+              monthly={monthlyContribution}
+              setMonthly={setMonthlyContribution}
+              years={years}
+              setYears={setYears}
+              presets={PRESETS.map((p, i) => ({ label: presetLabels[i], rate: p.rate }))}
+              preset={preset}
+              setPreset={setPreset}
+              customRate={customRate}
+              setCustomRate={setCustomRate}
+              finalValue={finalValue}
+            />
             <RelatedTools current="compound-interest" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

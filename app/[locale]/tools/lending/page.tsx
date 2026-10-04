@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import LendingChat from "./LendingChat";
 import { buildSchedule } from "@/lib/calculators";
 import {
   AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -354,6 +355,17 @@ export default function LendingPage() {
           ))}
         </div>
       </div>
+            <LendingChat
+              api={{
+                tab, setTab,
+                loan: { amount: lAmount, rate: lRate, years: lYears },
+                setLoan: p => { if (p.amount !== undefined) setLAmount(p.amount); if (p.rate !== undefined) setLRate(p.rate); if (p.years !== undefined) setLYears(p.years); },
+                mortgage: { amount: mAmount, rate: mRate, years: mYears, savingsRate: mSavRate },
+                setMortgage: p => { if (p.amount !== undefined) setMAmount(p.amount); if (p.rate !== undefined) setMRate(p.rate); if (p.years !== undefined) setMYears(p.years); if (p.savingsRate !== undefined) setMSavRate(p.savingsRate); },
+                payment: activeCalc.pmt,
+                totalInterest: activeCalc.totalInterest,
+              }}
+            />
             <RelatedTools current="lending" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

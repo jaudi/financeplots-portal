@@ -638,7 +638,18 @@
     "colYear": "Year",
     "colPortfolio": "Portfolio Value",
     "colContributed": "Total Contributed",
-    "colInterest": "Interest Earned"
+    "colInterest": "Interest Earned",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your savings, one question at a time",
+      "askInitial": "How much do you have to start with? Say 0 if nothing yet.",
+      "askMonthly": "How much will you add each month?",
+      "askYears": "For how many years? Anything from 1 to 50.",
+      "askRate": "Which yearly return should we assume? These are long-run averages, not promises.",
+      "askCustomRate": "What yearly return, in %?",
+      "done": "After {years} years you would have about {value}. Close this window to see how much of it is interest."
+    }
   },
   "lending": {
     "title": "🏦 Lending Calculator",
@@ -680,7 +691,22 @@
     "colPayment": "Payment",
     "colInterest": "Interest",
     "colPrincipal": "Principal",
-    "colBalance": "Balance"
+    "colBalance": "Balance",
+    "chat": {
+      "open": "Fill in by chat or voice",
+      "see": "See the result",
+      "title": "Your loan, one question at a time",
+      "askKind": "Is it a loan or a mortgage?",
+      "loan": "A loan",
+      "mortgage": "A mortgage",
+      "askLoanAmount": "How much do you want to borrow?",
+      "askMortgageAmount": "How big is the mortgage?",
+      "askRate": "What is the yearly interest rate, in %?",
+      "askYears": "Over how many years? Anything from 1 to 40.",
+      "askSavingsRate": "Last: what could your savings earn a year if you invested them instead of paying the mortgage off early, in %?",
+      "doneLoan": "You would pay {payment} a month, and {interest} in interest over the whole loan. Close this window to see the schedule.",
+      "doneMortgage": "You would pay {payment} a month, and {interest} in interest over the whole mortgage. Close this window to compare paying it off early with investing."
+    }
   },
   "annualBudget": {
     "title": "💰 Annual Budget Planner",

@@ -624,7 +624,18 @@
     "colYear": "Año",
     "colPortfolio": "Valor de la Cartera",
     "colContributed": "Total Aportado",
-    "colInterest": "Intereses Generados"
+    "colInterest": "Intereses Generados",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tus ahorros, pregunta a pregunta",
+      "askInitial": "¿Con cuánto empiezas? Di 0 si aún nada.",
+      "askMonthly": "¿Cuánto añadirás cada mes?",
+      "askYears": "¿Durante cuántos años? De 1 a 50.",
+      "askRate": "¿Qué rentabilidad anual suponemos? Son medias a largo plazo, no promesas.",
+      "askCustomRate": "¿Qué rentabilidad anual, en %?",
+      "done": "En {years} años tendrías unos {value}. Cierra esta ventana para ver cuánto son intereses."
+    }
   },
   "lending": {
     "title": "🏦 Calculadora de Préstamos",
@@ -666,7 +677,22 @@
     "colPayment": "Cuota",
     "colInterest": "Intereses",
     "colPrincipal": "Principal",
-    "colBalance": "Saldo"
+    "colBalance": "Saldo",
+    "chat": {
+      "open": "Rellénalo por chat o por voz",
+      "see": "Ver el resultado",
+      "title": "Tu préstamo, pregunta a pregunta",
+      "askKind": "¿Es un préstamo o una hipoteca?",
+      "loan": "Un préstamo",
+      "mortgage": "Una hipoteca",
+      "askLoanAmount": "¿Cuánto quieres pedir prestado?",
+      "askMortgageAmount": "¿De cuánto es la hipoteca?",
+      "askRate": "¿Cuál es el tipo de interés anual, en %?",
+      "askYears": "¿A cuántos años? De 1 a 40.",
+      "askSavingsRate": "Por último: ¿cuánto podrían rentar tus ahorros al año si los inviertes en lugar de amortizar antes, en %?",
+      "doneLoan": "Pagarías {payment} al mes, y {interest} en intereses durante todo el préstamo. Cierra esta ventana para ver el cuadro de amortización.",
+      "doneMortgage": "Pagarías {payment} al mes, y {interest} en intereses durante toda la hipoteca. Cierra esta ventana para comparar amortizar antes con invertir."
+    }
   },
   "annualBudget": {
     "title": "💰 Presupuesto Anual",
