@@ -106,6 +106,16 @@ Two things to know before changing it:
 
 Length instructions to the model work better as a per-paragraph budget than a total word count.
 
+## Guided chats
+
+`components/GuidedChat.tsx` fills a tool in one question at a time, typed or spoken (the browser's own speech recognition). **Scripted, not AI** — free, the same every time, nothing stored; keep it that way (see the open-bill rule above). Each tool has a small `*Chat.tsx` next to its page that maps its inputs to questions; copy lives in the tool's message namespace (`chat.*`, or `pitchChat` / `takeHomeChat` / `toolFinder`). On 13 tools plus the "Which tool do I need?" finder on the homepage and `/tools` (`lib/tool-finder.ts`). Take-Home Pay's chat hands off to the Personal Budget's (`?salary=…&chat=1`).
+
+- Question kinds: `choice` (pills + words to say), `amount` (units money/price/number/days/percent/multiple/decimal; `allowNegative` reads "loss of 50k"), `text` (`optional`: "none" leaves it blank). `skip` passes a question by earlier answers; `section` lets the visitor skip a group.
+- Pure helpers are in `lib/guided-chat.ts` (`matchOption`, `splitList`, …) and tested in `tests/guided-chat.test.ts`, which also checks every chat's copy has the same keys in en and es.
+- `matchOption` returns null when an answer names two options, unless one matched word contains the other ("pre-seed" over "seed"). Short answers that also appear inside others ("para mí" in "para mi empresa") go in `whole`, which only counts as the entire answer. Keep generic words ("business") out of option words.
+- A chat that fills a list with examples in it (Pitch Deck) must clear the later slots when the visitor says "none", or the examples reach the output.
+- Checking a deploy: every page embeds the whole message file, so curl for copy that is new in that deploy — an existing string proves nothing.
+
 ## Env vars
 
 Set in the Vercel dashboard, **Production scope included** — a variable scoped only to Preview will not reach the live site, and a variable only binds to builds created after it was saved.
