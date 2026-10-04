@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import PitchChat from "./PitchChat";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -820,6 +821,14 @@ export default function PitchDeckPage() {
           <span className="text-gray-500">FinancePlots</span>
         </p>
       </div>
+
+      <PitchChat
+        data={data}
+        set={patch => setData(prev => ({ ...prev, ...patch }))}
+        setSlide={setActiveTab}
+        sym={sym}
+        download={handleGenerate}
+      />
     </main>
   );
 }

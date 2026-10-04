@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { parseAmount } from "@/lib/planner";
-import { matchOption, roundForUnit, type AmountUnit, type ChatOption } from "@/lib/guided-chat";
+import { matchOption, meansNegative, meansNone, roundForUnit, type AmountUnit, type ChatOption } from "@/lib/guided-chat";
 
 // A form filled in by answering one question at a time, typed or spoken —
 // used by the Financial Journeys and the Personal Budget. Scripted, not AI:
@@ -21,8 +21,10 @@ interface Common { id: string; ask: string; section?: string; skip?: () => boole
 
 export type ChatQuestion =
   | (Common & { kind: "choice"; options: ChatOption[] })
-  | (Common & { kind: "amount"; current: number; unit: AmountUnit; apply: (v: number) => void; min?: number; max?: number })
-  | (Common & { kind: "text"; current: string; apply: (v: string) => void });
+  /** `allowNegative`: "a loss of 50k" or "-50k" is read as −50,000; min/max then apply to the size. */
+  | (Common & { kind: "amount"; current: number; unit: AmountUnit; apply: (v: number) => void; min?: number; max?: number; allowNegative?: boolean })
+  /** `optional`: "none" / "nada" leaves it blank. */
+  | (Common & { kind: "text"; current: string; apply: (v: string) => void; optional?: boolean });
 
 interface Message { from: "bot" | "me"; text: string }
 
@@ -52,7 +54,7 @@ function makeRecognition(): Recognition | null {
 }
 
 export default function GuidedChat({
-  questions, currency, title, openLabel, doneText, doneButton, doneHref, startOpen, greeting, onAsk, onDone,
+  questions, currency, title, openLabel, doneText, doneButton, doneHref, doneAction, startOpen, greeting, onAsk, onDone,
 }: {
   questions: ChatQuestion[];
   currency: string;
@@ -62,6 +64,8 @@ export default function GuidedChat({
   doneButton: string;
   /** Where the closing button goes; without it, the button just closes the chat. */
   doneHref?: string;
+  /** What the closing button does before closing the chat (e.g. download the result). */
+  doneAction?: () => void;
   /** Open the chat as soon as this turns true (e.g. arriving from another tool's chat). */
   startOpen?: boolean;
   /** A first message before the questions, e.g. what is already filled in. */
@@ -84,13 +88,14 @@ export default function GuidedChat({
   const bottom = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const money = (v: number) => `${currency}${v.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 0 })}`;
+  const money = (v: number) => `${v < 0 ? "−" : ""}${currency}${Math.abs(v).toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 0 })}`;
   const num = (v: number) => v.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 2 });
   const show = (unit: AmountUnit, v: number) =>
     unit === "money" ? money(v)
       : unit === "percent" ? `${num(v)}%`
       : unit === "multiple" ? `${num(v)}×`
       : unit === "days" ? t("days", { n: v })
+      : unit === "decimal" ? num(v)
       : String(v);
   const shown = (q: ChatQuestion) => (q.kind === "amount" ? show(q.unit, q.current) : q.kind === "text" ? q.current : "");
   const q = questions[index] as ChatQuestion | undefined;
@@ -158,10 +163,15 @@ export default function GuidedChat({
     }
     if (!text) {
       // Enter on an empty box keeps what is shown.
-      say(t("kept", { value: shown(q) }));
+      say(shown(q) ? t("kept", { value: shown(q) }) : t("leftBlank"));
       return next();
     }
     if (q.kind === "text") {
+      if (q.optional && meansNone(text)) {
+        q.apply("");
+        say(t("leftBlank"));
+        return next();
+      }
       q.apply(text);
       say(text);
       return next();
@@ -171,7 +181,7 @@ export default function GuidedChat({
       say(text);
       return reply(q.min !== undefined && q.max !== undefined ? t("notUnderstoodRange", { min: q.min, max: q.max }) : t("notUnderstood"));
     }
-    const clean = roundForUnit(q.unit, v);
+    const clean = roundForUnit(q.unit, q.allowNegative && meansNegative(text) ? -v : v);
     q.apply(clean);
     say(show(q.unit, clean));
     next();
@@ -288,7 +298,10 @@ export default function GuidedChat({
             ) : (
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  doneAction?.();
+                  setOpen(false);
+                }}
                 className="self-start mt-1 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-full px-4 py-1.5"
               >
                 {doneButton}
