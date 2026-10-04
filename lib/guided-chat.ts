@@ -1,7 +1,9 @@
 // The pure parts of components/GuidedChat.tsx, kept apart so tests can reach them.
 
-/** `words`: what someone might say or type to pick this option, in either language. */
-export interface ChatOption { label: string; words: string[]; apply: () => void }
+/** `words`: what someone might say or type to pick this option, in either language.
+ *  `whole`: answers that pick it only when they are the entire answer ("para mí"),
+ *  for short phrases that also turn up inside answers meaning something else ("para mi empresa"). */
+export interface ChatOption { label: string; words: string[]; whole?: string[]; apply: () => void }
 
 /** How an amount is read back and rounded: money, days and plain counts are whole;
  *  percentages, multiples and decimals keep up to two decimals (2.5%, 1.5×, 2.5). */
@@ -14,6 +16,8 @@ const norm = (s: string) => fold(s).replace(/[^a-z0-9&%£$€¥₹]+/g, " ").tri
  *  one matched word contains all the others ("pre-seed" holds "seed"), the
  *  longer one wins. */
 export function matchOption(options: ChatOption[], heard: string): ChatOption | null {
+  const exact = options.find((o) => o.whole?.some((w) => norm(w) === norm(heard)));
+  if (exact) return exact;
   const h = ` ${norm(heard)} `;
   const hits: { o: ChatOption; w: string }[] = [];
   for (const o of options) {

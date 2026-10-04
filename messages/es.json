@@ -1485,5 +1485,33 @@
     "done": "Tu presentación está lista. Descárgala ya, o cierra esta ventana para revisar cada diapositiva antes.",
     "doneFundsOff": "Tu presentación está lista. Un detalle: el uso de fondos suma un {total}%, no un 100%. Cierra esta ventana para corregirlo en la última diapositiva, o descárgala tal cual.",
     "download": "Descargar mi presentación (.pptx)"
+  },
+  "toolFinder": {
+    "open": "¿Qué herramienta necesito?",
+    "title": "Encuentra la herramienta",
+    "askWho": "¿Es para ti y tu propio dinero, o para una empresa?",
+    "whoPersonal": "Mi propio dinero",
+    "whoBusiness": "Una empresa",
+    "askGoalPersonal": "¿Qué quieres saber?",
+    "askGoalBusiness": "¿Qué necesita saber la empresa?",
+    "goal": {
+      "takeHome": "Cuánto cobro de verdad tras impuestos",
+      "budget": "A dónde va mi dinero cada mes",
+      "savings": "Cuánto podrían crecer mis ahorros",
+      "loan": "Cuánto cuesta un préstamo o hipoteca",
+      "invest": "Cómo han ido acciones e inversiones",
+      "plan": "Un plan completo, paso a paso",
+      "year": "Un presupuesto para el año",
+      "cash": "La caja de las próximas semanas",
+      "breakEven": "Cuándo cubrimos costes",
+      "forecast": "Dónde podríamos estar en cinco años",
+      "worth": "Cuánto vale la empresa",
+      "whole": "La foto completa, paso a paso",
+      "raise": "Cómo presentarnos a inversores",
+      "economy": "Qué está haciendo la economía",
+      "listed": "Cómo se comparan las cotizadas"
+    },
+    "done": "La indicada es {name}: {desc}",
+    "go": "Abrir {name} →"
   }
 }

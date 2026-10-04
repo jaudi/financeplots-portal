@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { matchOption, meansNegative, meansNone, roundForUnit, splitList } from "@/lib/guided-chat";
 import { parseAmount } from "@/lib/planner";
+import { audienceSlugs } from "@/lib/audiences";
+import { GOALS, WHO } from "@/lib/tool-finder";
 import en from "@/messages/en.json";
 import es from "@/messages/es.json";
 
@@ -66,5 +68,46 @@ describe("pitch deck chat", () => {
   it("has the same copy in English and Spanish", () => {
     expect(Object.keys(es.pitchChat).sort()).toEqual(Object.keys(en.pitchChat).sort());
     expect(Object.keys(es.pitchChat.section).sort()).toEqual(Object.keys(en.pitchChat.section).sort());
+  });
+});
+
+describe("tool finder chat", () => {
+  const audiences = ["personal", "business"] as const;
+
+  it("leads every goal to a tool in that audience's menu", () => {
+    for (const a of audiences) {
+      const slugs = audienceSlugs(a);
+      for (const g of GOALS[a]) {
+        expect(slugs).toContain(g.slug);
+        expect(en.tools.catalog).toHaveProperty(g.slug);
+      }
+    }
+  });
+
+  it("names every goal in both languages, and each label picks only itself", () => {
+    for (const messages of [en, es]) {
+      for (const a of audiences) {
+        const labels = messages.toolFinder.goal as Record<string, string>;
+        const options = GOALS[a].map((g) => opt(labels[g.key], g.words));
+        for (const o of options) {
+          expect(o.label).toBeTruthy();
+          expect(matchOption(options, o.label)).toBe(o);
+        }
+      }
+    }
+  });
+});
+
+describe("tool finder phrases", () => {
+  it.each([
+    ["for my company", "business"], ["para mi empresa", "business"], ["just me", "personal"], ["para mí", "personal"],
+  ])("reads %s as %s", (heard, who) => {
+    for (const messages of [en, es]) {
+      const options = [
+        { ...opt(messages.toolFinder.whoPersonal), ...WHO.personal },
+        { ...opt(messages.toolFinder.whoBusiness), ...WHO.business },
+      ];
+      expect(matchOption(options, heard)).toBe(options[who === "personal" ? 0 : 1]);
+    }
   });
 });

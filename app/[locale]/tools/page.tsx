@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import AudienceDoors from "@/components/AudienceDoors";
+import ToolFinderChat from "@/components/ToolFinderChat";
 
 // /tools is a chooser: individuals and companies are two different audiences,
 // so each has its own hub (/tools/personal, /tools/business — lib/audiences.ts).
@@ -44,6 +45,7 @@ export default function ToolsPage() {
           <span className="text-blue-400 text-sm font-semibold shrink-0">{tm("bannerCta")}</span>
         </Link>
       </div>
+      <ToolFinderChat />
     </main>
   );
 }

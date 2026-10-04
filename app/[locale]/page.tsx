@@ -6,6 +6,7 @@ import { AUDIENCE_KEYS, audienceSlugs } from "@/lib/audiences";
 import AudienceDoors from "@/components/AudienceDoors";
 import HeroSearch from "@/components/HeroSearch";
 import HeroSnowflake from "@/components/HeroSnowflake";
+import ToolFinderChat from "@/components/ToolFinderChat";
 
 // The homepage, laid out as a landing page (2026-10-03): one promise and one
 // action above the fold, then proof, then the two audiences, then what makes
@@ -318,6 +319,7 @@ export default async function Home() {
         </div>
       </footer>
 
+      <ToolFinderChat />
     </main>
   );
 }

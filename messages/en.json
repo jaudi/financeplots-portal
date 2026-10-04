@@ -1499,5 +1499,33 @@
     "done": "Your deck is ready. Download it now, or close this window to check each slide first.",
     "doneFundsOff": "Your deck is ready. One thing: your use of funds adds up to {total}%, not 100%. Close this window to fix it on the last slide, or download it as it is.",
     "download": "Download my deck (.pptx)"
+  },
+  "toolFinder": {
+    "open": "Which tool do I need?",
+    "title": "Find the right tool",
+    "askWho": "Is this for you and your own money, or for a company?",
+    "whoPersonal": "My own money",
+    "whoBusiness": "A company",
+    "askGoalPersonal": "What do you want to find out?",
+    "askGoalBusiness": "What does the company need to know?",
+    "goal": {
+      "takeHome": "What I really earn after tax",
+      "budget": "Where my money goes each month",
+      "savings": "How my savings could grow",
+      "loan": "What a loan or mortgage costs",
+      "invest": "How shares and investments have done",
+      "plan": "A full plan, step by step",
+      "year": "A budget for the year",
+      "cash": "Cash for the next few weeks",
+      "breakEven": "When we break even",
+      "forecast": "Where we could be in five years",
+      "worth": "What the company is worth",
+      "whole": "The whole picture, step by step",
+      "raise": "How to pitch to investors",
+      "economy": "What the economy is doing",
+      "listed": "How listed companies compare"
+    },
+    "done": "{name} is the one: {desc}",
+    "go": "Open {name} →"
   }
 }
