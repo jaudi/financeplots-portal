@@ -583,7 +583,8 @@
     "pdfColCategory": "Category",
     "pdfColItem": "Item",
     "pdfColPct": "% of spending",
-    "pdfFooter": "For information only · Not financial advice"
+    "pdfFooter": "For information only · Not financial advice",
+    "chatFromTakeHome": "Your take-home pay of {amount} a month is already in. Now any other income, then your spending."
   },
   "compoundInterest": {
     "title": "💹 Compound Interest Calculator",
@@ -1424,5 +1425,29 @@
     "days": "{n, plural, one {# day} other {# days}}",
     "placeholderText": "Type or speak your answer",
     "hintText": "Type or tap 🎤 · Enter on an empty box keeps what is shown"
+  },
+  "takeHomeChat": {
+    "open": "Work it out by chat or voice",
+    "title": "Your take-home pay, one question at a time",
+    "askMode": "Do you know your yearly salary, or how much you want to take home each month?",
+    "modeSalary": "I know my salary",
+    "modeTarget": "I know what I want to take home",
+    "askSalary": "What is your salary per year, before tax?",
+    "askTarget": "How much do you want to take home each month, after tax?",
+    "askRegion": "Where do you pay income tax?",
+    "regionRest": "England, Wales or Northern Ireland",
+    "regionScotland": "Scotland",
+    "askPension": "What percentage of your salary do you pay into your pension? Say 0 if none.",
+    "askPensionMethod": "How is your pension paid? Your payslip or HR can tell you.",
+    "methodSacrifice": "Salary sacrifice",
+    "methodNetPay": "Net pay",
+    "methodRelief": "Relief at source",
+    "askLoan": "Are you repaying a student loan? If so, which plan?",
+    "askPostgrad": "Are you also repaying a postgraduate loan?",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None",
+    "done": "You take home about {amount} a month. Close this window to see your payslip, or plan where that money goes next.",
+    "toBudget": "Plan my budget with this →"
   }
 }

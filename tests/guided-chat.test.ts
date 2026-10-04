@@ -35,3 +35,10 @@ describe("guided chat", () => {
     expect(Object.keys(es.companyPlanner.chatAsk).sort()).toEqual(Object.keys(en.companyPlanner.chatAsk).sort());
   });
 });
+
+describe("take-home chat copy", () => {
+  it("has the same keys in English and Spanish", () => {
+    expect(Object.keys(es.takeHomeChat).sort()).toEqual(Object.keys(en.takeHomeChat).sort());
+    expect(es.personalBudget.chatFromTakeHome).toBeTruthy();
+  });
+});

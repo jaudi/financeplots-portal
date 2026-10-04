@@ -569,7 +569,8 @@
     "pdfColCategory": "Categoría",
     "pdfColItem": "Partida",
     "pdfColPct": "% del gasto",
-    "pdfFooter": "Solo informativo · No es asesoramiento financiero"
+    "pdfFooter": "Solo informativo · No es asesoramiento financiero",
+    "chatFromTakeHome": "Tu sueldo neto de {amount} al mes ya está puesto. Ahora el resto de ingresos y después tus gastos."
   },
   "compoundInterest": {
     "title": "💹 Calculadora de Interés Compuesto",
@@ -1410,5 +1411,29 @@
     "days": "{n, plural, one {# día} other {# días}}",
     "placeholderText": "Escribe o di tu respuesta",
     "hintText": "Escribe o pulsa 🎤 · Intro con la casilla vacía mantiene lo que se muestra"
+  },
+  "takeHomeChat": {
+    "open": "Calcúlalo por chat o por voz",
+    "title": "Tu sueldo neto, pregunta a pregunta",
+    "askMode": "¿Sabes tu salario bruto anual, o cuánto quieres cobrar neto cada mes?",
+    "modeSalary": "Sé mi salario",
+    "modeTarget": "Sé cuánto quiero cobrar",
+    "askSalary": "¿Cuál es tu salario anual, antes de impuestos?",
+    "askTarget": "¿Cuánto quieres cobrar cada mes, después de impuestos?",
+    "askRegion": "¿Dónde pagas el impuesto sobre la renta?",
+    "regionRest": "Inglaterra, Gales o Irlanda del Norte",
+    "regionScotland": "Escocia",
+    "askPension": "¿Qué porcentaje de tu salario aportas a tu pensión? Di 0 si nada.",
+    "askPensionMethod": "¿Cómo se paga tu pensión? Lo indica tu nómina o te lo dicen en RR. HH.",
+    "methodSacrifice": "Salary sacrifice (desde el bruto)",
+    "methodNetPay": "Net pay (antes de impuestos)",
+    "methodRelief": "Relief at source (desde el neto)",
+    "askLoan": "¿Estás devolviendo un préstamo de estudios? Si es así, ¿de qué plan?",
+    "askPostgrad": "¿Devuelves también un préstamo de posgrado?",
+    "yes": "Sí",
+    "no": "No",
+    "none": "Ninguno",
+    "done": "Cobras unas {amount} al mes. Cierra esta ventana para ver tu nómina, o planifica a dónde va ese dinero.",
+    "toBudget": "Planificar mi presupuesto con esto →"
   }
 }

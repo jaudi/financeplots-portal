@@ -156,12 +156,17 @@ export default function PersonalBudgetPage() {
   );
   const [isExporting, setIsExporting] = useState(false);
   const [pdfError, setPdfError] = useState<string>("");
+  const [fromTakeHome, setFromTakeHome] = useState(false);
 
-  // ?salary= (monthly take-home) arrives from the Take-Home Pay tool's "Plan your budget" link.
+  // ?salary= (monthly take-home) arrives from the Take-Home Pay tool's "Plan your budget" link,
+  // with &chat=1 when it comes from that tool's chat: the budget chat then carries on from there.
   useEffect(() => {
-    const salary = Number(new URLSearchParams(window.location.search).get("salary"));
+    const params = new URLSearchParams(window.location.search);
+    const salary = Number(params.get("salary"));
     if (Number.isFinite(salary) && salary > 0 && salary <= 1_000_000) {
       setIncome(prev => ({ ...prev, salary: Math.round(salary) }));
+      setCurrency("£");
+      if (params.get("chat") === "1") setFromTakeHome(true);
     }
   }, []);
 
@@ -538,6 +543,7 @@ export default function PersonalBudgetPage() {
               expenses={expenses}
               setExpense={(key, v) => setExpenses(p => ({ ...p, [key]: v }))}
               openGroup={cat => setOpenGroups(p => ({ ...p, [cat]: true }))}
+              fromTakeHome={fromTakeHome}
             />
             <RelatedTools current="personal-budget" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>

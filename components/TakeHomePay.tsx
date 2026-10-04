@@ -13,6 +13,7 @@ import {
   type UkRegion,
 } from "@/lib/calculators";
 import { takeHomeChart } from "@/lib/charts/tool-charts";
+import TakeHomeChat from "@/components/TakeHomeChat";
 
 // The maths lives in lib/calculators.ts, shared with the MCP tool take_home_pay,
 // so the page and the MCP always agree. Chart colours follow series position,
@@ -314,6 +315,13 @@ export default function TakeHomePay({ initialSalary, initialTarget }: { initialS
           self-assessment.
         </p>
       </div>
+
+      <TakeHomeChat
+        api={{
+          mode, salary, target, pensionPct, takeHomeMonthly: monthly(r.takeHome),
+          setMode, setSalary, setTarget, setRegion, setPensionPct, setPensionMethod, setLoan, setPostgrad,
+        }}
+      />
     </div>
   );
 }
