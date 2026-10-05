@@ -11,8 +11,9 @@ export const FIXED_KEYS = ["rent", "payroll", "insurance", "depreciation", "mark
 export type FixedKey = (typeof FIXED_KEYS)[number];
 
 export default function BreakEvenChat({
-  name, setName, fixed, setFixed, price, setPrice, unitCost, setUnitCost, units, setUnits, bepUnits,
+  currency, name, setName, fixed, setFixed, price, setPrice, unitCost, setUnitCost, units, setUnits, bepUnits,
 }: {
+  currency: string;
   name: string;
   setName: (v: string) => void;
   fixed: Record<FixedKey, number>;
@@ -46,7 +47,7 @@ export default function BreakEvenChat({
   return (
     <GuidedChat
       questions={questions}
-      currency="£"
+      currency={currency}
       title={t("chat.title")}
       openLabel={t("chat.open")}
       doneText={bepUnits === null ? t("chat.doneNoMargin") : t("chat.done", { units: Math.ceil(bepUnits).toLocaleString("en-GB") })}

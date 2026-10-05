@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
 });
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
-const gbp = (n: number | null) => (n === null ? "n/a" : `£${fmt(n)}`);
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 interface DCFRow { year: number; fcf: number; discountedFCF: number; cumulativePV: number }
 
 interface Props {
+  currency: string;
   companyName: string;
   revenue: number;
   ebitda: number;
@@ -56,10 +56,12 @@ interface Props {
 
 // Values passed in are equity values (enterprise value minus net debt).
 export default function ValuationPDF({
+  currency,
   companyName, revenue, ebitda, netIncome, fcf,
   growthRate, discountRate, terminalGrowth, ebitdaMultiple, peRatio,
   dcfValue, epsValue, evValue, avgValuation, netDebt, enterpriseAvg, dcfRows,
 }: Props) {
+  const gbp = (n: number | null) => (n === null ? "n/a" : `${currency}${fmt(n)}`);
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const ebitdaMargin = revenue > 0 ? (ebitda / revenue) * 100 : 0;
   const netMargin = revenue > 0 ? (netIncome / revenue) * 100 : 0;
@@ -110,11 +112,11 @@ export default function ValuationPDF({
               <Text style={styles.tableHeaderCell}>Value</Text>
             </View>
             {[
-              ["Annual Revenue", `£${fmt(revenue)}`],
-              ["EBITDA", `£${fmt(ebitda)} (${fmtM(ebitdaMargin)}%)`],
-              ["Net Income", `£${fmt(netIncome)} (${fmtM(netMargin)}%)`],
-              ["Free Cash Flow", `£${fmt(fcf)}`],
-              ["Net Debt (debt − cash)", `£${fmt(netDebt)}`],
+              ["Annual Revenue", `${currency}${fmt(revenue)}`],
+              ["EBITDA", `${currency}${fmt(ebitda)} (${fmtM(ebitdaMargin)}%)`],
+              ["Net Income", `${currency}${fmt(netIncome)} (${fmtM(netMargin)}%)`],
+              ["Free Cash Flow", `${currency}${fmt(fcf)}`],
+              ["Net Debt (debt − cash)", `${currency}${fmt(netDebt)}`],
               ["Enterprise Value (avg)", gbp(enterpriseAvg)],
             ].map(([label, value], idx) => (
               <View key={label} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
@@ -152,9 +154,9 @@ export default function ValuationPDF({
         {dcfRows.map((row, idx) => (
           <View key={row.year} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
             <Text style={styles.tableCellBold}>{row.year}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.fcf)}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.discountedFCF)}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.cumulativePV)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.fcf)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.discountedFCF)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.cumulativePV)}</Text>
           </View>
         ))}
 

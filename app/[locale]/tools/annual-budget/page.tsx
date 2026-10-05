@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import AnnualBudgetChat from "./AnnualBudgetChat";
 import SpreadsheetIO from "@/components/SpreadsheetIO";
 import type { SheetField, SheetValues } from "@/lib/spreadsheet-io";
@@ -62,6 +63,7 @@ function PctInput({ label, value, onChange }: { label: string; value: number; on
 }
 
 export default function AnnualBudgetPage() {
+  const [currency] = useCurrency();
   const t = useTranslations("annualBudget");
   const tc = useTranslations("toolCommon");
   const [companyName, setCompanyName] = useState("My Company");
@@ -155,6 +157,7 @@ export default function AnnualBudgetPage() {
       const { default: AnnualBudgetPDF } = await import("./pdf");
       const blob = await pdf(
         <AnnualBudgetPDF
+          currency={currency}
           companyName={companyName}
           year={year}
           months={months}
@@ -177,7 +180,7 @@ export default function AnnualBudgetPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [companyName, year, months, totals, avgGrossMargin, avgEbitdaMargin]);
+  }, [currency, companyName, year, months, totals, avgGrossMargin, avgEbitdaMargin]);
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -202,6 +205,7 @@ export default function AnnualBudgetPage() {
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
@@ -261,7 +265,7 @@ export default function AnnualBudgetPage() {
                     <div className="flex flex-col gap-1">
                       <label className="text-xs text-gray-400">{t("labelBaseRevenue")}</label>
                       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
-                        <span className="text-gray-500 text-sm mr-1.5 shrink-0">£</span>
+                        <span className="text-gray-500 text-sm mr-1.5 shrink-0">{currency}</span>
                         <input
                           type="number"
                           min={0}
@@ -328,7 +332,7 @@ export default function AnnualBudgetPage() {
                     ].map(row => (
                       <div key={row.label} className="flex justify-between border-b border-gray-800 pb-1.5">
                         <span className="text-gray-400">{row.label}</span>
-                        <span className={`font-semibold ${row.color}`}>£{fmt(row.value)}</span>
+                        <span className={`font-semibold ${row.color}`}>{currency}{fmt(row.value)}</span>
                       </div>
                     ))}
                   </div>
@@ -340,10 +344,10 @@ export default function AnnualBudgetPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* KPI Cards */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label={t("kpiRevenue")} value={`£${fmt(totals.revenue)}`} sub={`${year}`} color="green" />
-                <KpiCard label={t("kpiGrossProfit")} value={`£${fmt(totals.grossProfit)}`} sub={`${fmtM(avgGrossMargin)}% margin`} />
-                <KpiCard label={t("kpiEBITDA")} value={`£${fmt(totals.ebitda)}`} sub={`${fmtM(avgEbitdaMargin)}% margin`} color={totals.ebitda >= 0 ? "green" : "red"} />
-                <KpiCard label={t("kpiNetIncome")} value={`£${fmt(totals.netIncome)}`} sub="Bottom line" color={totals.netIncome >= 0 ? "green" : "red"} />
+                <KpiCard label={t("kpiRevenue")} value={`${currency}${fmt(totals.revenue)}`} sub={`${year}`} color="green" />
+                <KpiCard label={t("kpiGrossProfit")} value={`${currency}${fmt(totals.grossProfit)}`} sub={`${fmtM(avgGrossMargin)}% margin`} />
+                <KpiCard label={t("kpiEBITDA")} value={`${currency}${fmt(totals.ebitda)}`} sub={`${fmtM(avgEbitdaMargin)}% margin`} color={totals.ebitda >= 0 ? "green" : "red"} />
+                <KpiCard label={t("kpiNetIncome")} value={`${currency}${fmt(totals.netIncome)}`} sub="Bottom line" color={totals.netIncome >= 0 ? "green" : "red"} />
               </div>
 
               {/* Revenue & Profit Chart */}
@@ -356,12 +360,12 @@ export default function AnnualBudgetPage() {
                     <YAxis
                       stroke="#374151"
                       tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => v >= 1000000 ? `£${(v / 1000000).toFixed(1)}M` : `£${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={v => v >= 1000000 ? `${currency}${(v / 1000000).toFixed(1)}M` : `${currency}${(v / 1000).toFixed(0)}k`}
                       width={70}
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value: unknown) => [`£${fmt(Number(value))}`, undefined]}
+                      formatter={(value: unknown) => [`${currency}${fmt(Number(value))}`, undefined]}
                     />
                     <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 8 }} />
                     <Bar dataKey="Revenue" fill="#1d4ed8" radius={[3, 3, 0, 0]} />
@@ -407,22 +411,22 @@ export default function AnnualBudgetPage() {
                       {months.map((m, idx) => (
                         <tr key={m.month} className={`border-b border-gray-800 text-xs transition hover:bg-gray-800/20 ${idx % 2 === 1 ? "bg-gray-900/20" : ""}`}>
                           <td className="py-2 pr-4 text-white font-semibold">{m.month}</td>
-                          <td className="py-2 pr-4 text-green-400 font-semibold">£{fmt(m.revenue)}</td>
-                          <td className="py-2 pr-4 text-red-400">£{fmt(m.cogs)}</td>
-                          <td className="py-2 pr-4 text-gray-300">£{fmt(m.grossProfit)}</td>
-                          <td className="py-2 pr-4 text-red-400">£{fmt(m.opex)}</td>
-                          <td className="py-2 pr-4 text-gray-300">£{fmt(m.ebitda)}</td>
-                          <td className={`py-2 pr-4 font-semibold ${m.netIncome >= 0 ? "text-green-400" : "text-red-400"}`}>£{fmt(m.netIncome)}</td>
+                          <td className="py-2 pr-4 text-green-400 font-semibold">{currency}{fmt(m.revenue)}</td>
+                          <td className="py-2 pr-4 text-red-400">{currency}{fmt(m.cogs)}</td>
+                          <td className="py-2 pr-4 text-gray-300">{currency}{fmt(m.grossProfit)}</td>
+                          <td className="py-2 pr-4 text-red-400">{currency}{fmt(m.opex)}</td>
+                          <td className="py-2 pr-4 text-gray-300">{currency}{fmt(m.ebitda)}</td>
+                          <td className={`py-2 pr-4 font-semibold ${m.netIncome >= 0 ? "text-green-400" : "text-red-400"}`}>{currency}{fmt(m.netIncome)}</td>
                         </tr>
                       ))}
                       <tr className="border-t-2 border-blue-800 bg-blue-900/10 text-xs font-bold">
                         <td className="py-2 pr-4 text-white">{t("rowTotal")}</td>
-                        <td className="py-2 pr-4 text-green-400">£{fmt(totals.revenue)}</td>
-                        <td className="py-2 pr-4 text-red-400">£{fmt(totals.cogs)}</td>
-                        <td className="py-2 pr-4 text-white">£{fmt(totals.grossProfit)}</td>
-                        <td className="py-2 pr-4 text-red-400">£{fmt(totals.opex)}</td>
-                        <td className="py-2 pr-4 text-white">£{fmt(totals.ebitda)}</td>
-                        <td className={`py-2 pr-4 ${totals.netIncome >= 0 ? "text-green-400" : "text-red-400"}`}>£{fmt(totals.netIncome)}</td>
+                        <td className="py-2 pr-4 text-green-400">{currency}{fmt(totals.revenue)}</td>
+                        <td className="py-2 pr-4 text-red-400">{currency}{fmt(totals.cogs)}</td>
+                        <td className="py-2 pr-4 text-white">{currency}{fmt(totals.grossProfit)}</td>
+                        <td className="py-2 pr-4 text-red-400">{currency}{fmt(totals.opex)}</td>
+                        <td className="py-2 pr-4 text-white">{currency}{fmt(totals.ebitda)}</td>
+                        <td className={`py-2 pr-4 ${totals.netIncome >= 0 ? "text-green-400" : "text-red-400"}`}>{currency}{fmt(totals.netIncome)}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -448,6 +452,7 @@ export default function AnnualBudgetPage() {
         </div>
       </div>
             <AnnualBudgetChat
+              currency={currency}
               name={companyName}
               setName={setCompanyName}
               year={year}

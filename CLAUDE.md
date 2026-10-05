@@ -106,6 +106,11 @@ Two things to know before changing it:
 
 Length instructions to the model work better as a per-paragraph budget than a total word count.
 
+## Currencies and the 13-week cash flow
+
+- **Pounds, dollars and euros only** (2026-10-05). `lib/currency.ts` holds the list; `components/CurrencyPicker.tsx` is the £/$/€ pills plus `useCurrency()`, one choice shared by every planning tool through `localStorage` (`financeplots:currency`), so picking € once carries to the next tool. Only the symbol changes — nothing is converted. Each tool passes `currency` to its PDF and chat; message strings take a `{currency}` placeholder rather than a written £. Take-home pay stays in pounds (UK tax); the stock tools show each listing's own currency.
+- **13-week cash flow** (`lib/cash-flow.ts`, tested in `tests/cash-flow.test.ts`): cash in is revenue (customer receipts) and other income; cash out is supplier payment runs, payroll, taxes and direct debits. Each line has a schedule — amount per payment, weekly / fortnightly / monthly (every 52/12 weeks) / once, first week — and changing a schedule refills only that line, so cells typed in the weekly grid on other lines survive. A minimum cash buffer flags the weeks that end below it.
+
 ## Guided chats
 
 `components/GuidedChat.tsx` fills a tool in one question at a time, typed or spoken (the browser's own speech recognition). **Scripted, not AI** — free, the same every time, nothing stored; keep it that way (see the open-bill rule above). Each tool has a small `*Chat.tsx` next to its page that maps its inputs to questions; copy lives in the tool's message namespace (`chat.*`, or `pitchChat` / `takeHomeChat` / `toolFinder`). On 13 tools plus the "Which tool do I need?" finder on the homepage and `/tools` (`lib/tool-finder.ts`). Take-Home Pay's chat hands off to the Personal Budget's (`?salary=…&chat=1`).

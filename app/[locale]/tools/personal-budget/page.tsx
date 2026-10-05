@@ -4,6 +4,8 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import { useCurrency } from "@/components/CurrencyPicker";
+import { CURRENCIES } from "@/lib/currency";
 import BudgetChat from "./BudgetChat";
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
@@ -12,7 +14,6 @@ import {
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
-const CURRENCIES = ["£", "$", "€", "¥", "₹"];
 
 const EXPENSE_GROUPS = [
   {
@@ -144,7 +145,7 @@ export default function PersonalBudgetPage() {
   const locale = useLocale();
 
   const [budgetName, setBudgetName] = useState("My Budget");
-  const [currency, setCurrency] = useState("£");
+  const [currency, setCurrency] = useCurrency();
   const [income, setIncome] = useState<Values>(() =>
     Object.fromEntries(INCOME_ITEMS.map(i => [i.key, i.default]))
   );
@@ -168,7 +169,7 @@ export default function PersonalBudgetPage() {
       setCurrency("£");
       if (params.get("chat") === "1") setFromTakeHome(true);
     }
-  }, []);
+  }, [setCurrency]);
 
   const toggleGroup = (cat: string) =>
     setOpenGroups(prev => ({ ...prev, [cat]: !prev[cat] }));
@@ -228,7 +229,7 @@ export default function PersonalBudgetPage() {
             footer: t("pdfFooter"),
           }}
           budgetName={budgetName}
-          currency={currency.replace("₹", "Rs ")}
+          currency={currency}
           totalIncome={totalIncome}
           totalExpenses={totalExpenses}
           netSaving={netSaving}

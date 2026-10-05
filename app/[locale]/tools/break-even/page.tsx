@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import BreakEvenChat from "./BreakEvenChat";
 import { breakEven } from "@/lib/calculators";
 import {
@@ -43,7 +44,7 @@ function NumInput({
   onChange,
   min = 0,
   step = 100,
-  prefix = "£",
+  prefix: prefixProp,
 }: {
   label: string;
   value: number;
@@ -52,6 +53,8 @@ function NumInput({
   step?: number;
   prefix?: string;
 }) {
+  const [currency] = useCurrency();
+  const prefix = prefixProp ?? currency;
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400 font-medium">{label}</label>
@@ -105,6 +108,7 @@ function KpiCard({
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function BreakEvenPage() {
+  const [currency] = useCurrency();
   const t = useTranslations("breakEven");
   const tc = useTranslations("toolCommon");
 
@@ -198,6 +202,7 @@ export default function BreakEvenPage() {
       const { default: BreakEvenPDF } = await import("./pdf");
       const blob = await pdf(
         <BreakEvenPDF
+          currency={currency}
           companyName={companyName}
           bepUnits={calcs.bepUnits ?? 0}
           bepRevenue={calcs.bepRevenue ?? 0}
@@ -221,7 +226,7 @@ export default function BreakEvenPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [invalid, isExporting, companyName, calcs, currentUnits, fixed, sensitivityRows]);
+  }, [currency, invalid, isExporting, companyName, calcs, currentUnits, fixed, sensitivityRows]);
 
   // ── Render ──────────────────────────────────────────────────────────────────
 
@@ -264,6 +269,7 @@ export default function BreakEvenPage() {
               {t("title")}
             </h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={invalid || isExporting}
@@ -340,7 +346,7 @@ export default function BreakEvenPage() {
                     <div className="flex justify-between text-sm pt-2 border-t border-gray-800 mt-1">
                       <span className="text-gray-400">{t("totalFixed")}</span>
                       <span className="text-white font-bold">
-                        £{fmt(calcs.totalFixed)}
+                        {currency}{fmt(calcs.totalFixed)}
                       </span>
                     </div>
                   </div>
@@ -392,19 +398,19 @@ export default function BreakEvenPage() {
                   value={calcs.bepUnits !== null ? `${fmt(calcs.bepUnits)} ${t("kpiProfitUnits")}` : "N/A"}
                   sub={
                     calcs.bepRevenue !== null
-                      ? `${t("kpiBepRevenue")}: £${fmt(calcs.bepRevenue)}`
+                      ? `${t("kpiBepRevenue")}: ${currency}${fmt(calcs.bepRevenue)}`
                       : "—"
                   }
                 />
                 <KpiCard
                   label={t("kpiCM")}
-                  value={`£${fmtM(calcs.cm)}`}
+                  value={`${currency}${fmtM(calcs.cm)}`}
                   sub={`${t("kpiCMRatio")}: ${(calcs.cmRatio * 100).toFixed(1)}%`}
                   color="green"
                 />
                 <KpiCard
                   label={t("kpiProfit")}
-                  value={`£${fmt(calcs.currentProfit)}`}
+                  value={`${currency}${fmt(calcs.currentProfit)}`}
                   sub={`${t("kpiProfitAt")} ${fmt(currentUnits)} ${t("kpiProfitUnits")}`}
                   color={calcs.currentProfit >= 0 ? "green" : "red"}
                 />
@@ -456,7 +462,7 @@ export default function BreakEvenPage() {
                       stroke="#374151"
                       tick={{ fill: "#6b7280", fontSize: 11 }}
                       tickFormatter={(v) =>
-                        v >= 1000 ? `£${(v / 1000).toFixed(0)}k` : `£${v}`
+                        v >= 1000 ? `${currency}${(v / 1000).toFixed(0)}k` : `${currency}${v}`
                       }
                       width={60}
                     />
@@ -469,7 +475,7 @@ export default function BreakEvenPage() {
                         fontSize: 12,
                       }}
                       labelStyle={{ color: "#9ca3af" }}
-                      formatter={(value) => [`£${fmt(Number(value))}`, undefined]}
+                      formatter={(value) => [`${currency}${fmt(Number(value))}`, undefined]}
                       labelFormatter={(v) => `Units: ${fmt(v as number)}`}
                     />
                     <Legend
@@ -571,14 +577,14 @@ export default function BreakEvenPage() {
                               {fmt(row.units)}
                             </td>
                             <td className="py-2 pr-3 text-gray-300">
-                              £{fmt(row.revenue)}
+                              {currency}{fmt(row.revenue)}
                             </td>
                             <td
                               className={`py-2 pr-3 font-semibold ${
                                 row.profit >= 0 ? "text-green-400" : "text-red-400"
                               }`}
                             >
-                              £{fmt(row.profit)}
+                              {currency}{fmt(row.profit)}
                             </td>
                             <td className="py-2">
                               <span
@@ -635,7 +641,7 @@ export default function BreakEvenPage() {
                             fontSize: 12,
                           }}
                           formatter={(value) => [
-                            `£${fmt(Number(value))}`,
+                            `${currency}${fmt(Number(value))}`,
                             undefined,
                           ]}
                         />
@@ -652,7 +658,7 @@ export default function BreakEvenPage() {
                         <div>
                           <div className="text-xs text-gray-400">{item.name}</div>
                           <div className="text-xs text-white font-semibold">
-                            £{fmt(item.value)}
+                            {currency}{fmt(item.value)}
                           </div>
                         </div>
                       </div>
@@ -680,6 +686,7 @@ export default function BreakEvenPage() {
         </div>
       </div>
             <BreakEvenChat
+              currency={currency}
               name={companyName}
               setName={setCompanyName}
               fixed={fixed}

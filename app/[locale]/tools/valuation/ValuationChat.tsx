@@ -33,8 +33,9 @@ function industryWords(ind: Industry): string[] {
 }
 
 export default function ValuationChat({
-  name, setName, applyIndustry, values, setValue, average,
+  currency, name, setName, applyIndustry, values, setValue, average,
 }: {
+  currency: string;
   name: string;
   setName: (v: string) => void;
   applyIndustry: (ind: Industry) => void;
@@ -65,10 +66,10 @@ export default function ValuationChat({
   return (
     <GuidedChat
       questions={questions}
-      currency="£"
+      currency={currency}
       title={t("chat.title")}
       openLabel={t("chat.open")}
-      doneText={average === null ? t("chat.doneNone") : t("chat.done", { value: `£${Math.round(average).toLocaleString("en-GB")}` })}
+      doneText={average === null ? t("chat.doneNone") : t("chat.done", { value: `${currency}${Math.round(average).toLocaleString("en-GB")}` })}
       doneButton={t("chat.see")}
     />
   );

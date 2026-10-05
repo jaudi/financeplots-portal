@@ -113,6 +113,7 @@ interface SensitivityRow {
 }
 
 interface Props {
+  currency: string;
   companyName: string;
   bepUnits: number;
   bepRevenue: number;
@@ -142,6 +143,7 @@ const FIXED_LABELS: [keyof FixedCosts, string][] = [
 ];
 
 export default function BreakEvenPDF({
+  currency,
   companyName,
   bepUnits,
   bepRevenue,
@@ -182,16 +184,16 @@ export default function BreakEvenPDF({
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Break-Even Units</Text>
             <Text style={styles.kpiValue}>{fmt(bepUnits)}</Text>
-            <Text style={styles.kpiSub}>BEP revenue: £{fmt(bepRevenue)}</Text>
+            <Text style={styles.kpiSub}>BEP revenue: {currency}{fmt(bepRevenue)}</Text>
           </View>
           <View style={[styles.kpiCard, styles.kpiCardGreen]}>
             <Text style={styles.kpiLabel}>Contribution Margin</Text>
-            <Text style={styles.kpiValue}>£{fmtM(contributionMargin)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmtM(contributionMargin)}</Text>
             <Text style={styles.kpiSub}>CM ratio: {(cmRatio * 100).toFixed(1)}%</Text>
           </View>
           <View style={[styles.kpiCard, currentProfit >= 0 ? styles.kpiCardGreen : styles.kpiCardRed]}>
             <Text style={styles.kpiLabel}>Current Profit</Text>
-            <Text style={styles.kpiValue}>£{fmt(currentProfit)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(currentProfit)}</Text>
             <Text style={styles.kpiSub}>At {fmt(currentUnits)} units</Text>
           </View>
           <View style={[styles.kpiCard, mosUnits >= 0 ? styles.kpiCardGreen : styles.kpiCardRed]}>
@@ -220,10 +222,10 @@ export default function BreakEvenPDF({
               <Text style={row.isCurrent ? styles.tableCellBold : styles.tableCell}>
                 {fmt(row.units)}
               </Text>
-              <Text style={styles.tableCell}>£{fmt(row.revenue)}</Text>
-              <Text style={styles.tableCell}>£{fmt(row.totalCost)}</Text>
+              <Text style={styles.tableCell}>{currency}{fmt(row.revenue)}</Text>
+              <Text style={styles.tableCell}>{currency}{fmt(row.totalCost)}</Text>
               <Text style={row.profit >= 0 ? styles.tableCellGreen : styles.tableCellRed}>
-                £{fmt(row.profit)}
+                {currency}{fmt(row.profit)}
               </Text>
               <Text style={styles.tableCell}>{margin.toFixed(1)}%</Text>
               <Text style={styles.tableCell}>
@@ -243,7 +245,7 @@ export default function BreakEvenPDF({
         {FIXED_LABELS.filter(([key]) => fixedCosts[key] > 0).map(([key, label], idx) => (
           <View key={key} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
             <Text style={styles.tableCell}>{label}</Text>
-            <Text style={styles.tableCell}>£{fmt(fixedCosts[key])}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(fixedCosts[key])}</Text>
             <Text style={styles.tableCell}>
               {totalFixed > 0 ? ((fixedCosts[key] / totalFixed) * 100).toFixed(1) : "0"}%
             </Text>
@@ -251,7 +253,7 @@ export default function BreakEvenPDF({
         ))}
         <View style={[styles.tableRow, { backgroundColor: "#f0f4ff" }]}>
           <Text style={styles.tableCellBold}>Total</Text>
-          <Text style={styles.tableCellBold}>£{fmt(totalFixed)}</Text>
+          <Text style={styles.tableCellBold}>{currency}{fmt(totalFixed)}</Text>
           <Text style={styles.tableCellBold}>100%</Text>
         </View>
 

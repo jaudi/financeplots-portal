@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import { useCurrency } from "@/components/CurrencyPicker";
+import { CURRENCIES } from "@/lib/currency";
 import SpreadsheetIO from "@/components/SpreadsheetIO";
 import CompanyChat from "./CompanyChat";
 import type { SheetField, SheetValues } from "@/lib/spreadsheet-io";
@@ -50,16 +52,17 @@ const fmtM = (n: number) => {
   return String(Math.round(n));
 };
 
-const CURRENCIES = ["£", "$", "€", "¥", "₹"];
 
 // ── Helper components ──────────────────────────────────────────────────────────
 
 function NumInput({
-  label, value, onChange, prefix = "£", step = 1000, note, suffix,
+  label, value, onChange, prefix: prefixProp, step = 1000, note, suffix,
 }: {
   label: string; value: number; onChange: (v: number) => void;
   prefix?: string; step?: number; note?: string; suffix?: string;
 }) {
+  const [currency] = useCurrency();
+  const prefix = prefixProp ?? currency;
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400">{label}</label>
@@ -127,7 +130,7 @@ export default function FinancialPlannerCompanyPage() {
   const t = useTranslations("companyPlanner");
 
   const [step, setStep] = useState(1);
-  const [currency, setCurrency] = useState("£");
+  const [currency, setCurrency] = useCurrency();
   const [pdfLoading, setPdfLoading] = useState(false);
 
   const STEPS = [
@@ -957,13 +960,13 @@ export default function FinancialPlannerCompanyPage() {
                     {
                       icon: "🏢", title: t("tradeSaleTitle"),
                       score: tradeSaleScore,
-                      when: t("tradeSaleWhen"),
+                      when: t("tradeSaleWhen", { currency }),
                       tips: t.raw("tradeSaleTips") as string[],
                     },
                     {
                       icon: "💼", title: t("peBuyoutTitle"),
                       score: peBuyoutScore,
-                      when: t("peBuyoutWhen"),
+                      when: t("peBuyoutWhen", { currency }),
                       tips: t.raw("peBuyoutTips") as string[],
                     },
                     {

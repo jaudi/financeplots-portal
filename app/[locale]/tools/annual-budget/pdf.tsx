@@ -44,6 +44,7 @@ interface MonthData {
 }
 
 interface Props {
+  currency: string;
   companyName: string;
   year: number;
   months: MonthData[];
@@ -58,6 +59,7 @@ interface Props {
 }
 
 export default function AnnualBudgetPDF({
+  currency,
   companyName, year, months, totalRevenue, totalCogs, totalGrossProfit,
   totalOpex, totalEbitda, totalNetIncome, avgGrossMargin, avgEbitdaMargin,
 }: Props) {
@@ -81,22 +83,22 @@ export default function AnnualBudgetPDF({
         <View style={styles.kpiRow}>
           <View style={[styles.kpiCard, styles.kpiCardGreen]}>
             <Text style={styles.kpiLabel}>Total Revenue</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalRevenue)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalRevenue)}</Text>
             <Text style={styles.kpiSub}>Full year</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Gross Profit</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalGrossProfit)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalGrossProfit)}</Text>
             <Text style={styles.kpiSub}>{fmtM(avgGrossMargin)}% margin</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>EBITDA</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalEbitda)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalEbitda)}</Text>
             <Text style={styles.kpiSub}>{fmtM(avgEbitdaMargin)}% margin</Text>
           </View>
           <View style={[styles.kpiCard, totalNetIncome >= 0 ? styles.kpiCardGreen : styles.kpiCardRed]}>
             <Text style={styles.kpiLabel}>Net Income</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalNetIncome)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalNetIncome)}</Text>
             <Text style={styles.kpiSub}>Bottom line</Text>
           </View>
         </View>
@@ -111,22 +113,22 @@ export default function AnnualBudgetPDF({
         {months.map((m, idx) => (
           <View key={m.month} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
             <Text style={[styles.tableCellBold, { flex: 1.2 }]}>{m.month}</Text>
-            <Text style={styles.tableCellGreen}>£{fmt(m.revenue)}</Text>
-            <Text style={styles.tableCellRed}>£{fmt(m.cogs)}</Text>
-            <Text style={styles.tableCell}>£{fmt(m.grossProfit)}</Text>
-            <Text style={styles.tableCellRed}>£{fmt(m.opex)}</Text>
-            <Text style={styles.tableCell}>£{fmt(m.ebitda)}</Text>
-            <Text style={m.netIncome >= 0 ? styles.tableCellGreen : styles.tableCellRed}>£{fmt(m.netIncome)}</Text>
+            <Text style={styles.tableCellGreen}>{currency}{fmt(m.revenue)}</Text>
+            <Text style={styles.tableCellRed}>{currency}{fmt(m.cogs)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(m.grossProfit)}</Text>
+            <Text style={styles.tableCellRed}>{currency}{fmt(m.opex)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(m.ebitda)}</Text>
+            <Text style={m.netIncome >= 0 ? styles.tableCellGreen : styles.tableCellRed}>{currency}{fmt(m.netIncome)}</Text>
           </View>
         ))}
         <View style={styles.tableRowBold}>
           <Text style={[styles.tableCellBold, { flex: 1.2 }]}>TOTAL</Text>
-          <Text style={[styles.tableCellBold, { color: "#16a34a" }]}>£{fmt(totalRevenue)}</Text>
-          <Text style={[styles.tableCellBold, { color: "#dc2626" }]}>£{fmt(totalCogs)}</Text>
-          <Text style={styles.tableCellBold}>£{fmt(totalGrossProfit)}</Text>
-          <Text style={[styles.tableCellBold, { color: "#dc2626" }]}>£{fmt(totalOpex)}</Text>
-          <Text style={styles.tableCellBold}>£{fmt(totalEbitda)}</Text>
-          <Text style={[styles.tableCellBold, { color: totalNetIncome >= 0 ? "#16a34a" : "#dc2626" }]}>£{fmt(totalNetIncome)}</Text>
+          <Text style={[styles.tableCellBold, { color: "#16a34a" }]}>{currency}{fmt(totalRevenue)}</Text>
+          <Text style={[styles.tableCellBold, { color: "#dc2626" }]}>{currency}{fmt(totalCogs)}</Text>
+          <Text style={styles.tableCellBold}>{currency}{fmt(totalGrossProfit)}</Text>
+          <Text style={[styles.tableCellBold, { color: "#dc2626" }]}>{currency}{fmt(totalOpex)}</Text>
+          <Text style={styles.tableCellBold}>{currency}{fmt(totalEbitda)}</Text>
+          <Text style={[styles.tableCellBold, { color: totalNetIncome >= 0 ? "#16a34a" : "#dc2626" }]}>{currency}{fmt(totalNetIncome)}</Text>
         </View>
 
         <View style={styles.footer} fixed>

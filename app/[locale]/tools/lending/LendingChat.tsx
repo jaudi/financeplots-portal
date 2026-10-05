@@ -22,7 +22,7 @@ export interface LendingChatApi {
   totalInterest: number;
 }
 
-export default function LendingChat({ api }: { api: LendingChatApi }) {
+export default function LendingChat({ api, currency }: { api: LendingChatApi; currency: string }) {
   const t = useTranslations("lending");
 
   const questions = useMemo((): ChatQuestion[] => {
@@ -45,11 +45,11 @@ export default function LendingChat({ api }: { api: LendingChatApi }) {
     ];
   }, [t, api]);
 
-  const gbp = (n: number) => `£${Math.round(n).toLocaleString("en-GB")}`;
+  const gbp = (n: number) => `${currency}${Math.round(n).toLocaleString("en-GB")}`;
   return (
     <GuidedChat
       questions={questions}
-      currency="£"
+      currency={currency}
       title={t("chat.title")}
       openLabel={t("chat.open")}
       doneText={t(api.tab === "loan" ? "chat.doneLoan" : "chat.doneMortgage", { payment: gbp(api.payment), interest: gbp(api.totalInterest) })}

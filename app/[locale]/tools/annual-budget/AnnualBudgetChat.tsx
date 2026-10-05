@@ -9,9 +9,10 @@ import GuidedChat, { type ChatQuestion } from "@/components/GuidedChat";
 // against a normal one), then costs as a share of revenue.
 
 export default function AnnualBudgetChat({
-  name, setName, year, setYear, baseRevenue, setBaseRevenue, seasonal, setSeasonal, seasonality, setMonth,
+  currency, name, setName, year, setYear, baseRevenue, setBaseRevenue, seasonal, setSeasonal, seasonality, setMonth,
   cogsRate, setCogsRate, opexRate, setOpexRate, taxRate, setTaxRate, netIncome,
 }: {
+  currency: string;
   name: string;
   setName: (v: string) => void;
   year: number;
@@ -59,11 +60,11 @@ export default function AnnualBudgetChat({
     ];
   }, [t, locale, name, setName, year, setYear, baseRevenue, setBaseRevenue, setSeasonal, seasonal, seasonality, setMonth, cogsRate, setCogsRate, opexRate, setOpexRate, taxRate, setTaxRate]);
 
-  const profit = `${netIncome < 0 ? "−" : ""}£${Math.abs(Math.round(netIncome)).toLocaleString("en-GB")}`;
+  const profit = `${netIncome < 0 ? "−" : ""}${currency}${Math.abs(Math.round(netIncome)).toLocaleString("en-GB")}`;
   return (
     <GuidedChat
       questions={questions}
-      currency="£"
+      currency={currency}
       title={t("chat.title")}
       openLabel={t("chat.open")}
       doneText={t("chat.done", { year, profit })}
