@@ -1620,7 +1620,11 @@
       "traction": "Traction",
       "financials": "Financials",
       "team": "Team",
-      "ask": "The ask"
+      "ask": "The ask",
+      "whyNow": "Why now",
+      "competition": "Competition",
+      "unitEconomics": "Unit economics",
+      "closing": "Contact"
     },
     "askCompany": "What's your company called?",
     "askTagline": "What does it do, in one line? This goes under the name on the cover.",
@@ -1641,8 +1645,8 @@
     "askKpiValue": "And what is your {item} now?",
     "askMilestones": "What have you achieved so far? List milestones separated by commas, with dates — or say “none”.",
     "askRevenue": "Revenue you expect in year {n}?",
-    "askProfitFirst": "Net profit in year 1? For a loss, say “loss” or put a minus sign: “loss of 50k”, “-50000”.",
-    "askProfit": "Net profit in year {n}?",
+    "askProfitFirst": "EBITDA in year 1 — earnings before interest, tax, depreciation and amortisation? For a loss, say “loss” or put a minus sign: “loss of 50k”, “-50000”.",
+    "askProfit": "EBITDA in year {n}?",
     "askMemberFirst": "Who leads the company? Their name, please.",
     "askMember": "Team member {n}: their name? Say “none” if that's the whole team.",
     "askMemberRole": "What is {name}'s role?",
@@ -1655,7 +1659,17 @@
     "askFundsPct": "What percentage of the money goes on {item}?",
     "done": "Your deck is ready. Download it now, or close this window to check each slide first.",
     "doneFundsOff": "Your deck is ready. One thing: your use of funds adds up to {total}%, not 100%. Close this window to fix it on the last slide, or download it as it is.",
-    "download": "Download my deck (.pptx)"
+    "download": "Download my deck (.pptx)",
+    "askWhyNow": "Why is now the right time? Name up to three things that changed — technology, regulation, customer habits — separated by commas.",
+    "askMarketSource": "Where do the market figures come from? A report, a statistics office, your own count — or say “none”.",
+    "askCompetitors": "What do customers use today instead of you? Name up to four alternatives separated by commas — competitors, spreadsheets, consultants. Or say “none”.",
+    "askArpa": "On average, how much does one customer pay you a month, in {sym}?",
+    "askGrossMargin": "What is your gross margin, as a percentage?",
+    "askChurn": "What percentage of customers leave each month?",
+    "askCac": "How much does it cost you to win one new customer (sales and marketing spend ÷ new customers), in {sym}?",
+    "askAssumptions": "What are the two or three assumptions behind those numbers? Separate them with commas — or say “none”.",
+    "askRunway": "How many months will this money last?",
+    "askContact": "Which email should investors contact? Or say “none”."
   },
   "toolFinder": {
     "open": "Which tool do I need?",

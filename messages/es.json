@@ -1606,7 +1606,11 @@
       "traction": "Tracción",
       "financials": "Finanzas",
       "team": "Equipo",
-      "ask": "La ronda"
+      "ask": "La ronda",
+      "whyNow": "Por qué ahora",
+      "competition": "Competencia",
+      "unitEconomics": "Economía unitaria",
+      "closing": "Contacto"
     },
     "askCompany": "¿Cómo se llama tu empresa?",
     "askTagline": "¿Qué hace, en una frase? Irá debajo del nombre en la portada.",
@@ -1627,8 +1631,8 @@
     "askKpiValue": "¿Y cuánto es ahora «{item}»?",
     "askMilestones": "¿Qué habéis conseguido hasta ahora? Enumera los hitos separados por comas, con fechas, o di «nada».",
     "askRevenue": "¿Qué ingresos esperas en el año {n}?",
-    "askProfitFirst": "¿Beneficio neto en el año 1? Si hay pérdidas, di «pérdida» o pon un signo menos: «pérdida de 50.000», «-50000».",
-    "askProfit": "¿Beneficio neto en el año {n}?",
+    "askProfitFirst": "¿EBITDA del año 1 — resultado antes de intereses, impuestos, depreciaciones y amortizaciones? Si son pérdidas, di “pérdida” o pon un signo menos: “pérdida de 50k”, “-50000”.",
+    "askProfit": "¿EBITDA del año {n}?",
     "askMemberFirst": "¿Quién dirige la empresa? Su nombre, por favor.",
     "askMember": "Miembro {n} del equipo: ¿su nombre? Di «ninguno» si ese es todo el equipo.",
     "askMemberRole": "¿Qué papel tiene {name}?",
@@ -1641,7 +1645,17 @@
     "askFundsPct": "¿Qué porcentaje del dinero va a «{item}»?",
     "done": "Tu presentación está lista. Descárgala ya, o cierra esta ventana para revisar cada diapositiva antes.",
     "doneFundsOff": "Tu presentación está lista. Un detalle: el uso de fondos suma un {total}%, no un 100%. Cierra esta ventana para corregirlo en la última diapositiva, o descárgala tal cual.",
-    "download": "Descargar mi presentación (.pptx)"
+    "download": "Descargar mi presentación (.pptx)",
+    "askWhyNow": "¿Por qué es ahora el momento? Di hasta tres cosas que hayan cambiado — tecnología, regulación, hábitos de los clientes — separadas por comas.",
+    "askMarketSource": "¿De dónde salen las cifras de mercado? Un informe, un instituto de estadística, tu propio cálculo — o di “ninguna”.",
+    "askCompetitors": "¿Qué usan hoy los clientes en lugar de vosotros? Di hasta cuatro alternativas separadas por comas — competidores, hojas de cálculo, consultores. O di “ninguna”.",
+    "askArpa": "De media, ¿cuánto te paga un cliente al mes, en {sym}?",
+    "askGrossMargin": "¿Cuál es tu margen bruto, en porcentaje?",
+    "askChurn": "¿Qué porcentaje de clientes se va cada mes?",
+    "askCac": "¿Cuánto te cuesta conseguir un cliente nuevo (gasto en ventas y marketing ÷ clientes nuevos), en {sym}?",
+    "askAssumptions": "¿Cuáles son las dos o tres hipótesis detrás de esas cifras? Sepáralas con comas — o di “ninguna”.",
+    "askRunway": "¿Cuántos meses os durará este dinero?",
+    "askContact": "¿A qué email deben escribir los inversores? O di “ninguno”."
   },
   "toolFinder": {
     "open": "¿Qué herramienta necesito?",
