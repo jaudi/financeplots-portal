@@ -2,20 +2,51 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import CashFlowChat from "./CashFlowChat";
 import SpreadsheetIO from "@/components/SpreadsheetIO";
 import type { SheetField } from "@/lib/spreadsheet-io";
+import {
+  DEFAULT_SCHEDULES, FREQUENCIES, INFLOW_LINES, LINES, OUTFLOW_LINES, WEEKS,
+  fillAll, fillWeeks, forecast, summarise,
+  type Frequency, type Line, type Lines, type Schedule, type Schedules,
+} from "@/lib/cash-flow";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, ReferenceLine,
 } from "recharts";
 
-const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
+const fmt = (n: number) => Math.round(n).toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
-function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: string; sub: string; color?: "blue" | "green" | "red" }) {
-  const border = color === "green" ? "border-l-green-500" : color === "red" ? "border-l-red-500" : "border-l-blue-500";
+const WEEK_KEYS = Array.from({ length: WEEKS }, (_, i) => `W${i + 1}`);
+
+// Colours tell the lines apart: greens for cash in, warm tones for cash out.
+const COLOURS: Record<Line, string> = {
+  revenue: "#22c55e",
+  otherIncome: "#86efac",
+  suppliers: "#ef4444",
+  payroll: "#f97316",
+  taxes: "#eab308",
+  directDebits: "#a855f7",
+};
+
+// Inputs as spreadsheet rows (components/SpreadsheetIO.tsx), one row per line.
+const SHEET_FIELDS: SheetField[] = [
+  { key: "name", kind: "text", label: { en: "Forecast name", es: "Nombre de la previsión" } },
+  { key: "opening", kind: "number", label: { en: "Opening cash balance", es: "Saldo de caja inicial" } },
+  { key: "buffer", kind: "number", label: { en: "Minimum cash buffer", es: "Colchón mínimo de caja" } },
+  { key: "revenue", kind: "series", periods: WEEK_KEYS, label: { en: "Revenue (customer receipts)", es: "Ventas (cobros a clientes)" } },
+  { key: "otherIncome", kind: "series", periods: WEEK_KEYS, label: { en: "Other income", es: "Otros ingresos" } },
+  { key: "suppliers", kind: "series", periods: WEEK_KEYS, label: { en: "Supplier payment runs", es: "Remesas de pago a proveedores" } },
+  { key: "payroll", kind: "series", periods: WEEK_KEYS, label: { en: "Payroll", es: "Nóminas" } },
+  { key: "taxes", kind: "series", periods: WEEK_KEYS, label: { en: "Taxes", es: "Impuestos" } },
+  { key: "directDebits", kind: "series", periods: WEEK_KEYS, label: { en: "Direct debits", es: "Domiciliaciones" } },
+];
+
+function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: string; sub: string; color?: "blue" | "green" | "red" | "amber" }) {
+  const border = { blue: "border-l-blue-500", green: "border-l-green-500", red: "border-l-red-500", amber: "border-l-amber-500" }[color];
   return (
     <div className={`bg-[#0d1426] border border-gray-800 border-l-4 ${border} rounded-xl p-4`}>
       <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">{label}</div>
@@ -25,96 +56,110 @@ function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: 
   );
 }
 
-function NumInput({ label, value, onChange, prefix = "£", step = 1000 }: {
-  label: string; value: number; onChange: (v: number) => void; prefix?: string; step?: number;
+function NumInput({ label, value, onChange, prefix, step = 1000, min, max }: {
+  label: string; value: number; onChange: (v: number) => void; prefix?: string; step?: number; min?: number; max?: number;
 }) {
+  const [currency] = useCurrency();
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 min-w-0">
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500 transition">
-        <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>
+        <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix ?? currency}</span>
         <input
           type="number"
           step={step}
+          min={min}
+          max={max}
           value={value}
           onChange={e => onChange(parseFloat(e.target.value) || 0)}
-          className="bg-transparent text-white text-sm w-full outline-none"
+          className="bg-transparent text-white text-sm w-full outline-none min-w-0"
         />
       </div>
     </div>
   );
 }
 
-const WEEKS = Array.from({ length: 13 }, (_, i) => `W${i + 1}`);
-
-// Inputs as spreadsheet rows (components/SpreadsheetIO.tsx).
-const SHEET_FIELDS: SheetField[] = [
-  { key: "name", kind: "text", label: { en: "Forecast name", es: "Nombre de la previsión" } },
-  { key: "opening", kind: "number", label: { en: "Opening cash balance", es: "Saldo de caja inicial" } },
-  { key: "inflows", kind: "series", periods: WEEKS, label: { en: "Cash inflows", es: "Cobros" } },
-  { key: "outflows", kind: "series", periods: WEEKS, label: { en: "Cash outflows", es: "Pagos" } },
-];
-
-const WEEK_LABELS = [
-  "Jan W1", "Jan W2", "Jan W3", "Jan W4",
-  "Feb W1", "Feb W2", "Feb W3", "Feb W4",
-  "Mar W1", "Mar W2", "Mar W3", "Mar W4",
-  "Mar W5",
-];
+function ScheduleCard({ line, schedule, onChange }: { line: Line; schedule: Schedule; onChange: (patch: Partial<Schedule>) => void }) {
+  const t = useTranslations("cashFlow");
+  return (
+    <div className="border border-gray-800 rounded-lg p-3 flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLOURS[line] }} aria-hidden />
+        <span className="text-sm font-semibold text-white">{t(`lines.${line}`)}</span>
+      </div>
+      <p className="text-[11px] text-gray-500 leading-snug">{t(`hints.${line}`)}</p>
+      <NumInput label={t("labelAmount")} value={schedule.amount} min={0} onChange={v => onChange({ amount: Math.max(0, v) })} />
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">{t("labelFrequency")}</label>
+          <select
+            value={schedule.frequency}
+            onChange={e => onChange({ frequency: e.target.value as Frequency })}
+            className="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-white text-sm outline-none focus:border-blue-500"
+          >
+            {FREQUENCIES.map(f => <option key={f} value={f}>{t(`freq.${f}`)}</option>)}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-400">{t("labelFirstWeek")}</label>
+          <select
+            value={schedule.firstWeek}
+            onChange={e => onChange({ firstWeek: Number(e.target.value) })}
+            className="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-white text-sm outline-none focus:border-blue-500"
+          >
+            {Array.from({ length: WEEKS }, (_, i) => <option key={i} value={i + 1}>{t("weekShort", { n: i + 1 })}</option>)}
+          </select>
+        </div>
+      </div>
+      {line === "revenue" && (
+        <NumInput label={t("labelGrowth")} value={schedule.growthPct ?? 0} prefix="%" step={0.5} onChange={v => onChange({ growthPct: v })} />
+      )}
+    </div>
+  );
+}
 
 export default function CashFlowPage() {
   const t = useTranslations("cashFlow");
   const tc = useTranslations("toolCommon");
+  const locale = useLocale();
+  const [currency] = useCurrency();
   const [forecastName, setForecastName] = useState("Q1 Forecast");
   const [openingBalance, setOpeningBalance] = useState(50000);
-  // Weekly inflows & outflows
-  const [weeklyInflows, setWeeklyInflows] = useState<number[]>(() => Array(13).fill(20000));
-  const [weeklyOutflows, setWeeklyOutflows] = useState<number[]>(() => Array(13).fill(18000));
-  // Inflow/outflow templates
-  const [inflowGrowth, setInflowGrowth] = useState(0);
-  const [outflowGrowth, setOutflowGrowth] = useState(0);
+  const [buffer, setBuffer] = useState(20000);
+  // Schedules and the weekly grid live together: a schedule change refills its line.
+  const [plan, setPlan] = useState<{ schedules: Schedules; lines: Lines }>(() => ({ schedules: DEFAULT_SCHEDULES, lines: fillAll(DEFAULT_SCHEDULES) }));
+  const { schedules, lines } = plan;
+  const setLines = useCallback((f: (prev: Lines) => Lines) => setPlan(p => ({ ...p, lines: f(p.lines) })), []);
   const [isExporting, setIsExporting] = useState(false);
-  const [showTable, setShowTable] = useState(true);
 
-  const rows = useMemo(() => {
-    let balance = openingBalance;
-    return weeklyInflows.map((inflow, i) => {
-      const outflow = weeklyOutflows[i];
-      const net = inflow - outflow;
-      const opening = balance;
-      balance += net;
-      return {
-        week: i + 1,
-        label: WEEK_LABELS[i],
-        openingBalance: Math.round(opening),
-        inflows: Math.round(inflow),
-        outflows: Math.round(outflow),
-        netCashFlow: Math.round(net),
-        closingBalance: Math.round(balance),
-      };
+  const money = useCallback((n: number) => `${n < 0 ? "−" : ""}${currency}${fmt(Math.abs(n))}`, [currency]);
+  const lineName = useCallback((l: Line) => t(`lines.${l}`), [t]);
+
+  // A schedule change refills its own line only, so typed one-offs on other lines stay.
+  const updateSchedule = useCallback((line: Line, patch: Partial<Schedule>) => {
+    setPlan(p => {
+      const next = { ...p.schedules[line], ...patch };
+      return { schedules: { ...p.schedules, [line]: next }, lines: { ...p.lines, [line]: fillWeeks(next) } };
     });
-  }, [openingBalance, weeklyInflows, weeklyOutflows]);
+  }, []);
 
-  const totalInflows = rows.reduce((a, r) => a + r.inflows, 0);
-  const totalOutflows = rows.reduce((a, r) => a + r.outflows, 0);
-  const closingBalance = rows[rows.length - 1]?.closingBalance ?? openingBalance;
-  const minBalance = Math.min(...rows.map(r => r.closingBalance));
-  const weeksNegative = rows.filter(r => r.closingBalance < 0).length;
+  const setCell = (line: Line, week: number, v: number) =>
+    setLines(prev => ({ ...prev, [line]: prev[line].map((x, i) => (i === week ? Math.max(0, v) : x)) }));
 
+  const rows = useMemo(() => forecast(openingBalance, lines), [openingBalance, lines]);
+  const summary = useMemo(() => summarise(openingBalance, rows), [openingBalance, rows]);
+  const weeksBelowBuffer = rows.filter(r => r.closing < buffer).length;
+
+  // Cash out is drawn below the axis, so one bar per week reads as in vs out.
   const chartData = rows.map(r => ({
-    week: `W${r.week}`,
-    Inflows: r.inflows,
-    Outflows: r.outflows,
-    Balance: r.closingBalance,
+    week: t("weekShort", { n: r.week }),
+    balance: r.closing,
+    ...Object.fromEntries(INFLOW_LINES.map(l => [l, r.lines[l]])),
+    ...Object.fromEntries(OUTFLOW_LINES.map(l => [l, -r.lines[l]])),
   }));
-
-  const applyGrowthRates = () => {
-    const g_in = inflowGrowth / 100;
-    const g_out = outflowGrowth / 100;
-    const baseIn = weeklyInflows[0];
-    const baseOut = weeklyOutflows[0];
-    setWeeklyInflows(Array.from({ length: 13 }, (_, i) => Math.round(baseIn * Math.pow(1 + g_in, i))));
-    setWeeklyOutflows(Array.from({ length: 13 }, (_, i) => Math.round(baseOut * Math.pow(1 + g_out, i))));
+  const axisMoney = (v: number) => {
+    const a = Math.abs(v);
+    return `${v < 0 ? "−" : ""}${currency}${a >= 1000 ? `${(a / 1000).toFixed(0)}k` : a}`;
   };
 
   const handleExportPdf = useCallback(async () => {
@@ -124,14 +169,13 @@ export default function CashFlowPage() {
       const { default: CashFlowPDF } = await import("./pdf");
       const blob = await pdf(
         <CashFlowPDF
+          currency={currency}
           forecastName={forecastName}
           openingBalance={openingBalance}
-          totalInflows={totalInflows}
-          totalOutflows={totalOutflows}
-          closingBalance={closingBalance}
-          minBalance={minBalance}
-          weeksNegative={weeksNegative}
+          buffer={buffer}
+          summary={summary}
           rows={rows}
+          lineNames={Object.fromEntries(LINES.map(l => [l, lineName(l)])) as Record<Line, string>}
         />
       ).toBlob();
       const url = URL.createObjectURL(blob);
@@ -143,7 +187,46 @@ export default function CashFlowPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [forecastName, openingBalance, totalInflows, totalOutflows, closingBalance, minBalance, weeksNegative, rows]);
+  }, [currency, forecastName, openingBalance, buffer, summary, rows, lineName]);
+
+  const tooltipStyle = { backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 };
+  const cellInput = "bg-[#111827] border border-gray-700 rounded px-1.5 py-1 text-white text-xs w-[4.75rem] text-right outline-none focus:border-blue-500";
+  const th = "text-right text-[11px] text-gray-400 font-semibold py-2 px-1.5 whitespace-nowrap";
+  const stickyCell = "sticky left-0 bg-[#0d1426] z-10 text-left pr-3 py-1.5 whitespace-nowrap";
+
+  const lineRow = (line: Line) => (
+    <tr key={line} className="border-b border-gray-800/60">
+      <td className={`${stickyCell} text-xs text-gray-300`}>
+        <span className="inline-block w-2 h-2 rounded-full mr-2 align-middle" style={{ backgroundColor: COLOURS[line] }} aria-hidden />
+        {lineName(line)}
+      </td>
+      {lines[line].map((v, i) => (
+        <td key={i} className="px-1 py-1">
+          <input
+            type="number"
+            min={0}
+            value={v}
+            aria-label={`${lineName(line)}, ${t("weekShort", { n: i + 1 })}`}
+            onChange={e => setCell(line, i, parseFloat(e.target.value) || 0)}
+            className={cellInput}
+          />
+        </td>
+      ))}
+      <td className="px-1.5 py-1 text-right text-xs text-gray-300 font-semibold whitespace-nowrap">{money(summary.totals[line])}</td>
+    </tr>
+  );
+
+  const totalRow = (label: string, values: number[], total: number | null, strong = false, signed = false) => (
+    <tr className={`border-b ${strong ? "border-gray-600" : "border-gray-800"}`}>
+      <td className={`${stickyCell} text-xs ${strong ? "text-white font-bold" : "text-gray-400 font-semibold"}`}>{label}</td>
+      {values.map((v, i) => (
+        <td key={i} className={`px-1.5 py-1.5 text-right text-xs whitespace-nowrap ${v < 0 ? "text-red-400" : strong ? "text-white" : "text-gray-300"} ${strong ? "font-bold" : ""} ${strong && v < buffer && v >= 0 ? "text-amber-300" : ""}`}>
+          {signed && v > 0 ? "+" : ""}{money(v)}
+        </td>
+      ))}
+      <td className="px-1.5 py-1.5 text-right text-xs text-gray-300 font-semibold whitespace-nowrap">{total === null ? "" : `${signed && total > 0 ? "+" : ""}${money(total)}`}</td>
+    </tr>
+  );
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -153,7 +236,7 @@ export default function CashFlowPage() {
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
           "name": "13-Week Cash Flow Forecast",
-          "description": "Build a 13-week rolling cash flow forecast to manage liquidity and plan ahead. Free tool, instant PDF export.",
+          "description": "Build a 13-week rolling cash flow forecast — customer receipts and other income in; supplier payment runs, payroll, taxes and direct debits out. Free tool, instant PDF export.",
           "url": "https://www.financeplots.com/tools/cash-flow",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "Web",
@@ -168,6 +251,7 @@ export default function CashFlowPage() {
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
@@ -183,20 +267,26 @@ export default function CashFlowPage() {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Sidebar */}
             <aside className="lg:w-72 xl:w-80 shrink-0">
-              <div className="lg:sticky lg:top-[133px] flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
                 <SpreadsheetIO
-                  title={`13-week cash flow forecast — ${forecastName}`}
+                  title={`13-week cash flow forecast — ${forecastName} (${currency})`}
                   fileName="cash-flow-forecast"
                   fields={SHEET_FIELDS}
-                  getValues={() => ({ name: forecastName, opening: openingBalance, inflows: weeklyInflows, outflows: weeklyOutflows })}
+                  getValues={() => ({ name: forecastName, opening: openingBalance, buffer, ...lines })}
                   onImport={v => {
                     if (typeof v.name === "string") setForecastName(v.name);
                     if (typeof v.opening === "number") setOpeningBalance(v.opening);
-                    if (Array.isArray(v.inflows)) setWeeklyInflows(v.inflows);
-                    if (Array.isArray(v.outflows)) setWeeklyOutflows(v.outflows);
+                    if (typeof v.buffer === "number") setBuffer(v.buffer);
+                    setLines(prev => {
+                      const next = { ...prev };
+                      for (const l of LINES) {
+                        const s = v[l];
+                        if (Array.isArray(s)) next[l] = Array.from({ length: WEEKS }, (_, i) => Math.max(0, s[i] ?? 0));
+                      }
+                      return next;
+                    });
                   }}
                 />
-                {/* Settings */}
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3">{t("sectionSettings")}</h3>
                   <div className="flex flex-col gap-3">
@@ -209,212 +299,112 @@ export default function CashFlowPage() {
                       />
                     </div>
                     <NumInput label={t("labelOpening")} value={openingBalance} onChange={setOpeningBalance} />
+                    <NumInput label={t("labelBuffer")} value={buffer} min={0} onChange={v => setBuffer(Math.max(0, v))} />
+                    <p className="text-[11px] text-gray-500 leading-snug">{t("bufferHelp")}</p>
                   </div>
                 </div>
 
-                {/* Quick Setup */}
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-5">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3">{t("sectionQuickSetup")}</h3>
-                  <div className="flex flex-col gap-3">
-                    <NumInput
-                      label={t("labelWeek1Inflows")}
-                      value={weeklyInflows[0]}
-                      onChange={v => setWeeklyInflows(prev => { const n = [...prev]; n[0] = v; return n; })}
-                    />
-                    <NumInput
-                      label={t("labelInflowGrowth")}
-                      value={inflowGrowth}
-                      onChange={setInflowGrowth}
-                      prefix="%"
-                      step={0.5}
-                    />
-                    <NumInput
-                      label={t("labelWeek1Outflows")}
-                      value={weeklyOutflows[0]}
-                      onChange={v => setWeeklyOutflows(prev => { const n = [...prev]; n[0] = v; return n; })}
-                    />
-                    <NumInput
-                      label={t("labelOutflowGrowth")}
-                      value={outflowGrowth}
-                      onChange={setOutflowGrowth}
-                      prefix="%"
-                      step={0.5}
-                    />
-                    <button
-                      onClick={applyGrowthRates}
-                      className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2 rounded-lg transition"
-                    >
-                      {t("btnApply")}
-                    </button>
+                  <p className="text-[11px] text-gray-500 leading-snug mb-3">{t("scheduleHelp")}</p>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-green-400 mb-2">{t("sectionIn")}</h3>
+                  <div className="flex flex-col gap-2 mb-4">
+                    {INFLOW_LINES.map(l => <ScheduleCard key={l} line={l} schedule={schedules[l]} onChange={p => updateSchedule(l, p)} />)}
+                  </div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-red-400 mb-2">{t("sectionOut")}</h3>
+                  <div className="flex flex-col gap-2">
+                    {OUTFLOW_LINES.map(l => <ScheduleCard key={l} line={l} schedule={schedules[l]} onChange={p => updateSchedule(l, p)} />)}
                   </div>
                 </div>
-
-                {/* Warnings */}
-                {(weeksNegative > 0 || minBalance < 10000) && (
-                  <div className="bg-red-900/20 border border-red-800 rounded-xl p-4">
-                    <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-2">⚠ {t("alertTitle")}</div>
-                    {weeksNegative > 0 && (
-                      <div className="text-xs text-red-300">{weeksNegative} week{weeksNegative > 1 ? "s" : ""} with negative balance</div>
-                    )}
-                    {minBalance < 10000 && minBalance >= 0 && (
-                      <div className="text-xs text-yellow-300 mt-1">Min balance £{fmt(minBalance)} — low buffer</div>
-                    )}
-                    {minBalance < 0 && (
-                      <div className="text-xs text-red-300 mt-1">Minimum balance: £{fmt(minBalance)}</div>
-                    )}
-                  </div>
-                )}
               </div>
             </aside>
 
             {/* Main Content */}
             <div className="flex-1 min-w-0 flex flex-col gap-6">
-              {/* KPI Cards */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label="Opening Balance" value={`£${fmt(openingBalance)}`} sub="Start of period" />
-                <KpiCard label="Total Inflows" value={`£${fmt(totalInflows)}`} sub="13-week total" color="green" />
-                <KpiCard label="Total Outflows" value={`£${fmt(totalOutflows)}`} sub="13-week total" color="red" />
+                <KpiCard label={t("kpiIn")} value={money(summary.totalIn)} sub={t("kpiTotalSub")} color="green" />
+                <KpiCard label={t("kpiOut")} value={money(summary.totalOut)} sub={t("kpiTotalSub")} color="red" />
                 <KpiCard
-                  label="Closing Balance"
-                  value={`£${fmt(closingBalance)}`}
-                  sub={weeksNegative > 0 ? `${weeksNegative} negative weeks` : "All weeks positive"}
-                  color={closingBalance >= 0 ? "green" : "red"}
+                  label={t("kpiClosing")}
+                  value={money(summary.closing)}
+                  sub={t("kpiClosingSub")}
+                  color={summary.closing >= 0 ? "blue" : "red"}
+                />
+                <KpiCard
+                  label={t("kpiLowest")}
+                  value={money(summary.lowest)}
+                  sub={t("kpiLowestSub", { week: summary.lowestWeek })}
+                  color={summary.lowest < 0 ? "red" : summary.lowest < buffer ? "amber" : "green"}
                 />
               </div>
 
-              {/* Balance Chart */}
+              {(summary.weeksNegative > 0 || weeksBelowBuffer > 0) && (
+                <div className={`${summary.weeksNegative > 0 ? "bg-red-900/20 border-red-800" : "bg-amber-900/20 border-amber-800"} border rounded-xl p-4`}>
+                  <div className={`text-xs font-bold uppercase tracking-wider mb-2 ${summary.weeksNegative > 0 ? "text-red-400" : "text-amber-400"}`}>⚠ {t("alertTitle")}</div>
+                  <ul className="text-sm text-gray-200 space-y-1">
+                    {summary.weeksNegative > 0 && <li>{t("alertNegative", { count: summary.weeksNegative })}</li>}
+                    {weeksBelowBuffer > 0 && <li>{t("alertBelowBuffer", { count: weeksBelowBuffer, buffer: money(buffer) })}</li>}
+                    <li>{t("alertLowest", { amount: money(summary.lowest), week: summary.lowestWeek })}</li>
+                  </ul>
+                </div>
+              )}
+
               <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
                 <h2 className="text-white font-bold mb-5">{t("chartBalance")}</h2>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={280}>
                   <AreaChart data={chartData} margin={{ top: 10, right: 20, bottom: 0, left: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="week" stroke="#374151" tick={{ fill: "#6b7280", fontSize: 11 }} />
-                    <YAxis
-                      stroke="#374151"
-                      tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => v >= 1000 ? `£${(v / 1000).toFixed(0)}k` : `£${v}`}
-                      width={65}
-                    />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value: unknown) => [`£${fmt(Number(value))}`, undefined]}
-                    />
+                    <YAxis stroke="#374151" tick={{ fill: "#6b7280", fontSize: 11 }} tickFormatter={axisMoney} width={65} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(value: unknown) => [money(Number(value)), t("rowClosing")]} />
                     <ReferenceLine y={0} stroke="#ef4444" strokeDasharray="4 4" />
-                    <Area type="monotone" dataKey="Balance" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} strokeWidth={2} />
+                    {buffer > 0 && (
+                      <ReferenceLine y={buffer} stroke="#f59e0b" strokeDasharray="2 4" label={{ value: t("chartBuffer"), fill: "#f59e0b", fontSize: 11, position: "insideTopLeft" }} />
+                    )}
+                    <Area type="monotone" dataKey="balance" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
 
-              {/* Inflows vs Outflows */}
               <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
                 <h2 className="text-white font-bold mb-5">{t("chartInOut")}</h2>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={chartData} margin={{ top: 10, right: 20, bottom: 0, left: 10 }}>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData} stackOffset="sign" margin={{ top: 10, right: 20, bottom: 0, left: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="week" stroke="#374151" tick={{ fill: "#6b7280", fontSize: 11 }} />
-                    <YAxis
-                      stroke="#374151"
-                      tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => `£${(v / 1000).toFixed(0)}k`}
-                      width={55}
-                    />
+                    <YAxis stroke="#374151" tick={{ fill: "#6b7280", fontSize: 11 }} tickFormatter={axisMoney} width={65} />
                     <Tooltip
-                      contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value: unknown) => [`£${fmt(Number(value))}`, undefined]}
+                      contentStyle={tooltipStyle}
+                      formatter={(value: unknown, name: unknown) => [money(Math.abs(Number(value))), lineName(name as Line)]}
                     />
-                    <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 8 }} />
-                    <Bar dataKey="Inflows" fill="#22c55e" radius={[3, 3, 0, 0]} />
-                    <Bar dataKey="Outflows" fill="#ef4444" radius={[3, 3, 0, 0]} />
+                    <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 8 }} formatter={(name: string) => lineName(name as Line)} />
+                    <ReferenceLine y={0} stroke="#4b5563" />
+                    {LINES.map(l => <Bar key={l} dataKey={l} stackId="cash" fill={COLOURS[l]} />)}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              {/* Weekly Table */}
               <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-white font-bold">{t("tableTitle")}</h2>
-                  <button
-                    onClick={() => setShowTable(v => !v)}
-                    className="text-xs text-gray-400 hover:text-white transition"
-                  >
-                    {showTable ? `▲ ${t("collapse")}` : `▼ ${t("expand")}`}
-                  </button>
-                </div>
-                {showTable && (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-gray-700">
-                          {["Wk", "Period", "Opening", "Inflows", "Outflows", "Net", "Closing"].map(h => (
-                            <th key={h} className="text-left text-xs text-gray-400 uppercase tracking-wider py-2 pr-3 font-semibold">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {rows.map(row => (
-                          <tr
-                            key={row.week}
-                            className={`border-b text-xs transition ${row.closingBalance < 0 ? "bg-red-900/20 border-red-900/30" : "border-gray-800 hover:bg-gray-800/20"}`}
-                          >
-                            <td className="py-2 pr-3 text-white font-bold">{row.week}</td>
-                            <td className="py-2 pr-3 text-gray-400">{row.label}</td>
-                            <td className="py-2 pr-3 text-gray-300">£{fmt(row.openingBalance)}</td>
-                            <td className="py-2 pr-3 text-green-400 font-semibold">£{fmt(row.inflows)}</td>
-                            <td className="py-2 pr-3 text-red-400">£{fmt(row.outflows)}</td>
-                            <td className={`py-2 pr-3 font-semibold ${row.netCashFlow >= 0 ? "text-blue-300" : "text-red-400"}`}>
-                              {row.netCashFlow >= 0 ? "+" : ""}£{fmt(row.netCashFlow)}
-                            </td>
-                            <td className={`py-2 pr-3 font-bold ${row.closingBalance < 0 ? "text-red-400" : "text-white"}`}>
-                              £{fmt(row.closingBalance)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-
-              {/* Edit weekly values */}
-              <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
-                <h2 className="text-white font-bold mb-4">{t("editTitle")}</h2>
+                <h2 className="text-white font-bold">{t("gridTitle")}</h2>
+                <p className="text-xs text-gray-500 mt-1 mb-4">{t("gridHelp")}</p>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="text-sm border-collapse">
                     <thead>
                       <tr className="border-b border-gray-700">
-                        <th className="text-left text-xs text-gray-400 py-2 pr-3 uppercase tracking-wider">Week</th>
-                        <th className="text-left text-xs text-gray-400 py-2 pr-3 uppercase tracking-wider">Inflows (£)</th>
-                        <th className="text-left text-xs text-gray-400 py-2 pr-3 uppercase tracking-wider">Outflows (£)</th>
+                        <th className={`${stickyCell} text-[11px] text-gray-400 font-semibold`} />
+                        {rows.map(r => <th key={r.week} className={th}>{t("weekShort", { n: r.week })}</th>)}
+                        <th className={th}>{t("colTotal")}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {Array.from({ length: 13 }, (_, i) => (
-                        <tr key={i} className="border-b border-gray-800">
-                          <td className="py-1.5 pr-3 text-xs text-gray-400">{WEEK_LABELS[i]}</td>
-                          <td className="py-1.5 pr-3">
-                            <input
-                              type="number"
-                              value={weeklyInflows[i]}
-                              onChange={e => {
-                                const v = parseFloat(e.target.value) || 0;
-                                setWeeklyInflows(prev => { const n = [...prev]; n[i] = v; return n; });
-                              }}
-                              className="bg-[#111827] border border-gray-700 rounded px-2 py-1 text-white text-xs w-28 outline-none focus:border-blue-500"
-                            />
-                          </td>
-                          <td className="py-1.5 pr-3">
-                            <input
-                              type="number"
-                              value={weeklyOutflows[i]}
-                              onChange={e => {
-                                const v = parseFloat(e.target.value) || 0;
-                                setWeeklyOutflows(prev => { const n = [...prev]; n[i] = v; return n; });
-                              }}
-                              className="bg-[#111827] border border-gray-700 rounded px-2 py-1 text-white text-xs w-28 outline-none focus:border-red-500"
-                            />
-                          </td>
-                        </tr>
-                      ))}
+                      {totalRow(t("rowOpening"), rows.map(r => r.opening), null)}
+                      <tr><td colSpan={WEEKS + 2} className={`${stickyCell} pt-3 text-[11px] font-bold uppercase tracking-wider text-green-400`}>{t("sectionIn")}</td></tr>
+                      {INFLOW_LINES.map(lineRow)}
+                      {totalRow(t("rowTotalIn"), rows.map(r => r.inflows), summary.totalIn)}
+                      <tr><td colSpan={WEEKS + 2} className={`${stickyCell} pt-3 text-[11px] font-bold uppercase tracking-wider text-red-400`}>{t("sectionOut")}</td></tr>
+                      {OUTFLOW_LINES.map(lineRow)}
+                      {totalRow(t("rowTotalOut"), rows.map(r => r.outflows), summary.totalOut)}
+                      {totalRow(t("rowNet"), rows.map(r => r.net), summary.totalIn - summary.totalOut, false, true)}
+                      {totalRow(t("rowClosing"), rows.map(r => r.closing), null, true)}
                     </tbody>
                   </table>
                 </div>
@@ -427,9 +417,9 @@ export default function CashFlowPage() {
         <p className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-3">{tc("alsoTry")}</p>
         <div className="flex flex-wrap gap-3">
           {[
-            { label: "📊 5-Year Financial Model", href: "/tools/financial-model" },
-            { label: "📋 Annual Budget", href: "/tools/annual-budget" },
-            { label: "💎 Business Valuation", href: "/tools/valuation" },
+            { label: locale === "es" ? "📊 Modelo financiero a 5 años" : "📊 5-Year Financial Model", href: "/tools/financial-model" },
+            { label: locale === "es" ? "📋 Presupuesto anual" : "📋 Annual Budget", href: "/tools/annual-budget" },
+            { label: locale === "es" ? "💎 Valoración de empresas" : "💎 Business Valuation", href: "/tools/valuation" },
           ].map(tool => (
             <Link key={tool.href} href={tool.href}
               className="text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-blue-500 px-4 py-2 rounded-lg transition">
@@ -438,26 +428,18 @@ export default function CashFlowPage() {
           ))}
         </div>
       </div>
-            <CashFlowChat
-              name={forecastName}
-              setName={setForecastName}
-              opening={openingBalance}
-              setOpening={setOpeningBalance}
-              inflow={weeklyInflows[0]}
-              inflowGrowth={inflowGrowth}
-              outflow={weeklyOutflows[0]}
-              outflowGrowth={outflowGrowth}
-              setInflows={(week1, g) => {
-                setInflowGrowth(g);
-                setWeeklyInflows(Array.from({ length: 13 }, (_, i) => Math.round(week1 * Math.pow(1 + g / 100, i))));
-              }}
-              setOutflows={(week1, g) => {
-                setOutflowGrowth(g);
-                setWeeklyOutflows(Array.from({ length: 13 }, (_, i) => Math.round(week1 * Math.pow(1 + g / 100, i))));
-              }}
-              minBalance={minBalance}
-            />
-            <RelatedTools current="cash-flow" />
+      <CashFlowChat
+        currency={currency}
+        name={forecastName}
+        setName={setForecastName}
+        opening={openingBalance}
+        setOpening={setOpeningBalance}
+        schedules={schedules}
+        setSchedule={updateSchedule}
+        lowest={summary.lowest}
+        lowestWeek={summary.lowestWeek}
+      />
+      <RelatedTools current="cash-flow" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>
   );

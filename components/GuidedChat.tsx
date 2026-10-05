@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { parseAmount } from "@/lib/planner";
 import { matchOption, meansNegative, meansNone, roundForUnit, type AmountUnit, type ChatOption } from "@/lib/guided-chat";
+import { CURRENCIES, CURRENCY_WORDS } from "@/lib/currency";
 
 // A form filled in by answering one question at a time, typed or spoken —
 // used by the Financial Journeys and the Personal Budget. Scripted, not AI:
@@ -28,19 +29,11 @@ export type ChatQuestion =
 
 interface Message { from: "bot" | "me"; text: string }
 
-const CURRENCY_WORDS: Record<string, string[]> = {
-  "£": ["pound", "pounds", "sterling", "libra", "libras", "gbp"],
-  "$": ["dollar", "dollars", "dolar", "dolares", "usd"],
-  "€": ["euro", "euros", "eur"],
-  "¥": ["yen", "yenes", "jpy"],
-  "₹": ["rupee", "rupees", "rupia", "rupias", "inr"],
-};
-
 /** The usual "which currency?" question. */
 export function currencyQuestion(ask: string, setCurrency: (c: string) => void): ChatQuestion {
   return {
     kind: "choice", id: "currency", ask,
-    options: Object.keys(CURRENCY_WORDS).map((sym) => ({ label: sym, words: CURRENCY_WORDS[sym], apply: () => setCurrency(sym) })),
+    options: CURRENCIES.map((sym) => ({ label: sym, words: CURRENCY_WORDS[sym], apply: () => setCurrency(sym) })),
   };
 }
 

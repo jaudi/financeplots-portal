@@ -35,8 +35,8 @@ const S = StyleSheet.create({
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const fmtVal = (val: number, isPct?: boolean) =>
-  isPct ? `${fmtM(val)}%` : val < 0 ? `(£${fmt(Math.abs(val))})` : `£${fmt(val)}`;
+const fmtVal = (val: number, currency: string, isPct?: boolean) =>
+  isPct ? `${fmtM(val)}%` : val < 0 ? `(${currency}${fmt(Math.abs(val))})` : `${currency}${fmt(val)}`;
 
 interface YearData {
   year: number; revenue: number; cogs: number; grossProfit: number; grossMargin: number;
@@ -56,6 +56,7 @@ interface BsCfData {
 }
 
 interface Props {
+  currency: string;
   companyName: string;
   years: YearData[];
   bsAndCf: BsCfData[];
@@ -67,7 +68,7 @@ interface Props {
 
 const YR = (years: { year: number }[]) => years.map(y => `Year ${y.year}`);
 
-export default function FinancialModelPDF({ companyName, years, bsAndCf, cagr, avgEbitdaMargin, avgNetMargin }: Props) {
+export default function FinancialModelPDF({ currency, companyName, years, bsAndCf, cagr, avgEbitdaMargin, avgNetMargin }: Props) {
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const y1 = years[0]; const y5 = years[years.length - 1];
 
@@ -160,12 +161,12 @@ export default function FinancialModelPDF({ companyName, years, bsAndCf, cagr, a
         <View style={S.kpiRow}>
           <View style={S.kpiCard}>
             <Text style={S.kpiLabel}>Year 1 Revenue</Text>
-            <Text style={S.kpiValue}>£{fmt(y1.revenue)}</Text>
+            <Text style={S.kpiValue}>{currency}{fmt(y1.revenue)}</Text>
             <Text style={S.kpiSub}>Base year</Text>
           </View>
           <View style={[S.kpiCard, S.kpiCardGreen]}>
             <Text style={S.kpiLabel}>Year 5 Revenue</Text>
-            <Text style={S.kpiValue}>£{fmt(y5.revenue)}</Text>
+            <Text style={S.kpiValue}>{currency}{fmt(y5.revenue)}</Text>
             <Text style={S.kpiSub}>CAGR {fmtM(cagr)}%</Text>
           </View>
           <View style={S.kpiCard}>
@@ -192,7 +193,7 @@ export default function FinancialModelPDF({ companyName, years, bsAndCf, cagr, a
               const val = y[key as keyof YearData] as number;
               return (
                 <Text key={y.year} style={getCellStyle(color === "dynamic" ? "dynamic" : color, val)}>
-                  {isPct ? `${fmtM(val)}%` : `£${fmt(val)}`}
+                  {isPct ? `${fmtM(val)}%` : `${currency}${fmt(val)}`}
                 </Text>
               );
             })}
@@ -225,7 +226,7 @@ export default function FinancialModelPDF({ companyName, years, bsAndCf, cagr, a
               <Text style={[bold ? S.tdBold : S.td, { flex: 2.5 }]}>{label}</Text>
               {bsAndCf.map(y => {
                 const val = y[key] as number;
-                return <Text key={y.year} style={getCellStyle(color, val)}>{fmtVal(val)}</Text>;
+                return <Text key={y.year} style={getCellStyle(color, val)}>{fmtVal(val, currency)}</Text>;
               })}
             </View>
           );
@@ -257,7 +258,7 @@ export default function FinancialModelPDF({ companyName, years, bsAndCf, cagr, a
               <Text style={[bold ? S.tdBold : S.td, { flex: 2.5 }]}>{label}</Text>
               {bsAndCf.map(y => {
                 const val = y[key] as number;
-                return <Text key={y.year} style={getCellStyle(color, val)}>{fmtVal(val)}</Text>;
+                return <Text key={y.year} style={getCellStyle(color, val)}>{fmtVal(val, currency)}</Text>;
               })}
             </View>
           );

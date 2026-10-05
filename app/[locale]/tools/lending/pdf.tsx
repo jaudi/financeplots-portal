@@ -30,6 +30,7 @@ const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 2
 interface AmorRow { period: number; payment: number; interest: number; principal: number; balance: number }
 
 interface Props {
+  currency: string;
   mode: "loan" | "mortgage";
   amount: number;
   rate: number;
@@ -40,7 +41,7 @@ interface Props {
   schedule: AmorRow[];
 }
 
-export default function LendingPDF({ mode, amount, rate, years, monthlyPayment, totalPaid, totalInterest, schedule }: Props) {
+export default function LendingPDF({ currency, mode, amount, rate, years, monthlyPayment, totalPaid, totalInterest, schedule }: Props) {
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const title = mode === "loan" ? "Loan Calculator" : "Mortgage Calculator";
   const preview = schedule.slice(0, 24);
@@ -51,7 +52,7 @@ export default function LendingPDF({ mode, amount, rate, years, monthlyPayment, 
         <View style={styles.header}>
           <View>
             <Text style={styles.headerTitle}>{title}</Text>
-            <Text style={styles.headerSub}>£{fmt(amount)} · {rate}% · {years} years</Text>
+            <Text style={styles.headerSub}>{currency}{fmt(amount)} · {rate}% · {years} years</Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
             <Text style={styles.headerMeta}>Generated {date}</Text>
@@ -63,17 +64,17 @@ export default function LendingPDF({ mode, amount, rate, years, monthlyPayment, 
         <View style={styles.kpiRow}>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Monthly Payment</Text>
-            <Text style={styles.kpiValue}>£{fmtM(monthlyPayment)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmtM(monthlyPayment)}</Text>
             <Text style={styles.kpiSub}>{years}-year term</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Total Repayment</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalPaid)}</Text>
-            <Text style={styles.kpiSub}>Loan: £{fmt(amount)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalPaid)}</Text>
+            <Text style={styles.kpiSub}>Loan: {currency}{fmt(amount)}</Text>
           </View>
           <View style={[styles.kpiCard, styles.kpiCardRed]}>
             <Text style={styles.kpiLabel}>Total Interest</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalInterest)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalInterest)}</Text>
             <Text style={styles.kpiSub}>{amount > 0 ? ((totalInterest / amount) * 100).toFixed(1) : 0}% of loan</Text>
           </View>
           <View style={styles.kpiCard}>
@@ -92,10 +93,10 @@ export default function LendingPDF({ mode, amount, rate, years, monthlyPayment, 
         {preview.map((row, idx) => (
           <View key={row.period} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
             <Text style={styles.tableCellBold}>{row.period}</Text>
-            <Text style={styles.tableCell}>£{fmtM(row.payment)}</Text>
-            <Text style={styles.tableCell}>£{fmtM(row.interest)}</Text>
-            <Text style={styles.tableCell}>£{fmtM(row.principal)}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.balance)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmtM(row.payment)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmtM(row.interest)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmtM(row.principal)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.balance)}</Text>
           </View>
         ))}
 

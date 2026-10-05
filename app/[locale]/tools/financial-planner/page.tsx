@@ -4,13 +4,14 @@ import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import { useCurrency } from "@/components/CurrencyPicker";
+import { CURRENCIES } from "@/lib/currency";
 import { allocationAt, debtSchedule, glidePath, growthPath, RETIREMENT_AGE, RISK_PROFILES, type RiskKey } from "@/lib/planner";
 import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from "./charts";
 import PlannerChat from "./PlannerChat";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
-const CURRENCIES = ["£", "$", "€", "¥", "₹"];
 
 const STEPS = [
   { num: 1, labelKey: "step1Label", icon: "💰", descKey: "step1Desc" },
@@ -45,10 +46,12 @@ const RATE_PRESETS = [
   { labelKey: "presetCustom", rate: null },
 ];
 
-function NumInput({ label, value, onChange, prefix = "£", step = 100, note }: {
+function NumInput({ label, value, onChange, prefix: prefixProp, step = 100, note }: {
   label: string; value: number; onChange: (v: number) => void;
   prefix?: string; step?: number; note?: string;
 }) {
+  const [currency] = useCurrency();
+  const prefix = prefixProp ?? currency;
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400">{label}</label>
@@ -81,7 +84,7 @@ export default function FinancialPlannerPage() {
   const tc = useTranslations("toolCommon");
 
   const [step, setStep] = useState(1);
-  const [currency, setCurrency] = useState("£");
+  const [currency, setCurrency] = useCurrency();
   const [pdfLoading, setPdfLoading] = useState(false);
   const reportCharts = useRef<HTMLDivElement>(null);
 
@@ -264,8 +267,8 @@ export default function FinancialPlannerPage() {
     const { PlannerPdf } = await import("./pdf");
     const images = reportCharts.current ? await chartImages(reportCharts.current).catch(() => []) : [];
     const chartTitles = [t("s1FlowTitle"), t("s2PayoffTitle"), t("s3ChartTitle", { years: String(years) }), t("s4GlideTitle")];
-    // Helvetica (the PDF's font) has no emojis and no rupee sign.
-    const safe = (x: string) => x.replace(/\p{Extended_Pictographic}|\uFE0F/gu, "").replace(/₹/g, "Rs ").trim();
+    // Helvetica (the PDF's font) has no emojis.
+    const safe = (x: string) => x.replace(/\p{Extended_Pictographic}|\uFE0F/gu, "").trim();
     const cur = safe(currency);
     const m = (v: number) => `${cur}${fmt(v)}`;
     const rating = savingsRate >= 20 ? t("s5RatingExcellent") : savingsRate >= 10 ? t("s5RatingGood") : t("s5RatingBelowTarget");
@@ -289,7 +292,7 @@ export default function FinancialPlannerPage() {
           { label: t("s4SumWealth", { years: String(years) }), value: m(finalValue), sub: t("pdfAtRateMonthly", { rate: String(annualRate), monthly: m(monthlyContrib) }), color: "blue" },
           { label: t("s5KpiAllocProfile"), value: t(RISK_PROFILES[risk].labelKey as TKey), sub: t("s5KpiStocksPct", { pct: String(allocData[0].value) }), color: "purple" },
         ]}
-        recommendations={recommendations.map(r => ({ title: safe(r.title), body: safe(r.body).replace(/₹/g, "Rs "), color: r.color }))}
+        recommendations={recommendations.map(r => ({ title: safe(r.title), body: safe(r.body), color: r.color }))}
         bestPractices={(t.raw("s5BestPractices") as string[]).map(safe)}
         charts={images.map((src, i) => ({ src, title: safe(chartTitles[i] ?? "") }))}
       />

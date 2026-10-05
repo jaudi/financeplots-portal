@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 interface BudgetRow { category: string; item: string; monthly: number; annual: number; pctExpenses: number }
 
 /** Every label, already translated by the page. Helvetica (the PDF's font) has
- *  no emojis or ₹, so the page passes "Rs" for rupees. */
+ *  no emojis. */
 export interface BudgetPdfText {
   title: string; generated: string; summary: string;
   income: string; incomeSub: string; expenses: string; expensesSub: string;

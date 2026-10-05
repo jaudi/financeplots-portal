@@ -96,7 +96,7 @@ const DOT: Record<string, string> = { green: "#22c55e", amber: "#f59e0b", red: "
 
 // Everything shown is passed in already translated (see handleExportPdf in
 // page.tsx), so the PDF matches the page's language. Text must stay within
-// Helvetica's character set: no emojis or symbols such as ✓ or ₹.
+// Helvetica's character set: no emojis or symbols such as ✓.
 
 export interface PlannerPdfProps {
   text: {

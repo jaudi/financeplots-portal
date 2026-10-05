@@ -30,6 +30,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 
 interface Row { year: number; portfolioValue: number; totalContributed: number; interestEarned: number }
 
 interface Props {
+  currency: string;
   initialCapital: number;
   monthlyContribution: number;
   years: number;
@@ -41,7 +42,7 @@ interface Props {
   rows: Row[];
 }
 
-export default function CompoundPDF({ initialCapital, monthlyContribution, years, annualRate, finalValue, totalInvested, totalInterest, returnMultiple, rows }: Props) {
+export default function CompoundPDF({ currency, initialCapital, monthlyContribution, years, annualRate, finalValue, totalInvested, totalInterest, returnMultiple, rows }: Props) {
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   return (
     <Document>
@@ -49,7 +50,7 @@ export default function CompoundPDF({ initialCapital, monthlyContribution, years
         <View style={styles.header}>
           <View>
             <Text style={styles.headerTitle}>Compound Interest Calculator</Text>
-            <Text style={styles.headerSub}>£{fmt(initialCapital)} initial · £{fmt(monthlyContribution)}/mo · {years} years · {annualRate}% p.a.</Text>
+            <Text style={styles.headerSub}>{currency}{fmt(initialCapital)} initial · {currency}{fmt(monthlyContribution)}/mo · {years} years · {annualRate}% p.a.</Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
             <Text style={styles.headerMeta}>Generated {date}</Text>
@@ -61,23 +62,23 @@ export default function CompoundPDF({ initialCapital, monthlyContribution, years
         <View style={styles.kpiRow}>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Final Portfolio Value</Text>
-            <Text style={styles.kpiValue}>£{fmt(finalValue)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(finalValue)}</Text>
             <Text style={styles.kpiSub}>After {years} years</Text>
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Total Invested</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalInvested)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalInvested)}</Text>
             <Text style={styles.kpiSub}>Initial + contributions</Text>
           </View>
           <View style={[styles.kpiCard, styles.kpiCardGreen]}>
             <Text style={styles.kpiLabel}>Interest Earned</Text>
-            <Text style={styles.kpiValue}>£{fmt(totalInterest)}</Text>
+            <Text style={styles.kpiValue}>{currency}{fmt(totalInterest)}</Text>
             <Text style={styles.kpiSub}>{finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(0) : 0}% of final value</Text>
           </View>
           <View style={[styles.kpiCard, styles.kpiCardGold]}>
             <Text style={styles.kpiLabel}>Return Multiple</Text>
             <Text style={styles.kpiValue}>{returnMultiple.toFixed(1)}×</Text>
-            <Text style={styles.kpiSub}>£1 → £{returnMultiple.toFixed(2)}</Text>
+            <Text style={styles.kpiSub}>{currency}1 → {currency}{returnMultiple.toFixed(2)}</Text>
           </View>
         </View>
 
@@ -90,9 +91,9 @@ export default function CompoundPDF({ initialCapital, monthlyContribution, years
         {rows.map((row, idx) => (
           <View key={row.year} style={idx % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
             <Text style={styles.tableCellBold}>{row.year}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.portfolioValue)}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.totalContributed)}</Text>
-            <Text style={styles.tableCell}>£{fmt(row.interestEarned)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.portfolioValue)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.totalContributed)}</Text>
+            <Text style={styles.tableCell}>{currency}{fmt(row.interestEarned)}</Text>
           </View>
         ))}
 

@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import FinancialModelChat from "./FinancialModelChat";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -43,11 +44,12 @@ function PctInput({ label, value, onChange }: { label: string; value: number; on
 }
 
 function NumInput({ label, value, onChange, step = 10000 }: { label: string; value: number; onChange: (v: number) => void; step?: number }) {
+  const [currency] = useCurrency();
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500 transition">
-        <span className="text-gray-500 text-sm mr-1.5 shrink-0">£</span>
+        <span className="text-gray-500 text-sm mr-1.5 shrink-0">{currency}</span>
         <input
           type="number"
           min={0}
@@ -87,6 +89,7 @@ type YearData = {
 };
 
 export default function FinancialModelPage() {
+  const [currency] = useCurrency();
   const t = useTranslations("financialModel");
   const tc = useTranslations("toolCommon");
   const [companyName, setCompanyName] = useState("My Company");
@@ -213,6 +216,7 @@ export default function FinancialModelPage() {
       const { default: FinancialModelPDF } = await import("./pdf");
       const blob = await pdf(
         <FinancialModelPDF
+          currency={currency}
           companyName={companyName}
           years={years}
           bsAndCf={bsAndCf}
@@ -231,7 +235,7 @@ export default function FinancialModelPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [companyName, years, cagr, avgEbitdaMargin, avgNetMargin]);
+  }, [currency, companyName, years, cagr, avgEbitdaMargin, avgNetMargin]);
 
   const IS_ROWS: { label: string; key: keyof YearData; isPct?: boolean; bold?: boolean; color?: string }[] = [
     { label: "Revenue", key: "revenue", bold: true, color: "text-green-400" },
@@ -285,7 +289,7 @@ export default function FinancialModelPage() {
   ];
 
   const fmtVal = (val: number, isPct?: boolean) =>
-    isPct ? `${fmtM(val)}%` : val < 0 ? `(£${fmt(Math.abs(val))})` : `£${fmt(val)}`;
+    isPct ? `${fmtM(val)}%` : val < 0 ? `(${currency}${fmt(Math.abs(val))})` : `${currency}${fmt(val)}`;
 
   const TABS = [
     { id: "income" as const, label: t("tabIS") },
@@ -316,6 +320,7 @@ export default function FinancialModelPage() {
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
@@ -394,8 +399,8 @@ export default function FinancialModelPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* KPI Cards */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label="Year 1 Revenue" value={`£${fmt(years[0].revenue)}`} sub="Base year" />
-                <KpiCard label="Year 5 Revenue" value={`£${fmt(years[4].revenue)}`} sub={`CAGR ${fmtM(cagr)}%`} color="green" />
+                <KpiCard label="Year 1 Revenue" value={`${currency}${fmt(years[0].revenue)}`} sub="Base year" />
+                <KpiCard label="Year 5 Revenue" value={`${currency}${fmt(years[4].revenue)}`} sub={`CAGR ${fmtM(cagr)}%`} color="green" />
                 <KpiCard label="Avg EBITDA Margin" value={`${fmtM(avgEbitdaMargin)}%`} sub="5-year average" color={avgEbitdaMargin > 0 ? "green" : "red"} />
                 <KpiCard label="Avg Net Margin" value={`${fmtM(avgNetMargin)}%`} sub="5-year average" color={avgNetMargin > 0 ? "green" : "red"} />
               </div>
@@ -410,12 +415,12 @@ export default function FinancialModelPage() {
                     <YAxis
                       stroke="#374151"
                       tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => v >= 1000000 ? `£${(v / 1000000).toFixed(1)}M` : `£${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={v => v >= 1000000 ? `${currency}${(v / 1000000).toFixed(1)}M` : `${currency}${(v / 1000).toFixed(0)}k`}
                       width={75}
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value: unknown) => [`£${fmt(Number(value))}`, undefined]}
+                      formatter={(value: unknown) => [`${currency}${fmt(Number(value))}`, undefined]}
                     />
                     <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 8 }} />
                     <Bar dataKey="Revenue" fill="#1d4ed8" radius={[4, 4, 0, 0]} />
@@ -489,7 +494,7 @@ export default function FinancialModelPage() {
                               if (row.key === "netIncome") cls = val >= 0 ? "text-green-400 font-bold" : "text-red-400 font-bold";
                               return (
                                 <td key={y.year} className={`py-2 pr-4 ${cls}`}>
-                                  {row.isPct ? `${fmtM(val)}%` : `£${fmt(val)}`}
+                                  {row.isPct ? `${fmtM(val)}%` : `${currency}${fmt(val)}`}
                                 </td>
                               );
                             })}
@@ -593,6 +598,7 @@ export default function FinancialModelPage() {
         </div>
       </div>
             <FinancialModelChat
+              currency={currency}
               name={companyName}
               setName={setCompanyName}
               values={{ baseRevenue, revenueGrowth, cogsRate, opexRate, daRate, interestExpense, taxRate, startingCash, startingPPE, startingDebt, capexRate, arDays, apDays, debtRepayment }}

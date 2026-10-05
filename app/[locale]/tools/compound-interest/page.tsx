@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import CompoundChat from "./CompoundChat";
 import { compoundGrowth } from "@/lib/calculators";
 import {
@@ -31,9 +32,11 @@ function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: 
   );
 }
 
-function NumInput({ label, value, onChange, min = 0, step = 100, prefix = "£" }: {
+function NumInput({ label, value, onChange, min = 0, step = 100, prefix: prefixProp }: {
   label: string; value: number; onChange: (v: number) => void; min?: number; step?: number; prefix?: string;
 }) {
+  const [currency] = useCurrency();
+  const prefix = prefixProp ?? currency;
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400 font-medium">{label}</label>
@@ -53,6 +56,7 @@ function NumInput({ label, value, onChange, min = 0, step = 100, prefix = "£" }
 }
 
 export default function CompoundInterestPage() {
+  const [currency] = useCurrency();
   const t = useTranslations("compoundInterest");
   const tc = useTranslations("toolCommon");
   const presetLabels = [t("presetSP"), t("presetGlobal"), t("presetBonds"), t("presetSavings"), t("presetCustom")];
@@ -87,6 +91,7 @@ export default function CompoundInterestPage() {
       const { default: CompoundPDF } = await import("./pdf");
       const blob = await pdf(
         <CompoundPDF
+          currency={currency}
           initialCapital={initialCapital}
           monthlyContribution={monthlyContribution}
           years={years}
@@ -107,7 +112,7 @@ export default function CompoundInterestPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [initialCapital, monthlyContribution, years, annualRate, finalValue, totalInvested, totalInterest, returnMultiple, rows]);
+  }, [currency, initialCapital, monthlyContribution, years, annualRate, finalValue, totalInvested, totalInterest, returnMultiple, rows]);
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -132,6 +137,7 @@ export default function CompoundInterestPage() {
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
@@ -206,10 +212,10 @@ export default function CompoundInterestPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* KPI Cards */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label={t("kpiFinal")} value={`£${fmt(finalValue)}`} sub={`${t("kpiFinalSub", { years: String(years) })}`} />
-                <KpiCard label={t("kpiInvested")} value={`£${fmt(totalInvested)}`} sub={t("kpiInvestedSub")} />
-                <KpiCard label={t("kpiInterest")} value={`£${fmt(totalInterest)}`} sub={`${finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(0) : 0}% ${t("kpiInterestSub")}`} color="green" />
-                <KpiCard label={t("kpiMultiple")} value={`${returnMultiple.toFixed(1)}×`} sub={t("kpiMultipleSub", { x: returnMultiple.toFixed(2) })} color="gold" />
+                <KpiCard label={t("kpiFinal")} value={`${currency}${fmt(finalValue)}`} sub={`${t("kpiFinalSub", { years: String(years) })}`} />
+                <KpiCard label={t("kpiInvested")} value={`${currency}${fmt(totalInvested)}`} sub={t("kpiInvestedSub")} />
+                <KpiCard label={t("kpiInterest")} value={`${currency}${fmt(totalInterest)}`} sub={`${finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(0) : 0}% ${t("kpiInterestSub")}`} color="green" />
+                <KpiCard label={t("kpiMultiple")} value={`${returnMultiple.toFixed(1)}×`} sub={t("kpiMultipleSub", { currency, x: returnMultiple.toFixed(2) })} color="gold" />
               </div>
 
               {/* Growth Chart */}
@@ -227,12 +233,12 @@ export default function CompoundInterestPage() {
                     <YAxis
                       stroke="#374151"
                       tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => v >= 1000000 ? `£${(v / 1000000).toFixed(1)}M` : `£${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={v => v >= 1000000 ? `${currency}${(v / 1000000).toFixed(1)}M` : `${currency}${(v / 1000).toFixed(0)}k`}
                       width={70}
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value) => [`£${fmt(Number(value))}`, undefined]}
+                      formatter={(value) => [`${currency}${fmt(Number(value))}`, undefined]}
                       labelFormatter={v => `Year ${v}`}
                     />
                     <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 16 }} />
@@ -259,9 +265,9 @@ export default function CompoundInterestPage() {
                       {rows.map(row => (
                         <tr key={row.year} className="border-b border-gray-800 hover:bg-gray-800/20 transition text-xs">
                           <td className="py-2 pr-4 text-white font-medium">{row.year}</td>
-                          <td className="py-2 pr-4 text-blue-300 font-semibold">£{fmt(row.portfolioValue)}</td>
-                          <td className="py-2 pr-4 text-gray-300">£{fmt(row.totalContributed)}</td>
-                          <td className="py-2 pr-4 text-green-400">£{fmt(row.interestEarned)}</td>
+                          <td className="py-2 pr-4 text-blue-300 font-semibold">{currency}{fmt(row.portfolioValue)}</td>
+                          <td className="py-2 pr-4 text-gray-300">{currency}{fmt(row.totalContributed)}</td>
+                          <td className="py-2 pr-4 text-green-400">{currency}{fmt(row.interestEarned)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -288,6 +294,7 @@ export default function CompoundInterestPage() {
         </div>
       </div>
             <CompoundChat
+              currency={currency}
               initial={initialCapital}
               setInitial={setInitialCapital}
               monthly={monthlyContribution}

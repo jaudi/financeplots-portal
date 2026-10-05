@@ -30,8 +30,9 @@ const FIELDS: { key: string; tab: Tab; unit: AmountUnit; min?: number; max?: num
 ];
 
 export default function FinancialModelChat({
-  name, setName, values, setValue, setTab, year5Revenue,
+  currency, name, setName, values, setValue, setTab, year5Revenue,
 }: {
+  currency: string;
   name: string;
   setName: (v: string) => void;
   values: Record<string, number>;
@@ -61,10 +62,10 @@ export default function FinancialModelChat({
   return (
     <GuidedChat
       questions={questions}
-      currency="£"
+      currency={currency}
       title={t("chat.title")}
       openLabel={t("chat.open")}
-      doneText={t("chat.done", { revenue: `£${Math.round(year5Revenue).toLocaleString("en-GB")}` })}
+      doneText={t("chat.done", { revenue: `${currency}${Math.round(year5Revenue).toLocaleString("en-GB")}` })}
       doneButton={t("chat.see")}
       onAsk={(q) => tabOf[q.id] && setTab(tabOf[q.id])}
     />

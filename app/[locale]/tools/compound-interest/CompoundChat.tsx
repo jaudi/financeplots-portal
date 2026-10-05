@@ -18,8 +18,9 @@ const PRESET_WORDS = [
 ];
 
 export default function CompoundChat({
-  initial, setInitial, monthly, setMonthly, years, setYears, presets, preset, setPreset, customRate, setCustomRate, finalValue,
+  currency, initial, setInitial, monthly, setMonthly, years, setYears, presets, preset, setPreset, customRate, setCustomRate, finalValue,
 }: {
+  currency: string;
   initial: number;
   setInitial: (v: number) => void;
   monthly: number;
@@ -57,10 +58,10 @@ export default function CompoundChat({
   return (
     <GuidedChat
       questions={questions}
-      currency="£"
+      currency={currency}
       title={t("chat.title")}
       openLabel={t("chat.open")}
-      doneText={t("chat.done", { years, value: `£${Math.round(finalValue).toLocaleString("en-GB")}` })}
+      doneText={t("chat.done", { years, value: `${currency}${Math.round(finalValue).toLocaleString("en-GB")}` })}
       doneButton={t("chat.see")}
     />
   );

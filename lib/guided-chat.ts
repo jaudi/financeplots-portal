@@ -10,7 +10,7 @@ export interface ChatOption { label: string; words: string[]; whole?: string[]; 
 export type AmountUnit = "money" | "price" | "number" | "days" | "percent" | "multiple" | "decimal";
 
 const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-const norm = (s: string) => fold(s).replace(/[^a-z0-9&%£$€¥₹]+/g, " ").trim();
+const norm = (s: string) => fold(s).replace(/[^a-z0-9&%£$€]+/g, " ").trim();
 
 /** The option an answer names, if exactly one matches. When several match but
  *  one matched word contains all the others ("pre-seed" holds "seed"), the

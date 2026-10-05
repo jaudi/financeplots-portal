@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import LendingChat from "./LendingChat";
 import { buildSchedule } from "@/lib/calculators";
 import {
@@ -25,9 +26,11 @@ function KpiCard({ label, value, sub, color = "blue" }: { label: string; value: 
   );
 }
 
-function NumInput({ label, value, onChange, min = 0, step = 1000, prefix = "£" }: {
+function NumInput({ label, value, onChange, min = 0, step = 1000, prefix: prefixProp }: {
   label: string; value: number; onChange: (v: number) => void; min?: number; step?: number; prefix?: string;
 }) {
+  const [currency] = useCurrency();
+  const prefix = prefixProp ?? currency;
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400 font-medium">{label}</label>
@@ -52,6 +55,7 @@ function SliderInput({ label, value, onChange, min, max, step = 0.1 }: { label: 
 }
 
 export default function LendingPage() {
+  const [currency] = useCurrency();
   const t = useTranslations("lending");
   const tc = useTranslations("toolCommon");
   const [tab, setTab] = useState<"loan" | "mortgage">("loan");
@@ -116,6 +120,7 @@ export default function LendingPage() {
       const { default: LendingPDF } = await import("./pdf");
       const blob = await pdf(
         <LendingPDF
+          currency={currency}
           mode={tab}
           amount={activeAmount}
           rate={activeRate}
@@ -135,7 +140,7 @@ export default function LendingPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [tab, activeAmount, activeRate, activeYears, activeCalc]);
+  }, [currency, tab, activeAmount, activeRate, activeYears, activeCalc]);
 
   const tooltipStyle = { backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 };
 
@@ -162,6 +167,7 @@ export default function LendingPage() {
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button onClick={handleExportPdf} disabled={isExporting} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
             {isExporting ? tc("generating") : tc("exportPdf")}
           </button>
@@ -223,9 +229,9 @@ export default function LendingPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* KPIs */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label={t("kpiPayment")} value={`£${fmtM(activeCalc.pmt)}`} sub={`${activeYears}-year term`} />
-                <KpiCard label={t("kpiTotal")} value={`£${fmt(activeCalc.totalPaid)}`} sub={`Loan: £${fmt(activeAmount)}`} />
-                <KpiCard label={t("kpiInterest")} value={`£${fmt(activeCalc.totalInterest)}`} sub={`${activeAmount > 0 ? ((activeCalc.totalInterest / activeAmount) * 100).toFixed(1) : 0}% of loan`} color="red" />
+                <KpiCard label={t("kpiPayment")} value={`${currency}${fmtM(activeCalc.pmt)}`} sub={`${activeYears}-year term`} />
+                <KpiCard label={t("kpiTotal")} value={`${currency}${fmt(activeCalc.totalPaid)}`} sub={`Loan: ${currency}${fmt(activeAmount)}`} />
+                <KpiCard label={t("kpiInterest")} value={`${currency}${fmt(activeCalc.totalInterest)}`} sub={`${activeAmount > 0 ? ((activeCalc.totalInterest / activeAmount) * 100).toFixed(1) : 0}% of loan`} color="red" />
                 <KpiCard label={t("kpiRate")} value={`${activeRate}%`} sub="Annual" />
               </div>
 
@@ -234,15 +240,15 @@ export default function LendingPage() {
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
                   <h2 className="text-white font-bold mb-4">{t("earlyRepaymentTitle")}</h2>
                   <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
-                    <KpiCard label="Balance at Year -5" value={`£${fmt(mCalc.earlyRepay.balAtCutoff)}`} sub={`After ${mYears - 5} years`} />
-                    <KpiCard label="Interest Saved" value={`£${fmt(mCalc.earlyRepay.interestSaved)}`} sub="Last 5 years eliminated" color="green" />
-                    <KpiCard label="Monthly Saving" value={`£${fmtM(mCalc.earlyRepay.monthly)}`} sub={`Over ${mCalc.earlyRepay.monthsToSave} months`} />
+                    <KpiCard label="Balance at Year -5" value={`${currency}${fmt(mCalc.earlyRepay.balAtCutoff)}`} sub={`After ${mYears - 5} years`} />
+                    <KpiCard label="Interest Saved" value={`${currency}${fmt(mCalc.earlyRepay.interestSaved)}`} sub="Last 5 years eliminated" color="green" />
+                    <KpiCard label="Monthly Saving" value={`${currency}${fmtM(mCalc.earlyRepay.monthly)}`} sub={`Over ${mCalc.earlyRepay.monthsToSave} months`} />
                     <KpiCard label="Strategy" value={mCalc.earlyRepay.recommend ? "Invest" : "Repay Early"} sub={`Savings (${mSavRate}%) ${mCalc.earlyRepay.recommend ? ">" : "<"} mortgage (${mRate}%)`} color={mCalc.earlyRepay.recommend ? "green" : "blue"} />
                   </div>
                   <div className={`rounded-xl p-4 text-sm ${mCalc.earlyRepay.recommend ? "bg-green-900/20 border border-green-700/40 text-green-300" : "bg-blue-900/20 border border-blue-700/40 text-blue-300"}`}>
                     💡 {mCalc.earlyRepay.recommend
-                      ? `Invest instead of repaying early. Your savings rate (${mSavRate}%) exceeds the mortgage rate (${mRate}%). Invest the £${fmtM(mCalc.earlyRepay.monthly)}/mo instead.`
-                      : `Pay off early. Your mortgage rate (${mRate}%) exceeds what savings earn (${mSavRate}%). Save £${fmtM(mCalc.earlyRepay.monthly)}/mo for ${mCalc.earlyRepay.monthsToSave} months to save £${fmt(mCalc.earlyRepay.interestSaved)} in interest.`}
+                      ? `Invest instead of repaying early. Your savings rate (${mSavRate}%) exceeds the mortgage rate (${mRate}%). Invest the ${currency}${fmtM(mCalc.earlyRepay.monthly)}/mo instead.`
+                      : `Pay off early. Your mortgage rate (${mRate}%) exceeds what savings earn (${mSavRate}%). Save ${currency}${fmtM(mCalc.earlyRepay.monthly)}/mo for ${mCalc.earlyRepay.monthsToSave} months to save ${currency}${fmt(mCalc.earlyRepay.interestSaved)} in interest.`}
                   </div>
                 </div>
               )}
@@ -255,8 +261,8 @@ export default function LendingPage() {
                     <AreaChart data={activeCalc.chartData} margin={{ top: 5, right: 10, bottom: 10, left: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                       <XAxis dataKey="month" stroke="#374151" tick={{ fill: "#6b7280", fontSize: 10 }} label={{ value: "Month", position: "insideBottom", offset: -5, fill: "#6b7280", fontSize: 10 }} />
-                      <YAxis stroke="#374151" tick={{ fill: "#6b7280", fontSize: 10 }} tickFormatter={v => `£${(v / 1000).toFixed(0)}k`} width={55} />
-                      <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`£${fmtM(Number(v))}`, undefined]} />
+                      <YAxis stroke="#374151" tick={{ fill: "#6b7280", fontSize: 10 }} tickFormatter={v => `${currency}${(v / 1000).toFixed(0)}k`} width={55} />
+                      <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`${currency}${fmtM(Number(v))}`, undefined]} />
                       <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 11 }} />
                       <Area type="monotone" dataKey="Interest" stroke="#ef4444" fill="#ef4444" fillOpacity={0.15} strokeWidth={2} />
                       <Area type="monotone" dataKey="Principal" stroke="#22c55e" fill="#22c55e" fillOpacity={0.15} strokeWidth={2} />
@@ -270,8 +276,8 @@ export default function LendingPage() {
                     <AreaChart data={activeCalc.chartData} margin={{ top: 5, right: 10, bottom: 10, left: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                       <XAxis dataKey="month" stroke="#374151" tick={{ fill: "#6b7280", fontSize: 10 }} label={{ value: "Month", position: "insideBottom", offset: -5, fill: "#6b7280", fontSize: 10 }} />
-                      <YAxis stroke="#374151" tick={{ fill: "#6b7280", fontSize: 10 }} tickFormatter={v => `£${(v / 1000).toFixed(0)}k`} width={55} />
-                      <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`£${fmt(Number(v))}`, undefined]} />
+                      <YAxis stroke="#374151" tick={{ fill: "#6b7280", fontSize: 10 }} tickFormatter={v => `${currency}${(v / 1000).toFixed(0)}k`} width={55} />
+                      <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`${currency}${fmt(Number(v))}`, undefined]} />
                       <Area type="monotone" dataKey="Balance" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={2.5} name="Balance" />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -288,17 +294,17 @@ export default function LendingPage() {
                         <Cell fill="#22c55e" />
                         <Cell fill="#ef4444" />
                       </Pie>
-                      <PieTooltip contentStyle={tooltipStyle} formatter={(v) => [`£${fmt(Number(v))}`, undefined]} />
+                      <PieTooltip contentStyle={tooltipStyle} formatter={(v) => [`${currency}${fmt(Number(v))}`, undefined]} />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-green-500" />
-                      <div><div className="text-xs text-gray-400">{t("legendPrincipal")}</div><div className="text-sm font-semibold text-white">£{fmt(activeAmount)}</div></div>
+                      <div><div className="text-xs text-gray-400">{t("legendPrincipal")}</div><div className="text-sm font-semibold text-white">{currency}{fmt(activeAmount)}</div></div>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-red-500" />
-                      <div><div className="text-xs text-gray-400">{t("legendInterest")}</div><div className="text-sm font-semibold text-white">£{fmt(activeCalc.totalInterest)}</div></div>
+                      <div><div className="text-xs text-gray-400">{t("legendInterest")}</div><div className="text-sm font-semibold text-white">{currency}{fmt(activeCalc.totalInterest)}</div></div>
                     </div>
                   </div>
                 </div>
@@ -324,10 +330,10 @@ export default function LendingPage() {
                         {activeCalc.schedule.slice(0, 24).map(row => (
                           <tr key={row.period} className="border-b border-gray-800 hover:bg-gray-800/20">
                             <td className="py-1.5 pr-4 text-white font-medium">{row.period}</td>
-                            <td className="py-1.5 pr-4 text-gray-300">£{fmtM(row.payment)}</td>
-                            <td className="py-1.5 pr-4 text-red-400">£{fmtM(row.interest)}</td>
-                            <td className="py-1.5 pr-4 text-green-400">£{fmtM(row.principal)}</td>
-                            <td className="py-1.5 pr-4 text-gray-300">£{fmt(row.balance)}</td>
+                            <td className="py-1.5 pr-4 text-gray-300">{currency}{fmtM(row.payment)}</td>
+                            <td className="py-1.5 pr-4 text-red-400">{currency}{fmtM(row.interest)}</td>
+                            <td className="py-1.5 pr-4 text-green-400">{currency}{fmtM(row.principal)}</td>
+                            <td className="py-1.5 pr-4 text-gray-300">{currency}{fmt(row.balance)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -356,6 +362,7 @@ export default function LendingPage() {
         </div>
       </div>
             <LendingChat
+              currency={currency}
               api={{
                 tab, setTab,
                 loan: { amount: lAmount, rate: lRate, years: lYears },

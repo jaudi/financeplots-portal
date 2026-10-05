@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import ValuationChat from "./ValuationChat";
 import { INDUSTRIES, valuation, type Industry } from "@/lib/calculators";
 import {
@@ -12,8 +13,6 @@ import {
 } from "recharts";
 
 const fmt  = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
-/** Money, or "n/a" for a method left out because its input is a loss. */
-const gbp  = (n: number | null) => (n === null ? "n/a" : `£${fmt(n)}`);
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const fmtX = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
@@ -36,9 +35,11 @@ function KpiCard({ label, value, sub, color = "blue" }: {
   );
 }
 
-function NumInput({ label, value, onChange, prefix = "£", step = 1000, min = 0 }: {
+function NumInput({ label, value, onChange, prefix: prefixProp, step = 1000, min = 0 }: {
   label: string; value: number; onChange: (v: number) => void; prefix?: string; step?: number; min?: number;
 }) {
+  const [currency] = useCurrency();
+  const prefix = prefixProp ?? currency;
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400 font-medium">{label}</label>
@@ -76,6 +77,9 @@ function BenchmarkRow({ label, industryVal, userVal }: { label: string; industry
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ValuationPage() {
+  const [currency] = useCurrency();
+  /** Money, or "n/a" for a method left out because its input is a loss. */
+  const gbp = (n: number | null) => (n === null ? "n/a" : `${currency}${fmt(n)}`);
   const t  = useTranslations("valuation");
   const tc = useTranslations("toolCommon");
 
@@ -149,6 +153,7 @@ export default function ValuationPage() {
       const { default: ValuationPDF } = await import("./pdf");
       const blob = await pdf(
         <ValuationPDF
+          currency={currency}
           companyName={companyName}
           revenue={revenue}
           ebitda={ebitda}
@@ -177,7 +182,7 @@ export default function ValuationPage() {
     } finally {
       setIsExporting(false);
     }
-  }, [companyName, revenue, ebitda, netIncome, fcf, growthRate, discountRate, terminalGrowth, ebitdaMultiple, peRatio, dcfValue, epsValue, evValue, avgValuation, netDebt, enterpriseAvg, dcfRows]);
+  }, [currency, companyName, revenue, ebitda, netIncome, fcf, growthRate, discountRate, terminalGrowth, ebitdaMultiple, peRatio, dcfValue, epsValue, evValue, avgValuation, netDebt, enterpriseAvg, dcfRows]);
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white">
@@ -204,6 +209,7 @@ export default function ValuationPage() {
             <span className="text-gray-700 hidden sm:block">|</span>
             <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
           </div>
+          <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
@@ -331,7 +337,7 @@ export default function ValuationPage() {
               </div>
               <p className="text-xs text-gray-500 -mt-3">
                 All figures are equity value — what the shares are worth. Including debt, the business
-                (enterprise value) averages {gbp(enterpriseAvg)}; net debt £{fmt(netDebt)}.
+                (enterprise value) averages {gbp(enterpriseAvg)}; net debt {currency}{fmt(netDebt)}.
               </p>
 
               {/* Valuation comparison chart */}
@@ -344,12 +350,12 @@ export default function ValuationPage() {
                     <YAxis
                       stroke="#374151"
                       tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => v >= 1_000_000 ? `£${(v / 1_000_000).toFixed(1)}M` : `£${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={v => v >= 1_000_000 ? `${currency}${(v / 1_000_000).toFixed(1)}M` : `${currency}${(v / 1000).toFixed(0)}k`}
                       width={75}
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value: unknown) => [`£${fmt(Number(value))}`, "Valuation"]}
+                      formatter={(value: unknown) => [`${currency}${fmt(Number(value))}`, "Valuation"]}
                     />
                     <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                       {barData.map((entry, i) => (
@@ -405,12 +411,12 @@ export default function ValuationPage() {
                     <YAxis
                       stroke="#374151"
                       tick={{ fill: "#6b7280", fontSize: 11 }}
-                      tickFormatter={v => v >= 1_000_000 ? `£${(v / 1_000_000).toFixed(1)}M` : `£${(v / 1000).toFixed(0)}k`}
+                      tickFormatter={v => v >= 1_000_000 ? `${currency}${(v / 1_000_000).toFixed(1)}M` : `${currency}${(v / 1000).toFixed(0)}k`}
                       width={75}
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value: unknown) => [`£${fmt(Number(value))}`, undefined]}
+                      formatter={(value: unknown) => [`${currency}${fmt(Number(value))}`, undefined]}
                     />
                     <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 8 }} />
                     <Line type="monotone" dataKey="Free Cash Flow"  stroke="#3b82f6" strokeWidth={2} dot={{ fill: "#3b82f6", r: 4 }} />
@@ -435,9 +441,9 @@ export default function ValuationPage() {
                       {dcfRows.map(row => (
                         <tr key={row.year} className="border-b border-gray-800 hover:bg-gray-800/20 transition text-xs">
                           <td className="py-2 pr-4 text-white font-bold">Year {row.year}</td>
-                          <td className="py-2 pr-4 text-blue-300 font-semibold">£{fmt(row.fcf)}</td>
-                          <td className="py-2 pr-4 text-green-400">£{fmt(row.discountedFCF)}</td>
-                          <td className="py-2 pr-4 text-gray-300">£{fmt(row.cumulativePV)}</td>
+                          <td className="py-2 pr-4 text-blue-300 font-semibold">{currency}{fmt(row.fcf)}</td>
+                          <td className="py-2 pr-4 text-green-400">{currency}{fmt(row.discountedFCF)}</td>
+                          <td className="py-2 pr-4 text-gray-300">{currency}{fmt(row.cumulativePV)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -451,6 +457,7 @@ export default function ValuationPage() {
       </div>
 
       <ValuationChat
+              currency={currency}
         name={companyName}
         setName={setCompanyName}
         applyIndustry={applyIndustry}
