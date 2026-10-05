@@ -1,0 +1,584 @@
+{
+  "slug": "2026-10-05",
+  "date": "2026-10-05",
+  "title": "Long rates bite while Tokyo runs away from everyone else",
+  "dek": "US 10-year yields near 5.3% and 7.28% mortgages keep Wall Street pinned, Europe slips with France leading the fall, and the Nikkei jumps more than 6% in a week.",
+  "mood": {
+    "label": "Nervous",
+    "explanation": "The VIX, which measures expected swings in the S&P 500, sat at 16.15 on Monday — historically low, so no panic — yet CNN's Fear & Greed index was at 38, in \"fear\", below last month's 45. High-yield credit spreads widened to 3.24 points on 1 October from 3.12 the day before, and Reddit chatter was dominated by memory chips, AI and power utilities rather than broad index funds, a sign attention is concentrated in one trade."
+  },
+  "regions": [
+    {
+      "region": "US",
+      "headline": "Shares flat as 10-year yields hold above 5%",
+      "summary": "The S&P 500 slipped 0.27% on the week to 7,722.72 at Friday's close, while the Nasdaq added 0.45% and small caps were down 4.8% over a month. The 10-year Treasury yield was 5.28% and the 30-year mortgage rate rose to 7.28% in the week to 1 October. August CPI inflation of 3.71% with unemployment at 4.2% in September leaves the Fed squeezed from both sides."
+    },
+    {
+      "region": "Euro",
+      "headline": "Europe lower, with Paris the weakest market",
+      "summary": "The CAC 40 fell 2.8% on the week, the IBEX 1.82% and the FTSE 100 1.58%, with the DAX roughly flat. The euro dropped 1.48% against a stronger dollar to $1.12. The ECB's deposit rate is still 2.5% while August inflation ran at 3.23%, so no near-term relief on borrowing costs looks likely."
+    },
+    {
+      "region": "Asia",
+      "headline": "Nikkei surges 6%; China and India markets fall",
+      "summary": "The Nikkei 225 gained 6.18% on the week to 69,946.86 as the yen sat at 158.19 per dollar — good for exporters, costly for importers. Hong Kong fell 1.92%, Shanghai 2.78% into the Golden Week break and India's Sensex 2.05%. Japan's 10-year yield was 2.94% in August, the highest in decades of memory for Japanese borrowers."
+    }
+  ],
+  "watchNextWeek": [
+    "US CPI for September (release timing subject to the data calendar)",
+    "US weekly jobless claims and the 30-year mortgage rate, Thursday",
+    "Euro area retail sales and German industrial output",
+    "China's return from the Golden Week holiday and September trade data",
+    "Japan's wage and household spending data, plus any Bank of Japan commentary on the yen",
+    "Start of the US third-quarter bank reporting season"
+  ],
+  "body": "A note before we start: the news wire service we use for headline verification was down all day (repeated 503 errors), so this edition leans on market and official data — the snapshot, FRED series and company filings made to the SEC — rather than reported news. Where we normally quote a central banker or a minister, we have left the space blank rather than guess.\n\n## United States\n\nThe week's story was in bonds, not shares. The 10-year Treasury yield closed at 5.28% on Friday 2 October, up about 1.8% in level terms over the week and roughly 10% over a month. The 2-year was 4.78% on 1 October, leaving the gap between 10- and 2-year yields — the \"yield curve\", a rough market vote on growth and inflation years out — at 0.45 points on 2 October. A steeper curve with a high long end is the uncomfortable combination: it means money is dear for anyone borrowing long.\n\nHouseholds felt it immediately. The average 30-year fixed mortgage rate was 7.28% in the week to 1 October, up from 7.03% a week earlier. For a company planning a ten-year capital project, or a family remortgaging, that quarter-point in seven days is the most tangible macro event of the week.\n\nThe data behind it is awkward. Headline CPI inflation was 3.71% in the year to August, up from 3.54% in July; core CPI (stripping out food and energy) was 2.76%, slightly lower. Core PCE, the Fed's preferred gauge, was 3.01% in August. Unemployment rose to 4.2% in September from 4.1%. Growth has cooled: real GDP was 2.19% higher than a year earlier in the second quarter, against 2.64% in the first. The fed funds rate averaged 3.75% in September. So: inflation not yet home, jobs softening, long rates rising anyway. Ten-year breakeven inflation — what bond markets price in for average inflation over a decade — was 2.36% on 2 October, which suggests the move is about term premium and supply, not an inflation scare.\n\nShares did almost nothing. The S&P 500 ended Friday at 7,722.72, down 0.27% on the week and flat over a month. The Nasdaq rose 0.45%, up 2.58% in a month. The Russell 2000 index of smaller companies, which is more sensitive to borrowing costs, fell 0.16% on the week and 4.8% over the month — the clearest sign that expensive money is doing damage below the mega-cap surface.\n\n## Euro area\n\nA broad, orderly slide. The Euro Stoxx 50 lost 0.89% on the week to Monday, the DAX 0.28%, the IBEX 1.82% and the FTSE 100 1.58%. France was the laggard: the CAC 40 fell 2.8% in a week and 5.47% in a month. French 10-year government yields were 4.00% in August, above Italy's 3.99% and well above Germany's 3.18% — a reminder that bond investors are charging Paris more than Rome for borrowing.\n\nThe policy backdrop is static. The ECB deposit rate was 2.5% on Monday, unchanged, while euro area inflation was 3.23% in the year to August, up from 2.93% in July. Unemployment held at 6.4% in August and GDP was 1.16% higher year on year in the second quarter, a pickup from 0.54%. Government debt across the bloc was 88.9% of GDP in the first quarter, up from 87.7% at end-2025.\n\nFor businesses, the live variable is the currency. The euro fell 1.48% on the week to $1.12 and is down 3.48% in a month. That lifts the euro cost of dollar-priced energy and raw materials just as Brent crude sits 4.75% higher than a month ago — a quiet squeeze on margins for importers and manufacturers.\n\n## Asia\n\nJapan was the week's outlier by a mile. The Nikkei 225 jumped 6.18% to 69,946.86, up 5.34% over the month, while the yen weakened a touch further to 158.19 per dollar. A weak yen flatters exporters' reported earnings and foreign-currency revenues; it also makes imported energy and food dearer for Japanese households, and Japan's 10-year government bond yield was 2.94% in August, up from 2.79% in July — a level that changes the arithmetic for a state with debt near 240% of GDP (IMF, 2023).\n\nElsewhere in the region the mood was heavier. Hong Kong's Hang Seng fell 1.92% on the week and 5.4% in a month; the Shanghai Composite was down 2.78% at its 30 September close before the Golden Week holiday; India's Sensex fell 2.05% and is down 4.93% over a month; Korea's Kospi slipped 1.09% but is flat over the month. The renminbi firmed slightly, with the dollar buying 6.70 yuan, down 0.25% on the week.\n\n## Debt and politics\n\nThe arithmetic of government borrowing is now a market force rather than a footnote. US federal debt was 122.59% of GDP in the first quarter of 2026, with a deficit of 5.77% of GDP in fiscal 2025 (narrower than 6.2% the year before). Euro area debt is rising again. Japan is in a class of its own. With the US 10-year at 5.28% and French and Italian 10-year yields near 4%, the cost of rolling all that over is climbing — and that is the mechanism by which sovereign deficits reach corporate loan rates and mortgage desks. The dollar index rose 1.03% on the week to 102.25 and is up 3.45% in a month, tightening conditions for anyone outside the US who borrows in dollars.\n\n## AI and technology\n\nThe AI capital-spending cycle showed up this week in hard numbers rather than announcements. Micron reported fiscal fourth-quarter revenue of $54.23 billion, against $41.46 billion in the prior quarter and $11.32 billion a year earlier, with full-year revenue of $133.19 billion versus $37.38 billion, and guided to about $61.5 billion of revenue for the coming quarter — figures as reported in its SEC filing, which attributes the move to AI-driven memory demand ([Micron's earnings release](https://www.sec.gov/Archives/edgar/data/723125/000072312526000018/a2026q4ex991-pressrelease.htm)). Jabil, which assembles hardware, reported fiscal 2026 revenue of $36.0 billion, up 21% on the year, and guided to $44.5 billion for fiscal 2027, citing AI infrastructure alongside automotive, healthcare and defence ([Jabil's filing](https://www.sec.gov/Archives/edgar/data/898293/000162828026063890/jbl-20260930ex991.htm)). For the rest of us the relevant read-across is electricity and memory prices, both of which feed through to data-centre and device costs.\n\n## Company news and results\n\nIt was the tail end of the August–September fiscal-year reporting season, with 54 US-listed companies filing quarterly results with the SEC in the past week ([SEC filings list](https://www.sec.gov/Archives/edgar/data/723125/000072312526000018/mu-20260930.htm)), including Nike, Accenture, Carnival, CarMax, Conagra, McCormick, Workday and Jefferies; exhibit text was not available for several of those filings at the time of writing.\n\nWhere the numbers were available, the industrial picture was mixed in composition rather than direction. Acuity reported fiscal 2026 net sales of $4.6 billion, up 6.8% on the prior year, with diluted EPS of $17.05 against $12.53 a year earlier; its lighting segment's sales fell 1.0% for the year while its intelligent-spaces segment grew 44.8%, and the company noted $44.9 million of tariff refunds received in the fourth quarter and $17.8 million of special charges ([Acuity's release](https://www.sec.gov/Archives/edgar/data/1144215/000114421526000047/ayi-20261001x8xk_ex991.htm)). That tariff line is worth noting for finance directors: trade costs and their reversals are now a recurring item in US industrial accounts.\n\n## Market mood\n\nQuietly anxious. The VIX — the options market's estimate of how much the S&P 500 will swing — was 16.15 on Monday, up 0.5% on the week and 5.56% over the month, which is calm by any historical standard. But CNN's Fear & Greed index read 38, in \"fear\", versus 45 a month ago, and high-yield credit spreads (the extra yield lenders demand from riskier companies) widened to 3.24 percentage points on 1 October from 3.12 the previous day. Gold was broadly flat on the week at $4,182.60 and bitcoin rose 3.07% to $86,120. On Reddit's investing forums — unverified retail opinion, but a useful gauge of attention — the most-mentioned names were memory chips, AI hardware and, strikingly, several electric utilities, with broad index funds further down the list. Crowded interest in one theme while the breadth measures weaken is the pattern worth keeping an eye on.\n\n## What to watch next week\n\nChiefly whether long-term US yields keep climbing and what that does to mortgage rates, and whether China's markets reopen after Golden Week in a better humour than they left it.\n",
+  "sources": [
+    {
+      "title": "MICRON TECHNOLOGY INC  (MU)  (CIK 0000723125): 8-K filing",
+      "publisher": "SEC EDGAR",
+      "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000018/mu-20260930.htm"
+    },
+    {
+      "title": "a2026q4ex991-pressrelease.htm",
+      "publisher": "SEC EDGAR",
+      "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000018/a2026q4ex991-pressrelease.htm"
+    },
+    {
+      "title": "jbl-20260930ex991.htm",
+      "publisher": "SEC EDGAR",
+      "url": "https://www.sec.gov/Archives/edgar/data/898293/000162828026063890/jbl-20260930ex991.htm"
+    },
+    {
+      "title": "ayi-20261001x8xk_ex991.htm",
+      "publisher": "SEC EDGAR",
+      "url": "https://www.sec.gov/Archives/edgar/data/1144215/000114421526000047/ayi-20261001x8xk_ex991.htm"
+    }
+  ],
+  "data": {
+    "markets": [
+      {
+        "symbol": "^GSPC",
+        "label": "S&P 500",
+        "region": "US",
+        "date": "2026-10-02",
+        "close": 7722.72,
+        "change1w": -0.27,
+        "change1m": 0.05
+      },
+      {
+        "symbol": "^IXIC",
+        "label": "Nasdaq Composite",
+        "region": "US",
+        "date": "2026-10-02",
+        "close": 27190.86,
+        "change1w": 0.45,
+        "change1m": 2.58
+      },
+      {
+        "symbol": "^RUT",
+        "label": "Russell 2000",
+        "region": "US",
+        "date": "2026-10-02",
+        "close": 2832.9,
+        "change1w": -0.16,
+        "change1m": -4.8
+      },
+      {
+        "symbol": "^VIX",
+        "label": "VIX (S&P 500 implied volatility)",
+        "region": "US",
+        "date": "2026-10-05",
+        "close": 16.15,
+        "change1w": 0.5,
+        "change1m": 5.56
+      },
+      {
+        "symbol": "^TNX",
+        "label": "US 10-year yield",
+        "region": "US",
+        "date": "2026-10-02",
+        "close": 5.28,
+        "change1w": 1.79,
+        "change1m": 10.31
+      },
+      {
+        "symbol": "DX-Y.NYB",
+        "label": "US Dollar Index",
+        "region": "US",
+        "date": "2026-10-05",
+        "close": 102.25,
+        "change1w": 1.03,
+        "change1m": 3.45
+      },
+      {
+        "symbol": "^STOXX50E",
+        "label": "Euro Stoxx 50",
+        "region": "Euro",
+        "date": "2026-10-05",
+        "close": 6245.38,
+        "change1w": -0.89,
+        "change1m": -2.48
+      },
+      {
+        "symbol": "^GDAXI",
+        "label": "DAX",
+        "region": "Euro",
+        "date": "2026-10-05",
+        "close": 25303.54,
+        "change1w": -0.28,
+        "change1m": -2.7
+      },
+      {
+        "symbol": "^FCHI",
+        "label": "CAC 40",
+        "region": "Euro",
+        "date": "2026-10-05",
+        "close": 7851.9,
+        "change1w": -2.8,
+        "change1m": -5.47
+      },
+      {
+        "symbol": "^IBEX",
+        "label": "IBEX 35",
+        "region": "Euro",
+        "date": "2026-10-05",
+        "close": 19243,
+        "change1w": -1.82,
+        "change1m": -3.89
+      },
+      {
+        "symbol": "^FTSE",
+        "label": "FTSE 100",
+        "region": "Euro",
+        "date": "2026-10-05",
+        "close": 10516.47,
+        "change1w": -1.58,
+        "change1m": -2.82
+      },
+      {
+        "symbol": "EURUSD=X",
+        "label": "EUR/USD",
+        "region": "Euro",
+        "date": "2026-10-05",
+        "close": 1.12,
+        "change1w": -1.48,
+        "change1m": -3.48
+      },
+      {
+        "symbol": "^N225",
+        "label": "Nikkei 225",
+        "region": "Asia",
+        "date": "2026-10-05",
+        "close": 69946.86,
+        "change1w": 6.18,
+        "change1m": 5.34
+      },
+      {
+        "symbol": "^HSI",
+        "label": "Hang Seng",
+        "region": "Asia",
+        "date": "2026-10-05",
+        "close": 24040.34,
+        "change1w": -1.92,
+        "change1m": -5.4
+      },
+      {
+        "symbol": "000001.SS",
+        "label": "Shanghai Composite",
+        "region": "Asia",
+        "date": "2026-09-30",
+        "close": 3842.2,
+        "change1w": -2.78,
+        "change1m": -2.3
+      },
+      {
+        "symbol": "^BSESN",
+        "label": "BSE Sensex",
+        "region": "Asia",
+        "date": "2026-10-05",
+        "close": 72382.47,
+        "change1w": -2.05,
+        "change1m": -4.93
+      },
+      {
+        "symbol": "^KS11",
+        "label": "KOSPI",
+        "region": "Asia",
+        "date": "2026-10-02",
+        "close": 7003.74,
+        "change1w": -1.09,
+        "change1m": 0.12
+      },
+      {
+        "symbol": "JPY=X",
+        "label": "USD/JPY",
+        "region": "Asia",
+        "date": "2026-10-05",
+        "close": 158.19,
+        "change1w": 0.46,
+        "change1m": 1.28
+      },
+      {
+        "symbol": "CNY=X",
+        "label": "USD/CNY",
+        "region": "Asia",
+        "date": "2026-10-05",
+        "close": 6.7,
+        "change1w": -0.25,
+        "change1m": -0.22
+      },
+      {
+        "symbol": "CL=F",
+        "label": "WTI crude oil",
+        "region": "Global",
+        "date": "2026-10-05",
+        "close": 90.16,
+        "change1w": -2.63,
+        "change1m": -3.09
+      },
+      {
+        "symbol": "BZ=F",
+        "label": "Brent crude oil",
+        "region": "Global",
+        "date": "2026-10-05",
+        "close": 102.57,
+        "change1w": -2.57,
+        "change1m": 4.75
+      },
+      {
+        "symbol": "GC=F",
+        "label": "Gold",
+        "region": "Global",
+        "date": "2026-10-05",
+        "close": 4182.6,
+        "change1w": 0.34,
+        "change1m": -5.78
+      },
+      {
+        "symbol": "HG=F",
+        "label": "Copper",
+        "region": "Global",
+        "date": "2026-10-05",
+        "close": 6.61,
+        "change1w": 0.62,
+        "change1m": -1.96
+      },
+      {
+        "symbol": "BTC-USD",
+        "label": "Bitcoin",
+        "region": "Global",
+        "date": "2026-10-05",
+        "close": 86120,
+        "change1w": 3.07,
+        "change1m": 7.89
+      }
+    ],
+    "macro": {
+      "US": [
+        {
+          "id": "GDPC1",
+          "label": "Real GDP growth, YoY",
+          "unit": "%",
+          "date": "2026-04-01",
+          "value": 2.19,
+          "prior": {
+            "date": "2026-01-01",
+            "value": 2.64
+          },
+          "stale": false
+        },
+        {
+          "id": "CPIAUCSL",
+          "label": "CPI inflation, YoY",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 3.71,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 3.54
+          },
+          "stale": false
+        },
+        {
+          "id": "CPILFESL",
+          "label": "Core CPI inflation, YoY",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 2.76,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 2.79
+          },
+          "stale": false
+        },
+        {
+          "id": "UNRATE",
+          "label": "Unemployment rate",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 4.2,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 4.1
+          },
+          "stale": false
+        },
+        {
+          "id": "FEDFUNDS",
+          "label": "Fed funds rate",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.75,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.63
+          },
+          "stale": false
+        },
+        {
+          "id": "DGS2",
+          "label": "2-year Treasury yield",
+          "unit": "%",
+          "date": "2026-10-01",
+          "value": 4.78,
+          "prior": {
+            "date": "2026-09-30",
+            "value": 4.88
+          },
+          "stale": false
+        },
+        {
+          "id": "DGS10",
+          "label": "10-year Treasury yield",
+          "unit": "%",
+          "date": "2026-10-01",
+          "value": 5.24,
+          "prior": {
+            "date": "2026-09-30",
+            "value": 5.29
+          },
+          "stale": false
+        },
+        {
+          "id": "T10Y2Y",
+          "label": "10y minus 2y Treasury spread",
+          "unit": "pp",
+          "date": "2026-10-02",
+          "value": 0.45,
+          "prior": {
+            "date": "2026-10-01",
+            "value": 0.46
+          },
+          "stale": false
+        },
+        {
+          "id": "BAMLH0A0HYM2",
+          "label": "High-yield credit spread",
+          "unit": "pp",
+          "date": "2026-10-01",
+          "value": 3.24,
+          "prior": {
+            "date": "2026-09-30",
+            "value": 3.12
+          },
+          "stale": false
+        },
+        {
+          "id": "GFDEGDQ188S",
+          "label": "Federal debt, % of GDP",
+          "unit": "%",
+          "date": "2026-01-01",
+          "value": 122.59,
+          "prior": {
+            "date": "2025-10-01",
+            "value": 122.57
+          },
+          "stale": false
+        },
+        {
+          "id": "FYFSGDA188S",
+          "label": "Federal surplus/deficit, % of GDP",
+          "unit": "%",
+          "date": "2025-01-01",
+          "value": -5.77,
+          "prior": {
+            "date": "2024-01-01",
+            "value": -6.2
+          },
+          "stale": false
+        }
+      ],
+      "Euro": [
+        {
+          "id": "CLVMNACSCAB1GQEA19",
+          "label": "Euro area real GDP growth, YoY",
+          "unit": "%",
+          "date": "2026-04-01",
+          "value": 1.16,
+          "prior": {
+            "date": "2026-01-01",
+            "value": 0.54
+          },
+          "stale": false
+        },
+        {
+          "id": "CP0000EZ19M086NEST",
+          "label": "Euro area HICP inflation, YoY",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 3.23,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 2.93
+          },
+          "stale": false
+        },
+        {
+          "id": "ECBDFR",
+          "label": "ECB deposit facility rate",
+          "unit": "%",
+          "date": "2026-10-05",
+          "value": 2.5,
+          "prior": {
+            "date": "2026-10-04",
+            "value": 2.5
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01DEM156N",
+          "label": "Germany 10-year yield",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 3.18,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 3.07
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01ITM156N",
+          "label": "Italy 10-year yield",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 3.99,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 3.88
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01FRM156N",
+          "label": "France 10-year yield",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 4,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 3.85
+          },
+          "stale": false
+        },
+        {
+          "id": "eurostat:une_rt_m",
+          "label": "Euro area unemployment rate",
+          "unit": "%",
+          "date": "2026-08",
+          "value": 6.4,
+          "prior": {
+            "date": "2026-07",
+            "value": 6.4
+          },
+          "stale": false
+        },
+        {
+          "id": "eurostat:gov_10q_ggdebt",
+          "label": "Euro area government debt, % of GDP",
+          "unit": "%",
+          "date": "2026-Q1",
+          "value": 88.9,
+          "prior": {
+            "date": "2025-Q4",
+            "value": 87.7
+          },
+          "stale": false
+        }
+      ],
+      "Asia": [
+        {
+          "id": "IRLTLT01JPM156N",
+          "label": "Japan 10-year yield",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 2.94,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 2.79
+          },
+          "stale": false
+        },
+        {
+          "id": "IR3TIB01CNM156N",
+          "label": "China 3-month interbank rate",
+          "unit": "%",
+          "date": "2026-07-01",
+          "value": 1.54,
+          "prior": {
+            "date": "2026-06-01",
+            "value": 1.51
+          },
+          "stale": false
+        },
+        {
+          "id": "GGGDTAJPA188N",
+          "label": "Japan government debt, % of GDP (IMF)",
+          "unit": "%",
+          "date": "2023-01-01",
+          "value": 239.97,
+          "prior": null,
+          "stale": true
+        },
+        {
+          "id": "GGGDTACNA188N",
+          "label": "China government debt, % of GDP (IMF)",
+          "unit": "%",
+          "date": "2024-01-01",
+          "value": 88.33,
+          "prior": {
+            "date": "2023-01-01",
+            "value": 82.01
+          },
+          "stale": true
+        }
+      ]
+    },
+    "fearAndGreed": {
+      "score": 38,
+      "rating": "fear",
+      "previousWeek": 34,
+      "previousMonth": 45,
+      "date": "2026-10-05"
+    }
+  },
+  "meta": {
+    "model": "claude-opus-5",
+    "generatedAt": "2026-10-05T12:10:30.668Z",
+    "toolCalls": 30,
+    "usage": {
+      "input_tokens": 18,
+      "cache_creation_input_tokens": 34021,
+      "cache_read_input_tokens": 154536,
+      "output_tokens": 7641
+    },
+    "unavailableSources": [
+      "Google News headlines: 503 Service Unavailable — https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en"
+    ]
+  },
+  "audio": {
+    "url": "https://github.com/jaudi/financeplots-portal/releases/download/observer-2026-10-05/the-observer-2026-10-05.mp3",
+    "durationSeconds": 742
+  }
+}
