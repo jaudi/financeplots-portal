@@ -4,10 +4,11 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, payoffWithExtra, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type AnyChartSpec } from "@/lib/charts/spec";
-import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, investmentReturnChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
 import { getCompanyProfile, getCompanyProfiles } from "@/lib/company";
 import { tryFinancialHistory } from "@/lib/edgar";
 import { fetchIndicators } from "@/lib/fred";
+import { checkFlows, encodeFlows, investmentReturn, netInvestedSteps, rangeFor, replayFlows, type FlowProblem } from "@/lib/investment-return";
 import { CHART_VIEW_HTML } from "@/lib/mcp-app/chart-view-html.generated";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
@@ -27,7 +28,7 @@ import { getUniverse, UNCLASSIFIED, UNIVERSE_SCREENS } from "@/lib/universe";
 const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
-Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
+Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, investment_return (the real annual return, XIRR, on dated deposits and withdrawals, optionally replayed in an index the user names), break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
 Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR), company_snowflake (those ratios drawn as a snowflake, for one company or two on the same shape).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
@@ -258,6 +259,137 @@ export function createFinancePlotsServer() {
         tool_page: `${SITE}/tools/compound-interest`,
       });
       return withCharts(result, [compoundChart(r.rows, annual_return_pct, inflation_pct)], chart);
+    },
+  );
+
+  const FLOW_PROBLEMS: Record<FlowProblem, string> = {
+    no_flows: "Give at least one dated amount in `flows`.",
+    bad_date: "Dates must be real dates written YYYY-MM-DD.",
+    bad_amount: "Every amount must be a number.",
+    bad_value: "current_value must be zero or more.",
+    after_value_date: "A flow is dated after value_date. Move it, or set value_date later.",
+    no_money_in: "At least one flow must be money put in (a positive amount).",
+  };
+
+  server.registerTool(
+    "investment_return",
+    {
+      title: "Investment return (XIRR)",
+      description:
+        "The real annual return on an investment with money put in and taken out on different dates: the money-weighted rate (XIRR, as Excel calculates it, 365-day years), next to the simple return (gain ÷ money put in), the gain and the money multiple, with a chart of money in against what it is worth. " +
+        "Give each deposit as a positive amount and each withdrawal as a negative one, plus what the investment is worth on `value_date` (default today). " +
+        "Optionally `compare_symbol` — an index, fund or stock the user names (Yahoo Finance symbol, e.g. ^GSPC, ^FTSE, VWRL.L) — replays the same deposits and withdrawals in it at each date's close and returns what that would be worth and its annual return. The tool never picks one. Index prices leave out dividends. Set `currency` to the flows' currency so the comparison is converted at daily FX rates. " +
+        "Historical, not a forecast or recommendation.",
+      inputSchema: {
+        flows: z
+          .array(
+            z.object({
+              date: z.string().describe("YYYY-MM-DD"),
+              amount: z.number().describe("Positive: money put in. Negative: money taken out"),
+            }),
+          )
+          .min(1)
+          .max(500)
+          .describe("Every deposit and withdrawal, in any order"),
+        current_value: z.number().min(0).describe("What the investment is worth on value_date"),
+        value_date: z.string().optional().describe("YYYY-MM-DD the current value is for; default today"),
+        compare_symbol: z.string().min(1).max(15).optional().describe("Optional index, fund or stock the user names to replay the same flows in, e.g. ^GSPC"),
+        currency: z
+          .string()
+          .regex(/^[A-Za-z]{3}$/, "A three-letter ISO currency code, e.g. GBP")
+          .optional()
+          .describe("ISO currency of the flows, e.g. GBP, USD, EUR; with compare_symbol, its prices are converted into it"),
+        chart: chartParam,
+      },
+      annotations: { ...readOnly, openWorldHint: true },
+      _meta: chartUi,
+    },
+    async ({ flows, current_value, value_date, compare_symbol, currency, chart }) => {
+      const today = new Date().toISOString().slice(0, 10);
+      const valueDate = value_date ?? today;
+      const problem = checkFlows(flows, current_value, valueDate);
+      if (problem) return error(FLOW_PROBLEMS[problem]);
+      if (valueDate > today) return error("value_date can't be in the future.");
+      const r = investmentReturn(flows, current_value, valueDate);
+      if (r.years <= 0) return error("The first flow is on value_date itself: there is no time for a return yet.");
+      const base = currency?.toUpperCase();
+
+      let comparison: Record<string, unknown> | null = null;
+      let comparisonUnavailable: string | null = null;
+      let replayPath: { label: string; path: { date: string; value: number }[] } | undefined;
+      if (compare_symbol) {
+        const s = normaliseSymbol(compare_symbol);
+        if (!s) return error(`"${compare_symbol}" isn't a valid ticker. Use a Yahoo Finance symbol such as ^GSPC or VWRL.L.`);
+        const range = rangeFor(r.firstDate, today);
+        const h = await getPriceHistory(s, range).catch((err) => (isUnknownSymbol(err) ? ("unknown" as const) : null));
+        if (h === "unknown") return error(`No price data for ${s}.`);
+        if (!h) comparisonUnavailable = "Price data is temporarily unavailable, so the comparison was left out.";
+        else {
+          const listing = majorCurrency(h.currency || "");
+          let points = convertPoints(h.points, null, listing.scale);
+          let fxUsed: string | null = null;
+          if (base && listing.code && listing.code !== base) {
+            const fx = await getPriceHistory(`${listing.code}${base}=X`, range).catch(() => null);
+            if (fx) {
+              points = convertPoints(h.points, fx.points, listing.scale);
+              fxUsed = `${listing.code}${base}=X`;
+            } else comparisonUnavailable = `No FX history to convert ${listing.code} into ${base}, so the comparison was left out.`;
+          }
+          if (!comparisonUnavailable) {
+            const rep = replayFlows(flows, points, valueDate);
+            if (!rep.ok) {
+              comparisonUnavailable =
+                rep.problem === "history_too_short"
+                  ? `${s}'s price history available here starts on ${rep.date}, after the first flow, so the comparison was left out.`
+                  : `On ${rep.date} the withdrawal was more than the same money in ${s} would have been worth, so the comparison was left out.`;
+            } else {
+              const measuredIn = base && fxUsed ? base : listing.code || null;
+              comparison = {
+                symbol: s,
+                name: h.name,
+                listing_currency: h.currency || null,
+                measured_in: measuredIn,
+                ...(fxUsed && { fx_rate_used: fxUsed }),
+                value: round2(rep.value),
+                gain: round2(rep.result.gain),
+                annual_return_pct: rep.result.annualReturnPct === null ? null : round2(rep.result.annualReturnPct),
+                difference_pct_points:
+                  rep.result.annualReturnPct === null || r.annualReturnPct === null ? null : round2(r.annualReturnPct - rep.result.annualReturnPct),
+                note:
+                  "Each deposit bought, and each withdrawal sold, at the close on or before its date (Yahoo Finance, delayed). Price only: dividends are not included unless the symbol is a total-return index or an accumulating fund." +
+                  (!base && listing.code ? ` Prices are in ${listing.code}; the flows were assumed to be too — set currency to convert.` : ""),
+              };
+              replayPath = { label: `Same money in ${h.name || s}`, path: rep.path };
+            }
+          }
+        }
+      }
+
+      const link = new URLSearchParams({ f: encodeFlows(flows), v: String(current_value), on: valueDate });
+      if (comparison) link.set("vs", String(comparison.symbol));
+      const query = link.toString();
+      const result = json({
+        annual_return_pct: r.annualReturnPct === null ? null : round2(r.annualReturnPct),
+        simple_return_pct: round2(r.simpleReturnPct),
+        gain: round2(r.gain),
+        total_put_in: round2(r.totalIn),
+        total_taken_out: round2(r.totalOut),
+        current_value,
+        money_multiple: round2(r.multiple),
+        first_date: r.firstDate,
+        value_date: valueDate,
+        years: round2(r.years),
+        currency: base ?? null,
+        explanation:
+          "The simple return counts every unit of money the same however long it was invested. The annual return (XIRR) weights each deposit by the time it was at work, so it is the figure to compare with a savings rate or an index.",
+        ...(r.shortPeriod && {
+          short_period_note: "Less than a year: an annual rate stretches the period out to twelve months, so it can look much bigger or smaller than the actual change.",
+        }),
+        ...(comparison && { comparison }),
+        ...(comparisonUnavailable && { comparison_unavailable: comparisonUnavailable }),
+        tool_page: query.length < 1800 ? `${SITE}/tools/investment-return?${query}` : `${SITE}/tools/investment-return`,
+      });
+      return withCharts(result, [investmentReturnChart(netInvestedSteps(flows), valueDate, current_value, base, replayPath)], chart);
     },
   );
 

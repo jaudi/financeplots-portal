@@ -18,6 +18,7 @@ export const GOALS: Record<Audience, { key: string; slug: string; words: string[
     { key: "takeHome", slug: "take-home-pay", words: ["earn", "salary", "take home", "tax", "salario", "sueldo", "cobro", "nomina", "impuestos"] },
     { key: "budget", slug: "personal-budget", words: ["budget", "spend", "spending", "presupuesto", "gastos", "gasto"] },
     { key: "savings", slug: "compound-interest", words: ["savings", "save", "grow", "interest", "ahorro", "ahorros", "interes", "crecer"] },
+    { key: "realReturn", slug: "investment-return", words: ["xirr", "irr", "real return", "annual return", "returned", "tir", "rentabilidad real", "rentado", "rendido"] },
     { key: "loan", slug: "lending", words: ["loan", "mortgage", "debt", "prestamo", "hipoteca", "deuda"] },
     { key: "invest", slug: "stocks", words: ["shares", "stocks", "investments", "invest", "acciones", "invertir", "inversiones", "bolsa"] },
     { key: "plan", slug: "financial-planner", words: ["full plan", "everything", "whole", "plan completo", "todo"] },

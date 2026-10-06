@@ -38,6 +38,7 @@ const TOOL_SLUGS = [
   "financial-model",
   "financial-planner",
   "financial-planner-company",
+  "investment-return",
   "lending",
   "macro-dashboard",
   "personal-budget",

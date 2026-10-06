@@ -164,6 +164,56 @@ export function priceChart(h: { symbol: string; name: string; currency: string; 
   };
 }
 
+/** Money put in less money taken out over time, what the investment is worth
+ *  now, and — when the user picked one — the same flows replayed in an index
+ *  or fund. Colours follow series position, never which line is higher. */
+export function investmentReturnChart(
+  steps: { date: string; netIn: number }[],
+  valueDate: string,
+  value: number,
+  currency?: string,
+  replay?: { label: string; path: { date: string; value: number }[] },
+): ChartSpec {
+  const first = steps[0].date;
+  let dates: string[];
+  if (replay && replay.path.length > 1) dates = replay.path.map((p) => p.date);
+  else {
+    const set = new Set([...steps.map((s) => s.date), valueDate]);
+    const d = new Date(`${first.slice(0, 7)}-01T00:00:00Z`);
+    while (d.toISOString().slice(0, 10) < valueDate) {
+      d.setUTCMonth(d.getUTCMonth() + 1);
+      const iso = d.toISOString().slice(0, 10);
+      if (iso > first && iso < valueDate) set.add(iso);
+    }
+    dates = [...set].sort();
+  }
+  if (dates.length > 160) {
+    const step = (dates.length - 1) / 159;
+    dates = Array.from({ length: 160 }, (_, i) => dates[Math.round(i * step)]);
+  }
+  const at = <T extends { date: string }>(rows: T[], date: string): T | null => {
+    let found: T | null = null;
+    for (const r of rows) {
+      if (r.date > date) break;
+      found = r;
+    }
+    return found;
+  };
+  const long = (Date.parse(valueDate) - Date.parse(first)) / 86_400_000 > 120;
+  return {
+    title: "Money in and what it is worth",
+    subtitle: `Worth ${formatValue(value, "money", currency)} on ${valueDate}${currency ? ` · ${currency}` : ""}`,
+    x: { labels: dates.map((d) => dateLabel(d, long)), ticks: long ? periodStarts(dates) : undefined },
+    y: { format: "money", currency },
+    series: [
+      { name: "Money in, less money out", type: "area", values: dates.map((d) => at(steps, d)?.netIn ?? 0) },
+      ...(replay ? [{ name: replay.label, type: "line" as const, values: dates.map((d) => at(replay.path, d)?.value ?? null) }] : []),
+    ],
+    refLines: [{ value, label: "Worth now" }],
+    note: `${SOURCE}${replay ? " · index prices from Yahoo Finance, delayed; price only, dividends not included" : ""} · past returns say nothing about future ones`,
+  };
+}
+
 export function portfolioCharts(
   path: { date: string; value: number }[],
   holdings: { symbol: string; weight: number; risk_share_pct: number }[],
