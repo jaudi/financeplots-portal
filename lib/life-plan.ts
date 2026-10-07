@@ -10,6 +10,7 @@
 // Everything is an assumption the visitor sets — nothing here is a forecast.
 
 import { monthlyPayment } from "@/lib/calculators";
+import { parseAmount } from "@/lib/investment-return";
 
 export type Housing =
   | { kind: "rent"; rentMonthly: number }
@@ -100,8 +101,10 @@ interface Loan {
   payment: number;
 }
 
+// A balance with no term left is still owed: it is repaid within the year
+// rather than dropped from the figures.
 const loan = (balance: number, ratePct: number, years: number): Loan | null =>
-  balance > 0 && years > 0 ? { balance, r: ratePct / 100 / 12, payment: monthlyPayment(ratePct / 100, years, balance) } : null;
+  balance > 0 ? { balance, r: ratePct / 100 / 12, payment: monthlyPayment(ratePct / 100, Math.max(1, years), balance) } : null;
 
 /** Twelve monthly payments; returns what was paid this year. */
 function payYear(l: Loan): number {
@@ -259,6 +262,19 @@ function milestones(plan: Plan, startYear: number, horizon: number, start: Proje
     if (y !== null) out.push({ kind: "netWorth", year: y, amount: mark });
   }
   return out.sort((a, b) => a.year - b.year);
+}
+
+/**
+ * A number as someone types it into a box: "400,000", "400.000" (Spanish
+ * thousands), "£400k", "1.2m", "4,5" (Spanish decimal), "−3". Null while it
+ * isn't a number yet. `decimal` is the visitor's decimal mark.
+ */
+export function parseTyped(raw: string, decimal: "." | "," = "."): number | null {
+  const s = raw.trim().toLowerCase().replace(/%$/, "").trim();
+  const m = /^(.*?)\s*([km])$/.exec(s);
+  const n = parseAmount(m ? m[1] : s, decimal);
+  if (n === null) return null;
+  return m ? n * (m[2] === "k" ? 1_000 : 1_000_000) : n;
 }
 
 // ── Defaults, presets and the share link ────────────────────────────────────

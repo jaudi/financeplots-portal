@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { monthlyPayment } from "@/lib/calculators";
-import { cleanPlan, decodeShared, encodeShared, examplePlan, presetEvent, project, todaysMoney, type LifeEvent, type Plan } from "@/lib/life-plan";
+import { cleanPlan, decodeShared, encodeShared, examplePlan, parseTyped, presetEvent, project, todaysMoney, type LifeEvent, type Plan } from "@/lib/life-plan";
 
 // Figures worked by hand: with growth, inflation and returns at zero, each
 // year's savings change is just income − costs, so every number can be checked.
@@ -146,5 +146,32 @@ describe("share link", () => {
     expect(p.takeHome).toBe(0);
     expect(p.events).toHaveLength(1);
     expect(p.events[0].year).toBe(Y);
+  });
+});
+
+describe("parseTyped — what people type into the boxes", () => {
+  it.each([
+    ["400000", ".", 400_000],
+    ["400,000", ".", 400_000],
+    ["£400,000", ".", 400_000],
+    ["400k", ".", 400_000],
+    ["£1.2m", ".", 1_200_000],
+    ["4.5", ".", 4.5],
+    ["4.5%", ".", 4.5],
+    ["400.000", ",", 400_000],
+    ["4,5", ",", 4.5],
+    ["1.250.000 €", ",", 1_250_000],
+    ["-3", ".", -3],
+    ["", ".", null],
+    ["abc", ".", null],
+  ] as const)("%s (decimal %s) → %s", (raw, dec, n) => expect(parseTyped(raw, dec)).toBe(n));
+});
+
+describe("a debt with no years left", () => {
+  it("is still owed — repaid within the year — rather than dropped", () => {
+    const p = project(flat({ debt: { balance: 6_000, ratePct: 0, years: 0 }, housing: { kind: "own", value: 100_000, mortgage: 12_000, ratePct: 0, yearsLeft: 0 } }), Y, 2);
+    expect(p.start.netWorth).toBe(10_000 + 100_000 - 12_000 - 6_000);
+    expect(p.rows[0]).toMatchObject({ debtPayments: 6_000, mortgage: 0, otherDebt: 0 });
+    expect(p.rows[0].housing).toBe(12_000);
   });
 });

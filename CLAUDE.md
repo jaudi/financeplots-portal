@@ -126,6 +126,8 @@ Length instructions to the model work better as a per-paragraph budget than a to
 - Every amount typed is in today's money and grows with inflation (house prices with their own rate) to the year it happens; rows are end-of-year positions; mortgages are repaid monthly with `monthlyPayment()` from `lib/calculators.ts`. All growth rates are the visitor's assumptions, labelled as such.
 - **No database.** Plans live in page state and in the share link (`?p=`, base64url JSON, `encodeShared` / `decodeShared`); `cleanPlan` clamps everything decoded from a link. Sharing with a partner means sending the link — each person edits their own copy.
 - Plan colours follow position (A blue, B orange); differences show with ▲/▼. Linked from Financial Journey's last step. No MCP tool yet.
+- **Number boxes are text inputs** (`Num` in `LifePlan.tsx`, parsing with `parseTyped` in `lib/life-plan.ts`): they take "400,000", "400.000" (Spanish thousands), "£400k", "1.2m" and "4,5", keep the text as typed while focused, pass on a value only when it reads as a number in range, and tidy/clamp on blur (empty → 0). `type="number"` was dropped because clearing it snapped to 0 and "400.000" read as 400; the year boxes had the same bug ("20262030").
+- A home purchase offers "Sell the home I own first" whenever there is a home to sell (owned today or bought earlier in the plan), ticked by default; switching to "I own" ticks it on planned purchases. A loan with 0 years left is repaid within the year, never dropped. The year-by-year table starts with a "Today" row of exactly what was entered.
 
 ## Pitch deck
 

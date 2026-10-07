@@ -9,9 +9,11 @@ import { trackEvent } from "@/lib/analytics";
 import {
   EVENT_KINDS,
   MAX_EVENTS,
+  MAX_HORIZON,
   MAX_PLANS,
   encodeShared,
   newId,
+  parseTyped,
   presetEvent,
   project,
   todaysMoney,
@@ -30,22 +32,48 @@ const PLAN_COLOURS = ["#3987e5", "#d95926"];
 const ICONS: Record<EventKind, string> = { home: "🏠", baby: "👶", oneOff: "💍", recurring: "🔁", income: "📈", windfall: "🎁", retire: "🌅" };
 const HORIZONS = [10, 20, 30, 40, 50];
 
-function Num({ label, value, onChange, prefix, suffix, step = 1, help, min, max }: {
-  label: string; value: number; onChange: (v: number) => void; prefix?: string; suffix?: string; step?: number; help?: string; min?: number; max?: number;
+/**
+ * A number box that takes what people actually type — "400,000", "400.000",
+ * "£400k", "4,5" — keeps the text as typed while the box has focus, and only
+ * passes on a value that reads as a number in range. Leaving the box tidies
+ * the text (and clamps it); leaving it empty means 0.
+ */
+function Num({ label, value, onChange, prefix, suffix, help, min = -Infinity, max = Infinity, integer = false, plain = false }: {
+  label: string; value: number; onChange: (v: number) => void; prefix?: string; suffix?: string; step?: number; help?: string;
+  min?: number; max?: number; integer?: boolean; plain?: boolean;
 }) {
+  const locale = useLocale();
+  const decimal = locale === "es" ? "," : ".";
+  const [draft, setDraft] = useState<string | null>(null);
+  const show = (n: number) =>
+    Number.isFinite(n) ? n.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: integer ? 0 : 2, useGrouping: !plain }) : "0";
+  const tidy = (n: number) => {
+    const c = Math.min(max, Math.max(min, n));
+    return integer ? Math.round(c) : c;
+  };
   return (
     <label className="flex flex-col gap-1 text-xs text-gray-400 min-w-0">
       <span>{label}</span>
       <span className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-2.5 py-2 focus-within:border-blue-500 transition">
         {prefix && <span className="text-gray-500 mr-1 shrink-0">{prefix}</span>}
         <input
-          type="number"
-          inputMode="decimal"
-          value={Number.isFinite(value) ? value : 0}
-          step={step}
-          min={min}
-          max={max}
-          onChange={(e) => onChange(e.target.value === "" ? 0 : parseFloat(e.target.value) || 0)}
+          type="text"
+          inputMode={integer && min >= 0 ? "numeric" : "decimal"}
+          value={draft ?? show(value)}
+          onFocus={(e) => {
+            setDraft(show(value));
+            e.target.select();
+          }}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            const n = parseTyped(e.target.value, decimal);
+            if (n !== null && n >= min && n <= max) onChange(integer ? Math.round(n) : n);
+          }}
+          onBlur={() => {
+            const n = draft === null || draft.trim() === "" ? 0 : parseTyped(draft, decimal);
+            if (n !== null) onChange(tidy(n));
+            setDraft(null);
+          }}
           className="bg-transparent text-white text-sm w-full outline-none min-w-0"
         />
         {suffix && <span className="text-gray-500 ml-1 shrink-0">{suffix}</span>}
@@ -100,10 +128,17 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
 
   const update = (patch: Partial<Plan>) => setPlans((ps) => ps.map((p, i) => (i === active ? { ...p, ...patch } : p)));
   const updateEvent = (id: string, patch: Partial<LifeEvent>) => update({ events: plan.events.map((e) => (e.id === id ? ({ ...e, ...patch } as LifeEvent) : e)) });
+  /** Is there a home to sell by `year`: the one owned today, or one bought earlier in the plan? */
+  const homeToSell = (p: Plan, year: number, id?: string) =>
+    p.housing.kind === "own" || p.events.some((x) => x.kind === "home" && x.id !== id && x.year < year);
   const addEvent = (kind: EventKind) => {
     if (plan.events.length >= MAX_EVENTS) return;
     const lastYear = Math.max(startYear, ...plan.events.map((e) => e.year));
-    update({ events: [...plan.events, presetEvent(kind, Math.min(startYear + horizon - 1, plan.events.length ? lastYear + 1 : startYear + 2))] });
+    const year = Math.min(startYear + horizon - 1, plan.events.length ? lastYear + 1 : startYear + 2);
+    const e = presetEvent(kind, year);
+    // Moving home is the usual case when there is already one to sell.
+    if (e.kind === "home") e.sellCurrent = homeToSell(plan, year);
+    update({ events: [...plan.events, e] });
   };
   const addPlanB = () => {
     if (plans.length >= MAX_PLANS) return;
@@ -199,12 +234,12 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
       case "home":
         return (
           <>
-            <Num label={t("f.price")} value={e.price} prefix={cur} step={5000} onChange={(v) => updateEvent(e.id, { price: v })} />
+            <Num label={t("f.price")} value={e.price} prefix={cur} min={0} step={5000} onChange={(v) => updateEvent(e.id, { price: v })} />
             <Num label={t("f.depositPct")} value={e.depositPct} suffix="%" step={1} min={0} max={100} onChange={(v) => updateEvent(e.id, { depositPct: v })} />
-            <Num label={t("f.costs")} value={e.costs} prefix={cur} step={500} help={t("f.costsHelp")} onChange={(v) => updateEvent(e.id, { costs: v })} />
+            <Num label={t("f.costs")} value={e.costs} prefix={cur} min={0} step={500} help={t("f.costsHelp")} onChange={(v) => updateEvent(e.id, { costs: v })} />
             <Num label={t("f.ratePct")} value={e.ratePct} suffix="%" step={0.1} onChange={(v) => updateEvent(e.id, { ratePct: v })} />
             <Num label={t("f.termYears")} value={e.termYears} step={1} min={1} max={40} onChange={(v) => updateEvent(e.id, { termYears: Math.max(1, Math.round(v)) })} />
-            {plan.housing.kind === "own" && (
+            {homeToSell(plan, e.year, e.id) && (
               <label className="col-span-2 flex items-center gap-2 text-xs text-gray-300">
                 <input type="checkbox" checked={e.sellCurrent} onChange={(x) => updateEvent(e.id, { sellCurrent: x.target.checked })} />
                 {t("f.sellCurrent")}
@@ -215,18 +250,18 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
       case "baby":
         return (
           <>
-            <Num label={t("f.costPerYear")} value={e.costPerYear} prefix={cur} step={500} onChange={(v) => updateEvent(e.id, { costPerYear: v })} />
+            <Num label={t("f.costPerYear")} value={e.costPerYear} prefix={cur} min={0} step={500} onChange={(v) => updateEvent(e.id, { costPerYear: v })} />
             <Num label={t("f.years")} value={e.years} step={1} min={0} onChange={(v) => updateEvent(e.id, { years: Math.max(0, Math.round(v)) })} />
             <Num label={t("f.incomeDropPct")} value={e.incomeDropPct} suffix="%" step={5} min={0} max={100} onChange={(v) => updateEvent(e.id, { incomeDropPct: v })} />
           </>
         );
       case "oneOff":
       case "windfall":
-        return <Num label={t("f.amount")} value={e.amount} prefix={cur} step={1000} onChange={(v) => updateEvent(e.id, { amount: v })} />;
+        return <Num label={t("f.amount")} value={e.amount} prefix={cur} min={0} step={1000} onChange={(v) => updateEvent(e.id, { amount: v })} />;
       case "recurring":
         return (
           <>
-            <Num label={t("f.amountPerYear")} value={e.amount} prefix={cur} step={500} onChange={(v) => updateEvent(e.id, { amount: v })} />
+            <Num label={t("f.amountPerYear")} value={e.amount} prefix={cur} min={0} step={500} onChange={(v) => updateEvent(e.id, { amount: v })} />
             <Num label={t("f.years")} value={e.years} step={1} min={0} help={t("f.yearsForever")} onChange={(v) => updateEvent(e.id, { years: Math.max(0, Math.round(v)) })} />
           </>
         );
@@ -238,7 +273,7 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
           </>
         );
       case "retire":
-        return <Num label={t("f.pension")} value={e.pension} prefix={cur} step={1000} onChange={(v) => updateEvent(e.id, { pension: v })} />;
+        return <Num label={t("f.pension")} value={e.pension} prefix={cur} min={0} step={1000} onChange={(v) => updateEvent(e.id, { pension: v })} />;
     }
   };
 
@@ -312,9 +347,18 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
                     type="button"
                     role="radio"
                     aria-checked={plan.housing.kind === k}
-                    onClick={() =>
-                      update({ housing: k === "rent" ? { kind: "rent", rentMonthly: 1_000 } : { kind: "own", value: 250_000, mortgage: 150_000, ratePct: 4, yearsLeft: 20 } })
-                    }
+                    onClick={() => {
+                      if (plan.housing.kind === k) return;
+                      update(
+                        k === "rent"
+                          ? { housing: { kind: "rent", rentMonthly: 1_000 } }
+                          : {
+                              housing: { kind: "own", value: 250_000, mortgage: 150_000, ratePct: 4, yearsLeft: 20 },
+                              // A planned purchase now means moving home: sell the current one first.
+                              events: plan.events.map((x) => (x.kind === "home" ? { ...x, sellCurrent: true } : x)),
+                            },
+                      );
+                    }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${plan.housing.kind === k ? "bg-blue-600 border-blue-600 text-white" : "border-gray-700 text-gray-400 hover:text-white"}`}
                   >
                     {t(k)}
@@ -333,7 +377,7 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
                         <Num label={t("homeValue")} value={h.value} prefix={currency} step={5000} onChange={(v) => set({ value: Math.max(0, v) })} />
                         <Num label={t("mortgageLeft")} value={h.mortgage} prefix={currency} step={5000} onChange={(v) => set({ mortgage: Math.max(0, v) })} />
                         <Num label={t("rate")} value={h.ratePct} suffix="%" step={0.1} onChange={(v) => set({ ratePct: Math.max(0, v) })} />
-                        <Num label={t("yearsLeft")} value={h.yearsLeft} step={1} onChange={(v) => set({ yearsLeft: Math.max(0, Math.round(v)) })} />
+                        <Num label={t("yearsLeft")} value={h.yearsLeft} integer min={0} max={40} onChange={(v) => set({ yearsLeft: v })} />
                       </>
                     );
                   })()}
@@ -346,7 +390,7 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
               <div className="grid grid-cols-3 gap-2">
                 <Num label={t("debtBalance")} value={plan.debt.balance} prefix={currency} step={500} onChange={(v) => update({ debt: { ...plan.debt, balance: Math.max(0, v) } })} />
                 <Num label={t("rate")} value={plan.debt.ratePct} suffix="%" step={0.5} onChange={(v) => update({ debt: { ...plan.debt, ratePct: Math.max(0, v) } })} />
-                <Num label={t("debtYears")} value={plan.debt.years} step={1} onChange={(v) => update({ debt: { ...plan.debt, years: Math.max(0, Math.round(v)) } })} />
+                <Num label={t("debtYears")} value={plan.debt.years} integer min={0} max={40} onChange={(v) => update({ debt: { ...plan.debt, years: v } })} />
               </div>
             </div>
           </Card>
@@ -366,19 +410,14 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
                       onChange={(x) => updateEvent(e.id, { label: x.target.value || undefined })}
                       className="flex-1 min-w-0 bg-transparent text-white text-sm font-semibold outline-none placeholder:text-gray-300 border-b border-transparent focus:border-gray-600"
                     />
-                    <input
-                      type="number"
-                      value={e.year}
-                      min={startYear}
-                      max={lastYear}
-                      aria-label={t("year")}
-                      onChange={(x) => updateEvent(e.id, { year: Math.round(Number(x.target.value) || startYear) })}
-                      className="w-20 bg-[#111827] border border-gray-700 rounded-lg px-2 py-1 text-white text-sm"
-                    />
+                    <div className="w-24">
+                      <Num label={t("year")} value={e.year} integer plain min={startYear} max={startYear + MAX_HORIZON} onChange={(v) => updateEvent(e.id, { year: v })} />
+                    </div>
                     <button type="button" onClick={() => update({ events: plan.events.filter((x) => x.id !== e.id) })} aria-label={t("remove")} className="w-5 text-gray-500 hover:text-white text-lg leading-none">
                       ×
                     </button>
                   </div>
+                  {e.year > lastYear && <p className="text-[11px] text-amber-300 mb-2">{t("afterHorizon", { year: lastYear })}</p>}
                   <div className="grid grid-cols-2 gap-2">{field(e)}</div>
                 </div>
               ))}
@@ -559,12 +598,23 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="text-gray-400 uppercase tracking-wider border-b border-gray-700">
-                      {(["year", "income", "living", "housing", "oneOffs", "netCash", "savings", "equity", "netWorth"] as const).map((c) => (
+                      {(["year", "income", "living", "housing", "oneOffs", "netCash", "savings", "homeValue", "mortgage", "netWorth"] as const).map((c) => (
                         <th key={c} className={`py-2 px-2 font-semibold ${c === "year" ? "text-left" : "text-right"}`}>{t(`col.${c}`)}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Today: exactly what was entered, before any year has passed. */}
+                    <tr className="border-b border-gray-800 text-gray-300">
+                      <td className="py-1.5 px-2 text-white">{t("col.today")}</td>
+                      {[0, 1, 2, 3, 4].map((k) => (
+                        <td key={k} className="py-1.5 px-2 text-right text-gray-600">–</td>
+                      ))}
+                      <td className="py-1.5 px-2 text-right">{money(proj.start.savings)}</td>
+                      <td className="py-1.5 px-2 text-right">{money(proj.start.homeValue)}</td>
+                      <td className="py-1.5 px-2 text-right">{money(proj.start.mortgage + proj.start.otherDebt)}</td>
+                      <td className="py-1.5 px-2 text-right text-white">{money(proj.start.netWorth)}</td>
+                    </tr>
                     {proj.rows.map((r) => {
                       const v = (n: number) => money(show(plan, n, r.year));
                       return (
@@ -576,7 +626,8 @@ export default function LifePlan({ initialPlans, initialHorizon, startYear }: { 
                           <td className="py-1.5 px-2 text-right">{v(r.oneOffs)}</td>
                           <td className="py-1.5 px-2 text-right">{v(r.netCash)}</td>
                           <td className={`py-1.5 px-2 text-right ${r.savings < 0 ? "text-amber-300" : ""}`}>{v(r.savings)}</td>
-                          <td className="py-1.5 px-2 text-right">{v(r.homeValue - r.mortgage)}</td>
+                          <td className="py-1.5 px-2 text-right">{v(r.homeValue)}</td>
+                          <td className="py-1.5 px-2 text-right">{v(r.mortgage + r.otherDebt)}</td>
                           <td className="py-1.5 px-2 text-right text-white">{v(r.netWorth)}</td>
                         </tr>
                       );
