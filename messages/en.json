@@ -1294,14 +1294,16 @@
     "tableShow": "Show the table",
     "tableHide": "Hide the table",
     "col": {
+      "today": "Today",
       "year": "Year",
-      "income": "Income",
+      "income": "Money in",
       "living": "Living",
       "housing": "Housing",
       "oneOffs": "One-offs",
       "netCash": "Saved",
       "savings": "Savings",
-      "equity": "Home equity",
+      "homeValue": "Home value",
+      "mortgage": "Mortgage & debts",
       "netWorth": "Net worth"
     },
     "copyLink": "Copy a link to this plan",
@@ -1312,7 +1314,8 @@
       "Each year, take-home pay (grown at your pay-growth rate) less living costs, rent or mortgage, debt payments and that year's events goes into savings, which grow at your return. Homes grow at the house-price rate.",
       "Amounts you type are in today's money and rise with inflation to the year they happen. Mortgages are repaid monthly, like the loan calculator.",
       "There is no tax on savings, no pensions other than the income you set at retirement, and no selling of homes unless you choose it. It's a plan to think with, not a forecast or advice."
-    ]
+    ],
+    "afterHorizon": "After the years shown (to {year}) — make the plan longer to see it."
   },
   "companyPlanner": {
     "backToTools": "← Companies",

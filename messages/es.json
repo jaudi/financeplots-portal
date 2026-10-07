@@ -1280,14 +1280,16 @@
     "tableShow": "Ver la tabla",
     "tableHide": "Ocultar la tabla",
     "col": {
+      "today": "Hoy",
       "year": "Año",
-      "income": "Ingresos",
+      "income": "Entradas",
       "living": "Gastos",
       "housing": "Vivienda",
       "oneOffs": "Puntuales",
       "netCash": "Ahorrado",
       "savings": "Ahorros",
-      "equity": "Valor neto vivienda",
+      "homeValue": "Valor vivienda",
+      "mortgage": "Hipoteca y deudas",
       "netWorth": "Patrimonio"
     },
     "copyLink": "Copiar un enlace a este plan",
@@ -1298,7 +1300,8 @@
       "Cada año, el sueldo neto (que sube según tu supuesto) menos los gastos de vida, el alquiler o la hipoteca, las deudas y los momentos de ese año va a los ahorros, que crecen a tu rentabilidad. Las viviendas suben al ritmo del precio de la vivienda.",
       "Los importes que escribes están en dinero de hoy y suben con la inflación hasta el año en que ocurren. Las hipotecas se pagan mes a mes, como en la calculadora de préstamos.",
       "No hay impuestos sobre los ahorros, ni pensiones aparte del ingreso que pongas al jubilarte, ni venta de viviendas salvo que la elijas. Es un plan para pensar, no una previsión ni un consejo."
-    ]
+    ],
+    "afterHorizon": "Después de los años que se muestran (hasta {year}): alarga el plan para verlo."
   },
   "companyPlanner": {
     "backToTools": "← Empresas",
