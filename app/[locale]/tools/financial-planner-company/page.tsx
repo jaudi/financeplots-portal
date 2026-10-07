@@ -13,6 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, Legend,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 // Every input of the five steps as spreadsheet rows (components/SpreadsheetIO.tsx).
 // Labels match the on-screen ones in both languages, so either imports.
@@ -369,6 +370,7 @@ export default function FinancialPlannerCompanyPage() {
     a.href = url;
     a.download = "company-financial-report.pdf";
     a.click();
+    trackEvent("export", { format: "pdf" });
     URL.revokeObjectURL(url);
     } catch (e) {
       console.error("PDF generation failed:", e);

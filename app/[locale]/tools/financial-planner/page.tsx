@@ -9,6 +9,7 @@ import { CURRENCIES } from "@/lib/currency";
 import { allocationAt, debtSchedule, glidePath, growthPath, RETIREMENT_AGE, RISK_PROFILES, type RiskKey } from "@/lib/planner";
 import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from "./charts";
 import PlannerChat from "./PlannerChat";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -302,6 +303,7 @@ export default function FinancialPlannerPage() {
     a.href = url;
     a.download = locale === "es" ? "plan-financiero.pdf" : "financial-plan.pdf";
     a.click();
+    trackEvent("export", { format: "pdf" });
     URL.revokeObjectURL(url);
     setPdfLoading(false);
   }
@@ -637,6 +639,7 @@ export default function FinancialPlannerPage() {
                     <p className="text-xs text-gray-500 mb-3">{t("s4ExploreDesc")}</p>
                     <div className="flex flex-col gap-2">
                       {[
+                        { label: t("s4LinkLifePlan"), href: "/tools/life-plan" },
                         { label: t("s4LinkPortfolio"), href: "/tools/portfolio-analysis" },
                         { label: t("s4LinkStockComp"), href: "/tools/stock-comparison"   },
                         { label: t("s4LinkStockAnal"), href: "/tools/stock-analysis"     },

@@ -3,12 +3,13 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
 import { formatValue } from "@/lib/charts/spec";
 import { createFinancePlotsServer } from "@/lib/mcp-server";
+import { MCP_TOOL_NAMES } from "@/lib/mcp-tools";
 
 // The MCP Apps wiring: charting tools point at one ui:// view, which the server
 // serves as a self-contained HTML page.
 
 const VIEW = "ui://financeplots/charts.html";
-const CHARTING = ["take_home_pay", "company_profile", "company_snowflake", "loan_repayment", "compound_interest", "break_even", "business_valuation", "startup_valuation", "price_history", "portfolio_analysis"];
+const CHARTING = ["take_home_pay", "company_profile", "company_snowflake", "loan_repayment", "compound_interest", "investment_return", "break_even", "business_valuation", "startup_valuation", "price_history", "portfolio_analysis"];
 
 async function connect() {
   const [c, s] = InMemoryTransport.createLinkedPair();
@@ -16,6 +17,15 @@ async function connect() {
   await Promise.all([createFinancePlotsServer().connect(s), client.connect(c)]);
   return client;
 }
+
+describe("MCP_TOOL_NAMES", () => {
+  it("lists exactly the tools the server registers, in order", async () => {
+    const client = await connect();
+    const { tools } = await client.listTools();
+    expect(tools.map((t) => t.name)).toEqual([...MCP_TOOL_NAMES]);
+    await client.close();
+  });
+});
 
 describe("MCP App chart view", () => {
   it("links every charting tool, and only those, to the view", async () => {

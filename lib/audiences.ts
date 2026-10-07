@@ -20,7 +20,7 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     icon: "👤",
     planner: "financial-planner",
     groups: [
-      { key: "plan", icon: "💸", slugs: ["take-home-pay", "personal-budget", "compound-interest", "lending"] },
+      { key: "plan", icon: "💸", slugs: ["take-home-pay", "personal-budget", "life-plan", "compound-interest", "investment-return", "lending"] },
       { key: "invest", icon: "📈", slugs: ["stocks"] },
     ],
   },
@@ -37,6 +37,17 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
 };
 
 export const AUDIENCE_KEYS = Object.keys(AUDIENCES) as Audience[];
+
+/** The tools inside the Stocks area (its tab bar, components/StocksNav.tsx).
+ *  The menus list the area once, as "stocks"; counting tools counts these. */
+export const STOCK_TOOLS = ["stock-analysis", "stock-comparison", "portfolio-analysis", "stock-screener"];
+
+/** How many distinct tools the site has: a tool in both audiences counts once,
+ *  and the Stocks area counts as the tools in it, not as one. */
+export function toolCount(): number {
+  const slugs = AUDIENCE_KEYS.flatMap((a) => audienceSlugs(a)).flatMap((s) => (s === "stocks" ? STOCK_TOOLS : [s]));
+  return new Set(slugs).size;
+}
 
 /** Every tool slug of an audience, planner first. */
 export function audienceSlugs(audience: Audience): string[] {

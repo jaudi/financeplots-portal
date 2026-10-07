@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { parseAmount } from "@/lib/planner";
 import { matchOption, meansNegative, meansNone, roundForUnit, type AmountUnit, type ChatOption } from "@/lib/guided-chat";
 import { CURRENCIES, CURRENCY_WORDS } from "@/lib/currency";
+import { trackEvent } from "@/lib/analytics";
 
 // A form filled in by answering one question at a time, typed or spoken —
 // used by the Financial Journeys and the Personal Budget. Scripted, not AI:
@@ -80,6 +81,7 @@ export default function GuidedChat({
   const recognition = useRef<Recognition | null>(null);
   const bottom = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const trackedDone = useRef(false);
 
   const money = (v: number) => `${v < 0 ? "−" : ""}${currency}${Math.abs(v).toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 0 })}`;
   const num = (v: number) => v.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { maximumFractionDigits: 2 });
@@ -115,7 +117,12 @@ export default function GuidedChat({
       return [...(m.length === 0 && greeting ? [{ from: "bot" as const, text: greeting }] : m), { from: "bot", text }];
     });
     if (q) onAsk?.(q);
-    else onDone?.();
+    else {
+      onDone?.();
+      // Once per chat. The tool finder's `to` is the tool it pointed at.
+      if (!trackedDone.current) trackEvent("chat_done", doneHref ? { to: doneHref } : {});
+      trackedDone.current = true;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, index]);
 

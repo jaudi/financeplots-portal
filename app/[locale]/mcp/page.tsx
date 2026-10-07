@@ -68,7 +68,7 @@ export default async function McpPage({ params }: Props) {
 
         <div className="max-w-2xl mx-auto mb-16">
           <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">{t("urlLabel")}</p>
-          <CopyText text={MCP_URL} copyLabel={t("copy")} copiedLabel={t("copied")} />
+          <CopyText text={MCP_URL} copyLabel={t("copy")} copiedLabel={t("copied")} event={["connector_copy", { what: "url" }]} />
         </div>
 
         {/* Steps */}
@@ -91,7 +91,7 @@ export default async function McpPage({ params }: Props) {
           <h2 className="text-lg font-bold mb-4">{t("otherTitle")}</h2>
           <p className="text-sm text-gray-400 mb-2">{t("otherClaudeCode")}</p>
           <div className="mb-5">
-            <CopyText text={CLAUDE_CODE_CMD} copyLabel={t("copy")} copiedLabel={t("copied")} />
+            <CopyText text={CLAUDE_CODE_CMD} copyLabel={t("copy")} copiedLabel={t("copied")} event={["connector_copy", { what: "claude_code" }]} />
           </div>
           <p className="text-sm text-gray-400">{t("otherGeneric")}</p>
         </section>

@@ -3,6 +3,7 @@ import {
   SLIDES, SLIDE_NAMES, compact, dilutionPct, financials, headlineFor, lines, summaryPoints, unitEconomics,
   type PitchData, type SlideKey,
 } from "@/lib/pitch-deck";
+import { trackEvent } from "@/lib/analytics";
 
 // Builds the .pptx in the browser. Layout follows consulting-house style:
 // a section tracker over a full-sentence action title, one message per slide,
@@ -408,5 +409,6 @@ export async function generatePptx(d: PitchData, sym: string) {
   a.href = url;
   a.download = `${d.company.replace(/\s+/g, "_")}_Pitch_Deck.pptx`;
   a.click();
+  trackEvent("export", { format: "pptx" });
   URL.revokeObjectURL(url);
 }

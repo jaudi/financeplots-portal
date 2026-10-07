@@ -11,6 +11,7 @@ import {
   AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip as PieTooltip,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -136,6 +137,7 @@ export default function LendingPage() {
       a.href = url;
       a.download = `lending-calculator-${tab}.pdf`;
       a.click();
+      trackEvent("export", { format: "pdf" });
       URL.revokeObjectURL(url);
     } finally {
       setIsExporting(false);

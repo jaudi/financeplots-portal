@@ -22,6 +22,7 @@ import {
   Cell,
   Tooltip as PieTooltip,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -222,6 +223,7 @@ export default function BreakEvenPage() {
       a.href = url;
       a.download = `break-even-${companyName.replace(/\s+/g, "-").toLowerCase()}.pdf`;
       a.click();
+      trackEvent("export", { format: "pdf" });
       URL.revokeObjectURL(url);
     } finally {
       setIsExporting(false);

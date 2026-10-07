@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { trackEvent } from "@/lib/analytics";
 import { parseCsv, readRows, templateRows, type Cell, type ImportResult, type Lang, type SheetField, type SheetValues } from "@/lib/spreadsheet-io";
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -40,6 +41,7 @@ export default function SpreadsheetIO({
         row.map((value) => ({ value: value ?? undefined, fontWeight: i === 0 ? ("bold" as const) : undefined })),
       );
       await writeXlsxFile(rows, { columns: [{ width: 34 }, ...Array(13).fill({ width: 12 })] }).toFile(`${fileName}.xlsx`);
+      trackEvent("template", { format: "xlsx" });
     } finally {
       setBusy(false);
     }
@@ -70,6 +72,7 @@ export default function SpreadsheetIO({
         return;
       }
       const note = onImport(result.values);
+      trackEvent("import", { format: /\.xlsx$/i.test(file.name) ? "xlsx" : "csv" });
       const lines = [t("sheetImported", { count: found })];
       if (note) lines.push(note);
       for (const p of result.problems) lines.push(`${labelOf(p.key)}: ${p.message[lang]}`);

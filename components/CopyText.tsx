@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent, type AppEvent } from "@/lib/analytics";
 
 /** A monospace value with a copy button — the MCP URL, a terminal command. */
-export default function CopyText({ text, copyLabel, copiedLabel }: { text: string; copyLabel: string; copiedLabel: string }) {
+export default function CopyText({ text, copyLabel, copiedLabel, event }: { text: string; copyLabel: string; copiedLabel: string; event?: [AppEvent, Record<string, string>] }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
+      if (event) trackEvent(...event);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Clipboard blocked (insecure context, permissions): the text is selectable anyway.

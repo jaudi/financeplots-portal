@@ -11,6 +11,7 @@ import {
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt  = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -178,6 +179,7 @@ export default function ValuationPage() {
       a.href = url;
       a.download = "business-valuation.pdf";
       a.click();
+      trackEvent("export", { format: "pdf" });
       URL.revokeObjectURL(url);
     } finally {
       setIsExporting(false);

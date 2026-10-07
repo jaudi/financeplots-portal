@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
-import { AUDIENCE_KEYS, audienceSlugs } from "@/lib/audiences";
+import { toolCount } from "@/lib/audiences";
+import { MCP_TOOL_NAMES, type McpToolName } from "@/lib/mcp-tools";
 import AudienceDoors from "@/components/AudienceDoors";
 import HeroSearch from "@/components/HeroSearch";
 import HeroSnowflake from "@/components/HeroSnowflake";
 import ToolFinderChat from "@/components/ToolFinderChat";
+import ContactLink from "@/components/ContactLink";
 
 // The homepage, laid out as a landing page (2026-10-03): one promise and one
 // action above the fold, then proof, then the two audiences, then what makes
@@ -32,6 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: { title, description, url, siteName: "FinancePlots", type: "website" },
   };
 }
+
+// The connector tools named on the homepage's chat card; the rest are "+ N more".
+const MCP_SHOWN: McpToolName[] = ["take_home_pay", "company_snowflake", "business_valuation", "loan_repayment", "us_macro_indicators"];
 
 type Article = {
   slug: string;
@@ -69,7 +74,6 @@ export default async function Home() {
   const articles = tBlog.raw("articles") as Article[];
   const recent = articles.slice(0, 3);
   const totalArticles = articles.length;
-  const toolCount = new Set(AUDIENCE_KEYS.flatMap((a) => audienceSlugs(a))).size;
   const [observer] = listEditions();
   const dateLocale = (await getLocale()) === "es" ? "es-ES" : "en-GB";
 
@@ -112,7 +116,7 @@ export default async function Home() {
         {/* Proof strip */}
         <dl className="relative max-w-6xl mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-800/60 border border-gray-800 rounded-2xl overflow-hidden">
           {[
-            [String(toolCount), t("proofTools")],
+            [String(toolCount()), t("proofTools")],
             ["0", t("proofSignup")],
             ["3", t("proofIndices")],
             [String(totalArticles), t("proofArticles")],
@@ -170,10 +174,10 @@ export default async function Home() {
                 {t("mcpChatReply")}
               </div>
               <div className="flex flex-wrap gap-1.5 pt-1">
-                {["take_home_pay", "company_snowflake", "business_valuation", "loan_repayment", "us_macro_indicators"].map((name) => (
+                {MCP_SHOWN.map((name) => (
                   <span key={name} className="font-mono text-[11px] text-gray-400 bg-black/30 border border-gray-800 rounded-md px-2 py-0.5">{name}</span>
                 ))}
-                <span className="text-[11px] text-gray-500 px-1 py-0.5">{t("mcpChatMore")}</span>
+                <span className="text-[11px] text-gray-500 px-1 py-0.5">{t("mcpChatMore", { count: MCP_TOOL_NAMES.length - MCP_SHOWN.length })}</span>
               </div>
             </div>
           </div>
@@ -285,12 +289,9 @@ export default async function Home() {
             <h2 className="text-xl font-bold text-white mb-1">{t("contactTitle")}</h2>
             <p className="text-gray-400 text-sm leading-relaxed">{t("contactDesc")}</p>
           </div>
-          <a
-            href="mailto:hello@financeplots.com"
-            className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition text-sm"
-          >
+          <ContactLink className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition text-sm">
             {t("contactCtaShort")}
-          </a>
+          </ContactLink>
         </div>
       </section>
 

@@ -78,7 +78,7 @@ const TERMS: Term[] = [
     category: "business",
     definition: "The discount rate that makes the Net Present Value (NPV) of all cash flows from an investment equal to zero. In simple terms: the annualised return you're expected to earn. Compare it to WACC — if IRR > WACC, the investment creates value.",
     example: "Investing £100k today and receiving £140k in 3 years gives an IRR of roughly 11.9%. If your cost of capital is 10%, this investment is worth making.",
-    tool: { label: "Business Valuation", href: "/tools/valuation" },
+    tool: { label: "Investment Return (XIRR) Calculator", href: "/tools/investment-return" },
   },
   {
     id: "npv",
