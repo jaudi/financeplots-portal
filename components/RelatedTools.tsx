@@ -13,6 +13,7 @@ const ALL_TOOLS: { slug: string; icon: string; name: string }[] = [
   { slug: "personal-budget",           icon: "💸", name: "Personal Budget" },
   { slug: "compound-interest",         icon: "💹", name: "Compound Interest" },
   { slug: "investment-return",         icon: "📐", name: "Investment Return (XIRR)" },
+  { slug: "life-plan",                 icon: "🧭", name: "Life Plan" },
   { slug: "stocks",                    icon: "📈", name: "Stocks" },
   { slug: "portfolio-analysis",        icon: "📊", name: "Portfolio Analysis" },
   { slug: "stock-comparison",          icon: "📉", name: "Stock Comparison" },
@@ -22,7 +23,7 @@ const ALL_TOOLS: { slug: string; icon: string; name: string }[] = [
 
 // Map each tool to 3 related slugs
 const RELATED: Record<string, string[]> = {
-  "financial-planner":         ["personal-budget", "compound-interest", "lending"],
+  "financial-planner":         ["life-plan", "personal-budget", "compound-interest"],
   "financial-planner-company": ["break-even", "cash-flow", "valuation"],
   "break-even":                ["financial-model", "cash-flow", "financial-planner-company"],
   "financial-model":           ["break-even", "annual-budget", "valuation"],
@@ -34,6 +35,7 @@ const RELATED: Record<string, string[]> = {
   "personal-budget":           ["take-home-pay", "financial-planner", "compound-interest"],
   "compound-interest":         ["investment-return", "personal-budget", "lending"],
   "investment-return":         ["compound-interest", "portfolio-analysis", "stocks"],
+  "life-plan":                 ["take-home-pay", "personal-budget", "lending"],
   "stocks":                    ["take-home-pay", "compound-interest", "financial-planner"],
   "portfolio-analysis":        ["stocks", "stock-comparison", "stock-screener"],
   "stock-comparison":          ["stocks", "stock-analysis", "stock-screener"],

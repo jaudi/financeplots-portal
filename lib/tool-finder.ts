@@ -21,6 +21,7 @@ export const GOALS: Record<Audience, { key: string; slug: string; words: string[
     { key: "realReturn", slug: "investment-return", words: ["xirr", "irr", "real return", "annual return", "returned", "tir", "rentabilidad real", "rentado", "rendido"] },
     { key: "loan", slug: "lending", words: ["loan", "mortgage", "debt", "prestamo", "hipoteca", "deuda"] },
     { key: "invest", slug: "stocks", words: ["shares", "stocks", "investments", "invest", "acciones", "invertir", "inversiones", "bolsa"] },
+    { key: "lifePlan", slug: "life-plan", words: ["afford", "baby", "house", "retire", "retirement", "life", "permitir", "bebe", "casa", "jubilar", "jubilarnos", "jubilacion"] },
     { key: "plan", slug: "financial-planner", words: ["full plan", "everything", "whole", "plan completo", "todo"] },
   ],
   business: [

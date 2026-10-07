@@ -639,6 +639,7 @@ export default function FinancialPlannerPage() {
                     <p className="text-xs text-gray-500 mb-3">{t("s4ExploreDesc")}</p>
                     <div className="flex flex-col gap-2">
                       {[
+                        { label: t("s4LinkLifePlan"), href: "/tools/life-plan" },
                         { label: t("s4LinkPortfolio"), href: "/tools/portfolio-analysis" },
                         { label: t("s4LinkStockComp"), href: "/tools/stock-comparison"   },
                         { label: t("s4LinkStockAnal"), href: "/tools/stock-analysis"     },
