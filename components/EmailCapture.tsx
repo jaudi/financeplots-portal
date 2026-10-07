@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { trackEvent } from "@/lib/analytics";
 
 export default function EmailCapture() {
   const t = useTranslations("emailCapture");
@@ -18,6 +19,7 @@ export default function EmailCapture() {
       });
       if (res.ok) {
         setStatus("success");
+        trackEvent("email_signup");
         setEmail("");
       } else {
         setStatus("error");

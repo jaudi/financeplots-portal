@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#1d4ed8",
     padding: "6 8",
-    borderRadius: "4 4 0 0",
+    borderTopLeftRadius: 4, borderTopRightRadius: 4,
   },
   tableHeaderCell: {
     flex: 1,

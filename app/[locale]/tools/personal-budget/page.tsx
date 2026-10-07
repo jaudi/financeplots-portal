@@ -11,6 +11,7 @@ import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -242,6 +243,7 @@ export default function PersonalBudgetPage() {
       a.href = url;
       a.download = locale === "es" ? "presupuesto-personal.pdf" : "personal-budget.pdf";
       a.click();
+      trackEvent("export", { format: "pdf" });
       URL.revokeObjectURL(url);
     } catch (e) {
       setPdfError(e instanceof Error ? e.message : "PDF generation failed");

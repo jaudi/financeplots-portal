@@ -9,6 +9,7 @@ import { CURRENCIES } from "@/lib/currency";
 import { allocationAt, debtSchedule, glidePath, growthPath, RETIREMENT_AGE, RISK_PROFILES, type RiskKey } from "@/lib/planner";
 import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from "./charts";
 import PlannerChat from "./PlannerChat";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -302,6 +303,7 @@ export default function FinancialPlannerPage() {
     a.href = url;
     a.download = locale === "es" ? "plan-financiero.pdf" : "financial-plan.pdf";
     a.click();
+    trackEvent("export", { format: "pdf" });
     URL.revokeObjectURL(url);
     setPdfLoading(false);
   }

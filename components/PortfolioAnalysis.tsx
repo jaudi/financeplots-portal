@@ -8,6 +8,7 @@ import {
 import { SYMBOL_PATTERN, type PriceHistory, type PriceRange } from "@/lib/price-types";
 import TickerSearch from "@/components/TickerSearch";
 import { analysePortfolio } from "@/lib/portfolio-stats";
+import { trackEvent } from "@/lib/analytics";
 
 // Neutral like the other market tools: opens with empty rows and no suggested
 // holdings, keeps holdings in the order entered, colours by position (never by
@@ -203,6 +204,7 @@ export default function PortfolioAnalysis({
     a.href = URL.createObjectURL(blob);
     a.download = "portfolio-analysis.csv";
     a.click();
+    trackEvent("export", { format: "csv" });
     URL.revokeObjectURL(a.href);
   }
 

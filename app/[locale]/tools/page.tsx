@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import AudienceDoors from "@/components/AudienceDoors";
 import ToolFinderChat from "@/components/ToolFinderChat";
+import { toolCount } from "@/lib/audiences";
 
 // /tools is a chooser: individuals and companies are two different audiences,
 // so each has its own hub (/tools/personal, /tools/business — lib/audiences.ts).
@@ -25,7 +26,7 @@ export default function ToolsPage() {
           {ta("chooserSubtitle")}
         </p>
         <p className="text-gray-500 text-sm text-center mb-12">
-          {t("subtitle")}
+          {t("subtitle", { count: toolCount() })}
         </p>
 
         <div className="mb-12">

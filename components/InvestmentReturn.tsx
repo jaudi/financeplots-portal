@@ -19,6 +19,7 @@ import {
   type ClosePoint,
   type DatedFlow,
 } from "@/lib/investment-return";
+import { trackEvent } from "@/lib/analytics";
 import { convertPoints, majorCurrency } from "@/lib/portfolio-stats";
 import { normaliseSymbol, type PriceHistory } from "@/lib/price-types";
 
@@ -204,6 +205,7 @@ export default function InvestmentReturn({
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
+      trackEvent("share_link");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Clipboard blocked: the address bar has the same link.

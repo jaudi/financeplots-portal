@@ -17,6 +17,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, ReferenceLine,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt = (n: number) => Math.round(n).toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -183,6 +184,7 @@ export default function CashFlowPage() {
       a.href = url;
       a.download = "cash-flow-forecast.pdf";
       a.click();
+      trackEvent("export", { format: "pdf" });
       URL.revokeObjectURL(url);
     } finally {
       setIsExporting(false);

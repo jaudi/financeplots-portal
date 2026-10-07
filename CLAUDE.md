@@ -133,6 +133,15 @@ Length instructions to the model work better as a per-paragraph budget than a to
 - A chat that fills a list with examples in it (Pitch Deck) must clear the later slots when the visitor says "none", or the examples reach the output.
 - Checking a deploy: every page embeds the whole message file, so curl for copy that is new in that deploy — an existing string proves nothing.
 
+## Analytics
+
+Vercel Web Analytics (page views, cookieless) plus custom events (2026-10-07) so we can see which tools people *finish* with. **Custom events need a Vercel Pro or Enterprise plan** to show in the dashboard; on Hobby the calls are harmless but nothing is recorded.
+
+- Browser: `trackEvent()` in `lib/analytics.ts`, never `track()` directly. Event names are the `AppEvent` union: `export` (format pdf/pptx/csv — after every download in the tool pages, `pptx.ts` and `PortfolioAnalysis`), `template` / `import` (`SpreadsheetIO`), `chat_done` (`GuidedChat`, once per chat; the tool finder adds `to`), `share_link`, `connector_copy` (`/mcp`), `email_signup`, `contact_click` (`ContactLink`). Each event gets `page` (locale stripped, company pages folded to `/tools/stocks/[ticker]`) and `locale` automatically.
+- Server: `app/api/mcp/route.ts` counts `mcp_call` (tool name, only if it is in `MCP_TOOL_NAMES`) and `mcp_connect` (the client app's name) after the response, via `after()`. `lib/mcp-tools.ts` lists the tool names; `tests/mcp-app.test.ts` fails if it drifts from what the server registers.
+- **Never put inputs in an event** — no amounts, tickers, names or typed text. The site and `/mcp` promise nothing typed is stored.
+- Tool counts on the homepage and `/tools` come from `toolCount()` in `lib/audiences.ts` (the Stocks area counts as its four tools, `STOCK_TOOLS`); `tests/analytics.test.ts` checks it equals the number of tool routes. The homepage's connector card computes "+ N more" from `MCP_TOOL_NAMES`. Don't write a count into copy.
+
 ## Env vars
 
 Set in the Vercel dashboard, **Production scope included** — a variable scoped only to Preview will not reach the live site, and a variable only binds to builds created after it was saved.

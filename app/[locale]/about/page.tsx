@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ContactLink from "@/components/ContactLink";
 
 export const metadata: Metadata = {
   title: "About — Javier Audibert | FinancePlots",
@@ -26,12 +27,9 @@ export default function AboutPage() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mt-10">
-            <a
-              href="mailto:hello@financeplots.com"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg shadow-blue-600/20"
-            >
+            <ContactLink className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg shadow-blue-600/20">
               Get in touch
-            </a>
+            </ContactLink>
             <Link
               href="/tools"
               className="border border-gray-300 hover:border-gray-500 text-gray-700 hover:text-gray-900 font-semibold px-8 py-3 rounded-xl transition bg-white"

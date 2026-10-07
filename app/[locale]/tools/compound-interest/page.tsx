@@ -10,6 +10,7 @@ import { compoundGrowth } from "@/lib/calculators";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
+import { trackEvent } from "@/lib/analytics";
 
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
@@ -108,6 +109,7 @@ export default function CompoundInterestPage() {
       a.href = url;
       a.download = "compound-interest.pdf";
       a.click();
+      trackEvent("export", { format: "pdf" });
       URL.revokeObjectURL(url);
     } finally {
       setIsExporting(false);
