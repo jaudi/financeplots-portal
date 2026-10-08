@@ -1603,6 +1603,10 @@
             "desc": "The real annual return on money paid in and taken out on different dates, and the same money replayed in an index you name."
           },
           {
+            "name": "Life plan",
+            "desc": "Your savings, home, debts and net worth year by year, with life events (a home, a baby, a career break, retirement) and a Plan B to compare."
+          },
+          {
             "name": "Break-even",
             "desc": "Units and revenue needed to cover your costs."
           },

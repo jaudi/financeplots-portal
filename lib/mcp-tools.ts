@@ -8,6 +8,7 @@ export const MCP_TOOL_NAMES = [
   "loan_repayment",
   "compound_interest",
   "investment_return",
+  "life_plan",
   "break_even",
   "industry_multiples",
   "business_valuation",

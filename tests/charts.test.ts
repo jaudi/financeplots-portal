@@ -55,6 +55,7 @@ describe("tools return charts", () => {
     ["compound_interest", { initial_capital: 10_000, monthly_contribution: 300, annual_return_pct: 7, years: 30, inflation_pct: 2 }, 1],
     ["loan_repayment", { amount: 200_000, annual_rate_pct: 5, years: 25 }, 2],
     ["investment_return", { flows: [{ date: "2020-01-01", amount: 1000 }, { date: "2023-06-01", amount: 4000 }, { date: "2024-02-01", amount: -500 }], current_value: 6200, value_date: "2026-01-01" }, 1],
+    ["life_plan", { savings: 15_000, take_home_per_year: 42_000, spending_per_year: 16_000, housing: { type: "rent", rent_monthly: 1_100 }, currency: "GBP", plan_b: { spending_per_year: 20_000 } }, 2],
     ["break_even", { fixed_costs: 50_000, selling_price: 100, variable_cost: 60, current_units: 1500 }, 1],
     ["business_valuation", { revenue: 1e7, ebitda: 2e6, net_income: 1.2e6, free_cash_flow: 1e6, industry: "healthcare-it", discount_rate_pct: 12 }, 1],
     [

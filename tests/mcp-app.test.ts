@@ -9,7 +9,7 @@ import { MCP_TOOL_NAMES } from "@/lib/mcp-tools";
 // serves as a self-contained HTML page.
 
 const VIEW = "ui://financeplots/charts.html";
-const CHARTING = ["take_home_pay", "company_profile", "company_snowflake", "loan_repayment", "compound_interest", "investment_return", "break_even", "business_valuation", "startup_valuation", "price_history", "portfolio_analysis"];
+const CHARTING = ["take_home_pay", "company_profile", "company_snowflake", "loan_repayment", "compound_interest", "investment_return", "life_plan", "break_even", "business_valuation", "startup_valuation", "price_history", "portfolio_analysis"];
 
 async function connect() {
   const [c, s] = InMemoryTransport.createLinkedPair();

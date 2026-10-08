@@ -4,11 +4,12 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, payoffWithExtra, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type AnyChartSpec } from "@/lib/charts/spec";
-import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, investmentReturnChart, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, investmentReturnChart, lifePlanCharts, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
 import { getCompanyProfile, getCompanyProfiles } from "@/lib/company";
 import { tryFinancialHistory } from "@/lib/edgar";
 import { fetchIndicators } from "@/lib/fred";
 import { checkFlows, encodeFlows, investmentReturn, netInvestedSteps, rangeFor, replayFlows, type FlowProblem } from "@/lib/investment-return";
+import { cleanPlan, DEFAULT_ASSUMPTIONS, encodeShared, MAX_EVENTS, MAX_HORIZON, project, todaysMoney, type Plan } from "@/lib/life-plan";
 import { CHART_VIEW_HTML } from "@/lib/mcp-app/chart-view-html.generated";
 import { getMarketQuotes } from "@/lib/markets";
 import { analysePortfolio, convertPoints, majorCurrency } from "@/lib/portfolio-stats";
@@ -28,7 +29,7 @@ import { getUniverse, UNCLASSIFIED, UNIVERSE_SCREENS } from "@/lib/universe";
 const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
-Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, investment_return (the real annual return, XIRR, on dated deposits and withdrawals, optionally replayed in an index the user names), break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
+Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, investment_return (the real annual return, XIRR, on dated deposits and withdrawals, optionally replayed in an index the user names), life_plan (a household's savings, homes, debts and net worth year by year with life events — a home, a baby, a career break, retirement — and an optional Plan B), break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
 Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR), company_snowflake (those ratios drawn as a snowflake, for one company or two on the same shape).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
@@ -390,6 +391,249 @@ export function createFinancePlotsServer() {
         tool_page: query.length < 1800 ? `${SITE}/tools/investment-return?${query}` : `${SITE}/tools/investment-return`,
       });
       return withCharts(result, [investmentReturnChart(netInvestedSteps(flows), valueDate, current_value, base, replayPath)], chart);
+    },
+  );
+
+  // ── Life Plan ─────────────────────────────────────────────────────────────
+  // Same maths as /tools/life-plan (lib/life-plan.ts). Inputs mirror the page's
+  // boxes; cleanPlan clamps them exactly as it clamps a share link.
+
+  const money = (what: string) => z.number().min(0).max(1e9).describe(what);
+  const eventYear = z.number().int().describe("Calendar year it happens (this year or later)");
+  const eventLabel = z.string().max(40).optional().describe("The user's own name for it, e.g. \"Wedding\"");
+  const lifeEvent = z.discriminatedUnion("kind", [
+    z.object({
+      kind: z.literal("home"),
+      year: eventYear,
+      label: eventLabel,
+      price: money("Price in today's money; it grows at house_price_pct until the year bought"),
+      deposit_pct: z.number().min(0).max(100).default(10).describe("Deposit, percent of the price"),
+      buying_costs: money("Stamp duty, fees and moving, today's money").default(0),
+      mortgage_rate_pct: z.number().min(0).max(30).default(4.5).describe("Mortgage rate, percent a year"),
+      term_years: z.number().int().min(1).max(40).default(25).describe("Mortgage term in years"),
+      sell_current_home: z.boolean().optional().describe("Sell the home owned at the time first (its equity goes to the deposit). Default: true when there is one"),
+    }),
+    z.object({
+      kind: z.literal("baby"),
+      year: eventYear,
+      label: eventLabel,
+      cost_per_year: money("Extra costs a year (childcare etc.), today's money"),
+      years: z.number().int().min(0).max(30).default(4).describe("For how many years those costs last"),
+      income_drop_pct: z.number().min(0).max(100).default(0).describe("Household take-home lost in the year of the birth, percent (parental leave)"),
+    }),
+    z.object({ kind: z.literal("one_off"), year: eventYear, label: eventLabel, amount: money("One-off cost, today's money (a wedding, a car)") }),
+    z.object({
+      kind: z.literal("recurring"),
+      year: eventYear,
+      label: eventLabel,
+      amount: money("Cost per year, today's money (school fees, a parent's care)"),
+      years: z.number().int().min(0).max(50).describe("For how many years; 0 = from then on"),
+    }),
+    z.object({
+      kind: z.literal("income_change"),
+      year: eventYear,
+      label: eventLabel,
+      change_pct: z.number().min(-100).max(500).describe("Change in household take-home: +20 a promotion, −40 part-time, −100 a career break"),
+      years: z.number().int().min(0).max(50).default(0).describe("For how many years; 0 = from then on"),
+    }),
+    z.object({ kind: z.literal("windfall"), year: eventYear, label: eventLabel, amount: money("Money received, today's money (an inheritance, a bonus)") }),
+    z.object({ kind: z.literal("retire"), year: eventYear, label: eventLabel, pension_per_year: money("Pension income a year after retiring, today's money; replaces take-home pay") }),
+  ]);
+  const housing = z.discriminatedUnion("type", [
+    z.object({ type: z.literal("rent"), rent_monthly: money("Rent per month, today") }),
+    z.object({
+      type: z.literal("own"),
+      home_value: money("What the home is worth today"),
+      mortgage_left: money("Mortgage still owed").default(0),
+      mortgage_rate_pct: z.number().min(0).max(30).default(4).describe("Mortgage rate, percent a year"),
+      years_left: z.number().int().min(0).max(40).default(0).describe("Years left on the mortgage"),
+    }),
+  ]);
+  // Plan B takes only what differs, so its fields carry no defaults: zod would
+  // otherwise fill an omitted rate with the default rather than Plan A's.
+  const planBFields = {
+    savings: z.number().min(-1e9).max(1e9).describe("Savings and investments today (not the home, not pensions)"),
+    take_home_per_year: money("Household take-home pay per year, after tax"),
+    spending_per_year: money("Living costs per year, excluding rent or mortgage"),
+    housing: housing.describe("Renting or owning today"),
+    other_debt: z
+      .object({
+        balance: money("Loans and cards owed today"),
+        rate_pct: z.number().min(0).max(100).default(0).describe("Interest, percent a year"),
+        years: z.number().int().min(0).max(40).default(5).describe("Years to repay, in equal payments"),
+      })
+      .optional()
+      .describe("Debts other than the mortgage"),
+    pay_growth_pct: z.number().min(-10).max(20).describe("Pay growth a year, percent (assumption)"),
+    inflation_pct: z.number().min(-5).max(20).describe("Inflation a year, percent (assumption)"),
+    return_pct: z.number().min(-20).max(30).describe("Return on savings a year, percent (assumption)"),
+    house_price_pct: z.number().min(-20).max(30).describe("House-price growth a year, percent (assumption)"),
+    withdrawal_pct: z.number().min(0).max(20).describe("For the financial-independence year: share of savings drawn each year, percent"),
+    events: z.array(lifeEvent).max(MAX_EVENTS).describe("Life events on the timeline"),
+  };
+  const withDefault = <T extends z.ZodType>(schema: T, value: z.input<T>) => schema.default(value as never).describe(schema.description ?? "");
+  const planFields = {
+    ...planBFields,
+    pay_growth_pct: withDefault(planBFields.pay_growth_pct, DEFAULT_ASSUMPTIONS.payGrowthPct),
+    inflation_pct: withDefault(planBFields.inflation_pct, DEFAULT_ASSUMPTIONS.inflationPct),
+    return_pct: withDefault(planBFields.return_pct, DEFAULT_ASSUMPTIONS.returnPct),
+    house_price_pct: withDefault(planBFields.house_price_pct, DEFAULT_ASSUMPTIONS.housePricePct),
+    withdrawal_pct: withDefault(planBFields.withdrawal_pct, DEFAULT_ASSUMPTIONS.withdrawalPct),
+    events: withDefault(planBFields.events, []),
+  };
+  type PlanInput = { [K in keyof typeof planFields]: z.infer<(typeof planFields)[K]> };
+
+  function toPlan(p: PlanInput, startYear: number): Plan | null {
+    const owned = p.housing.type === "own";
+    const raw = {
+      savings: p.savings,
+      takeHome: p.take_home_per_year,
+      spending: p.spending_per_year,
+      housing:
+        p.housing.type === "own"
+          ? { kind: "own", value: p.housing.home_value, mortgage: p.housing.mortgage_left, ratePct: p.housing.mortgage_rate_pct, yearsLeft: p.housing.years_left }
+          : { kind: "rent", rentMonthly: p.housing.rent_monthly },
+      debt: p.other_debt ? { balance: p.other_debt.balance, ratePct: p.other_debt.rate_pct, years: p.other_debt.years } : { balance: 0, ratePct: 0, years: 0 },
+      payGrowthPct: p.pay_growth_pct,
+      inflationPct: p.inflation_pct,
+      returnPct: p.return_pct,
+      housePricePct: p.house_price_pct,
+      withdrawalPct: p.withdrawal_pct,
+      // Homes in year order, so "a home owned at the time" is known for each purchase.
+      events: [...p.events]
+        .sort((a, b) => a.year - b.year)
+        .map((e, i, all) => {
+          switch (e.kind) {
+            case "home": {
+              const homeBefore = owned || all.slice(0, i).some((x) => x.kind === "home");
+              return { kind: "home", year: e.year, label: e.label, price: e.price, depositPct: e.deposit_pct, costs: e.buying_costs, ratePct: e.mortgage_rate_pct, termYears: e.term_years, sellCurrent: e.sell_current_home ?? homeBefore };
+            }
+            case "baby":
+              return { kind: "baby", year: e.year, label: e.label, costPerYear: e.cost_per_year, years: e.years, incomeDropPct: e.income_drop_pct };
+            case "one_off":
+              return { kind: "oneOff", year: e.year, label: e.label, amount: e.amount };
+            case "recurring":
+              return { kind: "recurring", year: e.year, label: e.label, amount: e.amount, years: e.years };
+            case "income_change":
+              return { kind: "income", year: e.year, label: e.label, changePct: e.change_pct, years: e.years };
+            case "windfall":
+              return { kind: "windfall", year: e.year, label: e.label, amount: e.amount };
+            case "retire":
+              return { kind: "retire", year: e.year, label: e.label, pension: e.pension_per_year };
+          }
+        }),
+    };
+    return cleanPlan(raw, startYear);
+  }
+
+  server.registerTool(
+    "life_plan",
+    {
+      title: "Life plan",
+      description:
+        "A household's savings, homes, debts and net worth projected year by year, with life events on a timeline — buying a home (optionally selling the current one), a baby, one-off and regular costs, a pay rise, part-time work or a career break, a windfall, retirement. " +
+        "Returns the dates that matter (savings running out, a home deposit that isn't there yet and the year it would be, mortgage paid off, debt-free, financial independence at the withdrawal rate, net worth passing 100k/250k/500k/1M in today's money), a year-by-year table and charts of net worth and savings. " +
+        "Give `plan_b` to compare a second version: it starts as a copy of the plan and takes only what differs (its `events`, if given, replace the plan's). " +
+        "Every amount is in today's money and grows with inflation (house prices with their own rate) to the year it happens; rows are end-of-year, mortgages repaid monthly. All growth rates are the user's assumptions — a planning sketch, not a forecast or advice.",
+      inputSchema: {
+        ...planFields,
+        plan_b: z.object(planBFields).partial().optional().describe("A second version to compare: only the fields that differ from the plan"),
+        years: z.number().int().min(5).max(MAX_HORIZON).default(30).describe("How many years to project, from this year"),
+        currency: z.enum(["GBP", "USD", "EUR"]).optional().describe("Currency of the amounts, for the chart labels; nothing is converted"),
+        chart: chartParam,
+      },
+      annotations: readOnly,
+      _meta: chartUi,
+    },
+    async (args) => {
+      const { plan_b, years, currency, chart, ...a } = args;
+      const startYear = new Date().getUTCFullYear();
+      const early = [...a.events, ...(plan_b?.events ?? [])].find((e) => e.year < startYear);
+      if (early) return error(`Event years start this year (${startYear}); one is in ${early.year}.`);
+
+      const inputs: PlanInput[] = [a, ...(plan_b ? [{ ...a, ...plan_b }] : [])];
+      const plans = inputs.map((p) => toPlan(p, startYear)!);
+      const names = plans.length > 1 ? ["Plan A", "Plan B"] : ["Plan"];
+      const lastYear = startYear + years - 1;
+      const outside = plans.flatMap((p) => p.events).filter((e) => e.year > lastYear).length;
+
+      const fmt = (n: number) => `${currency ? { GBP: "£", USD: "$", EUR: "€" }[currency] : ""}${Math.round(n).toLocaleString("en-GB")}`;
+      const projections = plans.map((p) => project(p, startYear, years));
+      const real = (p: Plan, n: number, year: number) => Math.round(n / todaysMoney(p, startYear, year));
+
+      const out = projections.map((pr, i) => {
+        const p = plans[i];
+        const milestones = pr.milestones.map((m) => {
+          switch (m.kind) {
+            case "cashOut":
+              return { kind: "savings_run_out", year: m.year, text: `Savings run out in ${m.year}.` };
+            case "depositShort":
+              return {
+                kind: "deposit_short",
+                year: m.year,
+                needed: Math.round(m.needed),
+                have: Math.round(m.have),
+                ready_year: m.readyYear,
+                text: `${m.year} home: ${fmt(m.needed)} needed for the deposit and costs, ${fmt(m.have)} available. ${m.readyYear ? `Ready by ${m.readyYear} if nothing else changes.` : "Not ready within these years."}`,
+              };
+            case "mortgageFree":
+              return { kind: "mortgage_paid_off", year: m.year, text: `Mortgage paid off in ${m.year}.` };
+            case "debtFree":
+              return { kind: "debt_free", year: m.year, text: `Debt-free in ${m.year}.` };
+            case "independent":
+              return { kind: "financially_independent", year: m.year, text: `Financially independent in ${m.year}: savings could cover costs at the ${p.withdrawalPct}% withdrawal rate.` };
+            case "netWorth":
+              return { kind: "net_worth_mark", year: m.year, amount_todays_money: m.amount, text: `Net worth passes ${fmt(m.amount)} (today's money) in ${m.year}.` };
+          }
+        });
+        const end = pr.rows.at(-1)!;
+        return {
+          name: names[i],
+          today: { savings: Math.round(pr.start.savings), home_value: Math.round(pr.start.homeValue), mortgage: Math.round(pr.start.mortgage), other_debt: Math.round(pr.start.otherDebt), net_worth: Math.round(pr.start.netWorth) },
+          milestones,
+          at_end: { year: end.year, savings: Math.round(end.savings), net_worth: Math.round(end.netWorth), net_worth_todays_money: real(p, end.netWorth, end.year) },
+          yearly: pr.rows.map((r) => ({
+            year: r.year,
+            income: Math.round(r.income),
+            living_costs: Math.round(r.living),
+            housing: Math.round(r.housing),
+            debt_payments: Math.round(r.debtPayments),
+            one_offs: Math.round(r.oneOffs),
+            inflows: Math.round(r.inflows),
+            net_cash: Math.round(r.netCash),
+            savings: Math.round(r.savings),
+            home_value: Math.round(r.homeValue),
+            mortgage: Math.round(r.mortgage),
+            other_debt: Math.round(r.otherDebt),
+            net_worth: Math.round(r.netWorth),
+            net_worth_todays_money: real(p, r.netWorth, r.year),
+          })),
+        };
+      });
+
+      const query = new URLSearchParams({ p: encodeShared({ horizon: years, plans }) }).toString();
+      const result = json({
+        start_year: startYear,
+        last_year: lastYear,
+        currency: currency ?? null,
+        plans: out,
+        ...(out.length > 1 && {
+          b_minus_a_at_end: {
+            net_worth: out[1].at_end.net_worth - out[0].at_end.net_worth,
+            net_worth_todays_money: out[1].at_end.net_worth_todays_money - out[0].at_end.net_worth_todays_money,
+            savings: out[1].at_end.savings - out[0].at_end.savings,
+          },
+        }),
+        ...(outside > 0 && { events_after_last_year: `${outside} event(s) fall after ${lastYear} and are not in these figures; raise \`years\` to include them.` }),
+        units_note: "Yearly figures are each year's own money (nominal), end-of-year; net_worth_todays_money divides by inflation since this year. Savings grow at return_pct only while positive.",
+        assumptions_note: "Every rate is the user's assumption, not a forecast. Taxes on savings, pensions other than the retirement income given, and benefits are not modelled.",
+        tool_page: query.length < 1800 ? `${SITE}/tools/life-plan?${query}` : `${SITE}/tools/life-plan`,
+      });
+      const chartPlans = projections.map((pr, i) => ({
+        name: names[i],
+        rows: pr.rows.map((r) => ({ year: r.year, netWorth: r.netWorth / todaysMoney(plans[i], startYear, r.year), savings: r.savings / todaysMoney(plans[i], startYear, r.year) })),
+      }));
+      return withCharts(result, lifePlanCharts(chartPlans, currency), chart);
     },
   );
 
