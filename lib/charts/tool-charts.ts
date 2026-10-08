@@ -310,3 +310,25 @@ export function companySnowflakeChart(
     note: `${SOURCE} · further out = a higher figure than more of the index, not a better one · not a score`,
   };
 }
+
+/** Life Plan: net worth and savings per plan, in today's money. Plan colours
+ *  follow position (A first, B second), as on the page. */
+export function lifePlanCharts(
+  plans: { name: string; rows: { year: number; netWorth: number; savings: number }[] }[],
+  currency?: string,
+): ChartSpec[] {
+  const labels = plans[0].rows.map((r) => String(r.year));
+  const chart = (title: string, key: "netWorth" | "savings", subtitle: string): ChartSpec => ({
+    title,
+    subtitle,
+    x: { labels, title: "Year" },
+    y: { format: "money", currency },
+    series: plans.map((p, i) => ({ name: p.name, type: "line" as const, slot: i, values: p.rows.map((r) => Math.round(r[key])) })),
+    refLines: key === "savings" ? [{ value: 0, label: "No savings left" }] : undefined,
+    note: `${SOURCE} · in today's money · every rate is the user's assumption, not a forecast`,
+  });
+  return [
+    chart("Net worth, year by year", "netWorth", "Savings plus homes, less mortgages and debts"),
+    chart("Savings, year by year", "savings", "Cash and investments, not the home or pensions"),
+  ];
+}

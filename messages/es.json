@@ -1589,6 +1589,10 @@
             "desc": "La rentabilidad anual real con aportaciones y retiradas en fechas distintas, y el mismo dinero repetido en un índice que indiques."
           },
           {
+            "name": "Plan de vida",
+            "desc": "Tus ahorros, tu vivienda, tus deudas y tu patrimonio año a año, con los momentos de tu vida (una casa, un hijo, una pausa en tu carrera, la jubilación) y un plan B para comparar."
+          },
+          {
             "name": "Punto de equilibrio",
             "desc": "Unidades y ventas necesarias para cubrir tus costes."
           },
