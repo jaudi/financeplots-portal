@@ -202,7 +202,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
               ) : (
                 <p className="mt-8 text-sm text-gray-400 bg-[#0d1426] border border-gray-800 rounded-xl px-5 py-4">
                   We have the price history for {ticker}, but key figures only for companies in the S&amp;P 500,
-                  Nasdaq-100 and IBEX 35.
+                  Nasdaq-100, IBEX 35 and FTSE 100.
                 </p>
               )}
 

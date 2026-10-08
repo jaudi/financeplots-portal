@@ -30,7 +30,7 @@ const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
 Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, investment_return (the real annual return, XIRR, on dated deposits and withdrawals, optionally replayed in an index the user names), life_plan (a household's savings, homes, debts and net worth year by year with life events — a home, a baby, a career break, retirement — and an optional Plan B), break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
-Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR), company_snowflake (those ratios drawn as a snowflake, for one company or two on the same shape).
+Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR), company_snowflake (those ratios drawn as a snowflake, for one company or two on the same shape).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
 function json(data: unknown) {
@@ -1224,7 +1224,7 @@ export function createFinancePlotsServer() {
     {
       title: "Company profile",
       description:
-        "One company's figures, as on its FinancePlots company page, with two charts — its ratios as a snowflake and its revenue and profit history: the screener's ratios (valuation, profitability, debt, growth — weekly snapshot) with, for each, the share of its index with a lower figure (`higher_than_pct_of_index`), and for US listings up to ten fiscal years from the annual reports (10-K) via SEC EDGAR: revenue, net profit, operating and free cash flow, cash and long-term debt. Covers S&P 500, Nasdaq-100 and IBEX 35 companies (history for any US filer). Positions are per measure — higher is not better, and nothing is combined into a score, ranked or recommended. No share price: use price_history for that.",
+        "One company's figures, as on its FinancePlots company page, with two charts — its ratios as a snowflake and its revenue and profit history: the screener's ratios (valuation, profitability, debt, growth — weekly snapshot) with, for each, the share of its index with a lower figure (`higher_than_pct_of_index`), and for US listings up to ten fiscal years from the annual reports (10-K) via SEC EDGAR: revenue, net profit, operating and free cash flow, cash and long-term debt. Covers S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 companies (history for any US filer). Positions are per measure — higher is not better, and nothing is combined into a score, ranked or recommended. No share price: use price_history for that.",
       inputSchema: {
         ticker: z.string().min(1).max(15).describe("Yahoo Finance ticker, e.g. AAPL, BRK-B, SAN.MC"),
         history: z.boolean().default(true).describe("Include the annual-report history (US listings); false returns the ratios only"),
@@ -1243,8 +1243,8 @@ export function createFinancePlotsServer() {
       if (!profile && (history === null || history === "unavailable")) {
         return error(
           history === "unavailable"
-            ? `The SEC didn't answer just now and ${ticker} isn't in the S&P 500, Nasdaq-100 or IBEX 35 data. Try again in a minute.`
-            : `No figures for ${ticker}: company_profile covers S&P 500, Nasdaq-100 and IBEX 35 companies, plus annual-report history for US filers. For its share price, use price_history.`,
+            ? `The SEC didn't answer just now and ${ticker} isn't in the S&P 500, Nasdaq-100, IBEX 35 or FTSE 100 data. Try again in a minute.`
+            : `No figures for ${ticker}: company_profile covers S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 companies, plus annual-report history for US filers. For its share price, use price_history.`,
         );
       }
       const result = json({
@@ -1305,7 +1305,7 @@ export function createFinancePlotsServer() {
     {
       title: "Company snowflake",
       description:
-        `Draws a company's ratios (valuation, profitability, debt, growth — weekly snapshot) as a snowflake: one spoke per ratio, each point at the share of the company's index with a lower figure. Pass one more ticker in compare_with to draw it as a second layer on the same snowflake. Returns the figures as JSON and the chart: a PNG, and in hosts with MCP Apps an interactive 3D view the user can turn and tap. Further out means a higher figure, never a better one (a high P/E or high debt sits far out too); the shape's size is not a score, and nothing is combined, ranked or recommended. Covers S&P 500, Nasdaq-100 and IBEX 35 companies.`,
+        `Draws a company's ratios (valuation, profitability, debt, growth — weekly snapshot) as a snowflake: one spoke per ratio, each point at the share of the company's index with a lower figure. Pass one more ticker in compare_with to draw it as a second layer on the same snowflake. Returns the figures as JSON and the chart: a PNG, and in hosts with MCP Apps an interactive 3D view the user can turn and tap. Further out means a higher figure, never a better one (a high P/E or high debt sits far out too); the shape's size is not a score, and nothing is combined, ranked or recommended. Covers S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 companies.`,
       inputSchema: {
         ticker: z.string().min(1).max(15).describe("Yahoo Finance ticker, e.g. AAPL, BRK-B, SAN.MC"),
         compare_with: z.array(z.string().min(1).max(15)).max(MAX_VS).default([]).describe("One more ticker to draw as a second layer (a list, for compatibility; at most one)"),
@@ -1320,7 +1320,7 @@ export function createFinancePlotsServer() {
       const others = [...new Set(compare_with.map((t) => normaliseSymbol(t)).filter((t): t is string => !!t && t !== ticker))].slice(0, MAX_VS);
       const profiles = await getCompanyProfiles([ticker, ...others]);
       if (!profiles[0]) {
-        return error(`No figures for ${ticker}: company_snowflake covers S&P 500, Nasdaq-100 and IBEX 35 companies. For its share price, use price_history.`);
+        return error(`No figures for ${ticker}: company_snowflake covers S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 companies. For its share price, use price_history.`);
       }
       const tickers = [ticker, ...others];
       const covered = tickers.flatMap((t, i) => (profiles[i] ? [{ ticker: t, profile: profiles[i]! }] : []));
@@ -1344,7 +1344,7 @@ export function createFinancePlotsServer() {
         })),
         ...(covered.length < tickers.length && {
           not_covered: tickers.filter((_, i) => !profiles[i]),
-          not_covered_note: "Only S&P 500, Nasdaq-100 and IBEX 35 companies have these figures.",
+          not_covered_note: "Only S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 companies have these figures.",
         }),
         how_to_read:
           "Each spoke is one ratio. A point's distance from the centre is the share of the company's own index with a lower figure: further out = higher, not better. The shape's size is not a score. Not a recommendation.",
@@ -1382,7 +1382,7 @@ export function createFinancePlotsServer() {
     {
       title: "Screen stocks",
       description:
-        "Filters the companies of one index (S&P 500, Nasdaq-100 or IBEX 35) by criteria the user sets — minimum and/or maximum values of reported measures (see screener_metrics), a sector, or a name search. Returns matches alphabetically by ticker with the filtered figures plus any `fields` asked for, at most `limit` rows (default 50; `truncated` says when more matched, and match_count gives the total). Measures can be named by key or English alias (see screener_metrics); the response uses the name the request used. At least one criterion is required. Companies missing a figure for a filtered measure are left out and counted. This is a filter, not a ranking or recommendation.",
+        "Filters the companies of one index (S&P 500, Nasdaq-100, IBEX 35 or FTSE 100) by criteria the user sets — minimum and/or maximum values of reported measures (see screener_metrics), a sector, or a name search. Returns matches alphabetically by ticker with the filtered figures plus any `fields` asked for, at most `limit` rows (default 50; `truncated` says when more matched, and match_count gives the total). Measures can be named by key or English alias (see screener_metrics); the response uses the name the request used. At least one criterion is required. Companies missing a figure for a filtered measure are left out and counted. This is a filter, not a ranking or recommendation.",
       inputSchema: {
         index: z.enum(UNIVERSE_SCREENS).describe("Which index to screen"),
         filters: z
@@ -1414,6 +1414,7 @@ export function createFinancePlotsServer() {
 
       const data = await getUniverse(index);
       if (!data) return error("Screener data is temporarily unavailable.");
+      if (data.count === 0) return error(`No figures for ${index} yet: they arrive with the next weekly data refresh.`);
 
       if (sector) {
         const sectors = [...new Set(data.companies.map((c) => c.sector))].sort();

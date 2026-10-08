@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { callTool } from "./mcp-client";
+import ftse100 from "@/data/universe/universe-ftse100.json";
 
 // Uses the snapshot committed in data/universe/, never the live data repo.
 beforeAll(() => {
@@ -44,6 +45,19 @@ describe("screen_stocks (item 6)", () => {
   it("still requires a criterion", async () => {
     const r = await callTool("screen_stocks", { index: "sp500", fields: ["roe"] });
     expect(r.isError).toBe(true);
+  });
+});
+
+describe("FTSE 100", () => {
+  it("is a screen; until the pipeline's first FTSE run is copied in it says so rather than matching nothing", async () => {
+    const r = await callTool("screen_stocks", { index: "ftse100", filters: [{ metric: "roe", min: 0 }] });
+    if (ftse100.companies.length === 0) {
+      expect(r.isError).toBe(true);
+      expect(r.text).toMatch(/next weekly data refresh/);
+    } else {
+      expect(r.isError).toBe(false);
+      expect(r.json.companies.every((m: { ticker: string }) => m.ticker.endsWith(".L"))).toBe(true);
+    }
   });
 });
 

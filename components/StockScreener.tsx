@@ -18,6 +18,7 @@ const INDICES: { key: UniverseScreen; label: string }[] = [
   { key: "sp500", label: "S&P 500" },
   { key: "nasdaq100", label: "Nasdaq-100" },
   { key: "ibex35", label: "IBEX 35" },
+  { key: "ftse100", label: "FTSE 100" },
 ];
 
 type Bounds = Partial<Record<MetricKey, { min: string; max: string }>>;
@@ -177,7 +178,8 @@ export default function StockScreener({
 
   const { criteria, problems } = useMemo(() => readCriteria(bounds, sector, query), [bounds, sector, query]);
   const hasCriteria = criteria.filters.length > 0 || criteria.sector !== "" || criteria.query !== "";
-  const canRun = status === "ready" && hasCriteria && problems.size === 0;
+  const empty = status === "ready" && data !== null && data.count === 0;
+  const canRun = status === "ready" && !empty && hasCriteria && problems.size === 0;
   const stale = ran !== null && JSON.stringify(ran) !== JSON.stringify(criteria);
 
   function run() {
@@ -259,7 +261,8 @@ export default function StockScreener({
       <p className="text-center text-xs text-gray-500 mb-8 min-h-4">
         {status === "loading" && "Loading index data…"}
         {status === "error" && "This index's data couldn't be loaded. Try again later."}
-        {status === "ready" && data && (
+        {empty && <>No figures for the {indexLabel} yet: they arrive with the next weekly data refresh.</>}
+        {status === "ready" && data && !empty && (
           <>
             {data.count} companies in the {indexLabel}
             {formatDate(data.generated_at) && <> · data as of {formatDate(data.generated_at)}</>}

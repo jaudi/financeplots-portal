@@ -28,7 +28,7 @@
     "heroEyebrow": "Free · No signup · No ads",
     "heroLine1": "Finance you can",
     "heroLine2": "actually see.",
-    "heroSub": "Free tools for your own money and for your company, plus a visual page for every S&P 500, Nasdaq-100 and IBEX 35 company — the shape of its figures, in 3D.",
+    "heroSub": "Free tools for your own money and for your company, plus a visual page for every S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 company — the shape of its figures, in 3D.",
     "heroSearchLabel": "See the shape of a company",
     "heroSearchPlaceholder": "Type a company name or ticker",
     "heroSearchCta": "Show me →",
@@ -64,7 +64,7 @@
     "mcpChatMore": "+ {count} more",
     "contactCtaShort": "Email us →",
     "metaTitle": "FinancePlots — Free Finance Tools You Can See",
-    "metaDescription": "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100 and IBEX 35 company. No signup, no ads. Works inside Claude."
+    "metaDescription": "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 company. No signup, no ads. Works inside Claude."
   },
   "blog": {
     "title": "Blog",
@@ -269,7 +269,7 @@
       "stock-screener": {
         "icon": "🔎",
         "name": "Stock Screener",
-        "desc": "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter the S&P 500, Nasdaq-100 or IBEX 35. Nothing is ranked or picked for you."
+        "desc": "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter the S&P 500, Nasdaq-100, IBEX 35 or FTSE 100. Nothing is ranked or picked for you."
       },
       "stocks": {
         "icon": "📈",
@@ -1645,7 +1645,7 @@
         "title": "Stock screener",
         "items": [
           {
-            "name": "S&P 500, Nasdaq-100 and IBEX 35",
+            "name": "S&P 500, Nasdaq-100, IBEX 35 and FTSE 100",
             "desc": "Filter by measures you choose, such as P/E, return on equity, debt or growth. Matches come back alphabetically."
           },
           {

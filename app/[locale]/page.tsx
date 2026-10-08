@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
+import { formatDuration, formatEditionDate, listEditions, MOODS, REGION_NAMES } from "@/lib/observer";
 import { toolCount } from "@/lib/audiences";
 import { MCP_TOOL_NAMES, type McpToolName } from "@/lib/mcp-tools";
 import AudienceDoors from "@/components/AudienceDoors";
@@ -216,11 +216,11 @@ export default async function Home() {
               </h3>
               <p className="text-gray-400 leading-relaxed mb-6">{observer.dek}</p>
 
-              <div className="grid md:grid-cols-3 gap-3 mb-6">
+              <div className={`grid gap-3 mb-6 ${observer.regions.length > 3 ? "md:grid-cols-2 lg:grid-cols-4" : "md:grid-cols-3"}`}>
                 {observer.regions.map((r) => (
                   <div key={r.region} className="bg-black/20 border border-gray-800 rounded-xl p-4">
                     <p className="text-gray-500 text-[11px] uppercase tracking-wider mb-1">
-                      {r.region === "Euro" ? "Euro area" : r.region === "US" ? "United States" : "Asia"}
+                      {REGION_NAMES[r.region]}
                     </p>
                     <p className="text-gray-200 text-sm font-semibold leading-snug">{r.headline}</p>
                   </div>

@@ -7,7 +7,7 @@ import RelatedTools from "@/components/RelatedTools";
 export const metadata: Metadata = {
   title: "Stocks — Price History, Comparison, Portfolio Analysis and a Neutral Screener",
   description:
-    "One place for stocks: search any company, chart its price, compare up to four, analyse a portfolio's risk and return, or filter the S&P 500, Nasdaq-100 and IBEX 35 by measures you choose. Free, no signup.",
+    "One place for stocks: search any company, chart its price, compare up to four, analyse a portfolio's risk and return, or filter the S&P 500, Nasdaq-100, IBEX 35 and FTSE 100 by measures you choose. Free, no signup.",
   alternates: { canonical: "https://www.financeplots.com/tools/stocks" },
 };
 

@@ -1,6 +1,6 @@
 /**
  * Free data sources for The Observer agent. Only FRED needs a (free) key, and
- * only on cloud runners. Also: Eurostat, Yahoo Finance, SEC EDGAR, Google News RSS, GDELT, Reddit,
+ * only on cloud runners. Also: Eurostat, the ONS, Yahoo Finance, SEC EDGAR, Google News RSS, GDELT, Reddit,
  * ApeWisdom and CNN Fear & Greed.
  *
  * Every function returns plain data or throws. The caller decides what a
@@ -43,6 +43,12 @@ export const MACRO_SERIES = {
     { id: "BAMLH0A0HYM2",    label: "High-yield credit spread",       transform: "level", unit: "pp", freq: "d" },
     { id: "GFDEGDQ188S",     label: "Federal debt, % of GDP",         transform: "level", unit: "%", freq: "q" },
     { id: "FYFSGDA188S",     label: "Federal surplus/deficit, % of GDP", transform: "level", unit: "%", freq: "a" },
+  ],
+  UK: [
+    { id: "BOERUKM",          label: "Bank of England Bank Rate",       transform: "level", unit: "%", freq: "m" },
+    { id: "IRLTLT01GBM156N",  label: "UK 10-year gilt yield",           transform: "level", unit: "%", freq: "m" },
+    // Inflation, unemployment and GDP come from the ONS (ONS_SERIES below):
+    // FRED's copies are OECD feeds that run months behind.
   ],
   Euro: [
     { id: "CLVMNACSCAB1GQEA19", label: "Euro area real GDP growth, YoY", transform: "yoy", freq: "q" },
@@ -142,6 +148,48 @@ async function eurostatSeries({ dataset, query, label, unit }) {
   return { id: `eurostat:${dataset}`, label, unit, date: latest.date, value: round(latest.value), prior, stale: false };
 }
 
+// ── ONS (UK figures, as published — no transform needed) ─────────────────────
+
+const ONS_SERIES = [
+  { path: "economy/inflationandpriceindices/timeseries/d7g7/mm23", id: "ons:D7G7", label: "UK CPI inflation, YoY", freq: "m" },
+  { path: "economy/inflationandpriceindices/timeseries/dko8/mm23", id: "ons:DKO8", label: "UK core CPI inflation, YoY", freq: "m" },
+  { path: "employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms", id: "ons:MGSX", label: "UK unemployment rate", freq: "m" },
+  { path: "economy/grossdomesticproductgdp/timeseries/ihyr/qna", id: "ons:IHYR", label: "UK real GDP growth, YoY", freq: "q" },
+];
+
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+/** "2026 AUG" → "2026-08-01", "2026 Q2" → "2026-04-01". A three-month period
+ *  ("2026 JUN-AUG", unemployment) is dated by its first month. */
+function onsDate(text) {
+  const [year, part] = String(text).trim().toUpperCase().split(/\s+/);
+  const q = /^Q([1-4])$/.exec(part ?? "");
+  const m = q ? (Number(q[1]) - 1) * 3 : MONTHS.indexOf((part ?? "").slice(0, 3));
+  if (!/^\d{4}$/.test(year) || m < 0) return null;
+  return `${year}-${String(m + 1).padStart(2, "0")}-01`;
+}
+
+async function onsSeries({ path, id, label, freq }) {
+  const json = await (await get(`https://www.ons.gov.uk/${path}/data`)).json();
+  const rows = (freq === "q" ? json.quarters : json.months) ?? [];
+  const points = rows
+    .map((r) => ({ date: onsDate(r.date), value: Number(r.value) }))
+    .filter((p) => p.date && Number.isFinite(p.value));
+  if (points.length === 0) throw new Error(`ONS ${id}: no observations`);
+  const latest = points.at(-1);
+  const prior = points.at(-2) ?? null;
+  const ageDays = (Date.now() - new Date(latest.date).getTime()) / 86400000;
+  return {
+    id,
+    label,
+    unit: "%",
+    date: latest.date,
+    value: round(latest.value),
+    prior: prior ? { date: prior.date, value: round(prior.value) } : null,
+    stale: ageDays > MAX_AGE_DAYS[freq],
+  };
+}
+
 export async function macroSnapshot() {
   const out = {};
   const errors = [];
@@ -154,6 +202,13 @@ export async function macroSnapshot() {
       } catch (e) {
         errors.push(`FRED ${def.id}: ${e.message}`);
       }
+    }
+  }
+  for (const def of ONS_SERIES) {
+    try {
+      out.UK.push(await onsSeries(def));
+    } catch (e) {
+      errors.push(`ONS ${def.id}: ${e.message}`);
     }
   }
   for (const def of EUROSTAT_SERIES) {
@@ -175,11 +230,14 @@ export const MARKET_SYMBOLS = [
   { symbol: "^VIX",      label: "VIX (S&P 500 implied volatility)", region: "US" },
   { symbol: "^TNX",      label: "US 10-year yield",    region: "US" },
   { symbol: "DX-Y.NYB",  label: "US Dollar Index",     region: "US" },
+  { symbol: "^FTSE",     label: "FTSE 100",            region: "UK" },
+  { symbol: "^FTMC",     label: "FTSE 250",            region: "UK" },
+  { symbol: "GBPUSD=X",  label: "GBP/USD",             region: "UK" },
+  { symbol: "EURGBP=X",  label: "EUR/GBP",             region: "UK" },
   { symbol: "^STOXX50E", label: "Euro Stoxx 50",       region: "Euro" },
   { symbol: "^GDAXI",    label: "DAX",                 region: "Euro" },
   { symbol: "^FCHI",     label: "CAC 40",              region: "Euro" },
   { symbol: "^IBEX",     label: "IBEX 35",             region: "Euro" },
-  { symbol: "^FTSE",     label: "FTSE 100",            region: "Euro" },
   { symbol: "EURUSD=X",  label: "EUR/USD",             region: "Euro" },
   { symbol: "^N225",     label: "Nikkei 225",          region: "Asia" },
   { symbol: "^HSI",      label: "Hang Seng",           region: "Asia" },

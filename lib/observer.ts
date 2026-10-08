@@ -7,7 +7,15 @@ import path from "node:path";
 
 const DIR = path.join(process.cwd(), "content", "observer");
 
-export type Region = "US" | "Euro" | "Asia";
+// "UK" since 2026-10-08; earlier editions have only the other three.
+export type Region = "US" | "UK" | "Euro" | "Asia";
+
+export const REGION_NAMES: Record<Region, string> = {
+  US: "United States",
+  UK: "United Kingdom",
+  Euro: "Euro area",
+  Asia: "Asia",
+};
 
 export interface MarketPoint {
   symbol: string;
@@ -41,7 +49,7 @@ export interface Edition {
   sources: { title: string; publisher: string; url: string }[];
   data: {
     markets: MarketPoint[];
-    macro: Record<Region, MacroPoint[]>;
+    macro: Partial<Record<Region, MacroPoint[]>>;
     fearAndGreed: { score: number; rating: string; previousWeek: number; previousMonth: number; date: string } | null;
   };
   /** Kokoro read-aloud MP3, hosted as a GitHub Release asset. Absent if audio failed that week. */

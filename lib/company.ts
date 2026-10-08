@@ -13,6 +13,7 @@ export const INDEX_LABELS: Record<UniverseScreen, string> = {
   sp500: "S&P 500",
   nasdaq100: "Nasdaq-100",
   ibex35: "IBEX 35",
+  ftse100: "FTSE 100",
 };
 
 export interface CompanyMeasure {
@@ -26,7 +27,7 @@ export interface CompanyMeasure {
 
 export interface CompanyProfile {
   company: UniverseCompany;
-  /** The index positions are measured against: the first of S&P 500, Nasdaq-100, IBEX 35 it belongs to. */
+  /** The index positions are measured against: the first of S&P 500, Nasdaq-100, IBEX 35, FTSE 100 it belongs to. */
   index: UniverseScreen;
   memberOf: UniverseScreen[];
   generatedAt: string | null;

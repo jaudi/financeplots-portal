@@ -28,7 +28,7 @@
     "heroEyebrow": "Gratis · Sin registro · Sin anuncios",
     "heroLine1": "Finanzas que por fin",
     "heroLine2": "se pueden ver.",
-    "heroSub": "Herramientas gratuitas para tu dinero y para tu empresa, y una página visual para cada empresa del S&P 500, el Nasdaq-100 y el IBEX 35: la forma de sus cifras, en 3D.",
+    "heroSub": "Herramientas gratuitas para tu dinero y para tu empresa, y una página visual para cada empresa del S&P 500, el Nasdaq-100, el IBEX 35 y el FTSE 100: la forma de sus cifras, en 3D.",
     "heroSearchLabel": "Mira la forma de una empresa",
     "heroSearchPlaceholder": "Escribe el nombre o el ticker de una empresa",
     "heroSearchCta": "Ver →",
@@ -64,7 +64,7 @@
     "mcpChatMore": "+ {count} más",
     "contactCtaShort": "Escríbenos →",
     "metaTitle": "FinancePlots — Herramientas financieras gratis que se pueden ver",
-    "metaDescription": "Herramientas financieras gratuitas para tu dinero y tu empresa —presupuesto, caja, valoración, préstamos, interés compuesto— y una página visual para cada empresa del S&P 500, el Nasdaq-100 y el IBEX 35. Sin registro y sin anuncios."
+    "metaDescription": "Herramientas financieras gratuitas para tu dinero y tu empresa —presupuesto, caja, valoración, préstamos, interés compuesto— y una página visual para cada empresa del S&P 500, el Nasdaq-100, el IBEX 35 y el FTSE 100. Sin registro y sin anuncios."
   },
   "blog": {
     "title": "Blog",
@@ -255,7 +255,7 @@
       "stock-screener": {
         "icon": "🔎",
         "name": "Screener de Acciones",
-        "desc": "Elige tus propios criterios — valoración, rentabilidad, deuda, crecimiento y tendencia del precio — y filtra el S&P 500, el Nasdaq-100 o el IBEX 35. Nada se ordena ni se elige por ti."
+        "desc": "Elige tus propios criterios — valoración, rentabilidad, deuda, crecimiento y tendencia del precio — y filtra el S&P 500, el Nasdaq-100, el IBEX 35 o el FTSE 100. Nada se ordena ni se elige por ti."
       },
       "stocks": {
         "icon": "📈",
@@ -1631,7 +1631,7 @@
         "title": "Filtro de acciones",
         "items": [
           {
-            "name": "S&P 500, Nasdaq-100 e IBEX 35",
+            "name": "S&P 500, Nasdaq-100, IBEX 35 y FTSE 100",
             "desc": "Filtra por las medidas que elijas, como PER, rentabilidad sobre fondos propios, deuda o crecimiento. Los resultados salen por orden alfabético."
           },
           {

@@ -5,7 +5,7 @@ import { SYMBOL_PATTERN } from "@/lib/price-types";
 
 /**
  * Find a ticker by company name (or by ticker) for the price tools' search
- * boxes. Looks in our own index lists first (S&P 500, Nasdaq-100, IBEX 35);
+ * boxes. Looks in our own index lists first (S&P 500, Nasdaq-100, IBEX 35, FTSE 100);
  * only when they give fewer than MIN_LOCAL matches does it ask Yahoo Finance,
  * which covers everything else (other exchanges, ETFs, funds, indices).
  *
@@ -51,7 +51,7 @@ const LOCAL_FIXES: Record<string, { name?: string; also?: string }> = {
 
 const MAX_RESULTS = 8;
 const MIN_LOCAL = 3;
-const EXCHANGE: Record<UniverseScreen, string> = { sp500: "US", nasdaq100: "US", ibex35: "Madrid" };
+const EXCHANGE: Record<UniverseScreen, string> = { sp500: "US", nasdaq100: "US", ibex35: "Madrid", ftse100: "London" };
 const YAHOO_TYPES = new Set(["EQUITY", "ETF", "MUTUALFUND", "INDEX"]);
 
 // v3: default export is the YahooFinance class

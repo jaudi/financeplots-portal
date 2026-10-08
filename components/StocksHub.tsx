@@ -61,7 +61,7 @@ export default function StocksHub() {
       <p className="text-sm text-gray-400 mt-8 text-center">
         Don&apos;t have a company in mind?{" "}
         <Link href="/tools/stock-screener" className="text-blue-400 hover:text-blue-300 font-semibold">
-          Filter the S&amp;P 500, Nasdaq-100 or IBEX 35 by measures you choose →
+          Filter the S&amp;P 500, Nasdaq-100, IBEX 35 or FTSE 100 by measures you choose →
         </Link>
       </p>
     </div>

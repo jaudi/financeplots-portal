@@ -78,7 +78,7 @@ function CompareControl({ ticker, vs, vsMissing }: { ticker: string; vs: string 
           <span className="font-mono text-orange-300">{vs}</span>
           <button type="button" onClick={() => go(null)} aria-label={`Stop comparing with ${vs}`} className="text-gray-500 hover:text-white px-1.5">×</button>
         </span>
-        {vsMissing && <span className="text-xs text-gray-500">No figures for {vs}: only S&amp;P 500, Nasdaq-100 and IBEX 35 companies have them.</span>}
+        {vsMissing && <span className="text-xs text-gray-500">No figures for {vs}: only S&amp;P 500, Nasdaq-100, IBEX 35 and FTSE 100 companies have them.</span>}
       </div>
     );
   }

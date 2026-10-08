@@ -1,5 +1,6 @@
 import { displayName } from "@/lib/company-names";
 import { METRIC_KEYS, type MetricKey } from "@/lib/stock-metrics";
+import ftse100Snapshot from "@/data/universe/universe-ftse100.json";
 import ibex35Snapshot from "@/data/universe/universe-ibex35.json";
 import nasdaq100Snapshot from "@/data/universe/universe-nasdaq100.json";
 import sp500Snapshot from "@/data/universe/universe-sp500.json";
@@ -11,7 +12,7 @@ import sp500Snapshot from "@/data/universe/universe-sp500.json";
 // allowlist on purpose: a new field the pipeline starts writing stays off the
 // site until someone decides it is data rather than an opinion.
 
-export const UNIVERSE_SCREENS = ["sp500", "nasdaq100", "ibex35"] as const;
+export const UNIVERSE_SCREENS = ["sp500", "nasdaq100", "ibex35", "ftse100"] as const;
 export type UniverseScreen = (typeof UNIVERSE_SCREENS)[number];
 
 export type UniverseCompany = {
@@ -43,10 +44,13 @@ type RawUniverse = { generated_at?: string; companies?: Record<string, unknown>[
 // the screener working meanwhile, frozen at the date they were copied. Once the
 // token is set the live files take over on their own. To refresh, copy
 // sp500-quality-screener/data/universe-*.json into data/universe/.
+// universe-ftse100.json is an empty placeholder until the pipeline's first
+// FTSE 100 run is copied in; the screener says so rather than showing 0 matches.
 const SNAPSHOTS: Record<UniverseScreen, RawUniverse> = {
   sp500: sp500Snapshot as unknown as RawUniverse,
   nasdaq100: nasdaq100Snapshot as unknown as RawUniverse,
   ibex35: ibex35Snapshot as unknown as RawUniverse,
+  ftse100: ftse100Snapshot as unknown as RawUniverse,
 };
 
 // The pipeline writes weekly. Revalidating hourly, with the hour in the URL as

@@ -1,19 +1,21 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { MOODS, formatDuration, formatEditionDate, type Edition, type Region } from "@/lib/observer";
+import { MOODS, REGION_NAMES, formatDuration, formatEditionDate, type Edition, type Region } from "@/lib/observer";
 
 // Neutral palette on purpose: an index falling is news, not a warning sign.
 // Text codes rather than flag emoji: Windows renders flag emoji as bare letters.
-const REGION_META: Record<Region, { name: string; code: string; accent: string }> = {
-  US:   { name: "United States", code: "US", accent: "border-blue-500/40" },
-  Euro: { name: "Euro area",     code: "EU", accent: "border-indigo-500/40" },
-  Asia: { name: "Asia",          code: "AS", accent: "border-cyan-500/40" },
+const REGION_META: Record<Region, { code: string; accent: string }> = {
+  US:   { code: "US", accent: "border-blue-500/40" },
+  UK:   { code: "UK", accent: "border-sky-500/40" },
+  Euro: { code: "EU", accent: "border-indigo-500/40" },
+  Asia: { code: "AS", accent: "border-cyan-500/40" },
 };
 
 // The figures shown on each region card: [source, id].
 const REGION_FIGURES: Record<Region, ["market" | "macro", string][]> = {
   US:   [["market", "^GSPC"], ["market", "^VIX"], ["macro", "DGS10"], ["macro", "CPIAUCSL"]],
+  UK:   [["market", "^FTSE"], ["macro", "BOERUKM"], ["macro", "ons:D7G7"], ["market", "GBPUSD=X"]],
   Euro: [["market", "^STOXX50E"], ["macro", "ECBDFR"], ["macro", "CP0000EZ19M086NEST"], ["market", "EURUSD=X"]],
   Asia: [["market", "^N225"], ["market", "^HSI"], ["market", "000001.SS"], ["market", "JPY=X"]],
 };
@@ -23,6 +25,10 @@ const SHORT_LABELS: Record<string, string> = {
   "^VIX": "VIX",
   DGS10: "US 10y yield",
   CPIAUCSL: "US inflation",
+  "^FTSE": "FTSE 100",
+  BOERUKM: "Bank Rate",
+  "ons:D7G7": "UK inflation",
+  "GBPUSD=X": "GBP/USD",
   "^STOXX50E": "Euro Stoxx 50",
   ECBDFR: "ECB rate",
   CP0000EZ19M086NEST: "Euro inflation",
@@ -131,8 +137,8 @@ function MoodMeter({ edition }: { edition: Edition }) {
 }
 
 function MarketTable({ edition }: { edition: Edition }) {
-  const groups: (Region | "Global")[] = ["US", "Euro", "Asia", "Global"];
-  const groupName = { US: "United States", Euro: "Europe", Asia: "Asia", Global: "Commodities & crypto" };
+  const groups: (Region | "Global")[] = ["US", "UK", "Euro", "Asia", "Global"];
+  const groupName = { US: "United States", UK: "United Kingdom", Euro: "Europe", Asia: "Asia", Global: "Commodities & crypto" };
   return (
     <section className="bg-[#0d1426] border border-gray-800 rounded-2xl p-6">
       <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">Markets this week</p>
@@ -204,14 +210,14 @@ export default function ObserverEdition({ edition }: { edition: Edition }) {
       </header>
 
       {/* Region cards */}
-      <div className="grid md:grid-cols-3 gap-4 mb-4">
+      <div className={`grid gap-4 mb-4 ${edition.regions.length > 3 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
         {edition.regions.map((r) => (
           <section key={r.region} className={`bg-[#0d1426] border ${REGION_META[r.region].accent} rounded-2xl p-5`}>
             <p className="flex items-center gap-2 text-gray-400 text-xs font-semibold mb-2">
               <span className="text-[10px] font-bold text-blue-300 bg-blue-500/10 border border-blue-500/20 rounded px-1.5 py-0.5">
                 {REGION_META[r.region].code}
               </span>
-              {REGION_META[r.region].name}
+              {REGION_NAMES[r.region]}
             </p>
             <h2 className="text-white font-bold leading-snug mb-2">{r.headline}</h2>
             <p className="text-gray-400 text-sm leading-relaxed mb-4">{r.summary}</p>

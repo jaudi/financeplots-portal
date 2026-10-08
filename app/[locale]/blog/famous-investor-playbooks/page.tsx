@@ -298,7 +298,7 @@ export default function ArticleFamousInvestorPlaybooks() {
           <p>
             Every &ldquo;what a screen looks for&rdquo; line above can be tested on the{" "}
             <Link href="/tools/stock-screener" className="text-blue-400 hover:text-blue-300">FinancePlots stock screener</Link>{" "}
-            against the S&amp;P 500, Nasdaq-100 or IBEX 35. It starts empty and suggests nothing: the links on each card
+            against the S&amp;P 500, Nasdaq-100, IBEX 35 or FTSE 100. It starts empty and suggests nothing: the links on each card
             above only highlight the measures that method looks at — you choose every limit, and the matches come
             back in alphabetical order. Then ask the question this article is really
             about — how long would I hold it, and what would make me sell?

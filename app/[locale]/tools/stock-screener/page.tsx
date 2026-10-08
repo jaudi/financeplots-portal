@@ -7,9 +7,9 @@ import { UNIVERSE_SCREENS, type UniverseScreen } from "@/lib/universe";
 import { parseMetricList } from "@/lib/stock-metrics";
 
 export const metadata: Metadata = {
-  title: "Stock Screener — Set Your Own Criteria for the S&P 500, Nasdaq-100 and IBEX 35",
+  title: "Stock Screener — Set Your Own Criteria for the S&P 500, Nasdaq-100, IBEX 35 and FTSE 100",
   description:
-    "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter every company in the S&P 500, Nasdaq-100 or IBEX 35. Nothing is ranked or picked for you. Free, no signup.",
+    "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter every company in the S&P 500, Nasdaq-100, IBEX 35 or FTSE 100. Nothing is ranked or picked for you. Free, no signup.",
   alternates: { canonical: "https://www.financeplots.com/tools/stock-screener" },
 };
 
@@ -36,7 +36,7 @@ export default async function StockScreenerPage({ searchParams }: Props) {
             "@type": "SoftwareApplication",
             name: "FinancePlots Stock Screener",
             description:
-              "Filter the S&P 500, Nasdaq-100 or IBEX 35 on criteria you choose — valuation, profitability, debt, growth and price trend.",
+              "Filter the S&P 500, Nasdaq-100, IBEX 35 or FTSE 100 on criteria you choose — valuation, profitability, debt, growth and price trend.",
             url: "https://www.financeplots.com/tools/stock-screener",
             applicationCategory: "FinanceApplication",
             operatingSystem: "Web",

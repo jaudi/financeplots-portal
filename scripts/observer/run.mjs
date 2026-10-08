@@ -171,11 +171,11 @@ const tools = [
         },
         regions: {
           type: "array",
-          description: "One card per region, in this order: US, Euro, Asia",
+          description: "One card per region, in this order: US, UK, Euro, Asia",
           items: {
             type: "object",
             properties: {
-              region: { type: "string", enum: ["US", "Euro", "Asia"] },
+              region: { type: "string", enum: ["US", "UK", "Euro", "Asia"] },
               headline: { type: "string", description: "Under 70 characters" },
               summary: { type: "string", description: "Two or three plain-English sentences" },
             },
@@ -234,13 +234,13 @@ const tools = [
 
 // ── 3. Prompt ────────────────────────────────────────────────────────────────
 
-const SYSTEM = `You write The Observer, the weekly macro edition on FinancePlots, a free finance site read by finance directors, CFOs and curious individuals. Explain what happened this week across the US, the euro area and Asia, and how markets felt about it.
+const SYSTEM = `You write The Observer, the weekly macro edition on FinancePlots, a free finance site read by finance directors, CFOs and curious individuals. Explain what happened this week across the US, the UK, the euro area and Asia, and how markets felt about it.
 
 How to work:
-- Start from the snapshot in the user message. Use search_news for the week's big stories: central banks, inflation and growth data (Japan, China and India prints are not in the snapshot), debt and elections, trade, wars and energy, and AI. For company news, use list_sec_earnings_filings and read_sec_earnings_release for the official figures.
+- Start from the snapshot in the user message. Use search_news for the week's big stories: central banks (the Fed, the Bank of England, the ECB, the Bank of Japan), inflation and growth data (Japan, China and India prints are not in the snapshot), debt and elections, trade, wars and energy, and AI. For company news, use list_sec_earnings_filings and read_sec_earnings_release for the official figures.
 - Run independent searches in the same turn. About 15 tool calls is enough.
 
-What to write: about 1,200 words (a six-minute read) with these ## sections: a one-paragraph opening; United States; Euro area; Asia; Debt and politics; AI and technology (one paragraph); Company news and results (one or two paragraphs); Market mood (VIX, Fear & Greed, credit spreads, Reddit chatter); What to watch next week.
+What to write: about 1,300 words (a six-minute read) with these ## sections: a one-paragraph opening; United States; United Kingdom (the FTSE 100, the pound, Bank Rate, gilts, inflation and jobs); Euro area; Asia; Debt and politics; AI and technology (one paragraph); Company news and results (one or two paragraphs); Market mood (VIX, Fear & Greed, credit spreads, Reddit chatter); What to watch next week.
 Plain English, short paragraphs. Explain a term like "yield curve" or "VIX" in a few words the first time. Say why things matter for businesses and households: borrowing costs, prices, jobs, currencies, energy.
 
 Rules:
@@ -268,7 +268,7 @@ ${JSON.stringify(snapshot, null, 1)}
 
 Notes on the snapshot:
 - markets: close is the latest close; change1w and change1m are % changes. For yields (^TNX) and the VIX these are % changes of the level, not point changes — compute point moves yourself if you mention them.
-- macro: YoY series are annual % changes computed from the index. "prior" is the previous reading.
+- macro: YoY series are annual % changes computed from the index; the UK's "ons:" series are the ONS's own published rates. "prior" is the previous reading.
 - fearAndGreed: CNN's 0-100 index (0 = extreme fear, 100 = extreme greed).
 - redditMostMentionedTickers: most-discussed tickers on Reddit investing communities, with mentions 24 hours earlier. Use it only as a gauge of retail attention (e.g. whether chatter is about broad index funds or speculative names); do not name the individual companies.`;
 
