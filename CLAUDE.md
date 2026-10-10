@@ -97,14 +97,9 @@ Test by hand with `npx @modelcontextprotocol/inspector` pointed at `http://local
 
 ## AI
 
-`app/api/macro/report/route.ts` calls the Claude API (`claude-sonnet-5`) to write the ~400-word commentary on `/tools/macro-dashboard`. Needs `ANTHROPIC_API_KEY`.
+The only Claude API call is the weekly Observer (`scripts/observer/run.mjs`), run by `.github/workflows/observer.yml` with the `ANTHROPIC_API_KEY` **GitHub Actions secret**. The live site makes no Claude calls: the macro dashboard's AI commentary (`/api/macro/report`) was removed on 2026-10-10 in favour of the Observer, so Vercel no longer needs `ANTHROPIC_API_KEY`.
 
-Two things to know before changing it:
-
-- **`unstable_cache` keys on the indicator values, not on the prompt or the model.** Change either and you must bump the key (`macro-report-vN`), or the old text stays cached until FRED next publishes and your change looks like it did nothing.
-- **Route-level `export const revalidate` does not stop the handler re-executing.** Route handlers are dynamic (`ƒ` in the build output); only the inner `fetch` calls are cached. Anything expensive and non-`fetch` — an LLM call — needs its own cache wrapper or it runs on every request.
-
-Length instructions to the model work better as a per-paragraph budget than a total word count.
+If an LLM call ever comes back to the site: route handlers are dynamic, so route-level `export const revalidate` does not stop the handler re-executing — wrap the call in its own `unstable_cache` (keyed on the prompt and model too, or a prompt change looks like it did nothing). Length instructions to the model work better as a per-paragraph budget than a total word count.
 
 ## Currencies and the 13-week cash flow
 
@@ -158,6 +153,5 @@ Vercel Web Analytics (page views, cookieless) plus custom events (2026-10-07) so
 Set in the Vercel dashboard, **Production scope included** — a variable scoped only to Preview will not reach the live site, and a variable only binds to builds created after it was saved.
 
 - `FRED_API_KEY`
-- `ANTHROPIC_API_KEY`
 - `RESEND_API_KEY` — contact form (`/api/subscribe`)
 - `SCREENER_REPO_TOKEN` — fine-grained GitHub token, read-only **Contents** on `jaudi/sp500-quality-screener` only. That repo is private. Without this, `lib/universe.ts` serves the snapshot committed in `data/universe/` (copied 2026-09-14 with the owner's approval — raw metrics only, no scores) — the screener keeps working, but its numbers are frozen at that date. Refresh the snapshot by copying the data repo's `data/universe-*.json` there.
