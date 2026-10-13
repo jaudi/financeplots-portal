@@ -667,6 +667,11 @@
   },
   "lending": {
     "title": "🏦 Lending Calculator",
+    "video": {
+      "title": "Watch: Sam pays the mortgage off 5 years early",
+      "subtitle": "A piggy bank, a very greedy vacuum — 46 seconds.",
+      "close": "Close"
+    },
     "tabLoan": "Loan Calculator",
     "tabMortgage": "Mortgage & Early Repayment",
     "sectionLoan": "Loan Parameters",
@@ -693,6 +698,12 @@
     "kpiMonthlySaving": "Monthly Saving",
     "kpiMonthlySavingSub": "Over {months} months",
     "kpiStrategy": "Strategy",
+    "kpiPaymentTerm": "{years}-year term",
+    "strategyInvest": "Invest",
+    "strategyRepay": "Repay Early",
+    "strategySub": "Savings ({savings}%) {sign} mortgage ({mortgage}%)",
+    "adviceInvest": "Invest instead of repaying early. Your savings rate ({savings}%) exceeds the mortgage rate ({mortgage}%). Invest the {monthly}/mo instead.",
+    "adviceRepay": "Pay off early. Your mortgage rate ({mortgage}%) exceeds what savings earn ({savings}%). Save {monthly}/mo for {months} months to save {saved} in interest.",
     "chartInterestPrincipal": "Interest vs Principal",
     "chartBalance": "Outstanding Balance",
     "chartPaymentBreakdown": "Payment Breakdown",

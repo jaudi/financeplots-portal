@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import VideoTeaser from "@/components/VideoTeaser";
 import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import LendingChat from "./LendingChat";
 import { buildSchedule } from "@/lib/calculators";
@@ -59,6 +60,7 @@ export default function LendingPage() {
   const [currency] = useCurrency();
   const t = useTranslations("lending");
   const tc = useTranslations("toolCommon");
+  const es = useLocale() === "es";
   const [tab, setTab] = useState<"loan" | "mortgage">("loan");
   const [lAmount, setLAmount] = useState(20000);
   const [lRate, setLRate] = useState(5.0);
@@ -179,13 +181,23 @@ export default function LendingPage() {
       <div className="pt-[133px] pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Tabs */}
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-wrap items-center gap-2 mb-6">
             {([{ id: "loan", label: t("tabLoan") }, { id: "mortgage", label: t("tabMortgage") }] as { id: "loan" | "mortgage"; label: string }[]).map(tb => (
               <button key={tb.id} onClick={() => setTab(tb.id)}
                 className={`px-5 py-2 rounded-lg text-sm font-semibold transition ${tab === tb.id ? "bg-blue-600 text-white" : "bg-[#0d1426] text-gray-400 border border-gray-800 hover:text-white"}`}>
                 {tb.label}
               </button>
             ))}
+            {/* Captions are burned in, so each locale has its own cut (made in marketing/mortgage-cartoon). */}
+            <VideoTeaser
+              src={es ? "/mortgage-cartoon-es.mp4" : "/mortgage-cartoon.mp4"}
+              poster={es ? "/mortgage-cartoon-es-poster.jpg" : "/mortgage-cartoon-poster.jpg"}
+              name={es ? "mortgage-cartoon-es" : "mortgage-cartoon"}
+              title={t("video.title")}
+              subtitle={t("video.subtitle")}
+              closeLabel={t("video.close")}
+              className="sm:ml-auto"
+            />
           </div>
 
           <div className="flex flex-col lg:flex-row gap-6">
@@ -231,10 +243,10 @@ export default function LendingPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-6">
               {/* KPIs */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <KpiCard label={t("kpiPayment")} value={`${currency}${fmtM(activeCalc.pmt)}`} sub={`${activeYears}-year term`} />
-                <KpiCard label={t("kpiTotal")} value={`${currency}${fmt(activeCalc.totalPaid)}`} sub={`Loan: ${currency}${fmt(activeAmount)}`} />
-                <KpiCard label={t("kpiInterest")} value={`${currency}${fmt(activeCalc.totalInterest)}`} sub={`${activeAmount > 0 ? ((activeCalc.totalInterest / activeAmount) * 100).toFixed(1) : 0}% of loan`} color="red" />
-                <KpiCard label={t("kpiRate")} value={`${activeRate}%`} sub="Annual" />
+                <KpiCard label={t("kpiPayment")} value={`${currency}${fmtM(activeCalc.pmt)}`} sub={t("kpiPaymentTerm", { years: activeYears })} />
+                <KpiCard label={t("kpiTotal")} value={`${currency}${fmt(activeCalc.totalPaid)}`} sub={`${t("kpiTotalSub")}: ${currency}${fmt(activeAmount)}`} />
+                <KpiCard label={t("kpiInterest")} value={`${currency}${fmt(activeCalc.totalInterest)}`} sub={`${activeAmount > 0 ? ((activeCalc.totalInterest / activeAmount) * 100).toFixed(1) : 0}${t("kpiInterestSub")}`} color="red" />
+                <KpiCard label={t("kpiRate")} value={`${activeRate}%`} sub={t("kpiRateSub")} />
               </div>
 
               {/* Early Repayment (mortgage only) */}
@@ -242,15 +254,15 @@ export default function LendingPage() {
                 <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
                   <h2 className="text-white font-bold mb-4">{t("earlyRepaymentTitle")}</h2>
                   <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
-                    <KpiCard label="Balance at Year -5" value={`${currency}${fmt(mCalc.earlyRepay.balAtCutoff)}`} sub={`After ${mYears - 5} years`} />
-                    <KpiCard label="Interest Saved" value={`${currency}${fmt(mCalc.earlyRepay.interestSaved)}`} sub="Last 5 years eliminated" color="green" />
-                    <KpiCard label="Monthly Saving" value={`${currency}${fmtM(mCalc.earlyRepay.monthly)}`} sub={`Over ${mCalc.earlyRepay.monthsToSave} months`} />
-                    <KpiCard label="Strategy" value={mCalc.earlyRepay.recommend ? "Invest" : "Repay Early"} sub={`Savings (${mSavRate}%) ${mCalc.earlyRepay.recommend ? ">" : "<"} mortgage (${mRate}%)`} color={mCalc.earlyRepay.recommend ? "green" : "blue"} />
+                    <KpiCard label={t("kpiBalance")} value={`${currency}${fmt(mCalc.earlyRepay.balAtCutoff)}`} sub={t("kpiBalanceSub", { years: mYears - 5 })} />
+                    <KpiCard label={t("kpiSaved")} value={`${currency}${fmt(mCalc.earlyRepay.interestSaved)}`} sub={t("kpiSavedSub")} color="green" />
+                    <KpiCard label={t("kpiMonthlySaving")} value={`${currency}${fmtM(mCalc.earlyRepay.monthly)}`} sub={t("kpiMonthlySavingSub", { months: mCalc.earlyRepay.monthsToSave })} />
+                    <KpiCard label={t("kpiStrategy")} value={mCalc.earlyRepay.recommend ? t("strategyInvest") : t("strategyRepay")} sub={t("strategySub", { savings: mSavRate, sign: mCalc.earlyRepay.recommend ? ">" : "<", mortgage: mRate })} color={mCalc.earlyRepay.recommend ? "green" : "blue"} />
                   </div>
                   <div className={`rounded-xl p-4 text-sm ${mCalc.earlyRepay.recommend ? "bg-green-900/20 border border-green-700/40 text-green-300" : "bg-blue-900/20 border border-blue-700/40 text-blue-300"}`}>
                     💡 {mCalc.earlyRepay.recommend
-                      ? `Invest instead of repaying early. Your savings rate (${mSavRate}%) exceeds the mortgage rate (${mRate}%). Invest the ${currency}${fmtM(mCalc.earlyRepay.monthly)}/mo instead.`
-                      : `Pay off early. Your mortgage rate (${mRate}%) exceeds what savings earn (${mSavRate}%). Save ${currency}${fmtM(mCalc.earlyRepay.monthly)}/mo for ${mCalc.earlyRepay.monthsToSave} months to save ${currency}${fmt(mCalc.earlyRepay.interestSaved)} in interest.`}
+                      ? t("adviceInvest", { savings: mSavRate, mortgage: mRate, monthly: `${currency}${fmtM(mCalc.earlyRepay.monthly)}` })
+                      : t("adviceRepay", { savings: mSavRate, mortgage: mRate, monthly: `${currency}${fmtM(mCalc.earlyRepay.monthly)}`, months: mCalc.earlyRepay.monthsToSave, saved: `${currency}${fmt(mCalc.earlyRepay.interestSaved)}` })}
                   </div>
                 </div>
               )}

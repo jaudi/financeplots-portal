@@ -1,8 +1,8 @@
-// Renders index.html to life-plan-cartoon.mp4: steps render(t) frame by frame
-// in headless Chromium, pipes the PNGs to ffmpeg, then muxes soundtrack.wav
-// (from music.py) if it exists.
+// Renders a cartoon (marketing/<name>/index.html) to MP4: steps its render(t)
+// frame by frame in headless Chromium, pipes the PNGs to ffmpeg, then muxes
+// the folder's soundtrack.wav (from its music.py) if it exists.
 //
-//   python3 music.py && node render.mjs [out.mp4] [--lang es] [--fps 30] [--from 0 --to 44] [--stills 1,7.2,25]
+//   node marketing/render.mjs <name> [out.mp4] [--lang es] [--fps 30] [--from 0 --to 44] [--stills 1,7.2,25]
 //
 // Needs ffmpeg on the PATH and Playwright (local or global install).
 import { execSync, spawn } from "node:child_process";
@@ -15,10 +15,11 @@ let chromium;
 try { ({ chromium } = await import("playwright")); }
 catch { ({ chromium } = createRequire(join(execSync("npm root -g").toString().trim(), "_"))("playwright")); }
 
-const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : def; };
-const out = args[0] && !args[0].startsWith("--") ? args[0] : join(here, "life-plan-cartoon.mp4");
+const here = join(dirname(fileURLToPath(import.meta.url)), args[0] ?? "");
+if (!args[0] || !existsSync(join(here, "index.html"))) { console.error("usage: node marketing/render.mjs <cartoon folder> [out.mp4] …"); process.exit(1); }
+const out = args[1] && !args[1].startsWith("--") ? args[1] : join(here, `${args[0]}.mp4`);
 const fps = Number(opt("fps", 30));
 const stills = opt("stills");
 const lang = opt("lang", "en");

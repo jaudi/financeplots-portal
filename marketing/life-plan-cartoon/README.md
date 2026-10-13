@@ -15,13 +15,14 @@ rendering gives the Spanish cut.
   of time.
 - `music.py` — synthesises the soundtrack (ukulele loop + cartoon effects,
   nothing to license) into `soundtrack.wav`.
-- `render.mjs` — steps `render(t)` in headless Chromium and pipes the frames to
-  ffmpeg, muxing the soundtrack. `--stills 1,7,25` writes single frames instead.
+- `../render.mjs` (shared by the cartoons) — steps `render(t)` in headless
+  Chromium and pipes the frames to ffmpeg, muxing the soundtrack.
+  `--stills 1,7,25` writes single frames instead.
 
 ```sh
 python3 music.py
-node render.mjs ../../public/life-plan-cartoon.mp4              # ~5 min each
-node render.mjs ../../public/life-plan-cartoon-es.mp4 --lang es
+node ../render.mjs life-plan-cartoon ../../public/life-plan-cartoon.mp4              # ~5 min each
+node ../render.mjs life-plan-cartoon ../../public/life-plan-cartoon-es.mp4 --lang es
 # posters: the "LOL NO" / "JAJA NO" frame
 ffmpeg -ss 7.15 -i ../../public/life-plan-cartoon.mp4 -frames:v 1 -q:v 4 ../../public/life-plan-cartoon-poster.jpg
 ```
