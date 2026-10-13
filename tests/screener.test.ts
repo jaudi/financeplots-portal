@@ -41,6 +41,16 @@ describe("screen_stocks (item 6)", () => {
     expect(Object.keys(r.companies[0])).toEqual(["ticker", "name", "sector", "roe", "operating_margin", "per"]);
   });
 
+  it("screens the FTSE 100, with London prices in pounds rather than pence", async () => {
+    const r = (await callTool("screen_stocks", { index: "ftse100", filters: [{ metric: "pe", min: 0 }], fields: ["precio_actual"], limit: 200 })).json;
+    expect(r.match_count).toBeGreaterThan(50);
+    const tickers = r.companies.map((c: { ticker: string }) => c.ticker);
+    expect(tickers).toEqual([...tickers].sort());
+    expect(tickers.every((t: string) => t.endsWith(".L"))).toBe(true);
+    const prices = r.companies.map((c: { precio_actual: number }) => c.precio_actual).filter((p: number) => p != null).sort((a: number, b: number) => a - b);
+    expect(prices[Math.floor(prices.length / 2)]).toBeLessThan(200); // a median in pence would be in the thousands
+  });
+
   it("still requires a criterion", async () => {
     const r = await callTool("screen_stocks", { index: "sp500", fields: ["roe"] });
     expect(r.isError).toBe(true);
@@ -50,7 +60,7 @@ describe("screen_stocks (item 6)", () => {
 describe("screener_metrics (item 6)", () => {
   it("lists the sectors of each index, with no N/A", async () => {
     const r = (await callTool("screener_metrics")).json;
-    for (const index of ["sp500", "nasdaq100", "ibex35"]) {
+    for (const index of ["sp500", "nasdaq100", "ftse100", "ibex35"]) {
       expect(r.sectors[index].length).toBeGreaterThan(5);
       expect(r.sectors[index]).not.toContain("N/A");
     }

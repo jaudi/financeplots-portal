@@ -19,6 +19,12 @@ describe("company page data", () => {
     expect((await getCompanyProfile("SAN.MC"))?.index).toBe("ibex35");
   });
 
+  it("finds FTSE 100 companies by their London ticker", async () => {
+    const azn = await getCompanyProfile("AZN.L");
+    expect(azn?.index).toBe("ftse100");
+    expect(azn?.memberOf).toEqual(["ftse100"]);
+  });
+
   it("shows the names people know, not the source's (Inditex came through as its ticker)", async () => {
     const [itx, ibe, tef] = await getCompanyProfiles(["ITX.MC", "IBE.MC", "TEF.MC"]);
     expect([itx?.company.nombre, ibe?.company.nombre, tef?.company.nombre]).toEqual(["Inditex", "Iberdrola", "Telefónica"]);

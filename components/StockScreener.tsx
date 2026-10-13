@@ -17,6 +17,7 @@ import type { UniverseCompany, UniverseData, UniverseScreen } from "@/lib/univer
 const INDICES: { key: UniverseScreen; label: string }[] = [
   { key: "sp500", label: "S&P 500" },
   { key: "nasdaq100", label: "Nasdaq-100" },
+  { key: "ftse100", label: "FTSE 100" },
   { key: "ibex35", label: "IBEX 35" },
 ];
 

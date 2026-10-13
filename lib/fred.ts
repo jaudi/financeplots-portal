@@ -1,6 +1,6 @@
 /**
  * Shared FRED (Federal Reserve Bank of St. Louis) data access.
- * Used by /api/macro (the dashboard cards) and /api/macro/report (the AI commentary).
+ * Used by /api/macro (the macro dashboard cards) and the MCP server.
  */
 
 interface FredObs {
