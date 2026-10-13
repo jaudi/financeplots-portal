@@ -128,7 +128,7 @@ If an LLM call ever comes back to the site: route handlers are dynamic, so route
 
 ## Explainer cartoons
 
-`marketing/` holds short vertical cartoons (1080×1920, burned-in captions, English and Spanish cuts) that star the same character, Sam: `life-plan-cartoon/` (on `/tools/life-plan`) and `mortgage-cartoon/` (on `/tools/lending`, the "Mortgage & Early Repayment" tab's save-a-pot-and-repay-early idea). Each is an `index.html` whose frames are a pure `render(t)`, rendered by `marketing/render.mjs` (headless Chromium → ffmpeg) with a soundtrack synthesised by its `music.py`; newer ones share `kit.js` and `sound.py`. The MP4s and posters live in `public/`, shown by `components/VideoTeaser.tsx`. Every figure on screen comes from the tool's own maths for the scenario noted at the top of the page — re-work them if the scenario changes, and re-render both languages.
+`marketing/` holds short vertical cartoons (1080×1920, burned-in captions, English and Spanish cuts) that star the same character, Sam: `life-plan-cartoon/` (on `/tools/life-plan`) and `mortgage-cartoon/` (on `/tools/lending`, the "Mortgage & Early Repayment" tab: invest monthly at an assumed return above the mortgage rate, and the pot clears the mortgage early; it says the return is an assumption). Each is an `index.html` whose frames are a pure `render(t)`, rendered by `marketing/render.mjs` (headless Chromium → ffmpeg) with a soundtrack synthesised by its `music.py`; newer ones share `kit.js` and `sound.py`. The MP4s and posters live in `public/`, shown by `components/VideoTeaser.tsx`. Every figure on screen comes from the tool's own maths for the scenario noted at the top of the page — re-work them if the scenario changes, and re-render both languages.
 
 ## Pitch deck
 
