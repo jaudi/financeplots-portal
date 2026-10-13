@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam's Life Plan</title>
+<!--
+  A 44-second vertical (1080×1920) cartoon for social media: Sam daydreams
+  about a home, a baby and retiring, then builds the plan in FinancePlots'
+  Life Plan. Every frame is a pure function of time — render(t) — so
+  render.mjs can step through it and hand the frames to ffmpeg.
+
+  The figures are the real output of the life_plan tool for: savings £20,000,
+  take-home £48,000 a year, living costs £20,000, rent £1,200 a month; a
+  £300,000 home in 2029 (10% deposit, £8,000 costs), a baby in 2031 (£9,000 a
+  year for 4 years, 20% pay drop that year), retiring in 2058 on £22,000.
+  Plan B buys in 2028 with the baby in 2030. Default rates (pay 3%,
+  inflation 2.5%, return 4%, house prices 3%).
+
+  Open the file in a browser to watch it; ?t=12.5 freezes on one moment.
+-->
+<style>
+  :root { --a: #3987e5; --b: #d95926; --navy: #0b1220; --ink: #0f172a; --muted: #64748b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #05080f; height: 100%; overflow: hidden; }
+  body { font-family: Inter, "Inter Display", system-ui, sans-serif; color: #fff; }
+  #fit { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #111a3a; }
+  .scene { position: absolute; inset: 0; will-change: opacity, transform; }
+  svg { display: block; }
+  svg * { transform-box: fill-box; transform-origin: center; }
+  .noorigin { transform-box: view-box; transform-origin: 0 0; }
+
+  /* captions */
+  #cap { position: absolute; left: 0; right: 0; top: 1712px; display: flex; justify-content: center; pointer-events: none; }
+  #capText { max-width: 960px; padding: 22px 38px; border-radius: 28px; background: rgba(5, 10, 25, .78);
+    font-weight: 800; font-size: 46px; line-height: 1.18; letter-spacing: -.5px; text-align: center; backdrop-filter: blur(6px); }
+  #capText b { color: #8ec5ff; }
+
+  /* browser */
+  #win { position: absolute; left: 50px; top: 110px; width: 980px; height: 1560px; border-radius: 40px; overflow: hidden;
+    background: #fff; box-shadow: 0 40px 120px rgba(0,0,0,.45); color: var(--ink); }
+  #bar { position: absolute; left: 0; right: 0; top: 0; height: 96px; background: #eef2f8; display: flex; align-items: center; gap: 14px; padding: 0 30px; z-index: 2; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; }
+  #url { margin-left: 18px; flex: 1; height: 56px; border-radius: 28px; background: #fff; display: flex; align-items: center; padding: 0 26px;
+    font-size: 28px; color: #334155; font-weight: 500; white-space: nowrap; overflow: hidden; }
+  #url b { color: var(--ink); }
+  #view { position: absolute; left: 0; right: 0; top: 96px; bottom: 0; overflow: hidden; }
+  #content { position: absolute; left: 0; top: 0; width: 980px; height: 2100px; }
+  .abs { position: absolute; }
+  .eyebrow { left: 52px; top: 40px; font-size: 24px; font-weight: 800; letter-spacing: 3px; color: var(--a); }
+  .h1 { left: 52px; top: 74px; font-size: 54px; font-weight: 800; letter-spacing: -1.5px; }
+  .intro { left: 52px; top: 152px; width: 860px; font-size: 27px; line-height: 1.4; color: var(--muted); }
+  .sec { left: 52px; font-size: 34px; font-weight: 800; letter-spacing: -.5px; }
+  .row { left: 52px; width: 876px; height: 96px; display: flex; align-items: center; justify-content: space-between; }
+  .lab { font-size: 29px; font-weight: 600; color: #334155; }
+  .inp { width: 420px; height: 84px; border: 3px solid #cbd5e1; border-radius: 20px; display: flex; align-items: center; padding: 0 24px;
+    font-size: 36px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .inp.on { border-color: var(--a); box-shadow: 0 0 0 6px rgba(57,135,229,.18); }
+  .caret { display: inline-block; width: 3px; height: 40px; background: var(--a); margin-left: 3px; }
+  .btn { height: 64px; border-radius: 32px; padding: 0 28px; display: flex; align-items: center; font-size: 26px; font-weight: 700; white-space: nowrap; }
+  .evt { left: 52px; width: 876px; height: 96px; border-radius: 22px; background: #f4f7fb; border: 2px solid #e2e8f0; display: flex; align-items: center; gap: 22px; padding: 0 24px; }
+  .evt .emo { font-size: 48px; width: 60px; text-align: center; }
+  .evt .yr { background: var(--ink); color: #fff; border-radius: 14px; padding: 6px 14px; font-size: 26px; font-weight: 800; }
+  .evt .nm { font-size: 31px; font-weight: 700; flex: 1; }
+  .evt .amt { font-size: 28px; font-weight: 600; color: var(--muted); }
+  .chip { height: 84px; border-radius: 22px; background: #f4f7fb; border: 2px solid #e2e8f0; display: flex; align-items: center; gap: 14px; padding: 0 22px;
+    font-size: 26px; font-weight: 600; color: #334155; white-space: nowrap; }
+  .chip .emo { font-size: 36px; }
+  .chip b { color: var(--ink); font-weight: 800; }
+  .cmp { left: 52px; width: 876px; height: 80px; border-radius: 20px; background: #f4f7fb; border: 2px solid #e2e8f0; display: flex; align-items: center; padding: 0 26px;
+    font-size: 27px; font-weight: 600; color: #334155; }
+  .cmp .k { flex: 1; }
+  .cmp .va { color: var(--a); font-weight: 800; margin-left: 22px; }
+  .cmp .vb { color: var(--b); font-weight: 800; margin-left: 22px; }
+  .legend { display: flex; gap: 30px; font-size: 25px; font-weight: 700; color: #334155; }
+  .legend i { display: inline-block; width: 34px; height: 8px; border-radius: 4px; vertical-align: middle; margin-right: 10px; }
+
+  /* end card */
+  #end { background: radial-gradient(800px 700px at 30% 20%, #16306a 0%, transparent 70%), radial-gradient(800px 800px at 80% 90%, #2b1a52 0%, transparent 70%), #070b16; }
+  .wm { font-weight: 800; letter-spacing: -2px; }
+  .wm span { color: #4f8ff7; }
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+
+  <!-- 1–2 · Sam's room at night, then the daydream -->
+  <div class="scene" id="room"><svg id="roomSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="notif" style="left:60px;right:60px;top:70px;border-radius:36px;background:rgba(245,247,252,.96);color:#0f172a;padding:26px 30px;display:flex;gap:24px;align-items:center;box-shadow:0 24px 70px rgba(0,0,0,.4)">
+      <div style="width:88px;height:88px;border-radius:22px;background:#34c759;display:flex;align-items:center;justify-content:center;font-size:52px;flex:none">💬</div>
+      <div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:30px;font-weight:800">Mum ❤️<span style="color:#94a3b8;font-weight:600;font-size:26px">now</span></div>
+        <div style="font-size:34px;font-weight:600;margin-top:6px;line-height:1.25">So… when are you buying a house? 🏠👀</div></div></div>
+  </div>
+
+  <!-- 3–5 · FinancePlots Life Plan -->
+  <div class="scene" id="app" style="background: linear-gradient(160deg, #2a62d8 0%, #3987e5 45%, #6aa8f0 100%);">
+    <svg class="abs" style="left:0;top:0" width="1080" height="1920" viewBox="0 0 1080 1920" id="appBg"></svg>
+    <div id="win">
+      <div id="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+        <div id="url">🔒&nbsp; <b>financeplots.com</b>/tools/life-plan</div></div>
+      <div id="view"><div id="content">
+        <div class="abs eyebrow">LIFE PLAN</div>
+        <div class="abs h1">Can we afford it — and when?</div>
+        <div class="abs intro">Add what you have today and the big things ahead. See your money year by year.</div>
+
+        <div class="abs sec" style="top:236px">Today</div>
+        <div class="abs row" style="top:290px"><span class="lab">Savings</span><span class="inp" id="f0"></span></div>
+        <div class="abs row" style="top:400px"><span class="lab">Take-home pay, per year</span><span class="inp" id="f1"></span></div>
+        <div class="abs row" style="top:510px"><span class="lab">Rent, per month</span><span class="inp" id="f2"></span></div>
+
+        <div class="abs sec" style="top:652px">Life events</div>
+        <div class="abs btn" id="addBtn" style="left:740px;top:640px;background:var(--a);color:#fff">+ Add</div>
+        <div class="abs evt" id="e0" style="top:720px"><span class="emo">🏠</span><span class="yr">2029</span><span class="nm">Our first home</span><span class="amt">£300,000</span></div>
+        <div class="abs evt" id="e1" style="top:830px"><span class="emo">👶</span><span class="yr">2031</span><span class="nm">A baby</span><span class="amt">£9,000 a year</span></div>
+        <div class="abs evt" id="e2" style="top:940px"><span class="emo">🌅</span><span class="yr">2058</span><span class="nm">Retire</span><span class="amt">£22,000 pension</span></div>
+
+        <div class="abs sec" style="top:1078px">Net worth <span style="color:var(--muted);font-weight:600;font-size:26px">· today's money</span></div>
+        <div class="abs btn" id="bBtn" style="left:556px;top:1066px;border:3px solid var(--b);color:var(--b)">+ Compare with a Plan B</div>
+        <svg class="abs" id="chart" style="left:40px;top:1140px" width="900" height="470" viewBox="0 0 900 470"></svg>
+        <div class="abs legend" id="legend" style="left:130px;top:1612px"><span><i style="background:var(--a)"></i>Plan A · buy in 2029</span><span id="legB"><i style="background:var(--b)"></i>Plan B · buy in 2028</span></div>
+
+        <div class="abs chip" id="m0" style="left:52px;top:1672px;width:430px"><span class="emo">💷</span>£100k net worth <b>2031</b></div>
+        <div class="abs chip" id="m1" style="left:498px;top:1672px;width:430px"><span class="emo">🔑</span>Mortgage paid off <b>2053</b></div>
+        <div class="abs chip" id="m2" style="left:52px;top:1772px;width:430px"><span class="emo">🕊️</span>Financially free <b>2054</b></div>
+        <div class="abs chip" id="m3" style="left:498px;top:1772px;width:430px"><span class="emo">⭐</span>£1M net worth <b>2057</b></div>
+
+        <div class="abs cmp" id="c0" style="top:1672px"><span class="k">Lowest savings</span><span class="va">A £39,243</span><span class="vb">B £22,527</span></div>
+        <div class="abs cmp" id="c1" style="top:1764px"><span class="k">Mortgage paid off</span><span class="va">A 2053</span><span class="vb">B 2052</span></div>
+        <div class="abs cmp" id="c2" style="top:1856px"><span class="k">Net worth in 2060, today's money</span><span class="vb">B ▲ £16,822</span></div>
+      </div></div>
+    </div>
+    <div class="abs" id="reacts" style="left:0;top:0;width:1080px;height:1920px;pointer-events:none"></div>
+    <svg class="abs" id="cursor" style="left:0;top:0;pointer-events:none" width="80" height="90" viewBox="0 0 80 90">
+      <circle id="ripple" cx="10" cy="8" r="30" fill="none" stroke="#3987e5" stroke-width="5" opacity="0"/>
+      <path d="M8 4 L8 66 L24 52 L36 80 L48 75 L36 48 L58 48 Z" fill="#0f172a" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- 6 · the plan, lived -->
+  <div class="scene" id="future"><svg id="futSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="yearPill" style="left:0;right:0;top:120px;display:flex;justify-content:center">
+      <div style="background:rgba(255,255,255,.92);color:#0f172a;border-radius:40px;padding:16px 40px;font-size:52px;font-weight:800;letter-spacing:-1px;box-shadow:0 12px 40px rgba(0,0,0,.15)">
+        📅 <span id="yearNum">2026</span></div></div>
+  </div>
+
+  <!-- 7 · end card -->
+  <div class="scene" id="end">
+    <svg class="abs" id="endSvg" style="left:0;top:0" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="endWm" style="left:0;right:0;top:330px;text-align:center"><span class="wm" style="font-size:96px">Finance<span>Plots</span></span></div>
+    <div class="abs" id="endPill" style="left:0;right:0;top:500px;display:flex;justify-content:center">
+      <span style="border:2px solid rgba(79,143,247,.6);background:rgba(79,143,247,.14);color:#8ec5ff;border-radius:30px;padding:10px 28px;font-size:30px;font-weight:800;letter-spacing:3px">LIFE PLAN</span></div>
+    <div class="abs" id="endH" style="left:0;right:0;top:640px;text-align:center;font-size:96px;font-weight:800;letter-spacing:-3px;line-height:1.05">Design your<br>future.</div>
+    <div class="abs" id="endSub" style="left:0;right:0;top:900px;text-align:center;font-size:38px;font-weight:600;color:#b9c6dd">A home · a family · retirement<br>— year by year, Plan A vs Plan B.</div>
+    <div class="abs" id="endTags" style="left:0;right:0;top:1080px;display:flex;justify-content:center;gap:18px">
+      <span style="background:rgba(255,255,255,.08);border-radius:24px;padding:12px 24px;font-size:30px;font-weight:700">100% free</span>
+      <span style="background:rgba(255,255,255,.08);border-radius:24px;padding:12px 24px;font-size:30px;font-weight:700">No signup</span>
+      <span style="background:rgba(255,255,255,.08);border-radius:24px;padding:12px 24px;font-size:30px;font-weight:700">Nothing stored</span></div>
+    <div class="abs" id="endUrl" style="left:0;right:0;top:1250px;text-align:center;font-size:52px;font-weight:800;letter-spacing:-1px">financeplots.com<span style="color:#4f8ff7">/tools/life-plan</span></div>
+    <div class="abs" id="endBtn" style="left:0;right:0;top:1380px;display:flex;justify-content:center">
+      <span id="endBtnIn" style="background:#3b82f6;border-radius:60px;padding:30px 70px;font-size:50px;font-weight:800;box-shadow:0 0 60px rgba(59,130,246,.6)">Plan yours →</span></div>
+    <div class="abs" id="endCta" style="left:0;right:0;top:1580px;text-align:center;font-size:40px;font-weight:700;color:#fff">Tag someone who needs a <span style="color:#ff9a6b">Plan B</span> 😅👇</div>
+    <div class="abs" id="endFine" style="left:80px;right:80px;top:1780px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example. Every growth rate is an assumption you set — a planning sketch, not a forecast or advice.</div>
+  </div>
+
+  <div id="cap"><div id="capText"></div></div>
+</div></div>
+
+<script>
+// ---------- timing helpers ----------
+const DURATION = 44;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const p = (t, a, b) => clamp((t - a) / (b - a));
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c1 = 1.9, c3 = c1 + 1; return x <= 0 ? 0 : 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const pop = (t, a, d = .5) => back(p(t, a, a + d));
+const lerp = (a, b, x) => a + (b - a) * x;
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+/** Fade in at a, out at b (seconds), with f-second ramps. */
+const win = (t, a, b, f = .3) => Math.min(p(t, a, a + f), 1 - p(t, b - f, b));
+function css(el, o, tf) { if (o !== undefined) el.style.opacity = o; if (tf !== undefined) el.style.transform = tf; }
+/** Linear keyframes [[t, value], …] with easing between them. */
+function keys(t, ks, ease = eio) {
+  if (t <= ks[0][0]) return ks[0][1];
+  for (let i = 1; i < ks.length; i++) if (t <= ks[i][0]) {
+    const [t0, v0] = ks[i - 1], [t1, v1] = ks[i], x = ease((t - t0) / (t1 - t0));
+    return Array.isArray(v0) ? v0.map((v, j) => lerp(v, v1[j], x)) : lerp(v0, v1, x);
+  }
+  return ks[ks.length - 1][1];
+}
+
+// ---------- palette ----------
+const SKIN = "#e3a87c", SKIN_D = "#c98a5f", HAIR = "#3a2216", HOODIE = "#ff7a59", HOODIE_D = "#e3603f";
+
+// ---------- shared character parts ----------
+/** A head at (cx, cy) radius r; parts get ids prefixed with `k`. */
+function head(k, cx, cy, r) {
+  const curls = [];
+  for (let i = 0; i <= 12; i++) {
+    const a = Math.PI * (1.02 + i * .96 / 12);
+    curls.push(`<circle cx="${cx + Math.cos(a) * r * .9}" cy="${cy + Math.sin(a) * r * .86 - r * .06}" r="${r * .3}" fill="${HAIR}"/>`);
+  }
+  return `<g id="${k}Head">
+    <rect x="${cx - r * .28}" y="${cy + r * .7}" width="${r * .56}" height="${r * .55}" rx="${r * .2}" fill="${SKIN_D}"/>
+    <circle cx="${cx - r * .98}" cy="${cy + r * .05}" r="${r * .2}" fill="${SKIN}"/><circle cx="${cx + r * .98}" cy="${cy + r * .05}" r="${r * .2}" fill="${SKIN}"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r * 1.02}" fill="${SKIN}"/>
+    ${curls.join("")}
+    <circle cx="${cx - r * .62}" cy="${cy - r * .5}" r="${r * .34}" fill="${HAIR}"/><circle cx="${cx + r * .55}" cy="${cy - r * .55}" r="${r * .36}" fill="${HAIR}"/>
+    <ellipse cx="${cx - r * .55}" cy="${cy + r * .32}" rx="${r * .17}" ry="${r * .1}" fill="#ff8a80" opacity=".55"/>
+    <ellipse cx="${cx + r * .55}" cy="${cy + r * .32}" rx="${r * .17}" ry="${r * .1}" fill="#ff8a80" opacity=".55"/>
+    <path id="${k}BrowL" d="M${cx - r * .52} ${cy - r * .27} q${r * .17} ${-r * .12} ${r * .34} 0" stroke="${HAIR}" stroke-width="${r * .08}" fill="none" stroke-linecap="round"/>
+    <path id="${k}BrowR" d="M${cx + r * .18} ${cy - r * .27} q${r * .17} ${-r * .12} ${r * .34} 0" stroke="${HAIR}" stroke-width="${r * .08}" fill="none" stroke-linecap="round"/>
+    <g id="${k}Eyes">
+      <ellipse cx="${cx - r * .35}" cy="${cy + r * .02}" rx="${r * .17}" ry="${r * .21}" fill="#fff"/>
+      <ellipse cx="${cx + r * .35}" cy="${cy + r * .02}" rx="${r * .17}" ry="${r * .21}" fill="#fff"/>
+      <g id="${k}Pupils"><circle cx="${cx - r * .35}" cy="${cy + r * .04}" r="${r * .1}" fill="#1b1b2f"/><circle cx="${cx + r * .35}" cy="${cy + r * .04}" r="${r * .1}" fill="#1b1b2f"/>
+        <circle cx="${cx - r * .31}" cy="${cy}" r="${r * .035}" fill="#fff"/><circle cx="${cx + r * .39}" cy="${cy}" r="${r * .035}" fill="#fff"/></g>
+    </g>
+    <path id="${k}Mouth" d="" stroke="#7a2e1f" stroke-width="${r * .07}" fill="#7a2e1f" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>`;
+}
+/** Mouth shapes: smile 0 → 1 (grin), or "o". */
+function mouth(cx, cy, r, kind, amt = 1) {
+  const y = cy + r * .5, w = r * .3;
+  if (kind === "o") return `M${cx} ${y - r * .08} a${r * .09 * amt} ${r * .12 * amt} 0 1 0 0.1 0 z`;
+  const d = r * (.06 + .2 * amt);
+  return `M${cx - w} ${y - r * .04} Q${cx} ${y + d} ${cx + w} ${y - r * .04} Q${cx} ${y + d * .35} ${cx - w} ${y - r * .04} z`;
+}
+
+// ---------- room ----------
+const ROOM = { cx: 540, cy: 900, r: 112 };
+function buildRoom() {
+  const s = $("roomSvg");
+  const stars = Array.from({ length: 26 }, (_, i) => `<circle class="star" cx="${110 + (i * 137) % 340}" cy="${290 + (i * 89) % 220}" r="${1.5 + (i % 3)}" fill="#fff"/>`).join("");
+  const city = [[100, 560], [150, 520], [205, 590], [250, 480], [310, 540], [360, 600], [410, 500]].map(([x, y], i) =>
+    `<rect x="${x}" y="${y}" width="${i % 2 ? 60 : 48}" height="${720 - y}" fill="#1a2550"/>` +
+    Array.from({ length: 6 }, (_, j) => `<rect class="lit" x="${x + 10 + (j % 2) * 20}" y="${y + 20 + Math.floor(j / 2) * 40}" width="10" height="14" fill="#ffd27a"/>`).join("")).join("");
+  s.innerHTML = `
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#25306a"/><stop offset="1" stop-color="#1a2150"/></linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1438"/><stop offset="1" stop-color="#3a3f8f"/></linearGradient>
+    <radialGradient id="lampGlow"><stop offset="0" stop-color="#ffd48a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd48a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="screenGlow"><stop offset="0" stop-color="#8ec5ff" stop-opacity=".75"/><stop offset="1" stop-color="#8ec5ff" stop-opacity="0"/></radialGradient>
+    <clipPath id="winClip"><rect x="90" y="260" width="380" height="460" rx="14"/></clipPath>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity=".25"/></filter>
+  </defs>
+  <g id="roomCam">
+    <rect width="1080" height="1920" fill="url(#wall)"/>
+    <rect y="1500" width="1080" height="420" fill="#141a40"/>
+    <rect x="0" y="1500" width="1080" height="10" fill="#0e1330"/>
+    <!-- window -->
+    <rect x="76" y="246" width="408" height="488" rx="22" fill="#e9edf8"/>
+    <g clip-path="url(#winClip)"><rect x="90" y="260" width="380" height="460" fill="url(#sky)"/>${stars}
+      <circle cx="380" cy="350" r="46" fill="#fff6d8"/><circle cx="400" cy="336" r="40" fill="#141c48" opacity=".9"/>${city}</g>
+    <rect x="274" y="260" width="12" height="460" fill="#e9edf8"/><rect x="90" y="484" width="380" height="12" fill="#e9edf8"/>
+    <!-- picture & shelf -->
+    <rect x="650" y="330" width="250" height="190" rx="12" fill="#f5c26b"/><rect x="666" y="346" width="218" height="158" rx="6" fill="#ffe7b3"/>
+    <path d="M680 490 L740 410 L780 455 L815 420 L870 490 Z" fill="#7fb77e"/><circle cx="836" cy="384" r="18" fill="#ff9f68"/>
+    <rect x="640" y="640" width="320" height="16" rx="8" fill="#a26b45"/>
+    <rect x="660" y="560" width="34" height="80" rx="4" fill="#5eb1ff"/><rect x="698" y="575" width="30" height="65" rx="4" fill="#ffcf5a"/><rect x="732" y="568" width="26" height="72" rx="4" fill="#ff7a59"/>
+    <path d="M880 640 q-30 -70 0 -110 q30 40 0 110 M880 640 q-55 -40 -60 -90 M880 640 q50 -30 60 -80" stroke="#4caf7a" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <rect x="855" y="610" width="52" height="34" rx="8" fill="#d9825b"/>
+    <!-- chair -->
+    <rect x="370" y="980" width="340" height="320" rx="60" fill="#2e3a78"/>
+    <!-- Sam -->
+    <g id="samRoom">
+      <path d="M408 1090 Q540 1040 672 1090 L700 1320 L380 1320 Z" fill="${HOODIE}"/>
+      <path d="M470 1062 Q540 1110 610 1062" stroke="${HOODIE_D}" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M520 1110 L516 1180 M560 1110 L564 1180" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+      ${head("r", ROOM.cx, ROOM.cy, ROOM.r)}
+      <path id="armL" d="" stroke="${HOODIE}" stroke-width="56" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="handL" r="30" fill="${SKIN}"/>
+      <path id="armR" d="" stroke="${HOODIE}" stroke-width="56" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="handR" r="30" fill="${SKIN}"/>
+      <ellipse id="faceGlow" cx="540" cy="930" rx="200" ry="170" fill="url(#screenGlow)" opacity="0"/>
+    </g>
+    <!-- desk -->
+    <ellipse cx="200" cy="1150" rx="230" ry="200" fill="url(#lampGlow)" id="lampGlowEl"/>
+    <rect x="90" y="1270" width="900" height="40" rx="12" fill="#b07a4f"/><rect x="110" y="1310" width="860" height="22" fill="#8a5a37"/>
+    <rect x="140" y="1330" width="28" height="350" fill="#8a5a37"/><rect x="912" y="1330" width="28" height="350" fill="#8a5a37"/>
+    <!-- lamp -->
+    <ellipse cx="200" cy="1266" rx="60" ry="12" fill="#2b2b3d"/>
+    <path d="M200 1262 L170 1130 L230 1060" stroke="#2b2b3d" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M200 1030 L290 1050 L262 1118 Z" fill="#ffcf5a"/>
+    <!-- mug -->
+    <rect x="800" y="1196" width="70" height="76" rx="14" fill="#5eb1ff"/><path d="M870 1214 q30 0 30 24 q0 24 -30 24" stroke="#5eb1ff" stroke-width="12" fill="none"/>
+    <path id="steam1" d="" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".55"/>
+    <path id="steam2" d="" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".45"/>
+    <!-- laptop -->
+    <rect x="340" y="1256" width="400" height="16" rx="6" fill="#94a3b8"/>
+    <g id="lid"><rect x="350" y="1056" width="380" height="204" rx="16" fill="#d5dde8"/><circle cx="540" cy="1158" r="26" fill="#3987e5"/>
+      <path d="M528 1170 L536 1150 L546 1162 L556 1142" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <!-- thought chain & cloud -->
+    <circle id="tc0" cx="640" cy="760" r="16" fill="#fff"/><circle id="tc1" cx="690" cy="705" r="24" fill="#fff"/><circle id="tc2" cx="755" cy="640" r="32" fill="#fff"/>
+  </g>
+  <rect id="dim" width="1080" height="1920" fill="#060a1f" opacity="0"/>
+  <g id="cloud" filter="url(#soft)">
+    ${[[540, 470, 300], [300, 520, 190], [790, 520, 190], [400, 330, 170], [690, 330, 180], [250, 700, 140], [830, 700, 140], [540, 780, 220], [360, 800, 170], [720, 800, 170], [290, 870, 130], [800, 870, 140]]
+      .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`).join("")}
+  </g>
+  <g id="dreams">
+    <g id="dMansion">${mansionArt(540, 470)}<text x="540" y="660" font-size="40" font-weight="800" text-anchor="middle" fill="#1e293b">A home 🏰✨</text></g>
+    <g id="stamp"><rect x="330" y="380" width="420" height="140" rx="22" fill="none" stroke="#e11d48" stroke-width="14"/>
+      <text x="540" y="482" font-size="88" font-weight="900" text-anchor="middle" fill="#e11d48">LOL NO</text></g>
+    <g id="dHouse">${houseArt(540, 440, 1)}<text x="540" y="618" font-size="40" font-weight="800" text-anchor="middle" fill="#1e293b">A normal home 😅</text></g>
+    <g id="dBaby">${babyArt(290, 740)}<text x="290" y="905" font-size="40" font-weight="800" text-anchor="middle" fill="#1e293b">A family</text></g>
+    <g id="dBeach">${beachArt(790, 730)}<text x="790" y="905" font-size="40" font-weight="800" text-anchor="middle" fill="#1e293b">By the sea 🌴</text></g>
+  </g>
+  <g id="qs" font-weight="900" text-anchor="middle">
+    ${[[330, 1050, 110, "#ffcf5a"], [860, 980, 140, "#ff7a59"], [900, 760, 100, "#ffcf5a"], [740, 1130, 80, "#8ec5ff"]]
+      .map(([x, y, sz, c], i) => `<text class="q" x="${x}" y="${y}" font-size="${sz}" fill="${c}" stroke="#0b1220" stroke-width="6" paint-order="stroke">?</text>`).join("")}
+    <g id="calc"><g transform="translate(50 1010) rotate(-10)" class="noorigin">
+      <rect x="0" y="0" width="190" height="260" rx="24" fill="#334155"/><rect x="18" y="20" width="154" height="62" rx="8" fill="#b9f5c9"/>
+      <text x="160" y="66" font-size="38" font-weight="900" text-anchor="end" fill="#e11d48" font-family="DejaVu Sans Mono, monospace">ERROR</text>
+      ${Array.from({ length: 12 }, (_, i) => `<rect x="${22 + (i % 3) * 52}" y="${100 + Math.floor(i / 3) * 38}" width="42" height="28" rx="7" fill="${i % 3 === 2 ? "#ff7a59" : "#64748b"}"/>`).join("")}</g>
+      ${[0, 1, 2, 3].map(i => `<circle class="csmoke" cx="0" cy="0" r="${22 + i * 6}" fill="#cbd5e1"/>`).join("")}</g>
+    <g id="qBub1"><rect x="300" y="1090" width="400" height="92" rx="46" fill="#fff"/><text x="500" y="1150" font-size="38" fill="#0f172a">Can I afford it?</text></g>
+    <g id="qBub2"><rect x="640" y="880" width="300" height="92" rx="46" fill="#fff"/><text x="790" y="940" font-size="38" fill="#0f172a">When?</text></g>
+  </g>`;
+}
+function houseArt(cx, cy, s) {
+  return `<g transform="translate(${cx} ${cy}) scale(${s})" class="noorigin">
+    <ellipse cx="0" cy="118" rx="200" ry="26" fill="#9fdc8f"/>
+    <rect x="-130" y="-20" width="260" height="140" rx="10" fill="#ffe2b8"/>
+    <path d="M-160 -10 L0 -130 L160 -10 Z" fill="#ff7a59" stroke="#e3603f" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="70" y="-120" width="34" height="70" fill="#c46a4f"/>
+    <circle class="smoke" cx="87" cy="-140" r="14" fill="#e2e8f0"/><circle class="smoke" cx="100" cy="-170" r="18" fill="#e2e8f0"/>
+    <rect x="-28" y="40" width="56" height="80" rx="8" fill="#5eb1ff"/><circle cx="16" cy="82" r="5" fill="#fff"/>
+    <rect x="-108" y="10" width="58" height="52" rx="6" fill="#8ec5ff"/><rect x="50" y="10" width="58" height="52" rx="6" fill="#8ec5ff"/>
+    <path d="M-79 10 v52 M-108 36 h58 M79 10 v52 M50 36 h58" stroke="#fff" stroke-width="5"/>
+    <circle cx="-175" cy="60" r="36" fill="#4caf7a"/><rect x="-180" y="80" width="10" height="38" fill="#8a5a37"/>
+  </g>`;
+}
+function mansionArt(cx, cy) {
+  return `<g transform="translate(${cx} ${cy})" class="noorigin">
+    <ellipse cx="0" cy="128" rx="260" ry="26" fill="#9fdc8f"/>
+    <rect x="-250" y="-10" width="110" height="130" fill="#f1e4ff"/><rect x="140" y="-10" width="110" height="130" fill="#f1e4ff"/>
+    <rect x="-150" y="-60" width="300" height="180" fill="#fff4d6"/>
+    <path d="M-170 -56 L0 -150 L170 -56 Z" fill="#ffcf5a" stroke="#e8a92a" stroke-width="8" stroke-linejoin="round"/>
+    ${[-120, -60, 0, 60, 120].map(x => `<rect x="${x - 10}" y="-50" width="20" height="170" fill="#fff"/>`).join("")}
+    <rect x="-24" y="56" width="48" height="64" rx="24" fill="#a26b45"/>
+    <text x="0" y="-80" font-size="44" text-anchor="middle">👑</text>
+    <rect x="-240" y="120" width="160" height="26" rx="13" fill="#5eb1ff"/>
+    <g id="heli"><ellipse cx="170" cy="-190" rx="46" ry="26" fill="#3987e5"/><path d="M120 -190 L60 -196" stroke="#3987e5" stroke-width="10" stroke-linecap="round"/>
+      <ellipse cx="184" cy="-196" rx="16" ry="12" fill="#bfe3ff"/><path d="M150 -164 L196 -164" stroke="#334155" stroke-width="6"/>
+      <rect id="rotor" x="100" y="-226" width="140" height="8" rx="4" fill="#334155"/></g>
+  </g>`;
+}
+function babyArt(cx, cy) {
+  return `<g transform="translate(${cx} ${cy})" class="noorigin">
+    <ellipse cx="0" cy="96" rx="96" ry="54" fill="#bfe3ff"/>
+    <circle cx="-70" cy="60" r="22" fill="${SKIN}"/><circle cx="70" cy="60" r="22" fill="${SKIN}"/>
+    <circle cx="0" cy="0" r="80" fill="${SKIN}"/>
+    <path d="M-6 -78 q20 -30 34 -6 q-18 -6 -20 10" fill="${HAIR}"/>
+    <path d="M-36 -2 q12 12 24 0 M12 -2 q12 12 24 0" stroke="#1b1b2f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <ellipse cx="-44" cy="24" rx="14" ry="8" fill="#ff8a80" opacity=".6"/><ellipse cx="44" cy="24" rx="14" ry="8" fill="#ff8a80" opacity=".6"/>
+    <path d="M-14 32 q14 14 28 0" stroke="#7a2e1f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <g id="rattle"><path d="M86 40 L120 -6" stroke="#ffcf5a" stroke-width="10" stroke-linecap="round"/><circle cx="126" cy="-16" r="24" fill="#ff7a59"/><circle cx="126" cy="-16" r="8" fill="#ffcf5a"/></g>
+  </g>`;
+}
+function beachArt(cx, cy) {
+  return `<g transform="translate(${cx} ${cy})" class="noorigin">
+    <circle cx="70" cy="-60" r="38" fill="#ffcf5a"/>
+    <path d="M-130 70 Q-65 50 0 70 T130 70 L130 120 L-130 120 Z" fill="#5eb1ff"/>
+    <path d="M-150 112 Q0 80 150 112 L150 140 L-150 140 Z" fill="#ffe2b8"/>
+    <path d="M-60 112 Q-70 20 -30 -50" stroke="#a26b45" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <g id="palm">${[-70, -20, 30, 160, 210].map(a => `<ellipse cx="-30" cy="-50" rx="70" ry="18" fill="#4caf7a" transform="rotate(${a} -30 -50) translate(55 0)"/>`).join("")}</g>
+    <path d="M20 112 L60 70 L120 70" stroke="#ff7a59" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M40 112 L58 86 M110 112 L100 76" stroke="#a26b45" stroke-width="7" stroke-linecap="round"/>
+  </g>`;
+}
+function armPath(sx, sy, ex, ey, hx, hy) { return `M${sx} ${sy} L${ex} ${ey} L${hx} ${hy}`; }
+
+function renderRoom(t) {
+  const el = $("room");
+  const vis = t < 15.2;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 0, .8));
+  // slow push-in, then towards the laptop
+  const z = lerp(1, 1.05, eio(p(t, 0, 13))) * lerp(1, 1.5, eio(p(t, 13.6, 14.9)));
+  $("roomCam").style.transformOrigin = "540px 1160px";
+  $("roomCam").style.transformBox = "view-box";
+  $("roomCam").style.transform = `scale(${z})`;
+  // stars & windows twinkle
+  document.querySelectorAll("#roomSvg .star").forEach((s, i) => s.setAttribute("opacity", .4 + .6 * Math.abs(Math.sin(t * 1.3 + i))));
+  document.querySelectorAll("#roomSvg .lit").forEach((s, i) => s.setAttribute("opacity", (Math.sin(i * 7.1 + Math.floor(t * .7 + i) * 3.3) > -.4) ? .9 : .15));
+  // steam
+  for (const [id, x0, ph] of [["steam1", 822, 0], ["steam2", 848, 1.7]]) {
+    const w = Math.sin(t * 2 + ph) * 10;
+    $(id).setAttribute("d", `M${x0} 1186 q${w} -25 0 -50 q${-w} -25 0 -50`);
+  }
+  // pose
+  const { cx, cy, r } = ROOM;
+  const shock = win(t, 1.0, 3.3, .2);
+  const think = p(t, 3.4, 4.2), scratch = win(t, 10.9, 13.0, .35), type = p(t, 13.2, 13.7);
+  let hR = [588, 1046], eR = [668, 1250];
+  hR = [lerp(hR[0], 650, scratch), lerp(hR[1], 790, scratch)]; eR = [lerp(eR[0], 735, scratch), lerp(eR[1], 960, scratch)];
+  if (scratch > .5) hR[1] += Math.sin(t * 26) * 10 * scratch;
+  hR = [lerp(hR[0], 600, type), lerp(hR[1], 1250, type)]; eR = [lerp(eR[0], 690, type), lerp(eR[1], 1230, type)];
+  $("armR").setAttribute("d", armPath(660, 1100, eR[0], eR[1], hR[0], hR[1]));
+  $("handR").setAttribute("cx", hR[0]); $("handR").setAttribute("cy", hR[1]);
+  const hL = [lerp(470, 480, type), 1262 + (type > .9 ? Math.sin(t * 30) * 5 : 0)];
+  $("armL").setAttribute("d", armPath(420, 1100, 380, 1240, hL[0], hL[1]));
+  $("handL").setAttribute("cx", hL[0]); $("handL").setAttribute("cy", hL[1]);
+  // head tilt onto hand, then straighten
+  const tilt = lerp(6, 0, Math.max(scratch, type)) * (1 - p(t, 10.6, 11));
+  $("rHead").style.transformBox = "view-box";
+  $("rHead").style.transformOrigin = `${cx}px ${cy + r}px`;
+  $("rHead").style.transform = `rotate(${tilt + Math.sin(t * 1.2) * 1.2}deg)`;
+  // eyes look up-right at the cloud while dreaming, down at the laptop when typing
+  const look = think * (1 - type);
+  const gx = lerp(0, 8, look) + 6 * shock + (scratch ? Math.sin(t * 5) * 6 * scratch : 0), gy = lerp(0, -12, look) + lerp(0, 10, type) - 10 * shock;
+  $("rPupils").setAttribute("transform", `translate(${gx} ${gy})`);
+  const blink = [1.6, 5.2, 9.1, 12.4, 14.4].some(b => t > b && t < b + .14) ? .1 : 1;
+  $("rEyes").style.transform = `scaleY(${blink}) scale(${1 + .25 * shock})`;
+  const worried = Math.max(scratch, shock);
+  $("rBrowL").setAttribute("transform", `translate(0 ${-6 * look - 8 * worried}) rotate(${-10 * worried} ${cx - r * .35} ${cy - r * .27})`);
+  $("rBrowR").setAttribute("transform", `translate(0 ${-6 * look + 4 * worried})`);
+  $("rMouth").setAttribute("d", worried > .4 ? mouth(cx, cy, r, "o", 1) : mouth(cx, cy, r, "smile", lerp(.3, 1, Math.max(p(t, 6, 7) * (1 - p(t, 10.6, 11)), type))));
+  const nb = eo(p(t, 0.5, 0.9)) * (1 - eio(p(t, 3.3, 3.7)));
+  css($("notif"), clamp(nb * 1.5), `translateY(${(1 - nb) * -260 + (t > 0.9 && t < 1.6 ? Math.sin(t * 60) * 5 : 0)}px)`);
+  // laptop lid opens
+  const lid = eo(p(t, 13.15, 13.6));
+  $("lid").style.transformBox = "view-box"; $("lid").style.transformOrigin = "540px 1260px";
+  $("lid").style.transform = `scaleY(${Math.max(lid, .02)})`;
+  $("faceGlow").setAttribute("opacity", lid * (.7 + .1 * Math.sin(t * 9)));
+  $("lampGlowEl").setAttribute("opacity", .8 + .2 * Math.sin(t * 2.3));
+  // thought chain, cloud, dreams
+  ["tc0", "tc1", "tc2"].forEach((id, i) => { const v = pop(t, 3.9 + i * .25, .35) * (1 - p(t, 12.6, 13)); $(id).style.transform = `scale(${v})`; });
+  const cloud = pop(t, 4.8, .7) * (1 - eio(p(t, 12.5, 13.1)));
+  const shake = scratch > .3 ? Math.sin(t * 40) * 6 * scratch : 0;
+  $("cloud").style.transformBox = "view-box"; $("cloud").style.transformOrigin = "700px 760px";
+  $("cloud").style.transform = `translate(${shake}px, ${Math.sin(t * 1.5) * 6}px) scale(${cloud})`;
+  $("dim").setAttribute("opacity", .45 * win(t, 4.8, 13.1, .6));
+  const mz = pop(t, 5.9, .55) * (1 - eio(p(t, 7.5, 7.8)));
+  $("dMansion").style.transform = `translate(${shake}px, ${Math.sin(t * 2) * 5}px) scale(${mz}) rotate(${p(t, 7.5, 7.8) * -25}deg)`;
+  $("rotor").style.transform = `scaleX(${Math.cos(t * 40)})`;
+  const st = pop(t, 6.95, .3) * (1 - p(t, 7.6, 7.8));
+  $("stamp").style.transform = `rotate(-12deg) scale(${st ? lerp(2.2, 1, clamp((t - 6.95) / .2)) * clamp(st) : 0})`;
+  $("stamp").style.opacity = clamp(st);
+  [["dHouse", 7.8], ["dBaby", 8.5], ["dBeach", 9.3]].forEach(([id, a]) => {
+    const v = pop(t, a, .55) * (1 - eio(p(t, 12.4, 12.9)));
+    $(id).style.transform = `translate(${shake}px, ${Math.sin(t * 2 + a) * 5}px) scale(${v})`;
+  });
+  document.querySelectorAll("#roomSvg .smoke").forEach((s, i) => s.setAttribute("transform", `translate(0 ${-((t * 30 + i * 20) % 40)})`));
+  $("rattle").setAttribute("transform", `rotate(${Math.sin(t * 9) * 14} 86 40)`);
+  $("palm").setAttribute("transform", `rotate(${Math.sin(t * 1.8) * 4} -30 -50)`);
+  // question marks
+  document.querySelectorAll("#roomSvg .q").forEach((q, i) => {
+    const v = pop(t, 10.7 + i * .16, .4) * (1 - p(t, 13.0, 13.3));
+    q.style.transform = `translateY(${Math.sin(t * 4 + i) * 12}px) rotate(${Math.sin(t * 3 + i * 2) * 14}deg) scale(${v})`;
+  });
+  const cz = pop(t, 11.4, .45) * (1 - p(t, 13.0, 13.3));
+  $("calc").style.transform = `scale(${cz}) rotate(${Math.sin(t * 30) * 3 * cz}deg)`;
+  document.querySelectorAll("#roomSvg .csmoke").forEach((c, i) => {
+    const a = ((t - 11.6) * .9 + i * .25) % 1;
+    c.setAttribute("transform", `translate(${190 + a * 40 + i * 6} ${1010 - a * 150})`);
+    c.setAttribute("opacity", t > 11.6 ? (1 - a) * .8 * cz : 0);
+  });
+  [["qBub1", 11.2], ["qBub2", 11.6]].forEach(([id, a]) => $(id).style.transform = `scale(${pop(t, a, .45) * (1 - p(t, 13.0, 13.3))})`);
+}
+
+// ---------- app ----------
+const NW_A = [34400, 48738, 63520, 72951, 98812, 106504, 124434, 142916, 161959, 190570, 219890, 249931, 280703, 312217, 344485, 377518, 411328, 445928, 481330, 517545, 554587, 592469, 631204, 670805, 711285, 752660, 794941, 838145, 882080, 926909, 972648, 1019310, 1032824, 1046518, 1060396];
+const NW_B = [34400, 48738, 57775, 83196, 90489, 107964, 125984, 144555, 172687, 201520, 231065, 261331, 292332, 324077, 356579, 389849, 423898, 458740, 494386, 530850, 568142, 606278, 645270, 685131, 725875, 767516, 810068, 853340, 897497, 942552, 988520, 1035415, 1049164, 1063097, 1077218];
+const CX = y => 90 + (y - 2026) / 34 * 780, CY = v => 420 - v / 1100000 * 380;
+const MARKS = [[2029, "🏠", 21.9], [2031, "👶", 22.2], [2053, "🔑", 23.6], [2058, "🌅", 23.9]];
+function buildApp() {
+  const c = $("chart");
+  const pts = arr => arr.map((v, i) => `${i ? "L" : "M"}${CX(2026 + i).toFixed(1)} ${CY(v).toFixed(1)}`).join(" ");
+  const area = `${pts(NW_A)} L${CX(2060)} 420 L${CX(2026)} 420 Z`;
+  c.innerHTML = `
+    <defs><linearGradient id="areaA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3987e5" stop-opacity=".25"/><stop offset="1" stop-color="#3987e5" stop-opacity="0"/></linearGradient>
+      <clipPath id="reveal"><rect id="revealR" x="0" y="0" width="0" height="470"/></clipPath></defs>
+    ${[0, 250000, 500000, 750000, 1000000].map(v => `<line x1="90" x2="870" y1="${CY(v)}" y2="${CY(v)}" stroke="#e2e8f0" stroke-width="2"/>
+      <text x="78" y="${CY(v) + 9}" font-size="24" text-anchor="end" fill="#94a3b8" font-weight="600">${v ? "£" + (v >= 1e6 ? "1M" : v / 1000 + "k") : "£0"}</text>`).join("")}
+    ${[2026, 2035, 2045, 2060].map(y => `<text x="${CX(y)}" y="458" font-size="24" text-anchor="middle" fill="#94a3b8" font-weight="600">${y}</text>`).join("")}
+    <path d="${area}" fill="url(#areaA)" clip-path="url(#reveal)"/>
+    ${MARKS.map(([y, e], i) => `<g id="mk${i}"><line x1="${CX(y)}" x2="${CX(y)}" y1="62" y2="420" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 8"/>
+      <text x="${CX(y)}" y="50" font-size="40" text-anchor="middle">${e}</text></g>`).join("")}
+    <path id="lineA" d="${pts(NW_A)}" fill="none" stroke="#3987e5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="lineB" d="${pts(NW_B)}" fill="none" stroke="#d95926" stroke-width="6" stroke-dasharray="16 12" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#revealB)"/>
+    <defs><clipPath id="revealB"><rect id="revealBR" x="0" y="0" width="0" height="470"/></clipPath></defs>
+    <circle id="headA" r="12" fill="#3987e5" stroke="#fff" stroke-width="5"/>
+    <circle id="headB" r="11" fill="#d95926" stroke="#fff" stroke-width="5"/>`;
+  $("reacts").innerHTML = Array.from({ length: 16 }, (_, i) => `<span class="re abs" style="font-size:${64 + (i % 3) * 14}px">${["😍", "🔥", "🏠", "💪", "🤯", "👶", "🙌", "💸"][i % 8]}</span>`).join("");
+  window.LEN_A = $("lineA").getTotalLength();
+  $("lineA").style.strokeDasharray = `${LEN_A} ${LEN_A}`;
+  // background bokeh
+  $("appBg").innerHTML = Array.from({ length: 14 }, (_, i) => `<circle class="bk" cx="${(i * 223) % 1080}" cy="${(i * 397) % 1920}" r="${30 + (i * 37) % 90}" fill="#fff" opacity=".07"/>`).join("");
+}
+const FIELDS = [["f0", "£20,000", 15.15, 15.85], ["f1", "£48,000", 16.05, 16.75], ["f2", "£1,200", 16.95, 17.5]];
+const CURSOR = [[14.9, [760, 960]], [15.05, [700, 544]], [15.9, [700, 544]], [16.0, [700, 654]], [16.8, [700, 654]], [16.9, [700, 764]], [17.55, [700, 764]],
+  [17.95, [860, 856]], [19.9, [860, 856]], [20.5, [990, 1500]], [27.0, [990, 1500]], [27.55, [830, 681]], [28.2, [830, 681]], [28.9, [1000, 1420]]];
+const CLICKS = [15.05, 16.0, 16.9, 18.0, 18.75, 19.5, 27.6];
+function renderApp(t) {
+  const el = $("app");
+  const vis = t > 13.8 && t < 33.2;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  // circle wipe in from the laptop
+  const rr = eio(p(t, 13.9, 14.9)) * 2300;
+  el.style.clipPath = t < 14.9 ? `circle(${rr}px at 540px 1170px)` : "none";
+  css($("win"), 1, `translateY(${(1 - eo(p(t, 14.0, 14.9))) * 120}px) scale(${lerp(.92, 1, eo(p(t, 14.0, 14.9)))})`);
+  document.querySelectorAll("#appBg .bk").forEach((b, i) => b.setAttribute("transform", `translate(0 ${Math.sin(t * .6 + i) * 30})`));
+  // typing
+  FIELDS.forEach(([id, txt, a, b], i) => {
+    const n = Math.round(p(t, a, b) * txt.length);
+    const focus = t > a - .12 && t < (FIELDS[i + 1] ? FIELDS[i + 1][2] - .12 : 17.9);
+    const caret = focus && (Math.floor(t * 3) % 2 === 0 || t < b) ? '<span class="caret"></span>' : "";
+    $(id).innerHTML = txt.slice(0, n) + caret;
+    $(id).classList.toggle("on", focus);
+  });
+  // events pop in on each "+ Add" click
+  [["e0", 18.05], ["e1", 18.8], ["e2", 19.55]].forEach(([id, a]) => {
+    const v = p(t, a, a + .45);
+    css($(id), clamp(v * 3), `translateX(${(1 - back(v)) * -60}px) scale(${lerp(.9, 1, back(v))})`);
+  });
+  $("addBtn").style.transform = `scale(${[18.0, 18.75, 19.5].some(c => t > c && t < c + .15) ? .92 : 1})`;
+  // scroll to the chart
+  const sc = eio(p(t, 20.4, 21.3)) * 600;
+  $("content").style.transform = `translateY(${-sc}px)`;
+  // line A draws; markers when the line reaches them
+  const da = eio(p(t, 21.4, 24.2));
+  $("lineA").style.strokeDashoffset = LEN_A * (1 - da);
+  const xA = lerp(CX(2026), CX(2060), da);
+  $("revealR").setAttribute("width", xA);
+  const ptA = $("lineA").getPointAtLength(LEN_A * da);
+  $("headA").setAttribute("cx", ptA.x); $("headA").setAttribute("cy", ptA.y); $("headA").setAttribute("opacity", da > 0 && da < 1 ? 1 : 0);
+  MARKS.forEach(([y], i) => { const v = xA >= CX(y) ? pop(t, 21.4 + 2.8 * eioInv((CX(y) - CX(2026)) / 780), .4) : 0; $("mk" + i).style.transform = `scale(${v})`; });
+  // milestones, then the compare rows replace them
+  const out = p(t, 28.2, 28.6);
+  ["m0", "m1", "m2", "m3"].forEach((id, i) => { const v = pop(t, 24.2 + i * .45, .45); css($(id), clamp(v) * (1 - out), `scale(${v * (1 - out * .1)})`); });
+  ["c0", "c1", "c2"].forEach((id, i) => { const v = pop(t, 29.7 + i * .7, .45); css($(id), clamp(v * 2), `translateY(${(1 - clamp(v)) * 30}px) scale(${lerp(.92, 1, clamp(v))})`); });
+  // Plan B
+  const bb = [27.6].some(c => t > c && t < c + .15);
+  $("bBtn").style.transform = `scale(${bb ? .93 : 1 + .04 * Math.sin(t * 6) * win(t, 26.4, 27.6)})`;
+  $("bBtn").style.background = t > 27.65 ? "rgba(217,89,38,.1)" : "#fff";
+  const db = eio(p(t, 28.0, 30.0));
+  const xB = lerp(CX(2026), CX(2060), db);
+  $("revealBR").setAttribute("width", xB + 10);
+  const iB = clamp((xB - CX(2026)) / 780) * 34, i0 = Math.floor(iB), fB = iB - i0;
+  const vB = lerp(NW_B[i0], NW_B[Math.min(34, i0 + 1)], fB);
+  $("headB").setAttribute("cx", xB); $("headB").setAttribute("cy", CY(vB)); $("headB").setAttribute("opacity", db > 0 && db < 1 ? 1 : 0);
+  css($("legB"), p(t, 27.9, 28.3));
+  document.querySelectorAll("#reacts .re").forEach((r, i) => {
+    const t0 = (i < 10 ? 24.0 + i * .32 : 30.0 + (i - 10) * .3), age = t - t0;
+    if (age < 0 || age > 2.6) { r.style.opacity = 0; return; }
+    r.style.opacity = Math.min(1, age * 4) * (1 - p(age, 1.9, 2.6));
+    r.style.transform = `translate(${975 + Math.sin(age * 3 + i) * 22 - (i % 3) * 14}px, ${1640 - age * 520}px) scale(${back(clamp(age * 3))})`;
+  });
+  // cursor
+  const [cx, cy] = keys(t, CURSOR);
+  const click = CLICKS.find(c => t >= c && t < c + .45);
+  const rp = click !== undefined ? p(t, click, click + .45) : 1;
+  $("ripple").setAttribute("opacity", click !== undefined ? 1 - rp : 0);
+  $("ripple").setAttribute("r", 8 + rp * 34);
+  css($("cursor"), p(t, 14.8, 15.0) * (1 - p(t, 31.5, 31.8)), `translate(${cx - 8}px, ${cy - 4}px) scale(${click !== undefined && rp < .3 ? .88 : 1})`);
+}
+/** Inverse of eio, for "when does the eased line reach x". */
+function eioInv(y) { let lo = 0, hi = 1; for (let i = 0; i < 24; i++) { const m = (lo + hi) / 2; if (eio(m) < y) lo = m; else hi = m; } return lo; }
+
+// ---------- future ----------
+function buildFuture() {
+  const s = $("futSvg");
+  const clouds = [[200, 380, 1], [760, 300, 1.3], [520, 520, .8]].map(([x, y, k], i) =>
+    `<g class="fcloud" data-x="${x}" data-k="${k}"><g transform="translate(${x} ${y}) scale(${k})" class="noorigin">
+      <circle cx="0" cy="0" r="50" fill="#fff"/><circle cx="55" cy="-20" r="62" fill="#fff"/><circle cx="115" cy="5" r="46" fill="#fff"/><rect x="0" y="0" width="115" height="50" fill="#fff"/></g></g>`).join("");
+  const confetti = Array.from({ length: 46 }, (_, i) => {
+    const c = ["#ff7a59", "#ffcf5a", "#3987e5", "#4caf7a", "#ff8ad8", "#8ec5ff"][i % 6];
+    return `<rect class="conf" x="0" y="0" width="${14 + (i % 3) * 4}" height="${8 + (i % 2) * 6}" rx="3" fill="${c}"/>`;
+  }).join("");
+  s.innerHTML = `
+  <defs><linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4ff"/><stop offset="1" stop-color="#d7efff"/></linearGradient></defs>
+  <rect width="1080" height="1920" fill="url(#fsky)"/>
+  <g id="sun"><circle cx="880" cy="250" r="90" fill="#ffd34d"/>
+    <g id="rays">${Array.from({ length: 12 }, (_, i) => `<rect x="874" y="110" width="12" height="44" rx="6" fill="#ffd34d" transform="rotate(${i * 30} 880 250)" class="noorigin"/>`).join("")}</g></g>
+  ${clouds}
+  <g id="birds">${[[0, 0], [60, 30], [-40, 50]].map(([x, y]) => `<path d="M${x} ${y} q16 -16 30 0 q14 -16 30 0" stroke="#334155" stroke-width="6" fill="none" stroke-linecap="round"/>`).join("")}</g>
+  <path d="M0 1180 Q300 1080 600 1170 T1080 1140 L1080 1920 L0 1920 Z" fill="#8fd17f"/>
+  <path d="M0 1420 Q540 1340 1080 1420 L1080 1920 L0 1920 Z" fill="#6cbf6a"/>
+  <g transform="translate(540 1000) scale(2.1)" class="noorigin" id="bigHouse">${houseArt(0, 0, 1)}</g>
+  <path d="M500 1250 Q470 1500 380 1920 L700 1920 Q610 1500 580 1250 Z" fill="#f3e2c3"/>
+  ${Array.from({ length: 9 }, (_, i) => `<rect x="${40 + i * 30}" y="1300" width="16" height="90" rx="6" fill="#fff"/>`).join("")}<rect x="30" y="1320" width="290" height="12" fill="#fff"/>
+  ${Array.from({ length: 9 }, (_, i) => `<rect x="${770 + i * 30}" y="1300" width="16" height="90" rx="6" fill="#fff"/>`).join("")}<rect x="760" y="1320" width="300" height="12" fill="#fff"/>
+  <g id="family">
+    <!-- Sam -->
+    <ellipse cx="600" cy="1700" rx="120" ry="18" fill="#000" opacity=".12"/>
+    <rect x="555" y="1490" width="40" height="200" rx="18" fill="#33508f"/><rect x="608" y="1490" width="40" height="200" rx="18" fill="#33508f"/>
+    <ellipse cx="572" cy="1694" rx="34" ry="16" fill="#222"/><ellipse cx="632" cy="1694" rx="34" ry="16" fill="#222"/>
+    <path d="M520 1300 Q600 1270 680 1300 L692 1510 L508 1510 Z" fill="${HOODIE}"/>
+    <path d="M560 1290 Q600 1320 640 1290" stroke="${HOODIE_D}" stroke-width="12" fill="none" stroke-linecap="round"/>
+    ${head("f", 600, 1190, 92)}
+    <path d="M530 1320 Q470 1400 455 1450" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round"/>
+    <path id="fArm" d="" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle id="fHand" r="24" fill="${SKIN}"/>
+    <g id="keys"><circle cx="0" cy="0" r="16" fill="none" stroke="#ffcf5a" stroke-width="7"/><rect x="-6" y="12" width="12" height="46" rx="4" fill="#ffcf5a"/><rect x="2" y="44" width="16" height="8" fill="#ffcf5a"/><rect x="2" y="30" width="12" height="8" fill="#ffcf5a"/></g>
+    <!-- child -->
+    <ellipse cx="420" cy="1700" rx="70" ry="14" fill="#000" opacity=".12"/>
+    <g id="kid">
+      <rect x="395" y="1580" width="24" height="110" rx="11" fill="#3987e5"/><rect x="424" y="1580" width="24" height="110" rx="11" fill="#3987e5"/>
+      <ellipse cx="405" cy="1694" rx="22" ry="11" fill="#ff7a59"/><ellipse cx="440" cy="1694" rx="22" ry="11" fill="#ff7a59"/>
+      <path d="M380 1480 Q421 1462 462 1480 L470 1600 L372 1600 Z" fill="#ffcf5a"/>
+      <path d="M458 1490 Q460 1460 456 1450" stroke="#ffcf5a" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <circle cx="455" cy="1450" r="16" fill="${SKIN}"/>
+      <circle cx="421" cy="1410" r="62" fill="${SKIN}"/>
+      <path d="M365 1390 Q380 1330 430 1340 Q480 1335 482 1395 Q470 1365 440 1368 Q400 1360 365 1390 Z" fill="${HAIR}"/>
+      <circle cx="400" cy="1415" r="8" fill="#1b1b2f"/><circle cx="442" cy="1415" r="8" fill="#1b1b2f"/>
+      <path d="M402 1440 Q421 1458 440 1440 Z" fill="#7a2e1f"/>
+      <ellipse cx="385" cy="1436" rx="10" ry="6" fill="#ff8a80" opacity=".6"/><ellipse cx="458" cy="1436" rx="10" ry="6" fill="#ff8a80" opacity=".6"/>
+    </g>
+    <!-- dog -->
+    <ellipse cx="830" cy="1700" rx="90" ry="14" fill="#000" opacity=".12"/>
+    <g id="dog">
+      <path id="tail" d="M890 1610 q40 -30 40 -70" stroke="#c98a5f" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <ellipse cx="830" cy="1630" rx="80" ry="46" fill="#e0b07c"/>
+      <rect x="770" y="1640" width="22" height="58" rx="10" fill="#e0b07c"/><rect x="860" y="1640" width="22" height="58" rx="10" fill="#e0b07c"/>
+      <circle cx="760" cy="1570" r="46" fill="#e0b07c"/><ellipse cx="732" cy="1560" rx="18" ry="34" fill="#a8744a" transform="rotate(20 732 1560)" class="noorigin"/>
+      <circle cx="770" cy="1560" r="7" fill="#1b1b2f"/><circle cx="726" cy="1585" r="9" fill="#1b1b2f"/>
+      <path d="M740 1600 q14 16 26 2" stroke="#7a2e1f" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g id="hey"><path d="M140 1060 h300 a30 30 0 0 1 30 30 v70 a30 30 0 0 1 -30 30 h-200 l-40 40 l0 -40 h-60 a30 30 0 0 1 -30 -30 v-70 a30 30 0 0 1 30 -30 z" fill="#fff" stroke="#0f172a" stroke-width="6"/>
+    <text x="300" y="1150" font-size="64" font-weight="900" text-anchor="middle" fill="#0f172a">HEY!! 😱</text></g>
+  <g id="confetti">${confetti}</g>`;
+  s.insertBefore($("keys"), $("hey"));
+}
+function renderFuture(t) {
+  const el = $("future");
+  const vis = t > 31.9 && t < 39;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  const rr = eio(p(t, 32.0, 32.9)) * 2300;
+  el.style.clipPath = t < 32.9 ? `circle(${rr}px at 960px 1500px)` : "none";
+  const s = 1.06 - .06 * eo(p(t, 32, 38));
+  $("futSvg").style.transform = `scale(${s})`;
+  $("rays").style.transformBox = "view-box"; $("rays").style.transformOrigin = "880px 250px";
+  $("rays").style.transform = `rotate(${t * 20}deg)`;
+  document.querySelectorAll("#futSvg .fcloud").forEach((c, i) => c.style.transform = `translateX(${(t - 32) * (14 + i * 8)}px)`);
+  $("birds").setAttribute("transform", `translate(${-100 + (t - 32) * 120} ${330 + Math.sin(t * 3) * 14})`);
+  // year counter 2026 → 2031
+  $("yearNum").textContent = Math.round(lerp(2026, 2031, eo(p(t, 32.7, 34.3))));
+  css($("yearPill"), p(t, 32.6, 32.9), `scale(${pop(t, 32.6, .5)}) translateY(${Math.sin(t * 2) * 4}px)`);
+  // Sam waves the keys… until the dog takes them
+  const raise = eo(p(t, 33.6, 34.1)) * (1 - eio(p(t, 35.9, 36.3)));
+  const wave = Math.sin(t * 8) * 12 * raise;
+  const hx = lerp(700, 760, raise) + wave, hy = lerp(1460, 1080, raise);
+  $("fArm").setAttribute("d", `M672 1320 L${lerp(712, 750, raise)} ${lerp(1400, 1220, raise)} L${hx} ${hy}`);
+  $("fHand").setAttribute("cx", hx); $("fHand").setAttribute("cy", hy);
+  // dog: crouch, leap to the keys, flip and run off with them
+  const leap = Math.sin(Math.PI * p(t, 35.2, 35.9));
+  const run = eio(p(t, 35.95, 37.4));
+  const flip = t > 35.9 ? -1 : 1;
+  const dx = run * 700, dy = -leap * 470 + (t > 35.95 ? -Math.abs(Math.sin(t * 14)) * 30 * (1 - p(t, 37.3, 37.4)) : 0) + (t > 34.9 && t < 35.2 ? 14 : 0);
+  $("dog").style.transformBox = "view-box"; $("dog").style.transformOrigin = "830px 1640px";
+  $("dog").style.transform = `translate(${dx}px, ${dy}px) scaleX(${flip})`;
+  const grabbed = t > 35.62;
+  const mouthX = (flip === 1 ? 735 : 925) + dx, mouthY = 1590 + dy;
+  if (grabbed) $("keys").setAttribute("transform", `translate(${mouthX} ${mouthY - 10}) rotate(${90 + Math.sin(t * 20) * 25})`);
+  else $("keys").setAttribute("transform", `translate(${hx} ${hy - 30}) rotate(${180 + wave * 2})`);
+  $("keys").setAttribute("opacity", grabbed ? 1 : eo(p(t, 33.6, 34.1)));
+  $("hey").style.transform = `scale(${pop(t, 35.75, .35)})`;
+  $("hey").style.transformOrigin = "300px 1200px"; $("hey").style.transformBox = "view-box";
+  $("fMouth").setAttribute("d", t > 35.7 ? mouth(600, 1190, 92, "o", 1.3) : mouth(600, 1190, 92, "smile", 1));
+  $("fPupils").setAttribute("transform", t > 35.7 ? `translate(${12 * run + 6} -2)` : `translate(${lerp(0, 6, raise)} ${lerp(4, -6, raise)})`);
+  $("fEyes").style.transform = `scaleY(${[34.8, 36.9].some(b => t > b && t < b + .14) ? .1 : 1})`;
+  $("kid").style.transform = `translateY(${-Math.abs(Math.sin(t * 5)) * 26 * p(t, 33.4, 33.8)}px)`;
+  $("tail").setAttribute("transform", `rotate(${Math.sin(t * 16) * 18} 890 1610)`);
+  document.querySelectorAll("#futSvg .conf").forEach((c, i) => {
+    const t0 = 33.8 + (i % 9) * .12, age = t - t0;
+    if (age < 0) { c.setAttribute("opacity", 0); return; }
+    const x = (i * 97) % 1080 + Math.sin(age * 3 + i) * 40, y = -40 + age * (260 + (i % 5) * 40);
+    c.setAttribute("opacity", 1);
+    c.setAttribute("transform", `translate(${x} ${y}) rotate(${age * (200 + i * 13)})`);
+  });
+}
+
+// ---------- end card ----------
+function buildEnd() {
+  $("endSvg").innerHTML = ["🏠", "👶", "🌅", "🔑", "📈", "🐶"].map((e, i) =>
+    `<text class="fl" x="${[150, 930, 110, 970, 110, 970][i]}" y="${[260, 300, 1720, 1720, 1420, 1420][i]}" font-size="${[90, 80, 80, 90, 70, 70][i]}" text-anchor="middle">${e}</text>`).join("");
+}
+function renderEnd(t) {
+  const el = $("end");
+  const vis = t > 37.9;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 38, 38.6));
+  [["endWm", 38.4], ["endPill", 38.7], ["endH", 39.0], ["endSub", 39.5], ["endTags", 40.0], ["endUrl", 40.5], ["endBtn", 41.0], ["endCta", 41.5], ["endFine", 41.9]].forEach(([id, a]) => {
+    const v = p(t, a, a + .5);
+    css($(id), eo(v), `translateY(${(1 - eo(v)) * 40}px) scale(${lerp(.94, 1, back(v))})`);
+  });
+  $("endBtnIn").style.transform = `scale(${1 + .04 * Math.sin((t - 41) * 5) * p(t, 41.5, 42)})`;
+  document.querySelectorAll("#endSvg .fl").forEach((f, i) => {
+    const v = pop(t, 38.6 + i * .15, .5);
+    f.style.transform = `translateY(${Math.sin(t * 1.6 + i) * 18}px) rotate(${Math.sin(t + i) * 8}deg) scale(${v})`;
+    f.setAttribute("opacity", .9);
+  });
+}
+
+// ---------- captions ----------
+const CAPS = [
+  [0.4, 3.3, "POV: you're 29, renting, and Mum asks <b>THE</b> question 😅"],
+  [3.5, 5.8, "Sam starts daydreaming…"],
+  [5.95, 7.4, "A home. A big one. With a helicopter. 🚁"],
+  [7.5, 10.7, "OK, a normal one. Plus a baby. And a beach, someday. 🌴"],
+  [10.9, 13.2, "…but can I <b>afford</b> it? And <b>WHEN</b>? 🤯"],
+  [13.5, 17.8, "So Sam opened the free <b>Life Plan</b> on FinancePlots."],
+  [18.0, 20.9, "Put the big moments on a timeline…"],
+  [21.1, 27.0, "…and saw the money, year by year. 👀"],
+  [27.2, 31.8, "Then tried a <b>Plan B</b>: buy a year earlier."],
+  [32.4, 35.6, "From daydream… to a plan. 🏡"],
+  [35.7, 37.9, "(The plan did <b>not</b> include the dog. 🐶)"],
+];
+let lastCap = null;
+function renderCaps(t) {
+  const c = CAPS.find(([a, b]) => t >= a && t < b);
+  if (c !== lastCap) { $("capText").innerHTML = c ? c[2] : ""; lastCap = c; }
+  $("cap").style.opacity = c ? win(t, c[0], c[1], .25) : 0;
+  $("cap").style.transform = c ? `translateY(${(1 - eo(p(t, c[0], c[0] + .3))) * 24}px)` : "";
+  $("capText").style.display = c ? "" : "none";
+}
+
+// ---------- main ----------
+function render(t) { renderRoom(t); renderApp(t); renderFuture(t); renderEnd(t); renderCaps(t); }
+buildRoom(); buildApp(); buildFuture(); buildEnd();
+window.render = render; window.DURATION = DURATION;
+
+function fit() {
+  const s = Math.min(innerWidth / 1080, innerHeight / 1920);
+  $("fit").style.transform = `scale(${s}) translate(-50%, -50%)`;
+}
+const q = new URLSearchParams(location.search);
+if (q.has("capture")) {
+  $("fit").style.left = "0"; $("fit").style.top = "0";
+  render(0);
+} else {
+  addEventListener("resize", fit); fit();
+  if (q.has("t")) render(+q.get("t"));
+  else {
+    let start = performance.now();
+    addEventListener("click", () => start = performance.now());
+    const loop = now => { render(((now - start) / 1000) % (DURATION + 1)); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  }
+}
+</script>
+</body>
+</html>
