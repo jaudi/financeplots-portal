@@ -1174,6 +1174,11 @@
     "eyebrow": "Life Plan",
     "title": "Can we afford it — and when?",
     "intro": "Add what you have today and the big things ahead: a home, a baby, a career break, retirement. See your money year by year, the dates that matter, and Plan A next to Plan B.",
+    "video": {
+      "title": "Watch: Sam's Life Plan in 44 seconds",
+      "subtitle": "A home, a baby, a Plan B — and one very naughty dog.",
+      "close": "Close"
+    },
     "currency": "Currency",
     "planA": "Plan A",
     "planB": "Plan B",
