@@ -62,17 +62,15 @@ export default async function LifePlanPage({ params, searchParams }: Props) {
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">{t("eyebrow")}</p>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">{t("title")}</h1>
             <p className="text-gray-400 text-sm max-w-2xl mx-auto leading-relaxed">{t("intro")}</p>
-            {/* The cartoon is in English (captions burned in); Spanish gets it once there is a Spanish cut. */}
-            {locale === "en" && (
-              <VideoTeaser
-                src="/life-plan-cartoon.mp4"
-                poster="/life-plan-cartoon-poster.jpg"
-                name="life-plan-cartoon"
-                title={t("video.title")}
-                subtitle={t("video.subtitle")}
-                closeLabel={t("video.close")}
-              />
-            )}
+            {/* Captions are burned in, so each locale has its own cut (made in marketing/life-plan-cartoon). */}
+            <VideoTeaser
+              src={locale === "es" ? "/life-plan-cartoon-es.mp4" : "/life-plan-cartoon.mp4"}
+              poster={locale === "es" ? "/life-plan-cartoon-es-poster.jpg" : "/life-plan-cartoon-poster.jpg"}
+              name={locale === "es" ? "life-plan-cartoon-es" : "life-plan-cartoon"}
+              title={t("video.title")}
+              subtitle={t("video.subtitle")}
+              closeLabel={t("video.close")}
+            />
           </div>
           <LifePlan initialPlans={shared?.plans ?? [examplePlan(startYear)]} initialHorizon={shared?.horizon ?? 30} startYear={startYear} />
         </div>

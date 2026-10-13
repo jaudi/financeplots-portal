@@ -2,7 +2,7 @@
 // in headless Chromium, pipes the PNGs to ffmpeg, then muxes soundtrack.wav
 // (from music.py) if it exists.
 //
-//   python3 music.py && node render.mjs [out.mp4] [--fps 30] [--from 0 --to 44] [--stills 1,7.2,25]
+//   python3 music.py && node render.mjs [out.mp4] [--lang es] [--fps 30] [--from 0 --to 44] [--stills 1,7.2,25]
 //
 // Needs ffmpeg on the PATH and Playwright (local or global install).
 import { execSync, spawn } from "node:child_process";
@@ -21,15 +21,16 @@ const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 
 const out = args[0] && !args[0].startsWith("--") ? args[0] : join(here, "life-plan-cartoon.mp4");
 const fps = Number(opt("fps", 30));
 const stills = opt("stills");
+const lang = opt("lang", "en");
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
-await page.goto(pathToFileURL(join(here, "index.html")).href + "?capture");
+await page.goto(pathToFileURL(join(here, "index.html")).href + `?capture&lang=${lang}`);
 await page.evaluate(() => document.fonts.ready);
 const duration = await page.evaluate(() => window.DURATION);
 
 if (stills) {
-  const dir = join(here, "stills"); mkdirSync(dir, { recursive: true });
+  const dir = join(here, "stills", lang); mkdirSync(dir, { recursive: true });
   for (const t of stills.split(",").map(Number)) {
     await page.evaluate(t => window.render(t), t);
     await page.screenshot({ path: join(dir, `t${t.toFixed(2)}.png`) });
