@@ -210,8 +210,8 @@ function head(k, cx, cy, r) {
     <circle cx="${cx - r * .62}" cy="${cy - r * .5}" r="${r * .34}" fill="${HAIR}"/><circle cx="${cx + r * .55}" cy="${cy - r * .55}" r="${r * .36}" fill="${HAIR}"/>
     <ellipse cx="${cx - r * .55}" cy="${cy + r * .32}" rx="${r * .17}" ry="${r * .1}" fill="#ff8a80" opacity=".55"/>
     <ellipse cx="${cx + r * .55}" cy="${cy + r * .32}" rx="${r * .17}" ry="${r * .1}" fill="#ff8a80" opacity=".55"/>
-    <path id="${k}BrowL" d="M${cx - r * .52} ${cy - r * .27} q${r * .17} ${-r * .12} ${r * .34} 0" stroke="${HAIR}" stroke-width="${r * .08}" fill="none" stroke-linecap="round"/>
-    <path id="${k}BrowR" d="M${cx + r * .18} ${cy - r * .27} q${r * .17} ${-r * .12} ${r * .34} 0" stroke="${HAIR}" stroke-width="${r * .08}" fill="none" stroke-linecap="round"/>
+    <path class="noorigin" id="${k}BrowL" d="M${cx - r * .52} ${cy - r * .27} q${r * .17} ${-r * .12} ${r * .34} 0" stroke="${HAIR}" stroke-width="${r * .08}" fill="none" stroke-linecap="round"/>
+    <path class="noorigin" id="${k}BrowR" d="M${cx + r * .18} ${cy - r * .27} q${r * .17} ${-r * .12} ${r * .34} 0" stroke="${HAIR}" stroke-width="${r * .08}" fill="none" stroke-linecap="round"/>
     <g id="${k}Eyes">
       <ellipse cx="${cx - r * .35}" cy="${cy + r * .02}" rx="${r * .17}" ry="${r * .21}" fill="#fff"/>
       <ellipse cx="${cx + r * .35}" cy="${cy + r * .02}" rx="${r * .17}" ry="${r * .21}" fill="#fff"/>
@@ -270,10 +270,12 @@ function buildRoom() {
       <path d="M470 1062 Q540 1110 610 1062" stroke="${HOODIE_D}" stroke-width="16" fill="none" stroke-linecap="round"/>
       <path d="M520 1110 L516 1180 M560 1110 L564 1180" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".8"/>
       ${head("r", ROOM.cx, ROOM.cy, ROOM.r)}
-      <path id="armL" d="" stroke="${HOODIE}" stroke-width="56" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle id="handL" r="30" fill="${SKIN}"/>
-      <path id="armR" d="" stroke="${HOODIE}" stroke-width="56" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle id="handR" r="30" fill="${SKIN}"/>
+      <path id="armLo" d="" stroke="#c4492b" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="armL" d="" stroke="${HOODIE}" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="handL" r="30" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+      <path id="armRo" d="" stroke="#c4492b" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="armR" d="" stroke="${HOODIE}" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="handR" r="30" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
       <ellipse id="faceGlow" cx="540" cy="930" rx="200" ry="170" fill="url(#screenGlow)" opacity="0"/>
     </g>
     <!-- desk -->
@@ -357,7 +359,7 @@ function babyArt(cx, cy) {
     <path d="M-36 -2 q12 12 24 0 M12 -2 q12 12 24 0" stroke="#1b1b2f" stroke-width="6" fill="none" stroke-linecap="round"/>
     <ellipse cx="-44" cy="24" rx="14" ry="8" fill="#ff8a80" opacity=".6"/><ellipse cx="44" cy="24" rx="14" ry="8" fill="#ff8a80" opacity=".6"/>
     <path d="M-14 32 q14 14 28 0" stroke="#7a2e1f" stroke-width="6" fill="none" stroke-linecap="round"/>
-    <g id="rattle"><path d="M86 40 L120 -6" stroke="#ffcf5a" stroke-width="10" stroke-linecap="round"/><circle cx="126" cy="-16" r="24" fill="#ff7a59"/><circle cx="126" cy="-16" r="8" fill="#ffcf5a"/></g>
+    <g id="rattle" class="noorigin"><path d="M86 40 L120 -6" stroke="#ffcf5a" stroke-width="10" stroke-linecap="round"/><circle cx="126" cy="-16" r="24" fill="#ff7a59"/><circle cx="126" cy="-16" r="8" fill="#ffcf5a"/></g>
   </g>`;
 }
 function beachArt(cx, cy) {
@@ -366,7 +368,7 @@ function beachArt(cx, cy) {
     <path d="M-130 70 Q-65 50 0 70 T130 70 L130 120 L-130 120 Z" fill="#5eb1ff"/>
     <path d="M-150 112 Q0 80 150 112 L150 140 L-150 140 Z" fill="#ffe2b8"/>
     <path d="M-60 112 Q-70 20 -30 -50" stroke="#a26b45" stroke-width="18" fill="none" stroke-linecap="round"/>
-    <g id="palm">${[-70, -20, 30, 160, 210].map(a => `<ellipse cx="-30" cy="-50" rx="70" ry="18" fill="#4caf7a" transform="rotate(${a} -30 -50) translate(55 0)"/>`).join("")}</g>
+    <g id="palm" class="noorigin">${[-70, -20, 30, 160, 210].map(a => `<ellipse cx="-30" cy="-50" rx="70" ry="18" fill="#4caf7a" transform="rotate(${a} -30 -50) translate(55 0)"/>`).join("")}</g>
     <path d="M20 112 L60 70 L120 70" stroke="#ff7a59" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M40 112 L58 86 M110 112 L100 76" stroke="#a26b45" stroke-width="7" stroke-linecap="round"/>
   </g>`;
@@ -396,17 +398,20 @@ function renderRoom(t) {
   const { cx, cy, r } = ROOM;
   const shock = win(t, 1.0, 3.3, .2);
   const think = p(t, 3.4, 4.2), scratch = win(t, 10.9, 13.0, .35), type = p(t, 13.2, 13.7);
-  let hR = [588, 1046], eR = [668, 1250];
+  const chin = eio(p(t, 3.4, 4.1));
+  let hR = [lerp(610, 588, chin), lerp(1262, 1046, chin)], eR = [lerp(712, 668, chin), lerp(1236, 1250, chin)];
   hR = [lerp(hR[0], 650, scratch), lerp(hR[1], 790, scratch)]; eR = [lerp(eR[0], 735, scratch), lerp(eR[1], 960, scratch)];
   if (scratch > .5) hR[1] += Math.sin(t * 26) * 10 * scratch;
   hR = [lerp(hR[0], 600, type), lerp(hR[1], 1250, type)]; eR = [lerp(eR[0], 690, type), lerp(eR[1], 1230, type)];
   $("armR").setAttribute("d", armPath(660, 1100, eR[0], eR[1], hR[0], hR[1]));
+  $("armRo").setAttribute("d", $("armR").getAttribute("d"));
   $("handR").setAttribute("cx", hR[0]); $("handR").setAttribute("cy", hR[1]);
   const hL = [lerp(470, 480, type), 1262 + (type > .9 ? Math.sin(t * 30) * 5 : 0)];
-  $("armL").setAttribute("d", armPath(420, 1100, 380, 1240, hL[0], hL[1]));
+  $("armL").setAttribute("d", armPath(420, 1100, 370, 1236, hL[0], hL[1]));
+  $("armLo").setAttribute("d", $("armL").getAttribute("d"));
   $("handL").setAttribute("cx", hL[0]); $("handL").setAttribute("cy", hL[1]);
   // head tilt onto hand, then straighten
-  const tilt = lerp(6, 0, Math.max(scratch, type)) * (1 - p(t, 10.6, 11));
+  const tilt = 6 * chin * (1 - Math.max(scratch, type)) * (1 - p(t, 10.6, 11));
   $("rHead").style.transformBox = "view-box";
   $("rHead").style.transformOrigin = `${cx}px ${cy + r}px`;
   $("rHead").style.transform = `rotate(${tilt + Math.sin(t * 1.2) * 1.2}deg)`;
@@ -597,7 +602,7 @@ function buildFuture() {
     <path d="M530 1320 Q470 1400 455 1450" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round"/>
     <path id="fArm" d="" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <circle id="fHand" r="24" fill="${SKIN}"/>
-    <g id="keys"><circle cx="0" cy="0" r="16" fill="none" stroke="#ffcf5a" stroke-width="7"/><rect x="-6" y="12" width="12" height="46" rx="4" fill="#ffcf5a"/><rect x="2" y="44" width="16" height="8" fill="#ffcf5a"/><rect x="2" y="30" width="12" height="8" fill="#ffcf5a"/></g>
+    <g id="keys" class="noorigin"><circle cx="0" cy="0" r="16" fill="none" stroke="#ffcf5a" stroke-width="7"/><rect x="-6" y="12" width="12" height="46" rx="4" fill="#ffcf5a"/><rect x="2" y="44" width="16" height="8" fill="#ffcf5a"/><rect x="2" y="30" width="12" height="8" fill="#ffcf5a"/></g>
     <!-- child -->
     <ellipse cx="420" cy="1700" rx="70" ry="14" fill="#000" opacity=".12"/>
     <g id="kid">
@@ -615,7 +620,7 @@ function buildFuture() {
     <!-- dog -->
     <ellipse cx="830" cy="1700" rx="90" ry="14" fill="#000" opacity=".12"/>
     <g id="dog">
-      <path id="tail" d="M890 1610 q40 -30 40 -70" stroke="#c98a5f" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path id="tail" class="noorigin" d="M890 1610 q40 -30 40 -70" stroke="#c98a5f" stroke-width="16" fill="none" stroke-linecap="round"/>
       <ellipse cx="830" cy="1630" rx="80" ry="46" fill="#e0b07c"/>
       <rect x="770" y="1640" width="22" height="58" rx="10" fill="#e0b07c"/><rect x="860" y="1640" width="22" height="58" rx="10" fill="#e0b07c"/>
       <circle cx="760" cy="1570" r="46" fill="#e0b07c"/><ellipse cx="732" cy="1560" rx="18" ry="34" fill="#a8744a" transform="rotate(20 732 1560)" class="noorigin"/>
