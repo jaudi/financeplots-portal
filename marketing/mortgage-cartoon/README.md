@@ -18,7 +18,7 @@ re-working.
 python3 music.py
 node ../render.mjs mortgage-cartoon ../../public/mortgage-cartoon.mp4              # ~5 min each
 node ../render.mjs mortgage-cartoon ../../public/mortgage-cartoon-es.mp4 --lang es
-ffmpeg -ss 3.0 -i ../../public/mortgage-cartoon.mp4 -frames:v 1 -q:v 4 ../../public/mortgage-cartoon-poster.jpg
+ffmpeg -ss 11.0 -i ../../public/mortgage-cartoon.mp4 -frames:v 1 -q:v 4 ../../public/mortgage-cartoon-poster.jpg
 ```
 
 Built on `../kit.js` (timing, Sam, captions, language switch) and `../sound.py`
