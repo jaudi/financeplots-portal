@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam Pays It Off</title>
+<!--
+  Episode 2 (46.5 s, 1080×1920): Sam's first mortgage payment leaves, the
+  calendar flips to 2054, the bank's vacuum sucks up £166,874 of interest —
+  then a piggy bank: £227 a month put aside on top of the mortgage, and the
+  pot clears the mortgage five years early. Shown in the Lending Calculator's
+  "Mortgage & Early Repayment" tab.
+
+  The figures are that page's own maths (buildSchedule in lib/calculators.ts
+  plus the page's early-repayment block) for: £250,000 at 4.5% over 25 years,
+  savings earning 3%. Payment £1,389.58, total interest £166,874; balance
+  at year 20 £74,536; £227.04 a month for 240 months at 3% grows to exactly
+  that; interest in the last five years £8,839.
+
+  Open in a browser to watch; ?t=12.5 freezes, ?lang=es is the Spanish cut.
+-->
+<style>
+  :root { --a: #3987e5; --b: #d95926; --ink: #0f172a; --muted: #64748b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #05080f; height: 100%; overflow: hidden; }
+  body { font-family: Inter, "Inter Display", system-ui, sans-serif; color: #fff; }
+  #fit { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #111a3a; }
+  .scene { position: absolute; inset: 0; }
+  .abs { position: absolute; }
+  svg { display: block; }
+  svg * { transform-box: fill-box; transform-origin: center; }
+  .noorigin { transform-box: view-box; transform-origin: 0 0; }
+  #cap { position: absolute; left: 0; right: 0; top: 1712px; display: flex; justify-content: center; pointer-events: none; }
+  #capText { max-width: 960px; padding: 22px 38px; border-radius: 28px; background: rgba(5, 10, 25, .78);
+    font-weight: 800; font-size: 46px; line-height: 1.18; letter-spacing: -.5px; text-align: center; }
+  #capText b { color: #8ec5ff; }
+  .banner { left: 60px; right: 60px; top: 70px; border-radius: 36px; background: rgba(245,247,252,.96); color: var(--ink); padding: 26px 30px;
+    display: flex; gap: 24px; align-items: center; box-shadow: 0 24px 70px rgba(0,0,0,.4); }
+  /* browser */
+  #win { position: absolute; left: 50px; top: 110px; width: 980px; height: 1560px; border-radius: 40px; overflow: hidden; background: #fff; box-shadow: 0 40px 120px rgba(0,0,0,.45); color: var(--ink); }
+  #bar { position: absolute; left: 0; right: 0; top: 0; height: 96px; background: #eef2f8; display: flex; align-items: center; gap: 14px; padding: 0 30px; z-index: 2; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; }
+  #url { margin-left: 18px; flex: 1; height: 56px; border-radius: 28px; background: #fff; display: flex; align-items: center; padding: 0 26px; font-size: 28px; color: #334155; font-weight: 500; white-space: nowrap; }
+  #url b { color: var(--ink); }
+  #view { position: absolute; left: 0; right: 0; top: 96px; bottom: 0; overflow: hidden; }
+  #content { position: absolute; left: 0; top: 0; width: 980px; height: 2100px; }
+  .h1 { left: 52px; top: 34px; font-size: 50px; font-weight: 800; letter-spacing: -1.5px; }
+  .tab { top: 118px; height: 72px; border-radius: 36px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; border: 3px solid #cbd5e1; color: #475569; white-space: nowrap; }
+  .tab.on { background: var(--a); border-color: var(--a); color: #fff; }
+  .sec { left: 52px; font-size: 32px; font-weight: 800; letter-spacing: -.5px; }
+  .row { left: 52px; width: 876px; height: 84px; display: flex; align-items: center; justify-content: space-between; }
+  .lab { font-size: 28px; font-weight: 600; color: #334155; }
+  .inp { width: 360px; height: 80px; border: 3px solid #cbd5e1; border-radius: 20px; display: flex; align-items: center; padding: 0 24px; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .inp.on { border-color: var(--a); box-shadow: 0 0 0 6px rgba(57,135,229,.18); }
+  .caret { display: inline-block; width: 3px; height: 38px; background: var(--a); margin-left: 3px; }
+  .kpi { width: 430px; border-radius: 22px; background: #f4f7fb; border: 2px solid #e2e8f0; padding: 20px 26px; }
+  .kpi .l { font-size: 24px; font-weight: 700; color: var(--muted); }
+  .kpi .v { font-size: 50px; font-weight: 800; letter-spacing: -1px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .kpi .s { font-size: 22px; font-weight: 600; color: #94a3b8; margin-top: 2px; }
+  .advice { left: 52px; width: 876px; border-radius: 22px; background: #eaf3ff; border: 3px solid #9cc6f5; color: #1d4f8f; padding: 22px 28px; font-size: 27px; font-weight: 600; line-height: 1.4; }
+  #end { background: radial-gradient(800px 700px at 30% 20%, #16306a 0%, transparent 70%), radial-gradient(800px 800px at 80% 90%, #2b1a52 0%, transparent 70%), #070b16; }
+  .wm { font-weight: 800; letter-spacing: -2px; } .wm span { color: #4f8ff7; }
+  .tag { background: rgba(255,255,255,.08); border-radius: 24px; padding: 12px 24px; font-size: 30px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+
+  <!-- 1–3 · the living room -->
+  <div class="scene" id="room"><svg id="roomSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs banner" id="notif">
+      <div style="width:88px;height:88px;border-radius:22px;background:#1e3a8a;display:flex;align-items:center;justify-content:center;font-size:52px;flex:none">🏦</div>
+      <div style="flex:1"><div data-l="bankWho" style="display:flex;justify-content:space-between;font-size:30px;font-weight:800">Your Bank<span style="color:#94a3b8;font-weight:600;font-size:26px">now</span></div>
+        <div data-l="bankMsg" style="font-size:33px;font-weight:600;margin-top:6px;line-height:1.25">Mortgage payment taken: £1,389.58. Only 299 to go! 🙂</div></div></div>
+    <div class="abs" id="interest" style="left:0;right:0;top:250px;display:flex;justify-content:center">
+      <div style="background:#e11d48;border-radius:30px;padding:18px 40px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)">
+        <div data-l="interestLabel" style="font-size:30px;font-weight:800;letter-spacing:3px;opacity:.85">TOTAL INTEREST</div>
+        <div id="interestNum" style="font-size:96px;font-weight:900;letter-spacing:-3px;font-variant-numeric:tabular-nums">£0</div></div></div>
+  </div>
+
+  <!-- 4 · FinancePlots Lending Calculator -->
+  <div class="scene" id="app" style="background: linear-gradient(160deg, #2a62d8 0%, #3987e5 45%, #6aa8f0 100%);">
+    <div id="win">
+      <div id="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+        <div id="url" data-l="url">🔒&nbsp; <b>financeplots.com</b>/tools/lending</div></div>
+      <div id="view"><div id="content">
+        <div class="abs h1" data-l="title">🏦 Lending Calculator</div>
+        <div class="abs tab on" id="tab0" style="left:52px;width:330px" data-l="tabLoan">Loan Calculator</div>
+        <div class="abs tab" id="tab1" style="left:398px;width:530px" data-l="tabMortgage">Mortgage &amp; Early Repayment</div>
+
+        <div class="abs sec" style="top:232px" data-l="secMortgage">Mortgage Parameters</div>
+        <div class="abs row" style="top:282px"><span class="lab" data-l="lAmount">Mortgage Amount</span><span class="inp" id="f0"></span></div>
+        <div class="abs row" style="top:382px"><span class="lab" data-l="lRate">Mortgage Rate</span><span class="inp" id="f1"></span></div>
+        <div class="abs row" style="top:482px"><span class="lab" data-l="lYears">Duration</span><span class="inp" id="f2"></span></div>
+        <div class="abs row" style="top:582px"><span class="lab" data-l="lSav">Savings / Investment Rate</span><span class="inp" id="f3"></span></div>
+
+        <div class="abs kpi" id="k0" style="left:52px;top:700px"><div class="l" data-l="kPay">Monthly Payment</div><div class="v" data-l="vPay">£1,389.58</div><div class="s" data-l="sPay">25-year term</div></div>
+        <div class="abs kpi" id="k1" style="left:498px;top:700px"><div class="l" data-l="kInt">Total Interest</div><div class="v" style="color:#e11d48" data-l="vInt">£166,874</div><div class="s" data-l="sInt">66.7% of loan</div></div>
+
+        <div class="abs sec" style="top:900px" data-l="secEarly">Early Repayment Analysis</div>
+        <div class="abs kpi" id="k2" style="left:52px;top:960px"><div class="l" data-l="kSave">Monthly Saving</div><div class="v" data-l="vSave">£227.04</div><div class="s" data-l="sSave">Over 240 months</div></div>
+        <div class="abs kpi" id="k3" style="left:498px;top:960px"><div class="l" data-l="kBal">Balance at Year -5</div><div class="v" data-l="vBal">£74,536</div><div class="s" data-l="sBal">After 20 years</div></div>
+        <div class="abs kpi" id="k4" style="left:52px;top:1120px"><div class="l" data-l="kSaved">Interest Saved</div><div class="v" style="color:#16a34a" data-l="vSaved">£8,839</div><div class="s" data-l="sSaved">Last 5 years eliminated</div></div>
+        <div class="abs kpi" id="k5" style="left:498px;top:1120px"><div class="l" data-l="kStrat">Strategy</div><div class="v" style="color:var(--a);font-size:42px;line-height:60px" data-l="vStrat">Repay Early</div><div class="s" data-l="sStrat">Savings (3%) &lt; mortgage (4.5%)</div></div>
+
+        <div class="abs sec" style="top:1294px" data-l="secChart">Outstanding Balance</div>
+        <svg class="abs" id="chart" style="left:30px;top:1340px" width="680" height="420" viewBox="0 0 680 420"></svg>
+        <svg class="abs" id="potSvg" style="left:700px;top:1360px" width="260" height="400" viewBox="0 0 260 400"></svg>
+
+        <div class="abs advice" id="advice" style="top:1790px" data-l="advice">💡 Pay off early. Your mortgage rate (4.5%) exceeds what savings earn (3%). Save £227.04/mo for 240 months to save £8,839 in interest.</div>
+      </div></div>
+    </div>
+    <svg class="abs" id="cursor" style="left:0;top:0;pointer-events:none" width="80" height="90" viewBox="0 0 80 90">
+      <circle id="ripple" cx="10" cy="8" r="30" fill="none" stroke="#3987e5" stroke-width="5" opacity="0"/>
+      <path d="M8 4 L8 66 L24 52 L36 80 L48 75 L36 48 L58 48 Z" fill="#0f172a" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- 5 · 2049 -->
+  <div class="scene" id="future"><svg id="futSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="yearPill" style="left:0;right:0;top:120px;display:flex;justify-content:center">
+      <div style="background:rgba(255,255,255,.92);color:#0f172a;border-radius:40px;padding:16px 40px;font-size:52px;font-weight:800;letter-spacing:-1px">📅 <span id="yearNum">2029</span></div></div>
+    <div class="abs" id="freed" style="left:0;right:0;top:250px;display:flex;justify-content:center">
+      <div data-l="freed" style="background:#16a34a;border-radius:30px;padding:18px 36px;font-size:44px;font-weight:800;text-align:center;line-height:1.2">No more £1,389.58 a month<br><span style="font-size:32px;opacity:.9">5 years early</span></div></div>
+  </div>
+
+  <!-- 6 · end card -->
+  <div class="scene" id="end">
+    <svg class="abs" id="endSvg" style="left:0;top:0" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="endWm" style="left:0;right:0;top:330px;text-align:center"><span class="wm" style="font-size:96px">Finance<span>Plots</span></span></div>
+    <div class="abs" id="endPill" style="left:0;right:0;top:500px;display:flex;justify-content:center">
+      <span data-l="endPill" style="border:2px solid rgba(79,143,247,.6);background:rgba(79,143,247,.14);color:#8ec5ff;border-radius:30px;padding:10px 28px;font-size:30px;font-weight:800;letter-spacing:3px">LENDING CALCULATOR</span></div>
+    <div class="abs" id="endH" data-l="endH" style="left:0;right:0;top:640px;text-align:center;font-size:96px;font-weight:800;letter-spacing:-3px;line-height:1.05">Pay it off<br>early?</div>
+    <div class="abs" id="endSub" data-l="endSub" style="left:60px;right:60px;top:900px;text-align:center;font-size:38px;font-weight:600;color:#b9c6dd">See the monthly saving, the pot<br>and the interest you'd save.</div>
+    <div class="abs" id="endTags" data-l="endTags" style="left:0;right:0;top:1080px;display:flex;justify-content:center;gap:18px">
+      <span class="tag">100% free</span><span class="tag">No signup</span><span class="tag">Nothing stored</span></div>
+    <div class="abs" id="endUrl" data-l="endUrl" style="left:0;right:0;top:1250px;text-align:center;font-size:52px;font-weight:800;letter-spacing:-1px">financeplots.com<span style="color:#4f8ff7">/tools/lending</span></div>
+    <div class="abs" id="endBtn" style="left:0;right:0;top:1380px;display:flex;justify-content:center">
+      <span id="endBtnIn" data-l="endBtn" style="background:#3b82f6;border-radius:60px;padding:30px 70px;font-size:50px;font-weight:800;box-shadow:0 0 60px rgba(59,130,246,.6)">Run your numbers →</span></div>
+    <div class="abs" id="endCta" data-l="endCta" style="left:0;right:0;top:1580px;text-align:center;font-size:40px;font-weight:700">Tag someone with a 25-year mortgage 😅👇</div>
+    <div class="abs" id="endFine" data-l="endFine" style="left:80px;right:80px;top:1760px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example: £250,000 at 4.5% over 25 years, savings earning 3% a year. Check your lender's overpayment rules and early-repayment charges. Not advice.</div>
+  </div>
+
+  <div id="cap"><div id="capText"></div></div>
+</div></div>
+
+<script src="../kit.js"></script>
+<script>
+const DURATION = 46.5;
+ES = {
+  bankWho: 'Tu banco<span style="color:#94a3b8;font-weight:600;font-size:26px">ahora</span>',
+  bankMsg: "Cuota de la hipoteca cobrada: 1.389,58 €. ¡Solo quedan 299! 🙂",
+  interestLabel: "INTERESES TOTALES",
+  url: "🔒&nbsp; <b>financeplots.com</b>/es/tools/lending",
+  title: "🏦 Calculadora de Préstamos", tabLoan: "Préstamos", tabMortgage: "Hipoteca y Amortización Anticipada",
+  secMortgage: "Parámetros de la Hipoteca", lAmount: "Importe de la hipoteca", lRate: "Tipo hipotecario", lYears: "Duración", lSav: "Rentabilidad del ahorro",
+  kPay: "Cuota Mensual", vPay: "1.389,58 €", sPay: "Plazo de 25 años", kInt: "Total de Intereses", vInt: "166.874 €", sInt: "66,7 % del préstamo",
+  secEarly: "Análisis de Amortización Anticipada",
+  kSave: "Ahorro Mensual", vSave: "227,04 €", sSave: "Durante 240 meses", kBal: "Saldo en Año -5", vBal: "74.536 €", sBal: "Tras 20 años",
+  kSaved: "Intereses Ahorrados", vSaved: "8.839 €", sSaved: "Últimos 5 años eliminados", kStrat: "Estrategia", vStrat: "Amortizar antes", sStrat: "Ahorro (3 %) &lt; hipoteca (4,5 %)",
+  secChart: "Saldo Pendiente",
+  advice: "💡 Amortiza antes. Tu hipoteca cuesta (4,5 %) más de lo que rinde el ahorro (3 %). Ahorra 227,04 € al mes durante 240 meses y te ahorrarás 8.839 € en intereses.",
+  freed: 'Adiós a los 1.389,58 € al mes<br><span style="font-size:32px;opacity:.9">5 años antes</span>',
+  endPill: "CALCULADORA DE PRÉSTAMOS", endH: "¿La pagas<br>antes?",
+  endSub: "Mira el ahorro mensual, la hucha<br>y los intereses que te ahorras.",
+  endTags: ["100% gratis", "Sin registro", "No se guarda nada"].map(x => `<span class="tag">${x}</span>`).join(""),
+  endUrl: '<span style="font-size:48px">financeplots.com<span style="color:#4f8ff7">/es/tools/lending</span></span>',
+  endBtn: "Haz tus números →", endCta: "Etiqueta a alguien con hipoteca a 25 años 😅👇",
+  endFine: "Ejemplo ilustrativo: 250.000 € al 4,5 % a 25 años, con un ahorro que rinde un 3 % al año. Consulta con tu banco las condiciones y comisiones por amortización anticipada. No es asesoramiento.",
+  // drawn in SVG or typed
+  f0: "250.000 €", f1: "4,5 %", f2: "25 años", f3: "3 %", cal: "HIPOTECA", vac: "🏦 BANCO", plus: "+227 €", pot: "Hucha", potPays: "¡paga el resto!",
+  paid: "PAGADA ✅", doc: "HIPOTECA",
+};
+CAPS = LANG === "es" ? [
+  [0.4, 4.2, "POV: te acaban de cobrar la <b>primera</b> cuota de la hipoteca 🙃"],
+  [4.4, 8.6, "La misma cuota. Cada mes. Hasta 2054. 💀"],
+  [9.1, 12.9, "…y 166.874 € de eso son solo <b>intereses</b>. 😱"],
+  [13.2, 16.0, "Entonces Sam tuvo una idea: apartar un poco cada mes. 🐷"],
+  [16.4, 19.6, "Así que abrió la <b>Calculadora de Préstamos</b> gratis de FinancePlots."],
+  [19.8, 23.1, "El truco: 227 € al mes a una hucha, además de la cuota."],
+  [23.2, 28.0, "En 20 años la hucha paga lo que queda. <b>5 años antes.</b> 🤯"],
+  [28.2, 30.9, "(Si tu ahorro rinde más que lo que cuesta la hipoteca, también te lo dice.)"],
+  [31.3, 34.8, "2049: hucha rota. Hipoteca pagada. 🔨"],
+  [35.0, 37.5, "Cinco años sin cuota. 😎"],
+  [37.7, 40.0, "(Y el perro por fin devolvió las llaves. 🐶🔑)"],
+] : [
+  [0.4, 4.2, "POV: your <b>first</b> mortgage payment just left your account 🙃"],
+  [4.4, 8.6, "Same payment. Every month. Until 2054. 💀"],
+  [9.1, 12.9, "…and £166,874 of it is just <b>interest</b>. 😱"],
+  [13.2, 16.0, "Then Sam had an idea: put a little aside every month. 🐷"],
+  [16.4, 19.6, "So Sam opened the free <b>Lending Calculator</b> on FinancePlots."],
+  [19.8, 23.1, "The trick: £227 a month into a savings pot, on top."],
+  [23.2, 28.0, "In 20 years the pot pays off what's left. <b>5 years early.</b> 🤯"],
+  [28.2, 30.9, "(If your savings earn more than the mortgage costs, it tells you that too.)"],
+  [31.3, 34.8, "2049: pot smashed. Mortgage gone. 🔨"],
+  [35.0, 37.5, "Five years with no mortgage payment. 😎"],
+  [37.7, 40.0, "(And the dog finally brought the keys back. 🐶🔑)"],
+];
+const money = v => LANG === "es" ? Math.round(v).toLocaleString("es-ES").replace(/^(\d)(\d{3})$/, "$1.$2") + " €" : "£" + Math.round(v).toLocaleString("en-GB");
+
+// ---------- the numbers ----------
+const BAL = [250000, 244462, 238669, 232610, 226273, 219645, 212712, 205461, 197876, 189943, 181646, 172968, 163891, 154397, 144466, 134080, 123216, 111853, 99969, 87538, 74536, 60937, 46713, 31836, 16276, 0];
+const SR = .03 / 12, SAVE = 74536 * SR / (Math.pow(1 + SR, 240) - 1); // the page's £227.04, unrounded
+const pot = years => SAVE * (Math.pow(1 + SR, years * 12) - 1) / SR; // pot(20) = £74,536
+const GREY = "#b9b9c4";
+
+// ---------- room ----------
+const R = { cx: 540, cy: 860, r: 112 };
+function buildRoom() {
+  const coins = Array.from({ length: 14 }, (_, i) => `<g class="coin"><circle r="26" fill="#ffcf5a" stroke="#e8a92a" stroke-width="5"/><text y="11" font-size="30" font-weight="900" text-anchor="middle" fill="#b7791f">${LANG === "es" ? "€" : "£"}</text></g>`).join("");
+  $("roomSvg").innerHTML = `
+  <defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4c7e"/><stop offset="1" stop-color="#22395f"/></linearGradient>
+    <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a6b"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>
+    <radialGradient id="bulbGlow"><stop offset="0" stop-color="#fff3b0" stop-opacity=".9"/><stop offset="1" stop-color="#fff3b0" stop-opacity="0"/></radialGradient></defs>
+  <g id="roomCam" class="noorigin">
+    <rect width="1080" height="1920" fill="url(#wall)"/>
+    <rect y="1480" width="1080" height="440" fill="#5b3b2a"/><rect y="1480" width="1080" height="14" fill="#4a2f21"/>
+    <!-- window -->
+    <rect x="330" y="230" width="420" height="380" rx="20" fill="#e9edf8"/><rect x="346" y="246" width="388" height="348" rx="10" fill="url(#sunset)"/>
+    <circle cx="540" cy="520" r="60" fill="#fff1c1"/><path d="M346 560 Q450 500 540 560 T734 540 L734 594 L346 594 Z" fill="#7fb77e"/>
+    <rect x="534" y="246" width="12" height="348" fill="#e9edf8"/>
+    <!-- clock -->
+    <circle cx="170" cy="360" r="78" fill="#fff" stroke="#1e293b" stroke-width="10"/>
+    <path id="hourHand" class="noorigin" d="M170 360 L170 316" stroke="#1e293b" stroke-width="9" stroke-linecap="round"/>
+    <path id="minHand" class="noorigin" d="M170 360 L170 300" stroke="#e11d48" stroke-width="6" stroke-linecap="round"/>
+    <!-- cobweb -->
+    <g id="web" opacity="0" stroke="#e2e8f0" stroke-width="3" fill="none"><path d="M0 0 L150 150 M0 60 L140 120 M60 0 L120 140 M0 110 Q60 90 110 0 M0 60 Q30 50 60 0"/></g>
+    <!-- calendar -->
+    <g id="cal"><rect x="790" y="300" width="210" height="250" rx="16" fill="#fff"/><rect x="790" y="300" width="210" height="64" rx="16" fill="#e11d48"/><rect x="790" y="340" width="210" height="24" fill="#e11d48"/>
+      <text x="895" y="346" font-size="28" font-weight="900" text-anchor="middle" fill="#fff" letter-spacing="2">${L("cal", "MORTGAGE")}</text>
+      <text id="calYear" x="895" y="480" font-size="74" font-weight="900" text-anchor="middle" fill="#0f172a">2029</text>
+      <rect id="calPage" x="790" y="364" width="210" height="186" fill="#fff" stroke="#e2e8f0" stroke-width="2" opacity="0"/></g>
+    <!-- plant -->
+    <rect x="900" y="1360" width="90" height="110" rx="14" fill="#d9825b"/>
+    <path id="plant" class="noorigin" d="M945 1360 q-40 -120 0 -200 q40 80 0 200 M945 1360 q-80 -60 -90 -150 M945 1360 q80 -50 90 -140" stroke="#4caf7a" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <!-- sofa back -->
+    <rect x="200" y="980" width="680" height="320" rx="70" fill="#6c5ce7"/>
+    <!-- Sam -->
+    <g id="sam">
+      ${torso(R.cx, R.cy, R.r)}
+      <path id="armLo" d="M428 1090 L380 1200 L470 1240" stroke="${SLEEVE_LINE}" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="armRo" d="" stroke="${SLEEVE_LINE}" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      ${head("r", R.cx, R.cy, R.r)}
+      <path d="M428 1090 L380 1200 L470 1240" stroke="${SLEEVE}" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="470" cy="1240" r="30" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+      <path id="armR" d="" stroke="${SLEEVE}" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <g id="phone" class="noorigin"><rect x="-44" y="-80" width="88" height="160" rx="16" fill="#1e293b"/><rect id="phoneScreen" x="-36" y="-70" width="72" height="136" rx="10" fill="#3987e5"/></g>
+      <circle id="handR" r="30" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+    </g>
+    <!-- sofa seat and arms -->
+    <rect x="170" y="1250" width="740" height="170" rx="50" fill="#5a4bd6"/><rect x="140" y="1120" width="120" height="300" rx="50" fill="#7b6cf0"/><rect x="820" y="1120" width="120" height="300" rx="50" fill="#7b6cf0"/>
+    <rect x="200" y="1420" width="30" height="70" fill="#3b2f8f"/><rect x="850" y="1420" width="30" height="70" fill="#3b2f8f"/>
+    <!-- coffee table + piggy -->
+    <rect x="120" y="1560" width="380" height="30" rx="12" fill="#b07a4f"/><rect x="150" y="1590" width="20" height="110" fill="#8a5a37"/><rect x="450" y="1590" width="20" height="110" fill="#8a5a37"/>
+    ${piggyArt("piggy", 310, 1460, .62)}
+    <g id="dropCoin"><circle r="22" fill="#ffcf5a" stroke="#e8a92a" stroke-width="5"/></g>
+    <text id="plusTxt" x="0" y="0" font-size="44" font-weight="900" fill="#16a34a" stroke="#fff" stroke-width="8" paint-order="stroke">${L("plus", "+£227")}</text>
+  </g>
+  <!-- the bank's vacuum -->
+  <g id="vac" class="noorigin">
+    <path d="M1180 640 C1020 640 980 760 930 900" stroke="#475569" stroke-width="64" fill="none" stroke-linecap="round"/>
+    <path d="M1180 640 C1020 640 980 760 930 900" stroke="#64748b" stroke-width="40" fill="none" stroke-linecap="round" stroke-dasharray="18 22"/>
+    <path d="M880 880 L990 920 L960 1060 L800 1000 Z" fill="#334155"/>
+    <rect x="820" y="760" width="230" height="70" rx="20" fill="#1e3a8a"/><text x="935" y="808" font-size="34" font-weight="900" text-anchor="middle" fill="#fff">${L("vac", "🏦 BANK")}</text>
+  </g>
+  <g id="coins">${coins}</g>
+  <g id="bulb" class="noorigin">
+    <circle cx="540" cy="600" r="150" fill="url(#bulbGlow)"/>
+    <circle cx="540" cy="590" r="62" fill="#ffe066" stroke="#e8a92a" stroke-width="6"/><rect x="514" y="644" width="52" height="40" rx="8" fill="#94a3b8"/>
+    ${Array.from({ length: 8 }, (_, i) => `<rect x="534" y="470" width="12" height="40" rx="6" fill="#ffe066" transform="rotate(${i * 45 - 90} 540 590)" class="noorigin"/>`).join("")}
+  </g>`;
+}
+function renderRoom(t) {
+  const el = $("room");
+  const vis = t < 17.0;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 0, .7));
+  const { cx, cy, r } = R;
+  // calendar flips 2029 → 2054, Sam ages, then snaps back
+  const flip = t >= 4.6 && t < 8.7 ? eio(p(t, 4.6, 8.4)) : 0;
+  const year = t >= 8.7 ? 2029 : Math.round(lerp(2029, 2054, flip));
+  $("calYear").textContent = year;
+  const pageA = t >= 4.6 && t < 8.5 ? ((t - 4.6) * lerp(3, 12, p(t, 4.6, 7.5))) % 1 : 0;
+  $("calPage").setAttribute("opacity", pageA ? 1 - pageA : 0);
+  $("calPage").style.transform = `translate(${pageA * 160}px, ${-pageA * 120}px) rotate(${pageA * 40}deg)`;
+  const age = t < 8.7 ? flip : 0;
+  $("rHair").setAttribute("fill", mix(HAIR, GREY, age));
+  $("rGlasses").setAttribute("opacity", p(age, .5, .7));
+  $("web").setAttribute("opacity", p(age, .4, .8));
+  $("hourHand").setAttribute("transform", `rotate(${t < 8.7 ? flip * 3600 : 0} 170 360)`);
+  $("minHand").setAttribute("transform", `rotate(${t < 8.7 ? flip * 43200 : 0} 170 360)`);
+  $("plant").setAttribute("transform", `rotate(${age * 18} 945 1360)`);
+  // right arm holds the phone up while reading, lowers when the vacuum comes
+  const read = 1 - eio(p(t, 8.9, 9.4)) + eio(p(t, 15.2, 15.7));
+  const hx = lerp(700, 612, clamp(read)), hy = lerp(1240, 1110, clamp(read));
+  const d = armPath(652, 1090, 712, 1210, hx, hy);
+  $("armR").setAttribute("d", d); $("armRo").setAttribute("d", d);
+  $("handR").setAttribute("cx", hx); $("handR").setAttribute("cy", hy);
+  $("phone").setAttribute("transform", `translate(${hx - 6} ${hy - 40}) rotate(-8) scale(${clamp(read)})`);
+  $("phoneScreen").setAttribute("fill", t > 15.6 ? "#ffffff" : "#3987e5");
+  // face
+  const shock = Math.max(win(t, 1.3, 4.3, .2), win(t, 9.1, 12.9, .2));
+  const gx = read > .5 ? 10 : (win(t, 9.4, 12.8) ? 14 : 0), gy = read > .5 ? 14 : (t > 13.2 && t < 14.4 ? -16 : 0);
+  $("rPupils").setAttribute("transform", `translate(${gx} ${gy})`);
+  $("rEyes").style.transform = `scaleY(${blinkAt(t, [2.9, 6.2, 11.2, 14.9])}) scale(${1 + .22 * shock})`;
+  $("rBrowL").setAttribute("transform", `translate(0 ${-10 * shock - 8 * win(t, 13.2, 15.4)})`);
+  $("rBrowR").setAttribute("transform", `translate(0 ${-10 * shock - 8 * win(t, 13.2, 15.4)})`);
+  const happy = win(t, 13.4, 17, .3);
+  $("rMouth").setAttribute("d", shock > .4 ? mouth(cx, cy, r, "o", 1.1) : (t > 4.4 && t < 8.7 ? mouth(cx, cy, r, "frown") : mouth(cx, cy, r, "smile", lerp(.35, 1, happy))));
+  $("rMouth").setAttribute("fill", t > 4.4 && t < 8.7 && shock < .4 ? "none" : "#7a2e1f");
+  // hair blown by the vacuum
+  const blow = win(t, 9.4, 12.8, .3);
+  $("rHair").setAttribute("transform", `translate(${blow * (10 + Math.sin(t * 30) * 4)} 0)`);
+  // bank notification
+  const nb = eo(p(t, 0.5, 0.9)) * (1 - eio(p(t, 4.0, 4.4)));
+  css($("notif"), clamp(nb * 1.5), `translateY(${(1 - nb) * -260}px)`);
+  // interest counter
+  const ic = win(t, 9.3, 12.9, .3);
+  css($("interest"), ic, `scale(${pop(t, 9.3, .5)}) rotate(${Math.sin(t * 9) * 2 * ic}deg)`);
+  $("interestNum").textContent = money(166874 * eo(p(t, 9.5, 11.8)));
+  // vacuum in, coins out of Sam's pocket into the nozzle, vacuum out
+  const vin = eo(p(t, 9.1, 9.6)) * (1 - eio(p(t, 12.6, 13.1)));
+  $("vac").setAttribute("transform", `translate(${(1 - vin) * 520 + Math.sin(t * 40) * 3 * vin} 0)`);
+  document.querySelectorAll("#roomSvg .coin").forEach((c, i) => {
+    const t0 = 9.6 + i * .21, a = (t - t0) / .7;
+    if (a < 0 || a > 1 || t > 12.8) { c.setAttribute("opacity", 0); return; }
+    const x = lerp(640, 890, a), y = lerp(1180, 950, a) - Math.sin(a * Math.PI) * 140;
+    c.setAttribute("opacity", 1); c.setAttribute("transform", `translate(${x} ${y}) rotate(${a * 540}) scale(${1 - a * .5})`);
+  });
+  // the idea
+  const bz = pop(t, 13.2, .45) * (1 - p(t, 15.6, 15.9));
+  $("bulb").setAttribute("transform", `translate(540 600) scale(${bz}) translate(-540 -600)`);
+  $("bulb").setAttribute("opacity", bz ? .85 + .15 * Math.sin(t * 20) : 0);
+  const pz = pop(t, 13.7, .5);
+  $("piggy").setAttribute("transform", `translate(310 1460) scale(${.62 * pz})`);
+  const drops = [14.3, 14.95];
+  const di = drops.findIndex(d0 => t >= d0 && t < d0 + .65);
+  if (di >= 0) {
+    const a = p(t, drops[di], drops[di] + .45);
+    $("dropCoin").setAttribute("transform", `translate(310 ${lerp(1250, 1405, eio(a))}) scale(${a < 1 ? 1 : 0})`);
+    $("plusTxt").setAttribute("transform", `translate(380 ${1360 - p(t, drops[di], drops[di] + .65) * 80})`);
+    $("plusTxt").setAttribute("opacity", 1 - p(t, drops[di] + .4, drops[di] + .65));
+  } else { $("dropCoin").setAttribute("transform", "scale(0)"); $("plusTxt").setAttribute("opacity", 0); }
+  // zoom towards the phone, then the wipe
+  const z = lerp(1, 1.04, p(t, 0, 15)) * lerp(1, 1.6, eio(p(t, 15.6, 16.8)));
+  $("roomCam").setAttribute("transform", `translate(${612 - 612 * z} ${1070 - 1070 * z}) scale(${z})`);
+}
+
+// ---------- app ----------
+const CX = y => 96 + y / 25 * 560, CY = v => 380 - v / 250000 * 340;
+function buildApp() {
+  const pts = BAL.slice(0, 21).map((v, y) => `${y ? "L" : "M"}${CX(y)} ${CY(v)}`).join(" ");
+  const rest = BAL.slice(20).map((v, i) => `${i ? "L" : "M"}${CX(20 + i)} ${CY(v)}`).join(" ");
+  $("chart").innerHTML = `
+    ${[0, 100000, 200000].map(v => `<line x1="96" x2="660" y1="${CY(v)}" y2="${CY(v)}" stroke="#e2e8f0" stroke-width="2"/>
+      <text x="86" y="${CY(v) + 8}" font-size="22" text-anchor="end" fill="#94a3b8" font-weight="600">${v ? (LANG === "es" ? v / 1000 + "k €" : "£" + v / 1000 + "k") : (LANG === "es" ? "0 €" : "£0")}</text>`).join("")}
+    ${[0, 5, 10, 15, 20, 25].map(y => `<text x="${CX(y)}" y="412" font-size="22" text-anchor="middle" fill="#94a3b8" font-weight="600">${2029 + y}</text>`).join("")}
+    <path id="restLine" d="${rest}" fill="none" stroke="#94a3b8" stroke-width="5" stroke-dasharray="10 10"/>
+    <path id="balLine" d="${pts}" fill="none" stroke="#3987e5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="dropLine" d="M${CX(20)} ${CY(BAL[20])} L${CX(20)} ${CY(0)}" stroke="#d95926" stroke-width="8" stroke-linecap="round"/>
+    <circle id="balHead" r="11" fill="#3987e5" stroke="#fff" stroke-width="5"/>
+    <text id="boom" x="${CX(20)}" y="${CY(BAL[20]) - 30}" font-size="54" text-anchor="middle">💥</text>`;
+  window.LEN = $("balLine").getTotalLength();
+  $("balLine").style.strokeDasharray = `${LEN} ${LEN}`;
+  $("potSvg").innerHTML = `${piggyArt("pig2", 120, 150, .72)}
+    <text x="120" y="290" font-size="26" font-weight="800" text-anchor="middle" fill="#64748b">${L("pot", "Pot")}</text>
+    <text id="potNum" x="120" y="336" font-size="42" font-weight="900" text-anchor="middle" fill="#0f172a">£0</text>
+    <text id="potPays" x="120" y="384" font-size="22" font-weight="800" text-anchor="middle" fill="#d95926">${L("potPays", "pays off the rest!")}</text>`;
+}
+const FIELDS = [["f0", L("f0", "£250,000"), 17.45, 18.0], ["f1", L("f1", "4.5%"), 18.15, 18.5], ["f2", L("f2", "25 years"), 18.65, 19.05], ["f3", L("f3", "3%"), 19.2, 19.45]];
+const CURSOR = [[16.8, [760, 960]], [17.0, [710, 361]], [17.3, [710, 361]], [17.4, [760, 528]], [18.1, [760, 628]], [18.6, [760, 728]], [19.15, [760, 828]], [19.7, [990, 1500]]];
+const CLICKS = [17.05, 17.4, 18.1, 18.6, 19.15];
+function renderApp(t) {
+  const el = $("app");
+  const vis = t > 15.9 && t < 32.4;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 16.9 ? `circle(${eio(p(t, 16.0, 16.9)) * 2300}px at 612px 1070px)` : "none";
+  css($("win"), 1, `translateY(${(1 - eo(p(t, 16.1, 16.9))) * 120}px) scale(${lerp(.92, 1, eo(p(t, 16.1, 16.9)))})`);
+  const onMortgage = t > 17.1;
+  $("tab0").classList.toggle("on", !onMortgage); $("tab1").classList.toggle("on", onMortgage);
+  FIELDS.forEach(([id, txt, a, b], i) => {
+    const n = Math.round(p(t, a, b) * txt.length);
+    const focus = t > a - .1 && t < (FIELDS[i + 1] ? FIELDS[i + 1][2] - .1 : 19.7);
+    $(id).innerHTML = (t < 17.2 ? "" : txt.slice(0, n)) + (focus && (Math.floor(t * 3) % 2 === 0 || t < b) ? '<span class="caret"></span>' : "");
+    $(id).classList.toggle("on", focus);
+  });
+  [["k0", 19.75], ["k1", 20.1]].forEach(([id, a]) => css($(id), clamp(p(t, a, a + .2) * 2), `scale(${pop(t, a, .45) || .001})`));
+  $("content").style.transform = `translateY(${-eio(p(t, 20.5, 21.3)) * 640}px)`;
+  [["k2", 21.5], ["k3", 21.9], ["k4", 22.3], ["k5", 22.7]].forEach(([id, a]) => css($(id), clamp(p(t, a, a + .2) * 2), `scale(${pop(t, a, .45) || .001})`));
+  // balance falls while the pot fills; at year 20 the pot pays the rest
+  const d = eio(p(t, 23.2, 26.6)), yr = d * 20;
+  $("balLine").style.strokeDashoffset = LEN * (1 - d);
+  const pt = $("balLine").getPointAtLength(LEN * d);
+  $("balHead").setAttribute("cx", pt.x); $("balHead").setAttribute("cy", pt.y); $("balHead").setAttribute("opacity", d > 0 && t < 26.7 ? 1 : 0);
+  $("potNum").textContent = money(pot(yr));
+  $("pig2").setAttribute("transform", `translate(120 150) scale(${.72 * (1 + .25 * d) * (t > 26.6 && t < 27.2 ? 1 + .1 * Math.sin(t * 50) : 1)})`);
+  const drop = eio(p(t, 26.7, 27.1));
+  $("dropLine").setAttribute("d", `M${CX(20)} ${CY(BAL[20])} L${CX(20)} ${lerp(CY(BAL[20]), CY(0), drop)}`);
+  $("dropLine").setAttribute("opacity", drop > 0 ? 1 : 0);
+  $("boom").style.transform = `scale(${pop(t, 26.8, .4) * (1 - p(t, 28.4, 28.7))})`;
+  $("restLine").setAttribute("opacity", .9 * p(t, 27.1, 27.6));
+  $("potPays").setAttribute("opacity", p(t, 26.9, 27.2));
+  css($("advice"), clamp(p(t, 28.2, 28.5) * 2), `scale(${pop(t, 28.2, .5) || .001})`);
+  const [cx, cy] = keys(t, CURSOR);
+  const click = CLICKS.find(c => t >= c && t < c + .45);
+  const rp = click !== undefined ? p(t, click, click + .45) : 1;
+  $("ripple").setAttribute("opacity", click !== undefined ? 1 - rp : 0); $("ripple").setAttribute("r", 8 + rp * 34);
+  css($("cursor"), p(t, 16.7, 16.9) * (1 - p(t, 19.6, 19.9)), `translate(${cx - 8}px, ${cy - 4}px)`);
+}
+
+// ---------- 2049 ----------
+function houseArt(cx, cy, s) {
+  return `<g transform="translate(${cx} ${cy}) scale(${s})" class="noorigin">
+    <rect x="-130" y="-20" width="260" height="140" rx="10" fill="#ffe2b8"/>
+    <path d="M-160 -10 L0 -130 L160 -10 Z" fill="#ff7a59" stroke="#e3603f" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="70" y="-120" width="34" height="70" fill="#c46a4f"/>
+    <rect x="-28" y="40" width="56" height="80" rx="8" fill="#5eb1ff"/><circle cx="16" cy="82" r="5" fill="#fff"/>
+    <rect x="-108" y="10" width="58" height="52" rx="6" fill="#8ec5ff"/><rect x="50" y="10" width="58" height="52" rx="6" fill="#8ec5ff"/>
+    <path d="M-79 10 v52 M-108 36 h58 M79 10 v52 M50 36 h58" stroke="#fff" stroke-width="5"/></g>`;
+}
+function buildFuture() {
+  const shards = Array.from({ length: 10 }, (_, i) => `<path class="shard" d="M0 0 l${18 + i % 3 * 8} ${-10 - i % 2 * 10} l${-6 - i % 4 * 4} ${24 + i % 3 * 6} z" fill="#ff9ec4"/>`).join("");
+  const gold = Array.from({ length: 16 }, () => `<circle class="gc" r="20" fill="#ffcf5a" stroke="#e8a92a" stroke-width="5"/>`).join("");
+  const bills = Array.from({ length: 18 }, (_, i) => `<g class="bill"><rect x="-40" y="-22" width="80" height="44" rx="6" fill="#4caf7a" stroke="#2f855a" stroke-width="4"/><text y="10" font-size="26" font-weight="900" text-anchor="middle" fill="#14532d">${LANG === "es" ? "€" : "£"}</text></g>`).join("");
+  $("futSvg").innerHTML = `
+  <defs><linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4ff"/><stop offset="1" stop-color="#d7efff"/></linearGradient></defs>
+  <rect width="1080" height="1920" fill="url(#fsky)"/>
+  <circle cx="880" cy="380" r="80" fill="#ffd34d"/>
+  <path d="M0 1180 Q300 1080 600 1170 T1080 1140 L1080 1920 L0 1920 Z" fill="#8fd17f"/>
+  <path d="M0 1420 Q540 1340 1080 1420 L1080 1920 L0 1920 Z" fill="#6cbf6a"/>
+  <g transform="translate(540 980) scale(2.1)" class="noorigin">${houseArt(0, 0, 1)}</g>
+  <!-- mortgage paper -->
+  <g id="doc" class="noorigin"><rect x="-120" y="-150" width="240" height="300" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="4"/>
+    <text x="0" y="-100" font-size="32" font-weight="900" text-anchor="middle" fill="#0f172a">${L("doc", "MORTGAGE")}</text>
+    ${[0, 1, 2, 3, 4].map(i => `<rect x="-90" y="${-70 + i * 34}" width="${180 - (i % 2) * 50}" height="12" rx="6" fill="#e2e8f0"/>`).join("")}
+    <g id="stampP" class="noorigin"><rect x="-110" y="40" width="220" height="74" rx="12" fill="none" stroke="#16a34a" stroke-width="9"/>
+      <text x="0" y="92" font-size="40" font-weight="900" text-anchor="middle" fill="#16a34a">${L("paid", "PAID OFF ✅")}</text></g></g>
+  <!-- Sam, standing -->
+  <g id="samF">
+    <ellipse cx="560" cy="1700" rx="120" ry="18" fill="#000" opacity=".12"/>
+    <rect x="515" y="1490" width="40" height="200" rx="18" fill="#33508f"/><rect x="568" y="1490" width="40" height="200" rx="18" fill="#33508f"/>
+    <ellipse cx="532" cy="1694" rx="34" ry="16" fill="#222"/><ellipse cx="592" cy="1694" rx="34" ry="16" fill="#222"/>
+    <path d="M478 1330 Q482 1290 520 1282 Q560 1300 600 1282 Q638 1290 642 1330 L652 1510 L468 1510 Z" fill="${HOODIE}"/>
+    <path d="M522 1282 Q560 1306 598 1282" stroke="${HOODIE_D}" stroke-width="12" fill="none" stroke-linecap="round"/>
+    ${head("f", 560, 1190, 92)}
+    <g id="shades" opacity="0"><rect x="490" y="1170" width="60" height="38" rx="12" fill="#0f172a"/><rect x="570" y="1170" width="60" height="38" rx="12" fill="#0f172a"/><path d="M548 1182 h24" stroke="#0f172a" stroke-width="6"/></g>
+    <path d="M490 1320 Q440 1400 430 1450" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round"/><circle cx="430" cy="1458" r="24" fill="${SKIN}"/>
+    <path id="fArm" d="" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <g id="hammer" class="noorigin"><rect x="-8" y="-150" width="16" height="160" rx="6" fill="#8a5a37"/><rect x="-46" y="-186" width="92" height="50" rx="10" fill="#64748b"/></g>
+    <circle id="fHand" r="24" fill="${SKIN}"/>
+  </g>
+  ${piggyArt("pig3", 790, 1610, .7)}
+  <g id="shards">${shards}</g><g id="gold">${gold}</g><g id="bills">${bills}</g>
+  ${dogArt("dog", 0, 0, 1)}
+  ${keysArt("fkeys")}`;
+}
+function renderFuture(t) {
+  const el = $("future");
+  const vis = t > 30.9 && t < 40.6;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 32.0 ? `circle(${eio(p(t, 31.0, 32.0)) * 2300}px at 820px 1200px)` : "none";
+  $("yearNum").textContent = Math.round(lerp(2029, 2049, eo(p(t, 31.4, 32.8))));
+  css($("yearPill"), p(t, 31.3, 31.6), `scale(${pop(t, 31.3, .5)})`);
+  // Sam is 20 years older: a little grey
+  $("fHair").setAttribute("fill", mix(HAIR, GREY, .45));
+  // hammer: raise, smash at 32.9
+  const up = eo(p(t, 32.1, 32.6)), down = eio(p(t, 32.7, 32.9)), lower = eio(p(t, 33.4, 33.9));
+  const ang = t < 32.7 ? lerp(20, -70, up) : lerp(-70, 60, down) * (1 - lower);
+  const sx = 640, sy = 1320, len = 150;
+  const hx = sx + Math.cos((ang + 20) * Math.PI / 180) * len, hy = sy + Math.sin((ang + 20) * Math.PI / 180) * len;
+  const holding = t < 33.9;
+  const hX = holding ? hx : 670, hY = holding ? hy : 1460;
+  $("fArm").setAttribute("d", `M${sx} ${sy} L${hX} ${hY}`);
+  $("fHand").setAttribute("cx", hX); $("fHand").setAttribute("cy", hY);
+  $("hammer").setAttribute("transform", `translate(${hX} ${hY}) rotate(${ang + 110})`);
+  $("hammer").setAttribute("opacity", holding ? 1 : 0);
+  // the piggy breaks, coins burst
+  const broken = t > 32.9;
+  $("pig3").setAttribute("transform", `translate(790 1610) scale(${broken ? 0 : .7 * (1 + .04 * Math.sin(t * 30) * p(t, 32.2, 32.9))})`);
+  document.querySelectorAll("#futSvg .shard").forEach((s, i) => {
+    const a = t - 32.9; if (a < 0 || a > 1.4) { s.setAttribute("opacity", 0); return; }
+    const ang2 = i / 10 * Math.PI * 2;
+    s.setAttribute("opacity", 1 - a / 1.4);
+    s.setAttribute("transform", `translate(${790 + Math.cos(ang2) * a * 300} ${1600 + Math.sin(ang2) * a * 200 + a * a * 300}) rotate(${a * 400 + i * 30})`);
+  });
+  document.querySelectorAll("#futSvg .gc").forEach((c, i) => {
+    const a = t - 32.92 - (i % 4) * .03; if (a < 0 || a > 1.6) { c.setAttribute("opacity", 0); return; }
+    const vx = Math.cos(i * 2.4) * 260, vy = -420 - (i % 5) * 60;
+    c.setAttribute("opacity", 1 - p(a, 1.2, 1.6));
+    c.setAttribute("transform", `translate(${790 + vx * a} ${Math.min(1690, 1590 + vy * a + 600 * a * a)})`);
+  });
+  // the mortgage paper: up, stamped
+  const dz = pop(t, 33.5, .45) * (1 - p(t, 35.0, 35.3));
+  $("doc").setAttribute("transform", `translate(820 1100) rotate(-6) scale(${dz})`);
+  const st = t > 34.0 ? lerp(2, 1, eo(p(t, 34.0, 34.2))) : 0;
+  $("stampP").setAttribute("transform", `rotate(-12) scale(${st})`);
+  $("stampP").setAttribute("opacity", t > 34.0 ? 1 : 0);
+  // five years without the payment: shades and money rain
+  $("shades").setAttribute("opacity", p(t, 35.0, 35.2));
+  css($("freed"), win(t, 35.1, 37.6, .3), `scale(${pop(t, 35.1, .5)})`);
+  document.querySelectorAll("#futSvg .bill").forEach((b, i) => {
+    const a = t - 35.1 - (i % 9) * .14; if (a < 0 || t > 37.8) { b.setAttribute("opacity", 0); return; }
+    b.setAttribute("opacity", 1);
+    b.setAttribute("transform", `translate(${(i * 131) % 1080 + Math.sin(a * 3 + i) * 50} ${-60 + a * (320 + (i % 4) * 60)}) rotate(${Math.sin(a * 4 + i) * 30})`);
+  });
+  $("fMouth").setAttribute("d", t > 32.9 && t < 33.4 ? mouth(560, 1190, 92, "o", 1.2) : mouth(560, 1190, 92, "smile", 1));
+  $("fPupils").setAttribute("transform", t > 37.7 ? "translate(10 12)" : (t > 33.5 && t < 35 ? "translate(14 -6)" : "translate(8 6)"));
+  $("fEyes").style.transform = `scaleY(${blinkAt(t, [33.2, 36.4, 39.1])})`;
+  // the dog brings the keys back
+  const run = eio(p(t, 37.6, 38.6));
+  const dx = lerp(1250, 760, run), dy = 1620 - (t < 38.6 ? Math.abs(Math.sin(t * 14)) * 24 : 0);
+  $("dog").setAttribute("transform", `translate(${dx} ${dy}) scale(.85)`);
+  $("dogTail").setAttribute("transform", `rotate(${Math.sin(t * 18) * 20} 60 -20)`);
+  const dropped = t > 38.8;
+  const kx = dropped ? 660 : dx - 92 * .85, ky = dropped ? lerp(1560, 1660, eo(p(t, 38.8, 39.1))) : dy - 40;
+  $("fkeys").setAttribute("transform", `translate(${kx} ${ky}) rotate(${dropped ? 80 : 90 + Math.sin(t * 20) * 25})`);
+  $("fkeys").setAttribute("opacity", t > 37.6 ? 1 : 0);
+}
+
+// ---------- end card ----------
+function buildEnd() {
+  $("endSvg").innerHTML = ["🏠", "🐷", "💸", "🔑", "📉", "🐶"].map((e, i) =>
+    `<text class="fl" x="${[150, 930, 110, 970, 110, 970][i]}" y="${[260, 300, 1720, 1720, 1420, 1420][i]}" font-size="${[90, 80, 80, 90, 70, 70][i]}" text-anchor="middle">${e}</text>`).join("");
+}
+function renderEnd(t) {
+  const el = $("end");
+  const vis = t > 39.9;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 40.0, 40.6));
+  [["endWm", 40.4], ["endPill", 40.7], ["endH", 41.0], ["endSub", 41.5], ["endTags", 42.0], ["endUrl", 42.5], ["endBtn", 43.0], ["endCta", 43.5], ["endFine", 43.9]].forEach(([id, a]) => {
+    const v = p(t, a, a + .5);
+    css($(id), eo(v), `translateY(${(1 - eo(v)) * 40}px) scale(${lerp(.94, 1, back(v))})`);
+  });
+  $("endBtnIn").style.transform = `scale(${1 + .04 * Math.sin((t - 43) * 5) * p(t, 43.5, 44)})`;
+  document.querySelectorAll("#endSvg .fl").forEach((f, i) => f.style.transform = `translateY(${Math.sin(t * 1.6 + i) * 18}px) rotate(${Math.sin(t + i) * 8}deg) scale(${pop(t, 40.6 + i * .15, .5)})`);
+}
+
+function render(t) { renderRoom(t); renderApp(t); renderFuture(t); renderEnd(t); renderCaps(t); }
+applyLang(); buildRoom(); buildApp(); buildFuture(); buildEnd();
+boot(render, DURATION);
+</script>
+</body>
+</html>

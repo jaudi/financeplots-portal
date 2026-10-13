@@ -16,9 +16,11 @@ type Props = {
   title: string;
   subtitle: string;
   closeLabel: string;
+  /** Placement of the card; centred under a heading by default. */
+  className?: string;
 };
 
-export default function VideoTeaser({ src, poster, name, title, subtitle, closeLabel }: Props) {
+export default function VideoTeaser({ src, poster, name, title, subtitle, closeLabel, className = "mx-auto mt-6" }: Props) {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -43,7 +45,7 @@ export default function VideoTeaser({ src, poster, name, title, subtitle, closeL
           setOpen(true);
           trackEvent("video_play", { video: name });
         }}
-        className="group mx-auto mt-6 flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-2 pr-5 text-left transition hover:border-blue-400/50 hover:bg-white/10"
+        className={`group ${className} flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-2 pr-5 text-left transition hover:border-blue-400/50 hover:bg-white/10`}
       >
         <span
           className="relative h-[72px] w-[41px] shrink-0 overflow-hidden rounded-lg bg-cover bg-center"

@@ -362,6 +362,11 @@
   },
   "breakEven": {
     "title": "⚖️ Análisis del Punto de Equilibrio",
+    "video": {
+      "title": "Mira: Sam paga la hipoteca 5 años antes",
+      "subtitle": "Una hucha, una aspiradora muy glotona… 46 segundos.",
+      "close": "Cerrar"
+    },
     "sectionGeneral": "General",
     "labelCompany": "Empresa / Nombre del producto",
     "sectionFixed": "Costes Fijos (por periodo)",
@@ -679,6 +684,12 @@
     "kpiMonthlySaving": "Ahorro Mensual",
     "kpiMonthlySavingSub": "Durante {months} meses",
     "kpiStrategy": "Estrategia",
+    "kpiPaymentTerm": "Plazo de {years} años",
+    "strategyInvest": "Invertir",
+    "strategyRepay": "Amortizar antes",
+    "strategySub": "Ahorro ({savings} %) {sign} hipoteca ({mortgage} %)",
+    "adviceInvest": "Invierte en lugar de amortizar antes. Tu ahorro rinde ({savings} %) más que lo que cuesta la hipoteca ({mortgage} %). Invierte los {monthly} al mes.",
+    "adviceRepay": "Amortiza antes. Tu hipoteca cuesta ({mortgage} %) más de lo que rinde el ahorro ({savings} %). Ahorra {monthly} al mes durante {months} meses y te ahorrarás {saved} en intereses.",
     "chartInterestPrincipal": "Intereses vs Principal",
     "chartBalance": "Saldo Pendiente",
     "chartPaymentBreakdown": "Desglose de la Cuota",
