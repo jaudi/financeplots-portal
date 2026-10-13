@@ -1160,6 +1160,11 @@
     "eyebrow": "Plan de vida",
     "title": "¿Nos lo podemos permitir? ¿Y cuándo?",
     "intro": "Añade lo que tienes hoy y lo grande que viene: una casa, un bebé, un parón profesional, la jubilación. Mira tu dinero año a año, las fechas importantes y el plan A junto al plan B.",
+    "video": {
+      "title": "Mira: el plan de vida de Sam en 44 segundos",
+      "subtitle": "Una casa, un bebé, un plan B… y un perro muy travieso.",
+      "close": "Cerrar"
+    },
     "currency": "Moneda",
     "planA": "Plan A",
     "planB": "Plan B",

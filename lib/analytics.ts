@@ -16,6 +16,7 @@ export type AppEvent =
   | "finder_result" // "Which tool do I need?" pointed somewhere
   | "share_link" // a link to the figures on screen copied
   | "connector_copy" // the MCP URL or Claude Code command copied on /mcp
+  | "video_play" // an explainer video opened (VideoTeaser)
   | "email_signup"
   | "contact_click";
 
