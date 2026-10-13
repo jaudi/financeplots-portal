@@ -7,15 +7,17 @@
 <!--
   Episode 2 (46.5 s, 1080×1920): Sam's first mortgage payment leaves, the
   calendar flips to 2054, the bank's vacuum sucks up £166,874 of interest —
-  then a piggy bank: £227 a month put aside on top of the mortgage, and the
-  pot clears the mortgage five years early. Shown in the Lending Calculator's
+  then an idea: £161 a month invested in the stock market on top of the
+  mortgage, and at an assumed 6% a year the pot clears it five years early. Shown in the Lending Calculator's
   "Mortgage & Early Repayment" tab.
 
   The figures are that page's own maths (buildSchedule in lib/calculators.ts
   plus the page's early-repayment block) for: £250,000 at 4.5% over 25 years,
-  savings earning 3%. Payment £1,389.58, total interest £166,874; balance
-  at year 20 £74,536; £227.04 a month for 240 months at 3% grows to exactly
-  that; interest in the last five years £8,839.
+  investments assumed to return 6% a year. Payment £1,389.58, total interest
+  £166,874; balance at year 20 £74,536; £161.32 a month for 240 months at 6%
+  grows to exactly that; interest in the last five years £8,839. Because 6% >
+  4.5% the page's strategy reads "Invest"; the captions say 6% is an
+  assumption and that below the mortgage rate it says overpay instead.
 
   Open in a browser to watch; ?t=12.5 freezes, ?lang=es is the Spanish cut.
 -->
@@ -99,16 +101,16 @@
         <div class="abs kpi" id="k1" style="left:498px;top:700px"><div class="l" data-l="kInt">Total Interest</div><div class="v" style="color:#e11d48" data-l="vInt">£166,874</div><div class="s" data-l="sInt">66.7% of loan</div></div>
 
         <div class="abs sec" style="top:900px" data-l="secEarly">Early Repayment Analysis</div>
-        <div class="abs kpi" id="k2" style="left:52px;top:960px"><div class="l" data-l="kSave">Monthly Saving</div><div class="v" data-l="vSave">£227.04</div><div class="s" data-l="sSave">Over 240 months</div></div>
+        <div class="abs kpi" id="k2" style="left:52px;top:960px"><div class="l" data-l="kSave">Monthly Saving</div><div class="v" data-l="vSave">£161.32</div><div class="s" data-l="sSave">Over 240 months</div></div>
         <div class="abs kpi" id="k3" style="left:498px;top:960px"><div class="l" data-l="kBal">Balance at Year -5</div><div class="v" data-l="vBal">£74,536</div><div class="s" data-l="sBal">After 20 years</div></div>
         <div class="abs kpi" id="k4" style="left:52px;top:1120px"><div class="l" data-l="kSaved">Interest Saved</div><div class="v" style="color:#16a34a" data-l="vSaved">£8,839</div><div class="s" data-l="sSaved">Last 5 years eliminated</div></div>
-        <div class="abs kpi" id="k5" style="left:498px;top:1120px"><div class="l" data-l="kStrat">Strategy</div><div class="v" style="color:var(--a);font-size:42px;line-height:60px" data-l="vStrat">Repay Early</div><div class="s" data-l="sStrat">Savings (3%) &lt; mortgage (4.5%)</div></div>
+        <div class="abs kpi" id="k5" style="left:498px;top:1120px"><div class="l" data-l="kStrat">Strategy</div><div class="v" style="color:var(--a);font-size:42px;line-height:60px" data-l="vStrat">Invest</div><div class="s" data-l="sStrat">Savings (6%) &gt; mortgage (4.5%)</div></div>
 
         <div class="abs sec" style="top:1294px" data-l="secChart">Outstanding Balance</div>
         <svg class="abs" id="chart" style="left:30px;top:1340px" width="680" height="420" viewBox="0 0 680 420"></svg>
         <svg class="abs" id="potSvg" style="left:700px;top:1360px" width="260" height="400" viewBox="0 0 260 400"></svg>
 
-        <div class="abs advice" id="advice" style="top:1790px" data-l="advice">💡 Pay off early. Your mortgage rate (4.5%) exceeds what savings earn (3%). Save £227.04/mo for 240 months to save £8,839 in interest.</div>
+        <div class="abs advice" id="advice" style="top:1790px" data-l="advice">💡 Invest instead of repaying early. Your savings rate (6%) exceeds the mortgage rate (4.5%). Invest the £161.32/mo instead.</div>
       </div></div>
     </div>
     <svg class="abs" id="cursor" style="left:0;top:0;pointer-events:none" width="80" height="90" viewBox="0 0 80 90">
@@ -131,14 +133,14 @@
     <div class="abs" id="endPill" style="left:0;right:0;top:500px;display:flex;justify-content:center">
       <span data-l="endPill" style="border:2px solid rgba(79,143,247,.6);background:rgba(79,143,247,.14);color:#8ec5ff;border-radius:30px;padding:10px 28px;font-size:30px;font-weight:800;letter-spacing:3px">LENDING CALCULATOR</span></div>
     <div class="abs" id="endH" data-l="endH" style="left:0;right:0;top:640px;text-align:center;font-size:96px;font-weight:800;letter-spacing:-3px;line-height:1.05">Pay it off<br>early?</div>
-    <div class="abs" id="endSub" data-l="endSub" style="left:60px;right:60px;top:900px;text-align:center;font-size:38px;font-weight:600;color:#b9c6dd">See the monthly saving, the pot<br>and the interest you'd save.</div>
+    <div class="abs" id="endSub" data-l="endSub" style="left:60px;right:60px;top:900px;text-align:center;font-size:38px;font-weight:600;color:#b9c6dd">See the monthly amount, the investments<br>and the interest you'd save.</div>
     <div class="abs" id="endTags" data-l="endTags" style="left:0;right:0;top:1080px;display:flex;justify-content:center;gap:18px">
       <span class="tag">100% free</span><span class="tag">No signup</span><span class="tag">Nothing stored</span></div>
     <div class="abs" id="endUrl" data-l="endUrl" style="left:0;right:0;top:1250px;text-align:center;font-size:52px;font-weight:800;letter-spacing:-1px">financeplots.com<span style="color:#4f8ff7">/tools/lending</span></div>
     <div class="abs" id="endBtn" style="left:0;right:0;top:1380px;display:flex;justify-content:center">
       <span id="endBtnIn" data-l="endBtn" style="background:#3b82f6;border-radius:60px;padding:30px 70px;font-size:50px;font-weight:800;box-shadow:0 0 60px rgba(59,130,246,.6)">Run your numbers →</span></div>
     <div class="abs" id="endCta" data-l="endCta" style="left:0;right:0;top:1580px;text-align:center;font-size:40px;font-weight:700">Tag someone with a 25-year mortgage 😅👇</div>
-    <div class="abs" id="endFine" data-l="endFine" style="left:80px;right:80px;top:1760px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example: £250,000 at 4.5% over 25 years, savings earning 3% a year. Check your lender's overpayment rules and early-repayment charges. Not advice.</div>
+    <div class="abs" id="endFine" data-l="endFine" style="left:80px;right:80px;top:1760px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example: £250,000 at 4.5% over 25 years; investments assumed to grow 6% a year after costs. Returns aren't guaranteed and can be negative. Check early-repayment charges. Not advice.</div>
   </div>
 
   <div id="cap"><div id="capText"></div></div>
@@ -156,43 +158,43 @@ ES = {
   secMortgage: "Parámetros de la Hipoteca", lAmount: "Importe de la hipoteca", lRate: "Tipo hipotecario", lYears: "Duración", lSav: "Rentabilidad del ahorro",
   kPay: "Cuota Mensual", vPay: "1.389,58 €", sPay: "Plazo de 25 años", kInt: "Total de Intereses", vInt: "166.874 €", sInt: "66,7 % del préstamo",
   secEarly: "Análisis de Amortización Anticipada",
-  kSave: "Ahorro Mensual", vSave: "227,04 €", sSave: "Durante 240 meses", kBal: "Saldo en Año -5", vBal: "74.536 €", sBal: "Tras 20 años",
-  kSaved: "Intereses Ahorrados", vSaved: "8.839 €", sSaved: "Últimos 5 años eliminados", kStrat: "Estrategia", vStrat: "Amortizar antes", sStrat: "Ahorro (3 %) &lt; hipoteca (4,5 %)",
+  kSave: "Ahorro Mensual", vSave: "161,32 €", sSave: "Durante 240 meses", kBal: "Saldo en Año -5", vBal: "74.536 €", sBal: "Tras 20 años",
+  kSaved: "Intereses Ahorrados", vSaved: "8.839 €", sSaved: "Últimos 5 años eliminados", kStrat: "Estrategia", vStrat: "Invertir", sStrat: "Ahorro (6 %) &gt; hipoteca (4,5 %)",
   secChart: "Saldo Pendiente",
-  advice: "💡 Amortiza antes. Tu hipoteca cuesta (4,5 %) más de lo que rinde el ahorro (3 %). Ahorra 227,04 € al mes durante 240 meses y te ahorrarás 8.839 € en intereses.",
+  advice: "💡 Invierte en lugar de amortizar antes. Tu ahorro rinde (6 %) más que lo que cuesta la hipoteca (4,5 %). Invierte los 161,32 € al mes.",
   freed: 'Adiós a los 1.389,58 € al mes<br><span style="font-size:32px;opacity:.9">5 años antes</span>',
   endPill: "CALCULADORA DE PRÉSTAMOS", endH: "¿La pagas<br>antes?",
-  endSub: "Mira el ahorro mensual, la hucha<br>y los intereses que te ahorras.",
+  endSub: "Mira la aportación mensual, la inversión<br>y los intereses que te ahorras.",
   endTags: ["100% gratis", "Sin registro", "No se guarda nada"].map(x => `<span class="tag">${x}</span>`).join(""),
   endUrl: '<span style="font-size:48px">financeplots.com<span style="color:#4f8ff7">/es/tools/lending</span></span>',
   endBtn: "Haz tus números →", endCta: "Etiqueta a alguien con hipoteca a 25 años 😅👇",
-  endFine: "Ejemplo ilustrativo: 250.000 € al 4,5 % a 25 años, con un ahorro que rinde un 3 % al año. Consulta con tu banco las condiciones y comisiones por amortización anticipada. No es asesoramiento.",
+  endFine: "Ejemplo ilustrativo: 250.000 € al 4,5 % a 25 años; se supone que la inversión rinde un 6 % al año, neto de costes. La rentabilidad no está garantizada y puede ser negativa. Consulta las comisiones por amortización anticipada. No es asesoramiento.",
   // drawn in SVG or typed
-  f0: "250.000 €", f1: "4,5 %", f2: "25 años", f3: "3 %", cal: "HIPOTECA", vac: "🏦 BANCO", plus: "+227 €", pot: "Hucha", potPays: "¡paga el resto!",
+  f0: "250.000 €", f1: "4,5 %", f2: "25 años", f3: "6 %", cal: "HIPOTECA", vac: "🏦 BANCO", plus: "+161 €", pot: "Inversión", potPays: "¡paga el resto!", market: "Bolsa", payBtn: "Amortizar →",
   paid: "PAGADA ✅", doc: "HIPOTECA",
 };
 CAPS = LANG === "es" ? [
   [0.4, 4.2, "POV: te acaban de cobrar la <b>primera</b> cuota de la hipoteca 🙃"],
   [4.4, 8.6, "La misma cuota. Cada mes. Hasta 2054. 💀"],
   [9.1, 12.9, "…y 166.874 € de eso son solo <b>intereses</b>. 😱"],
-  [13.2, 16.0, "Entonces Sam tuvo una idea: apartar un poco cada mes. 🐷"],
+  [13.2, 16.0, "Entonces Sam tuvo una idea: invertir un poco cada mes. 📈"],
   [16.4, 19.6, "Así que abrió la <b>Calculadora de Préstamos</b> gratis de FinancePlots."],
-  [19.8, 23.1, "El truco: 227 € al mes a una hucha, además de la cuota."],
-  [23.2, 28.0, "En 20 años la hucha paga lo que queda. <b>5 años antes.</b> 🤯"],
-  [28.2, 30.9, "(Si tu ahorro rinde más que lo que cuesta la hipoteca, también te lo dice.)"],
-  [31.3, 34.8, "2049: hucha rota. Hipoteca pagada. 🔨"],
+  [19.8, 23.1, "El truco: 161 € al mes en bolsa, además de la cuota."],
+  [23.2, 28.0, "Con un 6 % anual supuesto, en 20 años paga lo que queda. <b>5 años antes.</b> 🤯"],
+  [28.2, 30.9, "(El 6 % no está garantizado: la bolsa también baja. Por debajo del 4,5 %, te dirá que amortices.)"],
+  [31.3, 34.8, "2049: vende y paga. Hipoteca liquidada. ✅"],
   [35.0, 37.5, "Cinco años sin cuota. 😎"],
   [37.7, 40.0, "(Y el perro por fin devolvió las llaves. 🐶🔑)"],
 ] : [
   [0.4, 4.2, "POV: your <b>first</b> mortgage payment just left your account 🙃"],
   [4.4, 8.6, "Same payment. Every month. Until 2054. 💀"],
   [9.1, 12.9, "…and £166,874 of it is just <b>interest</b>. 😱"],
-  [13.2, 16.0, "Then Sam had an idea: put a little aside every month. 🐷"],
+  [13.2, 16.0, "Then Sam had an idea: invest a little every month. 📈"],
   [16.4, 19.6, "So Sam opened the free <b>Lending Calculator</b> on FinancePlots."],
-  [19.8, 23.1, "The trick: £227 a month into a savings pot, on top."],
-  [23.2, 28.0, "In 20 years the pot pays off what's left. <b>5 years early.</b> 🤯"],
-  [28.2, 30.9, "(If your savings earn more than the mortgage costs, it tells you that too.)"],
-  [31.3, 34.8, "2049: pot smashed. Mortgage gone. 🔨"],
+  [19.8, 23.1, "The trick: £161 a month into the stock market, on top."],
+  [23.2, 28.0, "At an assumed 6% a year, in 20 years it pays off what's left. <b>5 years early.</b> 🤯"],
+  [28.2, 30.9, "(6% isn't guaranteed: markets fall too. Below 4.5%, it says overpay instead.)"],
+  [31.3, 34.8, "2049: sell, pay it off. Mortgage gone. ✅"],
   [35.0, 37.5, "Five years with no mortgage payment. 😎"],
   [37.7, 40.0, "(And the dog finally brought the keys back. 🐶🔑)"],
 ];
@@ -200,9 +202,21 @@ const money = v => LANG === "es" ? Math.round(v).toLocaleString("es-ES").replace
 
 // ---------- the numbers ----------
 const BAL = [250000, 244462, 238669, 232610, 226273, 219645, 212712, 205461, 197876, 189943, 181646, 172968, 163891, 154397, 144466, 134080, 123216, 111853, 99969, 87538, 74536, 60937, 46713, 31836, 16276, 0];
-const SR = .03 / 12, SAVE = 74536 * SR / (Math.pow(1 + SR, 240) - 1); // the page's £227.04, unrounded
+const SR = .06 / 12, SAVE = 74536 * SR / (Math.pow(1 + SR, 240) - 1); // the page's £161.32, unrounded
 const pot = years => SAVE * (Math.pow(1 + SR, years * 12) - 1) / SR; // pot(20) = £74,536
 const GREY = "#b9b9c4";
+
+/** An investment account: a market line that wobbles on its way up (6% is an average, not a straight line). */
+const INV_PTS = [[-100, 52], [-84, 38], [-68, 46], [-52, 22], [-38, 34], [-22, 6], [-6, 20], [10, -6], [26, 10], [42, -20], [58, -8], [74, -36], [90, -26], [106, -54]];
+const INV_LEN = 330;
+function investArt(id, cx, cy, s = 1) {
+  return `<g id="${id}" class="noorigin" transform="translate(${cx} ${cy}) scale(${s})">
+    <rect x="-130" y="-100" width="260" height="200" rx="26" fill="#fff" stroke="#16a34a" stroke-width="6"/>
+    <text x="0" y="-60" font-size="28" font-weight="900" text-anchor="middle" fill="#0f172a">📈 ${L("market", "Stock market")}</text>
+    <line x1="-106" x2="112" y1="74" y2="74" stroke="#e2e8f0" stroke-width="3"/>
+    <path id="${id}Line" d="M${INV_PTS.map(q => q.join(" ")).join(" L")}" fill="none" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${INV_LEN} ${INV_LEN}"/></g>`;
+}
+const showLine = (id, x) => $(id + "Line").style.strokeDashoffset = INV_LEN * (1 - clamp(x));
 
 // ---------- room ----------
 const R = { cx: 540, cy: 860, r: 112 };
@@ -250,11 +264,11 @@ function buildRoom() {
     <!-- sofa seat and arms -->
     <rect x="170" y="1250" width="740" height="170" rx="50" fill="#5a4bd6"/><rect x="140" y="1120" width="120" height="300" rx="50" fill="#7b6cf0"/><rect x="820" y="1120" width="120" height="300" rx="50" fill="#7b6cf0"/>
     <rect x="200" y="1420" width="30" height="70" fill="#3b2f8f"/><rect x="850" y="1420" width="30" height="70" fill="#3b2f8f"/>
-    <!-- coffee table + piggy -->
+    <!-- coffee table + investments -->
     <rect x="120" y="1560" width="380" height="30" rx="12" fill="#b07a4f"/><rect x="150" y="1590" width="20" height="110" fill="#8a5a37"/><rect x="450" y="1590" width="20" height="110" fill="#8a5a37"/>
-    ${piggyArt("piggy", 310, 1460, .62)}
+    ${investArt("inv", 310, 1450, .8)}
     <g id="dropCoin"><circle r="22" fill="#ffcf5a" stroke="#e8a92a" stroke-width="5"/></g>
-    <text id="plusTxt" x="0" y="0" font-size="44" font-weight="900" fill="#16a34a" stroke="#fff" stroke-width="8" paint-order="stroke">${L("plus", "+£227")}</text>
+    <text id="plusTxt" x="0" y="0" font-size="44" font-weight="900" fill="#16a34a" stroke="#fff" stroke-width="8" paint-order="stroke">${L("plus", "+£161")}</text>
   </g>
   <!-- the bank's vacuum -->
   <g id="vac" class="noorigin">
@@ -333,12 +347,13 @@ function renderRoom(t) {
   $("bulb").setAttribute("transform", `translate(540 600) scale(${bz}) translate(-540 -600)`);
   $("bulb").setAttribute("opacity", bz ? .85 + .15 * Math.sin(t * 20) : 0);
   const pz = pop(t, 13.7, .5);
-  $("piggy").setAttribute("transform", `translate(310 1460) scale(${.62 * pz})`);
+  $("inv").setAttribute("transform", `translate(310 1450) scale(${.8 * pz})`);
+  showLine("inv", .15 + .35 * p(t, 14.6, 15.0) + .4 * p(t, 15.25, 15.6));
   const drops = [14.3, 14.95];
   const di = drops.findIndex(d0 => t >= d0 && t < d0 + .65);
   if (di >= 0) {
     const a = p(t, drops[di], drops[di] + .45);
-    $("dropCoin").setAttribute("transform", `translate(310 ${lerp(1250, 1405, eio(a))}) scale(${a < 1 ? 1 : 0})`);
+    $("dropCoin").setAttribute("transform", `translate(310 ${lerp(1230, 1375, eio(a))}) scale(${a < 1 ? 1 : 0})`);
     $("plusTxt").setAttribute("transform", `translate(380 ${1360 - p(t, drops[di], drops[di] + .65) * 80})`);
     $("plusTxt").setAttribute("opacity", 1 - p(t, drops[di] + .4, drops[di] + .65));
   } else { $("dropCoin").setAttribute("transform", "scale(0)"); $("plusTxt").setAttribute("opacity", 0); }
@@ -363,12 +378,12 @@ function buildApp() {
     <text id="boom" x="${CX(20)}" y="${CY(BAL[20]) - 30}" font-size="54" text-anchor="middle">💥</text>`;
   window.LEN = $("balLine").getTotalLength();
   $("balLine").style.strokeDasharray = `${LEN} ${LEN}`;
-  $("potSvg").innerHTML = `${piggyArt("pig2", 120, 150, .72)}
-    <text x="120" y="290" font-size="26" font-weight="800" text-anchor="middle" fill="#64748b">${L("pot", "Pot")}</text>
+  $("potSvg").innerHTML = `${investArt("inv2", 125, 140, .9)}
+    <text x="120" y="290" font-size="26" font-weight="800" text-anchor="middle" fill="#64748b">${L("pot", "Investments")}</text>
     <text id="potNum" x="120" y="336" font-size="42" font-weight="900" text-anchor="middle" fill="#0f172a">£0</text>
     <text id="potPays" x="120" y="384" font-size="22" font-weight="800" text-anchor="middle" fill="#d95926">${L("potPays", "pays off the rest!")}</text>`;
 }
-const FIELDS = [["f0", L("f0", "£250,000"), 17.45, 18.0], ["f1", L("f1", "4.5%"), 18.15, 18.5], ["f2", L("f2", "25 years"), 18.65, 19.05], ["f3", L("f3", "3%"), 19.2, 19.45]];
+const FIELDS = [["f0", L("f0", "£250,000"), 17.45, 18.0], ["f1", L("f1", "4.5%"), 18.15, 18.5], ["f2", L("f2", "25 years"), 18.65, 19.05], ["f3", L("f3", "6%"), 19.2, 19.45]];
 const CURSOR = [[16.8, [760, 960]], [17.0, [710, 361]], [17.3, [710, 361]], [17.4, [760, 528]], [18.1, [760, 628]], [18.6, [760, 728]], [19.15, [760, 828]], [19.7, [990, 1500]]];
 const CLICKS = [17.05, 17.4, 18.1, 18.6, 19.15];
 function renderApp(t) {
@@ -395,7 +410,8 @@ function renderApp(t) {
   const pt = $("balLine").getPointAtLength(LEN * d);
   $("balHead").setAttribute("cx", pt.x); $("balHead").setAttribute("cy", pt.y); $("balHead").setAttribute("opacity", d > 0 && t < 26.7 ? 1 : 0);
   $("potNum").textContent = money(pot(yr));
-  $("pig2").setAttribute("transform", `translate(120 150) scale(${.72 * (1 + .25 * d) * (t > 26.6 && t < 27.2 ? 1 + .1 * Math.sin(t * 50) : 1)})`);
+  $("inv2").setAttribute("transform", `translate(125 140) scale(${.9 * (t > 26.6 && t < 27.2 ? 1 + .06 * Math.sin(t * 50) : 1)})`);
+  showLine("inv2", d);
   const drop = eio(p(t, 26.7, 27.1));
   $("dropLine").setAttribute("d", `M${CX(20)} ${CY(BAL[20])} L${CX(20)} ${lerp(CY(BAL[20]), CY(0), drop)}`);
   $("dropLine").setAttribute("opacity", drop > 0 ? 1 : 0);
@@ -421,7 +437,6 @@ function houseArt(cx, cy, s) {
     <path d="M-79 10 v52 M-108 36 h58 M79 10 v52 M50 36 h58" stroke="#fff" stroke-width="5"/></g>`;
 }
 function buildFuture() {
-  const shards = Array.from({ length: 10 }, (_, i) => `<path class="shard" d="M0 0 l${18 + i % 3 * 8} ${-10 - i % 2 * 10} l${-6 - i % 4 * 4} ${24 + i % 3 * 6} z" fill="#ff9ec4"/>`).join("");
   const gold = Array.from({ length: 16 }, () => `<circle class="gc" r="20" fill="#ffcf5a" stroke="#e8a92a" stroke-width="5"/>`).join("");
   const bills = Array.from({ length: 18 }, (_, i) => `<g class="bill"><rect x="-40" y="-22" width="80" height="44" rx="6" fill="#4caf7a" stroke="#2f855a" stroke-width="4"/><text y="10" font-size="26" font-weight="900" text-anchor="middle" fill="#14532d">${LANG === "es" ? "€" : "£"}</text></g>`).join("");
   $("futSvg").innerHTML = `
@@ -437,6 +452,10 @@ function buildFuture() {
     ${[0, 1, 2, 3, 4].map(i => `<rect x="-90" y="${-70 + i * 34}" width="${180 - (i % 2) * 50}" height="12" rx="6" fill="#e2e8f0"/>`).join("")}
     <g id="stampP" class="noorigin"><rect x="-110" y="40" width="220" height="74" rx="12" fill="none" stroke="#16a34a" stroke-width="9"/>
       <text x="0" y="92" font-size="40" font-weight="900" text-anchor="middle" fill="#16a34a">${L("paid", "PAID OFF ✅")}</text></g></g>
+  <g id="invGroup" class="noorigin">${investArt("inv3", 0, 0, .85)}
+    <text x="0" y="128" font-size="40" font-weight="900" text-anchor="middle" fill="#0f172a">${money(74536)}</text>
+    <g id="payBtn"><rect x="-96" y="150" width="192" height="60" rx="30" fill="#16a34a"/>
+      <text x="0" y="190" font-size="28" font-weight="900" text-anchor="middle" fill="#fff">${L("payBtn", "Pay off →")}</text></g></g>
   <!-- Sam, standing -->
   <g id="samF">
     <ellipse cx="560" cy="1700" rx="120" ry="18" fill="#000" opacity=".12"/>
@@ -448,11 +467,9 @@ function buildFuture() {
     <g id="shades" opacity="0"><rect x="490" y="1170" width="60" height="38" rx="12" fill="#0f172a"/><rect x="570" y="1170" width="60" height="38" rx="12" fill="#0f172a"/><path d="M548 1182 h24" stroke="#0f172a" stroke-width="6"/></g>
     <path d="M490 1320 Q440 1400 430 1450" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round"/><circle cx="430" cy="1458" r="24" fill="${SKIN}"/>
     <path id="fArm" d="" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <g id="hammer" class="noorigin"><rect x="-8" y="-150" width="16" height="160" rx="6" fill="#8a5a37"/><rect x="-46" y="-186" width="92" height="50" rx="10" fill="#64748b"/></g>
     <circle id="fHand" r="24" fill="${SKIN}"/>
   </g>
-  ${piggyArt("pig3", 790, 1610, .7)}
-  <g id="shards">${shards}</g><g id="gold">${gold}</g><g id="bills">${bills}</g>
+  <g id="gold">${gold}</g><g id="bills">${bills}</g>
   ${dogArt("dog", 0, 0, 1)}
   ${keysArt("fkeys")}`;
 }
@@ -466,31 +483,21 @@ function renderFuture(t) {
   css($("yearPill"), p(t, 31.3, 31.6), `scale(${pop(t, 31.3, .5)})`);
   // Sam is 20 years older: a little grey
   $("fHair").setAttribute("fill", mix(HAIR, GREY, .45));
-  // hammer: raise, smash at 32.9
-  const up = eo(p(t, 32.1, 32.6)), down = eio(p(t, 32.7, 32.9)), lower = eio(p(t, 33.4, 33.9));
-  const ang = t < 32.7 ? lerp(20, -70, up) : lerp(-70, 60, down) * (1 - lower);
-  const sx = 640, sy = 1320, len = 150;
-  const hx = sx + Math.cos((ang + 20) * Math.PI / 180) * len, hy = sy + Math.sin((ang + 20) * Math.PI / 180) * len;
-  const holding = t < 33.9;
-  const hX = holding ? hx : 670, hY = holding ? hy : 1460;
-  $("fArm").setAttribute("d", `M${sx} ${sy} L${hX} ${hY}`);
+  // Sam taps "Pay off" on the investments at 32.85; the pot is sold and pays the mortgage
+  const reach = eio(p(t, 32.2, 32.7)) * (1 - eio(p(t, 33.3, 33.8)));
+  const tap = t > 32.75 && t < 32.95 ? 8 : 0;
+  const hX = lerp(670, 962, reach), hY = lerp(1460, 1630, reach) + tap;
+  $("fArm").setAttribute("d", `M640 1320 L${lerp(660, 760, reach)} ${lerp(1400, 1690, reach)} L${hX} ${hY}`);
   $("fHand").setAttribute("cx", hX); $("fHand").setAttribute("cy", hY);
-  $("hammer").setAttribute("transform", `translate(${hX} ${hY}) rotate(${ang + 110})`);
-  $("hammer").setAttribute("opacity", holding ? 1 : 0);
-  // the piggy breaks, coins burst
-  const broken = t > 32.9;
-  $("pig3").setAttribute("transform", `translate(790 1610) scale(${broken ? 0 : .7 * (1 + .04 * Math.sin(t * 30) * p(t, 32.2, 32.9))})`);
-  document.querySelectorAll("#futSvg .shard").forEach((s, i) => {
-    const a = t - 32.9; if (a < 0 || a > 1.4) { s.setAttribute("opacity", 0); return; }
-    const ang2 = i / 10 * Math.PI * 2;
-    s.setAttribute("opacity", 1 - a / 1.4);
-    s.setAttribute("transform", `translate(${790 + Math.cos(ang2) * a * 300} ${1600 + Math.sin(ang2) * a * 200 + a * a * 300}) rotate(${a * 400 + i * 30})`);
-  });
+  const sold = eio(p(t, 32.95, 33.35));
+  $("invGroup").setAttribute("transform", `translate(880 1420) scale(${pop(t, 31.9, .5) * (1 - sold)})`);
+  $("payBtn").setAttribute("transform", tap ? "translate(0 4)" : "");
+  showLine("inv3", .3 + .7 * eo(p(t, 32.0, 32.6)));
   document.querySelectorAll("#futSvg .gc").forEach((c, i) => {
     const a = t - 32.92 - (i % 4) * .03; if (a < 0 || a > 1.6) { c.setAttribute("opacity", 0); return; }
     const vx = Math.cos(i * 2.4) * 260, vy = -420 - (i % 5) * 60;
     c.setAttribute("opacity", 1 - p(a, 1.2, 1.6));
-    c.setAttribute("transform", `translate(${790 + vx * a} ${Math.min(1690, 1590 + vy * a + 600 * a * a)})`);
+    c.setAttribute("transform", `translate(${880 + vx * a} ${Math.min(1690, 1450 + vy * a + 600 * a * a)})`);
   });
   // the mortgage paper: up, stamped
   const dz = pop(t, 33.5, .45) * (1 - p(t, 35.0, 35.3));
@@ -522,7 +529,7 @@ function renderFuture(t) {
 
 // ---------- end card ----------
 function buildEnd() {
-  $("endSvg").innerHTML = ["🏠", "🐷", "💸", "🔑", "📉", "🐶"].map((e, i) =>
+  $("endSvg").innerHTML = ["🏠", "📈", "💸", "🔑", "📉", "🐶"].map((e, i) =>
     `<text class="fl" x="${[150, 930, 110, 970, 110, 970][i]}" y="${[260, 300, 1720, 1720, 1420, 1420][i]}" font-size="${[90, 80, 80, 90, 70, 70][i]}" text-anchor="middle">${e}</text>`).join("");
 }
 function renderEnd(t) {

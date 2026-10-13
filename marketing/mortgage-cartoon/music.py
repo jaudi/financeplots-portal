@@ -8,15 +8,15 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from sound import Track, boing, click, coin, ding, hp, jingle, lp, noise, pop, scratch, sine, smash, song, tick, vacuum, whoosh, woof, write  # noqa: E402
+from sound import Track, click, coin, ding, hp, jingle, lp, noise, pop, scratch, sine, song, tick, vacuum, whoosh, woof, write  # noqa: E402
 
 DUR = 46.5
 tr = Track(DUR)
 
 
 def level(t):
-    # quiet while the payment sinks in, cut for the snap back and the smash
-    if 8.6 <= t < 9.0 or 32.85 <= t < 33.2 or t >= 46.0:
+    # quiet while the payment sinks in, cut for the snap back
+    if 8.6 <= t < 9.0 or t >= 46.0:
         return 0.0
     if 4.4 <= t < 8.6:
         return 0.35
@@ -24,7 +24,7 @@ def level(t):
 
 
 def drums(t):
-    return (13.2 <= t < 32.85) or (33.2 <= t < 46.0)
+    return 13.2 <= t < 46.0
 
 
 song(tr, level, drums, 46.0)
@@ -45,7 +45,7 @@ tr.at(9.3, vacuum(3.6), 0.12)
 for i in range(14):
     tr.at(9.6 + i * 0.21, coin(), 0.18)
 tr.at(12.6, whoosh(0.6), 0.25)
-# 4 · the idea, the piggy bank
+# 4 · the idea: invest a little every month
 tr.at(13.2, ding(88, 1.0), 0.25)
 tr.at(13.25, ding(95, 1.0), 0.15)
 tr.at(13.7, pop(500), 0.3)
@@ -68,12 +68,13 @@ for k in range(12):  # the pot filling
 tr.at(26.75, lp(noise(0.6, 6), 0.5), 0.5)  # boom
 tr.at(26.8, sine(200, 60, 0.4, 6), 0.4)
 tr.at(28.2, ding(84, 0.8), 0.18)
-# 6 · 2049
+# 6 · 2049: sell the investments, pay it off
 tr.at(31.0, whoosh(0.9), 0.4)
 for k in range(5):
     tr.at(31.5 + k * 0.25, click(), 0.3)
-tr.at(32.2, boing(), 0.2)
-tr.at(32.88, smash(), 0.7)
+tr.at(32.85, click(), 0.6)  # tap "Pay off"
+tr.at(32.9, ding(91, 0.9), 0.3)  # ka-ching
+tr.at(32.98, ding(96, 0.9), 0.25)
 for i in range(10):
     tr.at(32.95 + i * 0.05, coin(), 0.15)
 tr.at(33.5, pop(500), 0.3)
