@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import VideoTeaser from "@/components/VideoTeaser";
 import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import CompoundChat from "./CompoundChat";
 import { compoundGrowth } from "@/lib/calculators";
@@ -59,6 +60,7 @@ function NumInput({ label, value, onChange, min = 0, step = 100, prefix: prefixP
 export default function CompoundInterestPage() {
   const [currency] = useCurrency();
   const t = useTranslations("compoundInterest");
+  const es = useLocale() === "es";
   const tc = useTranslations("toolCommon");
   const presetLabels = [t("presetSP"), t("presetGlobal"), t("presetBonds"), t("presetSavings"), t("presetCustom")];
 
@@ -152,6 +154,16 @@ export default function CompoundInterestPage() {
 
       <div className="pt-[133px] pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {/* Captions are burned in, so each locale has its own cut (made in marketing/compound-cartoon). */}
+          <VideoTeaser
+            src={es ? "/compound-cartoon-es.mp4" : "/compound-cartoon.mp4"}
+            poster={es ? "/compound-cartoon-es-poster.jpg" : "/compound-cartoon-poster.jpg"}
+            name={es ? "compound-cartoon-es" : "compound-cartoon"}
+            title={t("video.title")}
+            subtitle={t("video.subtitle")}
+            closeLabel={t("video.close")}
+            className="mb-6"
+          />
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Sidebar */}
             <aside className="lg:w-72 xl:w-80 shrink-0">

@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam Starts at 25</title>
+<!--
+  Episode 3 (68 s, 1080×1920): Sam, 25, invests a first £200 and a year later
+  has £2,467 — "that's… it?" — then a snowball rolls down a hill (interest on
+  interest), Sam runs the Compound Interest calculator for £200 a month over
+  40 years, and asks what waiting until 35 would have cost. Shown on
+  /tools/compound-interest. Paced slower than episodes 1–2: every caption
+  stays up about 4.5 s so it can be read.
+
+  The figures are the page's own maths (compoundGrowth in lib/calculators.ts:
+  monthly compounding, contribution at the end of each month) for: £0 to
+  start, £200 a month, a custom 6% a year.
+    40 years (25 → 65): £398,298 from £96,000 paid in; interest £302,298
+                        (76% of the final value); multiple 4.15×.
+    30 years (35 → 65): £200,903 from £72,000 paid in.
+    After year 1: £2,467.  Waiting 10 years: £24,000 less in, £197,395 less out.
+  Not adjusted for inflation or tax; the captions say 6% is an assumption.
+
+  Open in a browser to watch; ?t=12.5 freezes, ?lang=es is the Spanish cut.
+-->
+<style>
+  :root { --a: #3987e5; --b: #d95926; --ink: #0f172a; --muted: #64748b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #05080f; height: 100%; overflow: hidden; }
+  body { font-family: Inter, "Inter Display", system-ui, sans-serif; color: #fff; }
+  #fit { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #111a3a; }
+  .scene { position: absolute; inset: 0; }
+  .abs { position: absolute; }
+  svg { display: block; }
+  svg * { transform-box: fill-box; transform-origin: center; }
+  .noorigin { transform-box: view-box; transform-origin: 0 0; }
+  #cap { position: absolute; left: 0; right: 0; top: 1700px; display: flex; justify-content: center; pointer-events: none; }
+  #capText { max-width: 960px; padding: 24px 40px; border-radius: 28px; background: rgba(5, 10, 25, .82);
+    font-weight: 800; font-size: 48px; line-height: 1.2; letter-spacing: -.5px; text-align: center; }
+  #capText b { color: #8ec5ff; }
+  .banner { left: 60px; right: 60px; top: 70px; border-radius: 36px; background: rgba(245,247,252,.96); color: var(--ink); padding: 26px 30px;
+    display: flex; gap: 24px; align-items: center; box-shadow: 0 24px 70px rgba(0,0,0,.4); }
+  /* browser, in the site's dark theme */
+  #win { position: absolute; left: 50px; top: 110px; width: 980px; height: 1560px; border-radius: 40px; overflow: hidden; background: #0a0f1e; box-shadow: 0 40px 120px rgba(0,0,0,.55); color: #fff; }
+  #bar { position: absolute; left: 0; right: 0; top: 0; height: 96px; background: #e8edf5; display: flex; align-items: center; gap: 14px; padding: 0 30px; z-index: 2; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; }
+  #url { margin-left: 18px; flex: 1; height: 56px; border-radius: 28px; background: #fff; display: flex; align-items: center; padding: 0 26px; font-size: 27px; color: #334155; font-weight: 500; white-space: nowrap; overflow: hidden; }
+  #url b { color: var(--ink); }
+  #view { position: absolute; left: 0; right: 0; top: 96px; bottom: 0; overflow: hidden; }
+  #content { position: absolute; left: 0; top: 0; width: 980px; height: 1464px; }
+  .h1 { left: 52px; top: 34px; font-size: 44px; font-weight: 800; letter-spacing: -1px; }
+  .row { left: 52px; width: 876px; height: 76px; display: flex; align-items: center; justify-content: space-between; }
+  .lab { font-size: 28px; font-weight: 600; color: #9ca3af; }
+  .inp { width: 360px; height: 76px; background: #111827; border: 3px solid #374151; border-radius: 18px; display: flex; align-items: center; padding: 0 24px; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .inp .pre { color: #6b7280; margin-right: 10px; }
+  .inp.on { border-color: #3b82f6; box-shadow: 0 0 0 6px rgba(59,130,246,.22); }
+  .caret { display: inline-block; width: 3px; height: 38px; background: #60a5fa; margin-left: 3px; }
+  #pills { left: 52px; top: 486px; width: 876px; display: flex; gap: 11.5px; }
+  .pill { height: 64px; border-radius: 16px; background: #111827; border: 2px solid #374151; color: #9ca3af; font-size: 24px; font-weight: 700; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+  .pill.on { background: #2563eb; border-color: #2563eb; color: #fff; }
+  .kpi { width: 430px; height: 140px; border-radius: 20px; background: #0d1426; border: 2px solid #1f2937; border-left: 10px solid #3b82f6; padding: 16px 24px; }
+  .kpi .l { font-size: 20px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1.5px; }
+  .kpi .v { font-size: 50px; font-weight: 800; letter-spacing: -1px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .kpi .s { font-size: 21px; font-weight: 600; color: #6b7280; margin-top: 1px; }
+  #cmp { left: 150px; top: 1080px; width: 560px; border-radius: 26px; background: #fff; color: var(--ink); padding: 24px 30px; box-shadow: 0 20px 60px rgba(0,0,0,.5); font-size: 29px; font-weight: 700; }
+  #cmp .r { display: flex; justify-content: space-between; padding: 6px 0; font-variant-numeric: tabular-nums; }
+  #cmp .r span:first-child { color: #475569; font-weight: 600; }
+  #cmp .d { border-top: 3px solid #e2e8f0; margin-top: 8px; padding-top: 12px; font-size: 34px; font-weight: 900; }
+  #end { background: radial-gradient(800px 700px at 30% 20%, #16306a 0%, transparent 70%), radial-gradient(800px 800px at 80% 90%, #2b1a52 0%, transparent 70%), #070b16; }
+  .wm { font-weight: 800; letter-spacing: -2px; } .wm span { color: #4f8ff7; }
+  .tag { background: rgba(255,255,255,.08); border-radius: 24px; padding: 12px 24px; font-size: 30px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+
+  <!-- 1–2 · the living room: the first £200, a year later -->
+  <div class="scene" id="room"><svg id="roomSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs banner" id="notif">
+      <div style="width:88px;height:88px;border-radius:22px;background:#1e3a8a;display:flex;align-items:center;justify-content:center;font-size:52px;flex:none">🏦</div>
+      <div style="flex:1"><div data-l="bankWho" style="display:flex;justify-content:space-between;font-size:30px;font-weight:800">Your Bank<span style="color:#94a3b8;font-weight:600;font-size:26px">now</span></div>
+        <div data-l="bankMsg" style="font-size:33px;font-weight:600;margin-top:6px;line-height:1.25">£200 moved to your investments ✅</div></div></div>
+  </div>
+
+  <!-- 3 · the snowball -->
+  <div class="scene" id="snow"><svg id="snowSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg></div>
+
+  <!-- 4 · FinancePlots Compound Interest calculator -->
+  <div class="scene" id="app" style="background: linear-gradient(160deg, #2a62d8 0%, #3987e5 45%, #6aa8f0 100%);">
+    <div id="win">
+      <div id="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+        <div id="url" data-l="url">🔒&nbsp; <b>financeplots.com</b>/tools/compound-interest</div></div>
+      <div id="view"><div id="content">
+        <div class="abs h1" data-l="title">💹 Compound Interest Calculator</div>
+        <div class="abs row" style="top:120px"><span class="lab" data-l="lInitial">Initial capital</span><span class="inp" id="f0"></span></div>
+        <div class="abs row" style="top:210px"><span class="lab" data-l="lMonthly">Monthly contribution</span><span class="inp" id="f1"></span></div>
+        <div class="abs" style="left:52px;top:312px;font-size:28px;font-weight:600;color:#9ca3af"><span data-l="lHorizon">Investment horizon</span>: <b id="horizon" style="color:#fff">20</b> <span data-l="years">years</span></div>
+        <div class="abs" style="left:52px;top:370px;width:876px;height:12px;border-radius:6px;background:#1f2937">
+          <div id="sliderFill" style="height:12px;border-radius:6px;background:#3b82f6;width:0"></div>
+          <div id="sliderThumb" class="abs" style="top:-14px;width:40px;height:40px;border-radius:50%;background:#3b82f6;border:5px solid #dbeafe;margin-left:-20px"></div></div>
+        <div class="abs" data-l="ticks" style="left:52px;top:398px;width:876px;display:flex;justify-content:space-between;font-size:20px;color:#4b5563;font-weight:600"><span>1yr</span><span>25yr</span><span>50yr</span></div>
+        <div class="abs" data-l="lReturn" style="left:52px;top:442px;font-size:22px;font-weight:800;color:#60a5fa;letter-spacing:2px">RETURN RATE</div>
+        <div class="abs" id="pills">
+          <span class="pill" id="pl0" style="width:190px">S&amp;P 500 10%</span>
+          <span class="pill on" id="pl1" style="width:150px">Global 8%</span>
+          <span class="pill" id="pl2" style="width:140px" data-l="pBonds">Bonds 4%</span>
+          <span class="pill" id="pl3" style="width:160px" data-l="pSavings">Savings 2%</span>
+          <span class="pill" id="pl4" style="width:190px" data-l="pCustom">Custom</span></div>
+        <div class="abs row" id="customRow" style="top:576px"><span class="lab" data-l="lCustom">Custom annual return %</span><span class="inp" id="f2"></span></div>
+
+        <div class="abs kpi" id="k0" style="left:52px;top:690px"><div class="l" data-l="kFinal">Final Portfolio Value</div><div class="v" id="vFinal">£0</div><div class="s" id="sFinal">After 40 years</div></div>
+        <div class="abs kpi" id="k1" style="left:498px;top:690px"><div class="l" data-l="kInvested">Total Invested</div><div class="v" id="vInv">£0</div><div class="s" data-l="sInvested">Initial + contributions</div></div>
+        <div class="abs kpi" id="k2" style="left:52px;top:846px;border-left-color:#22c55e"><div class="l" data-l="kInterest">Interest Earned</div><div class="v" id="vInt">£0</div><div class="s" id="sInt">0% of final value</div></div>
+        <div class="abs kpi" id="k3" style="left:498px;top:846px;border-left-color:#facc15"><div class="l" data-l="kMultiple">Return Multiple</div><div class="v" id="vMul">1.0×</div><div class="s" id="sMul">£1 → £1.00</div></div>
+
+        <div class="abs" data-l="chartTitle" style="left:52px;top:1012px;font-size:30px;font-weight:800">Portfolio Growth Over Time</div>
+        <svg class="abs" id="chart" style="left:30px;top:1056px" width="920" height="400" viewBox="0 0 920 400"></svg>
+        <div class="abs" id="cmp"></div>
+      </div></div>
+    </div>
+    <svg class="abs" id="cursor" style="left:0;top:0;pointer-events:none" width="80" height="90" viewBox="0 0 80 90">
+      <circle id="ripple" cx="10" cy="8" r="30" fill="none" stroke="#fff" stroke-width="5" opacity="0"/>
+      <path d="M8 4 L8 66 L24 52 L36 80 L48 75 L36 48 L58 48 Z" fill="#0f172a" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- 5 · age 65 -->
+  <div class="scene" id="future"><svg id="futSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="agePill" style="left:0;right:0;top:120px;display:flex;justify-content:center">
+      <div style="background:rgba(255,255,255,.94);color:#0f172a;border-radius:40px;padding:16px 40px;font-size:52px;font-weight:800;letter-spacing:-1px">🎂 <span id="ageNum">25</span></div></div>
+    <div class="abs" id="potPill" style="left:0;right:0;top:260px;display:flex;justify-content:center">
+      <div data-l="potPill" style="background:#2563eb;border-radius:30px;padding:20px 40px;font-size:64px;font-weight:900;text-align:center;line-height:1.15;letter-spacing:-1px;box-shadow:0 20px 60px rgba(0,0,0,.25)">£398,298<br><span style="font-size:34px;font-weight:700;opacity:.92;letter-spacing:0">from £200 a month, since 25</span></div></div>
+  </div>
+
+  <!-- 6 · end card -->
+  <div class="scene" id="end">
+    <svg class="abs" id="endSvg" style="left:0;top:0" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="endWm" style="left:0;right:0;top:300px;text-align:center"><span class="wm" style="font-size:96px">Finance<span>Plots</span></span></div>
+    <div class="abs" id="endPill" style="left:0;right:0;top:470px;display:flex;justify-content:center">
+      <span data-l="endPill" style="border:2px solid rgba(79,143,247,.6);background:rgba(79,143,247,.14);color:#8ec5ff;border-radius:30px;padding:10px 28px;font-size:30px;font-weight:800;letter-spacing:3px">COMPOUND INTEREST CALCULATOR</span></div>
+    <div class="abs" id="endH" data-l="endH" style="left:0;right:0;top:610px;text-align:center;font-size:96px;font-weight:800;letter-spacing:-3px;line-height:1.05">How much is<br>interest?</div>
+    <div class="abs" id="endSub" data-l="endSub" style="left:60px;right:60px;top:870px;text-align:center;font-size:38px;font-weight:600;color:#b9c6dd">See your pot year by year, how much<br>of it is interest — and what waiting costs.</div>
+    <div class="abs" id="endTags" data-l="endTags" style="left:0;right:0;top:1060px;display:flex;justify-content:center;gap:18px">
+      <span class="tag">100% free</span><span class="tag">No signup</span><span class="tag">Nothing stored</span></div>
+    <div class="abs" id="endUrl" data-l="endUrl" style="left:0;right:0;top:1230px;text-align:center;font-size:44px;font-weight:800;letter-spacing:-1px">financeplots.com<span style="color:#4f8ff7">/tools/compound-interest</span></div>
+    <div class="abs" id="endBtn" style="left:0;right:0;top:1360px;display:flex;justify-content:center">
+      <span id="endBtnIn" data-l="endBtn" style="background:#3b82f6;border-radius:60px;padding:30px 70px;font-size:50px;font-weight:800;box-shadow:0 0 60px rgba(59,130,246,.6)">Run your numbers →</span></div>
+    <div class="abs" id="endCta" data-l="endCta" style="left:40px;right:40px;top:1560px;text-align:center;font-size:40px;font-weight:700">Tag someone who says “I'll start next year” 😅👇</div>
+    <div class="abs" id="endFine" data-l="endFine" style="left:80px;right:80px;top:1730px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example: £200 a month from 25 to 65, or from 35 to 65, assumed to grow 6% a year after costs, compounded monthly. Not adjusted for inflation or tax. Returns aren't guaranteed and can be negative. Not advice.</div>
+  </div>
+
+  <div id="cap"><div id="capText"></div></div>
+</div></div>
+
+<script src="../kit.js"></script>
+<script>
+const DURATION = 68;
+ES = {
+  bankWho: 'Tu banco<span style="color:#94a3b8;font-weight:600;font-size:26px">ahora</span>',
+  bankMsg: "200 € enviados a tus inversiones ✅",
+  url: "🔒&nbsp; <b>financeplots.com</b>/es/tools/compound-interest",
+  title: "💹 Calculadora de Interés Compuesto",
+  lInitial: "Capital inicial", lMonthly: "Aportación mensual", lHorizon: "Horizonte de inversión", years: "años",
+  ticks: "<span>1 año</span><span>25 años</span><span>50 años</span>",
+  lReturn: "RENTABILIDAD", pBonds: "Bonos 4%", pSavings: "Ahorro 2%", pCustom: "Personalizado",
+  lCustom: "Rentabilidad anual personalizada %",
+  kFinal: "Valor final de la cartera", kInvested: "Total invertido", sInvested: "Capital + aportaciones", kInterest: "Intereses generados", kMultiple: "Multiplicador",
+  chartTitle: "Crecimiento de la Cartera",
+  potPill: '398.298 €<br><span style="font-size:34px;font-weight:700;opacity:.92;letter-spacing:0">con 200 € al mes, desde los 25</span>',
+  endPill: "CALCULADORA DE INTERÉS COMPUESTO", endH: "¿Cuánto son<br>intereses?",
+  endSub: "Mira tu dinero año a año, cuánto son<br>intereses… y lo que cuesta esperar.",
+  endTags: ["100% gratis", "Sin registro", "No se guarda nada"].map(x => `<span class="tag">${x}</span>`).join(""),
+  endUrl: '<span style="font-size:40px">financeplots.com<span style="color:#4f8ff7">/es/tools/compound-interest</span></span>',
+  endBtn: "Haz tus números →", endCta: "Etiqueta a quien dice «empiezo el año que viene» 😅👇",
+  endFine: "Ejemplo ilustrativo: 200 € al mes de los 25 a los 65, o de los 35 a los 65, con una rentabilidad supuesta del 6 % anual neta de costes y capitalización mensual. Sin ajustar por inflación ni impuestos. La rentabilidad no está garantizada y puede ser negativa. No es asesoramiento.",
+  // drawn in SVG or typed
+  age: "EDAD", jar: "Inversión", f1: "200", after: "Tras {n} años", ofFinal: "% del valor final", axis: "Edad",
+  legC: "Aportaciones", legI: "Intereses", ghost: "Empezando a los 25",
+  cmpA: "Desde los 25 · 40 años", cmpB: "Desde los 35 · 30 años", cmpD: "Diferencia", cmpIn: "Aportado",
+};
+// Slower than episodes 1–2: each caption stays about 4.5 s.
+CAPS = LANG === "es" ? [
+  [0.5, 5.0, "POV: tienes 25 años y acabas de invertir tus primeros <b>200 €</b> 🙂"],
+  [5.4, 10.0, "Un año después: 2.467 €. ¿Ya está? 😐"],
+  [10.6, 15.8, "Pero los intereses generan intereses… y <b>esos</b> también generan intereses. ❄️"],
+  [16.8, 21.4, "Sam abrió la <b>Calculadora de Interés Compuesto</b> gratis de FinancePlots."],
+  [21.8, 26.4, "200 € al mes durante 40 años, con un 6 % anual supuesto…"],
+  [26.8, 31.6, "96.000 € aportados. <b>398.298 €</b> a los 65. 🤯"],
+  [32.0, 36.6, "302.298 € son intereses: dinero que Sam nunca aportó."],
+  [37.0, 41.6, "¿Y si Sam hubiera esperado a los 35 para empezar? 🤔"],
+  [42.0, 46.8, "24.000 € menos aportados. <b>197.395 € menos</b> a los 65. 😱"],
+  [47.2, 51.6, "(El 6 % es una suposición, no una promesa: la bolsa también baja.)"],
+  [52.4, 56.6, "Sam empezó a los 25. Poco a poco, durante mucho tiempo. 😎"],
+  [56.9, 59.4, "(Y el perro volvió a llevarse las llaves. 🐶🔑)"],
+] : [
+  [0.5, 5.0, "POV: you're 25 and you just invested your first <b>£200</b> 🙂"],
+  [5.4, 10.0, "A year later: £2,467. That's… it? 😐"],
+  [10.6, 15.8, "But interest earns interest — and then <b>that</b> earns interest too. ❄️"],
+  [16.8, 21.4, "So Sam opened the free <b>Compound Interest calculator</b> on FinancePlots."],
+  [21.8, 26.4, "£200 a month for 40 years, at an assumed 6% a year…"],
+  [26.8, 31.6, "£96,000 paid in. <b>£398,298</b> at 65. 🤯"],
+  [32.0, 36.6, "£302,298 of it is interest — money Sam never paid in."],
+  [37.0, 41.6, "What if Sam had waited until 35 to start? 🤔"],
+  [42.0, 46.8, "£24,000 less paid in. <b>£197,395 less</b> at 65. 😱"],
+  [47.2, 51.6, "(6% a year is an assumption, not a promise: markets fall too.)"],
+  [52.4, 56.6, "Sam started at 25. Small amounts, for a long time. 😎"],
+  [56.9, 59.4, "(And the dog took the keys again. 🐶🔑)"],
+];
+const money = v => LANG === "es" ? Math.round(v).toLocaleString("es-ES").replace(/^(\d)(\d{3})$/, "$1.$2") + " €" : "£" + Math.round(v).toLocaleString("en-GB");
+const dec = (v, n) => LANG === "es" ? v.toFixed(n).replace(".", ",") : v.toFixed(n);
+const CUR = LANG === "es" ? "€" : "£";
+
+// ---------- the numbers (compoundGrowth: £200 at the end of each month, 6%/12 a month) ----------
+const MR = .06 / 12, PAY = 200;
+const fv = m => PAY * (Math.pow(1 + MR, m) - 1) / MR; // fv(12) = £2,467; fv(480) = £398,298; fv(360) = £200,903
+const GREY = "#b9b9c4";
+
+// ---------- room ----------
+const R = { cx: 540, cy: 860, r: 112 };
+const JAR = { x: 230, y: 1390, w: 160, h: 165 };
+function buildRoom() {
+  $("roomSvg").innerHTML = `
+  <defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b4c7e"/><stop offset="1" stop-color="#22395f"/></linearGradient>
+    <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a6b"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>
+    <clipPath id="jarClip"><rect x="${JAR.x + 8}" y="${JAR.y + 8}" width="${JAR.w - 16}" height="${JAR.h - 16}" rx="18"/></clipPath></defs>
+  <g id="roomCam" class="noorigin">
+    <rect width="1080" height="1920" fill="url(#wall)"/>
+    <rect y="1480" width="1080" height="440" fill="#5b3b2a"/><rect y="1480" width="1080" height="14" fill="#4a2f21"/>
+    <rect x="330" y="230" width="420" height="380" rx="20" fill="#e9edf8"/><rect x="346" y="246" width="388" height="348" rx="10" fill="url(#sunset)"/>
+    <circle cx="540" cy="520" r="60" fill="#fff1c1"/><path d="M346 560 Q450 500 540 560 T734 540 L734 594 L346 594 Z" fill="#7fb77e"/>
+    <rect x="534" y="246" width="12" height="348" fill="#e9edf8"/>
+    <circle cx="170" cy="360" r="78" fill="#fff" stroke="#1e293b" stroke-width="10"/>
+    <path id="hourHand" class="noorigin" d="M170 360 L170 316" stroke="#1e293b" stroke-width="9" stroke-linecap="round"/>
+    <path id="minHand" class="noorigin" d="M170 360 L170 300" stroke="#e11d48" stroke-width="6" stroke-linecap="round"/>
+    <!-- age card -->
+    <g id="cal"><rect x="790" y="300" width="210" height="250" rx="16" fill="#fff"/><rect x="790" y="300" width="210" height="64" rx="16" fill="#3987e5"/><rect x="790" y="340" width="210" height="24" fill="#3987e5"/>
+      <text x="895" y="346" font-size="30" font-weight="900" text-anchor="middle" fill="#fff" letter-spacing="3">${L("age", "AGE")}</text>
+      <text id="calYear" x="895" y="490" font-size="100" font-weight="900" text-anchor="middle" fill="#0f172a">25</text>
+      <rect id="calPage" x="790" y="364" width="210" height="186" fill="#fff" stroke="#e2e8f0" stroke-width="2" opacity="0"/></g>
+    <rect x="900" y="1360" width="90" height="110" rx="14" fill="#d9825b"/>
+    <path d="M945 1360 q-40 -120 0 -200 q40 80 0 200 M945 1360 q-80 -60 -90 -150 M945 1360 q80 -50 90 -140" stroke="#4caf7a" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <rect x="200" y="980" width="680" height="320" rx="70" fill="#6c5ce7"/>
+    <g id="sam">
+      ${torso(R.cx, R.cy, R.r)}
+      <path d="M428 1090 L380 1200 L470 1240" stroke="${SLEEVE_LINE}" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path id="armRo" d="" stroke="${SLEEVE_LINE}" stroke-width="66" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      ${head("r", R.cx, R.cy, R.r)}
+      <path d="M428 1090 L380 1200 L470 1240" stroke="${SLEEVE}" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="470" cy="1240" r="30" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+      <path id="armR" d="" stroke="${SLEEVE}" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <g id="phone" class="noorigin"><rect x="-44" y="-80" width="88" height="160" rx="16" fill="#1e293b"/><rect x="-36" y="-70" width="72" height="136" rx="10" fill="#3987e5"/></g>
+      <circle id="handR" r="30" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+    </g>
+    <rect x="170" y="1250" width="740" height="170" rx="50" fill="#5a4bd6"/><rect x="140" y="1120" width="120" height="300" rx="50" fill="#7b6cf0"/><rect x="820" y="1120" width="120" height="300" rx="50" fill="#7b6cf0"/>
+    <rect x="200" y="1420" width="30" height="70" fill="#3b2f8f"/><rect x="850" y="1420" width="30" height="70" fill="#3b2f8f"/>
+    <!-- coffee table + the investment jar -->
+    <rect x="120" y="1560" width="380" height="30" rx="12" fill="#b07a4f"/><rect x="150" y="1590" width="20" height="110" fill="#8a5a37"/><rect x="450" y="1590" width="20" height="110" fill="#8a5a37"/>
+    <rect x="${JAR.x + 20}" y="${JAR.y - 22}" width="${JAR.w - 40}" height="30" rx="8" fill="#94a3b8"/>
+    <rect x="${JAR.x}" y="${JAR.y}" width="${JAR.w}" height="${JAR.h}" rx="26" fill="#dbeafe" opacity=".35"/>
+    <g clip-path="url(#jarClip)"><rect id="jarFill" x="${JAR.x}" y="${JAR.y + JAR.h}" width="${JAR.w}" height="0" fill="#ffcf5a"/>
+      <rect id="jarTop" x="${JAR.x}" y="${JAR.y + JAR.h}" width="${JAR.w}" height="8" fill="#ffe08a"/></g>
+    <rect x="${JAR.x}" y="${JAR.y}" width="${JAR.w}" height="${JAR.h}" rx="26" fill="none" stroke="#e0f0ff" stroke-width="6"/>
+    <rect x="${JAR.x + 22}" y="${JAR.y + 20}" width="14" height="${JAR.h - 50}" rx="7" fill="#fff" opacity=".45"/>
+    <text x="${JAR.x + JAR.w / 2}" y="${JAR.y + JAR.h - 22}" font-size="24" font-weight="900" text-anchor="middle" fill="#7c5a0f">${L("jar", "Investments")}</text>
+    <g id="dropCoin"><circle r="24" fill="#ffcf5a" stroke="#e8a92a" stroke-width="5"/><text y="10" font-size="28" font-weight="900" text-anchor="middle" fill="#b7791f">${CUR}</text></g>
+    <g id="jarCount"><rect x="-150" y="-50" width="300" height="80" rx="40" fill="#0f172a" opacity=".85"/>
+      <text id="jarNum" y="12" font-size="46" font-weight="900" text-anchor="middle" fill="#fff">£0</text></g>
+  </g>`;
+}
+/** Months in the jar at time t: the first £200 at 1.4 s, then months 2–12 between 5.7 and 9.2 s. */
+const MONTH_T = [1.4, ...Array.from({ length: 11 }, (_, i) => 5.7 + i * .32)];
+function renderRoom(t) {
+  const el = $("room");
+  const vis = t < 11.1;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 0, .7));
+  const { cx, cy, r } = R;
+  // the age card flips 25 → 26 when the year is up
+  const fl = p(t, 9.3, 9.7);
+  $("calYear").textContent = t > 9.5 ? 26 : 25;
+  $("calPage").setAttribute("opacity", fl > 0 && fl < 1 ? 1 - fl : 0);
+  $("calPage").style.transform = `translate(${fl * 160}px, ${-fl * 120}px) rotate(${fl * 40}deg)`;
+  const spin = eio(p(t, 5.6, 9.4));
+  $("hourHand").setAttribute("transform", `rotate(${spin * 4320} 170 360)`);
+  $("minHand").setAttribute("transform", `rotate(${spin * 51840} 170 360)`);
+  // phone up while reading the notification, down after
+  const read = 1 - eio(p(t, 4.7, 5.2));
+  const hx = lerp(700, 612, read), hy = lerp(1240, 1110, read);
+  const d = armPath(652, 1090, 712, 1210, hx, hy);
+  $("armR").setAttribute("d", d); $("armRo").setAttribute("d", d);
+  $("handR").setAttribute("cx", hx); $("handR").setAttribute("cy", hy);
+  $("phone").setAttribute("transform", `translate(${hx - 6} ${hy - 40}) rotate(-8) scale(${read})`);
+  // face: pleased, then bored (half-shut eyes, a yawn), then a spark of curiosity
+  const bored = win(t, 5.8, 10.2, .4);
+  const yawn = win(t, 7.6, 8.6, .2);
+  const gx = read > .5 ? 10 : -14, gy = read > .5 ? 14 : 16;
+  $("rPupils").setAttribute("transform", `translate(${gx} ${gy})`);
+  $("rEyes").style.transform = `scaleY(${blinkAt(t, [3.2, 9.9]) * (1 - .45 * bored * (1 - yawn))})`;
+  $("rBrowL").setAttribute("transform", `translate(0 ${6 * bored})`); $("rBrowR").setAttribute("transform", `translate(0 ${6 * bored})`);
+  $("rMouth").setAttribute("d", yawn > .3 ? mouth(cx, cy, r, "o", 1.6) : mouth(cx, cy, r, "smile", lerp(1, 0, bored)));
+  const nb = eo(p(t, 0.5, 0.9)) * (1 - eio(p(t, 4.5, 4.9)));
+  css($("notif"), clamp(nb * 1.5), `translateY(${(1 - nb) * -260}px)`);
+  // coins into the jar, and its value
+  const n = MONTH_T.filter(a => t >= a + .35).length;
+  const val = n ? fv(n) : 0;
+  const level = Math.min(1, val / 2600) * .78 + (n ? .06 : 0);
+  const fh = (JAR.h - 16) * level;
+  $("jarFill").setAttribute("y", JAR.y + JAR.h - 8 - fh); $("jarFill").setAttribute("height", fh);
+  $("jarTop").setAttribute("y", JAR.y + JAR.h - 8 - fh);
+  $("jarNum").textContent = money(val);
+  const bump = Math.max(0, ...MONTH_T.map(a => win(t, a + .35, a + .6, .1)));
+  $("jarCount").setAttribute("transform", `translate(310 1300) scale(${(n ? 1 : pop(t, 1.0, .4)) * (1 + .08 * bump)})`);
+  $("jarCount").setAttribute("opacity", t > 1.0 ? 1 : 0);
+  const di = MONTH_T.findIndex(a => t >= a && t < a + .35);
+  if (di >= 0) {
+    const a = p(t, MONTH_T[di], MONTH_T[di] + .35);
+    $("dropCoin").setAttribute("transform", `translate(310 ${lerp(1180, 1400, a * a)})`);
+    $("dropCoin").setAttribute("opacity", 1);
+  } else $("dropCoin").setAttribute("opacity", 0);
+  // push in on the jar, then the wipe
+  const z = lerp(1, 1.04, p(t, 0, 9.5)) * lerp(1, 1.7, eio(p(t, 9.6, 10.8)));
+  $("roomCam").setAttribute("transform", `translate(${310 - 310 * z} ${1450 - 1450 * z}) scale(${z})`);
+}
+
+// ---------- the snowball ----------
+const hillY = x => 600 + 880 * Math.pow(clamp(x / 1080), 1.4);
+const ballX = a => lerp(170, 820, a);
+const ballR = a => 22 + 228 * Math.sqrt(fv(a * 480) / fv(480));
+function buildSnow() {
+  const ridge = Array.from({ length: 55 }, (_, i) => `${i ? "L" : "M"}${i * 20} ${hillY(i * 20)}`).join(" ");
+  const flakes = Array.from({ length: 46 }, (_, i) => `<circle class="fk" r="${4 + (i % 4) * 2}" fill="#fff" opacity=".85"/>`).join("");
+  const posts = [35, 45, 55, 65].map(age => {
+    const x = ballX((age - 25) / 40) + 40, y = hillY(x);
+    return `<g opacity=".9"><rect x="${x - 5}" y="${y - 150}" width="10" height="150" fill="#8a5a37"/>
+      <rect x="${x - 44}" y="${y - 190}" width="88" height="54" rx="10" fill="#fff" stroke="#8a5a37" stroke-width="5"/>
+      <text x="${x}" y="${y - 151}" font-size="34" font-weight="900" text-anchor="middle" fill="#0f172a">${age}</text></g>`;
+  }).join("");
+  const trees = [[90, 980], [260, 1100], [980, 760], [870, 640], [600, 820]].map(([x, y], i) => {
+    const s = .8 + (i % 3) * .2;
+    return `<g transform="translate(${x} ${y}) scale(${s})" class="noorigin" opacity=".55"><path d="M0 -150 L70 0 L-70 0 Z M0 -100 L84 40 L-84 40 Z" fill="#2f6f5a"/><rect x="-10" y="40" width="20" height="30" fill="#5b3b2a"/></g>`;
+  }).join("");
+  $("snowSvg").innerHTML = `
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ccff5"/><stop offset="1" stop-color="#e3f2ff"/></linearGradient>
+    <radialGradient id="ballG" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#eef5ff"/><stop offset="1" stop-color="#bcd3ee"/></radialGradient></defs>
+  <rect width="1080" height="1920" fill="url(#sky)"/>
+  <path d="M0 520 L180 330 L330 470 L520 260 L720 480 L880 360 L1080 520 L1080 900 L0 900 Z" fill="#c9def3"/>
+  <path d="M520 260 L580 330 L540 320 L500 350 L470 318 Z M180 330 L220 372 L180 362 L150 380 Z" fill="#fff"/>
+  ${trees}
+  <path d="${ridge} L1080 1920 L0 1920 Z" fill="#fbfdff"/>
+  <path d="${ridge}" fill="none" stroke="#d6e6f7" stroke-width="10"/>
+  ${posts}
+  <path id="trail" d="" fill="none" stroke="#d6e6f7" stroke-width="18" stroke-linecap="round"/>
+  <!-- Sam at the top of the hill -->
+  <g id="samS">
+    <path d="M60 650 Q62 600 110 590 Q158 600 160 650 L162 700 L58 700 Z" fill="${HOODIE}"/>
+    <path id="sArmL" d="" stroke="${HOODIE}" stroke-width="26" fill="none" stroke-linecap="round"/>
+    <path id="sArmR" d="" stroke="${HOODIE}" stroke-width="26" fill="none" stroke-linecap="round"/>
+    ${head("s", 110, 540, 54)}
+    <path d="M70 512 Q110 470 150 512" fill="#e11d48"/><circle cx="110" cy="478" r="12" fill="#fff"/>
+  </g>
+  <g id="ball" class="noorigin"><circle r="100" fill="url(#ballG)" stroke="#a9c3e2" stroke-width="3"/>
+    <g id="ballSpin"><text y="36" font-size="110" font-weight="900" text-anchor="middle" fill="#9db8da">${CUR}</text>
+      <circle cx="-50" cy="-58" r="9" fill="#d3e3f5"/><circle cx="58" cy="44" r="12" fill="#d3e3f5"/><circle cx="40" cy="-62" r="6" fill="#d3e3f5"/></g></g>
+  <g id="puffs">${Array.from({ length: 10 }, () => `<circle class="pf" r="14" fill="#fff"/>`).join("")}</g>
+  <g>${flakes}</g>`;
+}
+function renderSnow(t) {
+  const el = $("snow");
+  const vis = t > 10.1 && t < 17.3;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 11.0 ? `circle(${eio(p(t, 10.2, 11.0)) * 2300}px at 310px 1470px)` : "none";
+  const a = eio(p(t, 11.2, 15.6));
+  const x = ballX(a), r = ballR(a), y = hillY(x) - r;
+  $("ball").setAttribute("transform", `translate(${x} ${y}) scale(${r / 100})`);
+  $("ballSpin").setAttribute("transform", `rotate(${(x - 170) * 1.1})`);
+  $("ballSpin").style.transformOrigin = "0 0"; $("ballSpin").style.transformBox = "view-box";
+  const trail = Array.from({ length: 30 }, (_, i) => { const xx = lerp(170, x, i / 29); return `${i ? "L" : "M"}${xx} ${hillY(xx) - 4}`; }).join(" ");
+  $("trail").setAttribute("d", a > 0 ? trail : "");
+  document.querySelectorAll("#snowSvg .pf").forEach((c, i) => {
+    const age = ((t * 3 + i * .1) % 1);
+    const px = x - r * .8 - age * 60 - (i % 3) * 10, py = hillY(x) - 10 - age * 50 - (i % 4) * 8;
+    c.setAttribute("opacity", a > 0 && a < 1 ? (1 - age) * .9 : 0);
+    c.setAttribute("transform", `translate(${px} ${py}) scale(${.5 + r / 200})`);
+  });
+  document.querySelectorAll("#snowSvg .fk").forEach((f, i) => {
+    const fx = (i * 197) % 1080 + Math.sin(t * 1.5 + i) * 20, fy = ((i * 331) % 1920 + t * (60 + (i % 5) * 18)) % 1920;
+    f.setAttribute("transform", `translate(${fx} ${fy})`);
+  });
+  // Sam gives it a push, then cheers
+  const push = win(t, 10.9, 11.6, .2), cheer = p(t, 12.0, 12.4);
+  const bounce = cheer ? Math.abs(Math.sin(t * 7)) * 8 : 0;
+  $("samS").setAttribute("transform", `translate(${push * 20} ${-bounce})`);
+  $("sArmL").setAttribute("d", `M70 610 L${lerp(40, 46, cheer)} ${lerp(680, 520, cheer)}`);
+  $("sArmR").setAttribute("d", `M150 610 L${lerp(lerp(180, 200, push), 176, cheer)} ${lerp(lerp(680, 640, push), 520, cheer)}`);
+  $("sMouth").setAttribute("d", t > 13.6 ? mouth(110, 540, 54, "o", 1.3) : mouth(110, 540, 54, "smile", 1));
+  $("sPupils").setAttribute("transform", `translate(${8 + 6 * cheer} ${4 + 6 * cheer})`);
+  $("sEyes").style.transform = `scale(${1 + .2 * p(t, 13.6, 14)})`;
+}
+
+// ---------- app ----------
+const CX = age => 110 + (age - 25) / 40 * 790, CY = v => 330 - v / 400000 * 300;
+/** The stacked areas (contributions, interest) for a plan of `years` ending at 65, drawn up to `upto` years in. */
+function areas(years, upto) {
+  const start = 65 - years, last = Math.min(years, upto) * 12, pts = [];
+  for (let m = 0; m <= last; m += 3) pts.push(m);
+  if (pts[pts.length - 1] !== last) pts.push(last);
+  const X = m => CX(start + m / 12);
+  const top = pts.map(m => `${X(m)} ${CY(fv(m))}`), mid = pts.map(m => `${X(m)} ${CY(PAY * m)}`);
+  const base = `L${X(last)} ${CY(0)} L${X(0)} ${CY(0)} Z`;
+  return { contrib: `M${mid.join(" L")} ${base}`, interest: `M${top.join(" L")} L${mid.slice().reverse().join(" L")} Z`, line: `M${top.join(" L")}` };
+}
+function buildApp() {
+  $("chart").innerHTML = `
+    ${[0, 100000, 200000, 300000, 400000].map(v => `<line x1="110" x2="900" y1="${CY(v)}" y2="${CY(v)}" stroke="rgba(255,255,255,.07)" stroke-width="2" stroke-dasharray="6 6"/>
+      <text x="96" y="${CY(v) + 8}" font-size="22" text-anchor="end" fill="#6b7280" font-weight="600">${LANG === "es" ? v / 1000 + "k €" : "£" + v / 1000 + "k"}</text>`).join("")}
+    ${[25, 35, 45, 55, 65].map(a => `<text x="${CX(a)}" y="362" font-size="22" text-anchor="middle" fill="#6b7280" font-weight="600">${a}</text>`).join("")}
+    <text x="505" y="392" font-size="20" text-anchor="middle" fill="#6b7280" font-weight="600">${L("axis", "Age")}</text>
+    <path id="aC" d="" fill="#3b82f6" fill-opacity=".75" stroke="#3b82f6" stroke-width="3"/>
+    <path id="aI" d="" fill="#22c55e" fill-opacity=".75" stroke="#22c55e" stroke-width="3"/>
+    <path id="ghost" d="${areas(40, 40).line}" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="10 10" opacity="0"/>
+    <text id="ghostLab" x="${CX(56)}" y="${CY(390000)}" font-size="22" font-weight="700" text-anchor="end" fill="#fff" opacity="0">${L("ghost", "Starting at 25")} →</text>
+    <rect x="600" y="16" width="20" height="20" rx="4" fill="#3b82f6"/><text x="628" y="34" font-size="21" fill="#9ca3af" font-weight="600">${L("legC", "Contributions")}</text>
+    <rect x="600" y="48" width="20" height="20" rx="4" fill="#22c55e"/><text x="628" y="66" font-size="21" fill="#9ca3af" font-weight="600">${L("legI", "Interest")}</text>
+    <circle id="iGlow" r="0" fill="none" stroke="#fff" stroke-width="5" opacity="0"/>`;
+  $("cmp").innerHTML = `
+    <div class="r"><span>${L("cmpA", "Start at 25 · 40 years")}</span><span>${money(fv(480))}</span></div>
+    <div class="r"><span>${L("cmpB", "Start at 35 · 30 years")}</span><span>${money(fv(360))}</span></div>
+    <div class="r" style="font-size:24px"><span>${L("cmpIn", "Paid in")}</span><span>${money(96000)} / ${money(72000)}</span></div>
+    <div class="r d"><span style="color:#0f172a">${L("cmpD", "Difference")}</span><span>▼ ${money(fv(480) - fv(360))}</span></div>`;
+}
+// typed fields: [id, text, from, to, end of focus]
+const FIELDS = [["f0", "0", 17.75, 17.9, 18.15], ["f1", L("f1", "200"), 18.4, 18.85, 19.15], ["f2", "6", 21.45, 21.55, 22.1]];
+const SLX = v => 50 + 52 + (v - 1) / 49 * 876; // slider thumb, stage x
+const CURSOR = [[16.9, [700, 1000]], [17.5, [800, 364]], [18.15, [800, 454]], [19.2, [SLX(20), 582]], [19.5, [SLX(20), 582]], [20.5, [SLX(40), 582]], [20.95, [883, 724]], [21.3, [800, 820]], [22.0, [990, 1500]],
+  [37.2, [990, 1300]], [37.9, [SLX(40), 582]], [38.2, [SLX(40), 582]], [39.6, [SLX(30), 582]], [40.3, [SLX(30), 582]]];
+const CLICKS = [17.55, 18.2, 19.45, 20.95, 21.35, 38.15];
+function horizonAt(t) {
+  if (t < 19.5) return 20;
+  if (t < 38.2) return Math.round(lerp(20, 40, eio(p(t, 19.5, 20.5))));
+  return lerp(40, 30, eio(p(t, 38.2, 39.6)));
+}
+function renderApp(t) {
+  const el = $("app");
+  const vis = t > 16.1 && t < 52.6;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 17.1 ? `circle(${eio(p(t, 16.2, 17.1)) * 2300}px at 820px 1000px)` : "none";
+  css($("win"), 1, `translateY(${(1 - eo(p(t, 16.3, 17.1))) * 120}px) scale(${lerp(.92, 1, eo(p(t, 16.3, 17.1)))})`);
+  FIELDS.forEach(([id, txt, a, b, endF]) => {
+    const n = Math.round(p(t, a, b) * txt.length);
+    const focus = t > a - .3 && t < endF;
+    const pre = id === "f2" ? "%" : CUR;
+    $(id).innerHTML = `<span class="pre">${pre}</span>` + (t < a ? "" : txt.slice(0, n)) + (focus && (Math.floor(t * 3) % 2 === 0 || t < b) ? '<span class="caret"></span>' : "");
+    $(id).classList.toggle("on", focus);
+  });
+  const custom = t > 20.95;
+  $("pl1").classList.toggle("on", !custom); $("pl4").classList.toggle("on", custom);
+  css($("customRow"), p(t, 20.95, 21.15));
+  const H = horizonAt(t), Hi = Math.round(H);
+  $("horizon").textContent = Hi;
+  const sp = (H - 1) / 49;
+  $("sliderFill").style.width = `${sp * 876}px`; $("sliderThumb").style.left = `${sp * 876}px`;
+  // KPIs: count up while the chart draws (22.2–26.4), then follow the horizon
+  const draw = eio(p(t, 22.2, 26.4));
+  const yrs = t < 38.2 ? draw * 40 : Hi;
+  const m = Math.round(yrs * 12), V = fv(m), C = PAY * m, I = V - C;
+  [["k0", 21.9], ["k1", 22.1], ["k2", 22.3], ["k3", 22.5]].forEach(([id, a]) => css($(id), clamp(p(t, a, a + .2) * 2), `scale(${(pop(t, a, .45) || .001) * (id === "k0" ? 1 + .05 * win(t, 26.8, 27.6, .2) : 1) * (id === "k2" ? 1 + .05 * win(t, 32.0, 33.0, .2) : 1)})`));
+  $("vFinal").textContent = money(V); $("vInv").textContent = money(C); $("vInt").textContent = money(I);
+  $("sFinal").textContent = L("after", "After {n} years").replace("{n}", Math.round(yrs));
+  $("sInt").textContent = `${C ? Math.round(I / V * 100) : 0}${L("ofFinal", "% of final value")}`;
+  const mul = C ? V / C : 1;
+  $("vMul").textContent = `${dec(mul, 1)}×`;
+  $("sMul").textContent = LANG === "es" ? `1 € → ${dec(mul, 2)} €` : `£1 → £${dec(mul, 2)}`;
+  // the chart
+  const ar = areas(t < 38.2 ? 40 : H, t < 38.2 ? draw * 40 : H);
+  $("aC").setAttribute("d", draw > 0 ? ar.contrib : ""); $("aI").setAttribute("d", draw > 0 ? ar.interest : "");
+  const gl = p(t, 37.9, 38.3) * (1 - p(t, 51.0, 51.5));
+  $("ghost").setAttribute("opacity", gl); $("ghostLab").setAttribute("opacity", gl * p(t, 39.6, 40.0));
+  const hi = win(t, 32.0, 36.6, .3);
+  $("aI").setAttribute("fill-opacity", .75 + .25 * hi * (.5 + .5 * Math.sin(t * 8)));
+  // the comparison note
+  css($("cmp"), clamp(p(t, 41.8, 42.0) * 2), `scale(${pop(t, 41.8, .5) || .001})`);
+  const [cx, cy] = keys(t, CURSOR);
+  const click = CLICKS.find(c => t >= c && t < c + .45);
+  const rp = click !== undefined ? p(t, click, click + .45) : 1;
+  $("ripple").setAttribute("opacity", click !== undefined ? 1 - rp : 0); $("ripple").setAttribute("r", 8 + rp * 34);
+  css($("cursor"), Math.max(p(t, 16.8, 17.0) * (1 - p(t, 21.9, 22.2)), p(t, 37.1, 37.3) * (1 - p(t, 40.2, 40.5))), `translate(${cx - 8}px, ${cy - 4}px)`);
+}
+
+// ---------- age 65 ----------
+function buildFuture() {
+  const bills = Array.from({ length: 16 }, () => `<g class="bill"><rect x="-40" y="-22" width="80" height="44" rx="6" fill="#4caf7a" stroke="#2f855a" stroke-width="4"/><text y="10" font-size="26" font-weight="900" text-anchor="middle" fill="#14532d">${CUR}</text></g>`).join("");
+  $("futSvg").innerHTML = `
+  <defs><linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb4ff"/><stop offset="1" stop-color="#cfeaff"/></linearGradient></defs>
+  <rect width="1080" height="1920" fill="url(#fsky)"/>
+  <circle cx="860" cy="560" r="90" fill="#ffd34d"/>
+  <rect y="1000" width="1080" height="260" fill="#2b8fd6"/>
+  <path d="M0 1040 q60 -20 120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0" stroke="#fff" stroke-width="6" fill="none" opacity=".5"/>
+  <path d="M0 1230 Q540 1180 1080 1230 L1080 1920 L0 1920 Z" fill="#f3d9a4"/>
+  <!-- parasol -->
+  <rect x="236" y="1150" width="12" height="520" fill="#8a5a37"/>
+  <path d="M60 1180 Q242 960 424 1180 Z" fill="#ff7a59"/><path d="M180 1180 Q242 1000 304 1180 Z" fill="#fff" opacity=".7"/>
+  <!-- Sam, 65 -->
+  <g id="samF">
+    <ellipse cx="560" cy="1700" rx="120" ry="18" fill="#000" opacity=".12"/>
+    <rect x="515" y="1490" width="40" height="200" rx="18" fill="#33508f"/><rect x="568" y="1490" width="40" height="200" rx="18" fill="#33508f"/>
+    <ellipse cx="532" cy="1694" rx="34" ry="16" fill="#222"/><ellipse cx="592" cy="1694" rx="34" ry="16" fill="#222"/>
+    <path d="M478 1330 Q482 1290 520 1282 Q560 1300 600 1282 Q638 1290 642 1330 L652 1510 L468 1510 Z" fill="${HOODIE}"/>
+    <path d="M522 1282 Q560 1306 598 1282" stroke="${HOODIE_D}" stroke-width="12" fill="none" stroke-linecap="round"/>
+    ${head("f", 560, 1190, 92)}
+    <g id="shades" opacity="0"><rect x="490" y="1170" width="60" height="38" rx="12" fill="#0f172a"/><rect x="570" y="1170" width="60" height="38" rx="12" fill="#0f172a"/><path d="M548 1182 h24" stroke="#0f172a" stroke-width="6"/></g>
+    <path d="M490 1320 Q440 1400 430 1450" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round"/><circle cx="430" cy="1458" r="24" fill="${SKIN}"/>
+    <path id="fArm" d="" stroke="${HOODIE}" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle id="fHand" r="24" fill="${SKIN}"/>
+  </g>
+  <g id="bills">${bills}</g>
+  ${keysArt("fkeys")}
+  ${dogArt("dog", 0, 0, 1)}`;
+}
+function renderFuture(t) {
+  const el = $("future");
+  const vis = t > 51.5 && t < 60.2;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 52.6 ? `circle(${eio(p(t, 51.7, 52.6)) * 2300}px at 540px 1300px)` : "none";
+  $("ageNum").textContent = Math.round(lerp(25, 65, eo(p(t, 52.0, 53.6))));
+  css($("agePill"), p(t, 51.9, 52.2), `scale(${pop(t, 51.9, .5)})`);
+  css($("potPill"), p(t, 53.7, 54.0), `scale(${pop(t, 53.7, .55)})`);
+  $("fHair").setAttribute("fill", mix(HAIR, GREY, .8 * eo(p(t, 52.0, 53.6))));
+  $("fGlasses").setAttribute("opacity", 0);
+  $("shades").setAttribute("opacity", p(t, 54.2, 54.4));
+  // waving
+  const wave = Math.sin(t * 9) * win(t, 54.2, 56.4, .3);
+  $("fArm").setAttribute("d", `M640 1320 L${700 + wave * 10} 1240 L${730 + wave * 40} 1140`);
+  $("fHand").setAttribute("cx", 730 + wave * 40); $("fHand").setAttribute("cy", 1140);
+  document.querySelectorAll("#futSvg .bill").forEach((b, i) => {
+    const a = t - 53.8 - (i % 8) * .16; if (a < 0 || t > 56.6) { b.setAttribute("opacity", 0); return; }
+    b.setAttribute("opacity", 1 - p(t, 56.2, 56.6));
+    b.setAttribute("transform", `translate(${(i * 137 + 40) % 1080 + Math.sin(a * 3 + i) * 50} ${-60 + a * (300 + (i % 4) * 60)}) rotate(${Math.sin(a * 4 + i) * 30})`);
+  });
+  const shock = win(t, 57.4, 58.6, .15);
+  $("fMouth").setAttribute("d", shock > .3 ? mouth(560, 1190, 92, "o", 1.3) : mouth(560, 1190, 92, "smile", 1));
+  $("fPupils").setAttribute("transform", t > 57.0 ? `translate(${lerp(-12, 14, p(t, 57.0, 58.4))} 12)` : "translate(8 6)");
+  $("fEyes").style.transform = `scaleY(${blinkAt(t, [53.0, 55.6])})`;
+  // the dog runs in, takes the keys from the sand, runs off
+  const dx = t < 57.3 ? lerp(-200, 790, eio(p(t, 56.6, 57.3))) : lerp(790, 1300, eio(p(t, 57.6, 58.6)));
+  const dy = 1640 - (t < 57.3 || t > 57.6 ? Math.abs(Math.sin(t * 14)) * 24 : 0);
+  $("dog").setAttribute("transform", `translate(${dx} ${dy}) scale(${t < 57.45 ? -.85 : .85} .85)`);
+  $("dogTail").setAttribute("transform", `rotate(${Math.sin(t * 18) * 20} 60 -20)`);
+  const held = t > 57.35;
+  const kx = held ? dx - 92 * .85 : 700, ky = held ? dy - 40 : 1690;
+  $("fkeys").setAttribute("transform", `translate(${kx} ${ky}) rotate(${held ? 90 + Math.sin(t * 20) * 25 : 80})`);
+}
+
+// ---------- end card ----------
+function buildEnd() {
+  $("endSvg").innerHTML = ["❄️", "📈", "💸", "⏳", "🐶", "🔑"].map((e, i) =>
+    `<text class="fl" x="${[150, 930, 110, 970, 110, 970][i]}" y="${[230, 270, 1500, 1500, 1060, 1060][i]}" font-size="${[90, 80, 80, 80, 70, 70][i]}" text-anchor="middle">${e}</text>`).join("");
+}
+function renderEnd(t) {
+  const el = $("end");
+  const vis = t > 59.1;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 59.2, 59.8));
+  [["endWm", 59.6], ["endPill", 60.0], ["endH", 60.4], ["endSub", 61.0], ["endTags", 61.6], ["endUrl", 62.2], ["endBtn", 62.8], ["endCta", 63.4], ["endFine", 64.0]].forEach(([id, a]) => {
+    const v = p(t, a, a + .5);
+    css($(id), eo(v), `translateY(${(1 - eo(v)) * 40}px) scale(${lerp(.94, 1, back(v))})`);
+  });
+  $("endBtnIn").style.transform = `scale(${1 + .04 * Math.sin((t - 63) * 5) * p(t, 63.3, 63.8)})`;
+  document.querySelectorAll("#endSvg .fl").forEach((f, i) => f.style.transform = `translateY(${Math.sin(t * 1.6 + i) * 18}px) rotate(${Math.sin(t + i) * 8}deg) scale(${pop(t, 59.8 + i * .15, .5)})`);
+}
+
+function render(t) { renderRoom(t); renderSnow(t); renderApp(t); renderFuture(t); renderEnd(t); renderCaps(t); }
+applyLang(); buildRoom(); buildSnow(); buildApp(); buildFuture(); buildEnd();
+boot(render, DURATION);
+</script>
+</body>
+</html>

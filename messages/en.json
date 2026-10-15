@@ -376,6 +376,11 @@
   },
   "breakEven": {
     "title": "⚖️ Break-Even Analysis",
+    "video": {
+      "title": "Watch: the dog ate Sam's break-even",
+      "subtitle": "A coffee bike, maths done by hand, and the number that was wrong — 67 seconds.",
+      "close": "Close"
+    },
     "sectionGeneral": "General",
     "labelCompany": "Company / Product name",
     "sectionFixed": "Fixed Costs (per period)",
@@ -536,6 +541,11 @@
   },
   "compoundInterest": {
     "title": "💹 Compound Interest Calculator",
+    "video": {
+      "title": "Watch: Sam starts investing at 25",
+      "subtitle": "£200 a month, a snowball, and what waiting 10 years costs — 68 seconds.",
+      "close": "Close"
+    },
     "sectionCapital": "Capital & Contributions",
     "labelInitial": "Initial capital",
     "labelMonthly": "Monthly contribution",

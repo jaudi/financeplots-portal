@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
+import VideoTeaser from "@/components/VideoTeaser";
 import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import BreakEvenChat from "./BreakEvenChat";
 import { breakEven } from "@/lib/calculators";
@@ -111,6 +112,7 @@ function KpiCard({
 export default function BreakEvenPage() {
   const [currency] = useCurrency();
   const t = useTranslations("breakEven");
+  const es = useLocale() === "es";
   const tc = useTranslations("toolCommon");
 
   // Inputs
@@ -285,6 +287,16 @@ export default function BreakEvenPage() {
       {/* Content — pushed down past navbar (65px) + tool bar (~52px) */}
       <div className="pt-[133px] pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {/* Captions are burned in, so each locale has its own cut (made in marketing/break-even-cartoon). */}
+          <VideoTeaser
+            src={es ? "/break-even-cartoon-es.mp4" : "/break-even-cartoon.mp4"}
+            poster={es ? "/break-even-cartoon-es-poster.jpg" : "/break-even-cartoon-poster.jpg"}
+            name={es ? "break-even-cartoon-es" : "break-even-cartoon"}
+            title={t("video.title")}
+            subtitle={t("video.subtitle")}
+            closeLabel={t("video.close")}
+            className="mb-6"
+          />
           <div className="flex flex-col lg:flex-row gap-6">
             {/* ── Sidebar ────────────────────────────────────────────────────── */}
             <aside className="lg:w-72 xl:w-80 shrink-0">

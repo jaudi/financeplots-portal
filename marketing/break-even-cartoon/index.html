@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam's Coffee Bike</title>
+<!--
+  Episode 4 (67 s, 1080×1920): Sam starts a coffee bike and works out the
+  break-even by hand — fixed costs ÷ the price, 943 coffees — and the dog eats
+  the page. Sam does it again in the Break-Even Analysis tool: 1,500, because
+  only the margin on each coffee pays the bills. The dog turns out to have
+  done Sam a favour. Shown on /tools/break-even. Paced like episode 3: every
+  caption stays up about 4.5 s.
+
+  The figures are the page's own maths (breakEven in lib/calculators.ts) for
+  monthly fixed costs rent 900, payroll 1,800, insurance 100, depreciation
+  150, marketing 250, other 100 (total £3,300), price £3.50, variable cost
+  £1.30, 2,000 coffees expected:
+    contribution margin £2.20 (62.9%); break-even 1,500 coffees, £5,250 of
+    sales; profit at 2,000 £1,100; margin of safety 500 coffees, 25.0%.
+  The hand-written mistake: 3,300 ÷ 3.50 = 943 (942.9); at 943 coffees the
+  page shows a loss of £1,225 a month.
+
+  Open in a browser to watch; ?t=12.5 freezes, ?lang=es is the Spanish cut.
+-->
+<style>
+  :root { --a: #3987e5; --b: #d95926; --ink: #0f172a; --muted: #64748b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #05080f; height: 100%; overflow: hidden; }
+  body { font-family: Inter, "Inter Display", system-ui, sans-serif; color: #fff; }
+  #fit { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #111a3a; }
+  .scene { position: absolute; inset: 0; }
+  .abs { position: absolute; }
+  svg { display: block; }
+  svg * { transform-box: fill-box; transform-origin: center; }
+  .noorigin { transform-box: view-box; transform-origin: 0 0; }
+  #cap { position: absolute; left: 0; right: 0; top: 1700px; display: flex; justify-content: center; pointer-events: none; }
+  #capText { max-width: 960px; padding: 24px 40px; border-radius: 28px; background: rgba(5, 10, 25, .82);
+    font-weight: 800; font-size: 48px; line-height: 1.2; letter-spacing: -.5px; text-align: center; }
+  #capText b { color: #8ec5ff; }
+  /* the notepad */
+  #pad { left: 150px; top: 760px; width: 780px; height: 900px; border-radius: 18px; background: #fffdf3; color: #1e3a8a;
+    box-shadow: 0 30px 80px rgba(0,0,0,.35); overflow: hidden; transform-origin: 50% 50%; }
+  #pad .lines { position: absolute; inset: 0; background: repeating-linear-gradient(#fffdf3 0 67px, #bcd3f0 67px 70px); top: 60px; }
+  #pad .margin { position: absolute; top: 0; bottom: 0; left: 96px; width: 4px; background: #f6a5a5; }
+  #pad .ln { position: absolute; left: 124px; right: 40px; height: 70px; display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 8px;
+    font-family: "Comic Sans MS", "Segoe Print", cursive; font-style: italic; font-size: 46px; font-weight: 700; white-space: nowrap; overflow: hidden; }
+  /* browser, in the site's dark theme */
+  #win { position: absolute; left: 50px; top: 110px; width: 980px; height: 1560px; border-radius: 40px; overflow: hidden; background: #0a0f1e; box-shadow: 0 40px 120px rgba(0,0,0,.55); color: #fff; }
+  #bar { position: absolute; left: 0; right: 0; top: 0; height: 96px; background: #e8edf5; display: flex; align-items: center; gap: 14px; padding: 0 30px; z-index: 2; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; }
+  #url { margin-left: 18px; flex: 1; height: 56px; border-radius: 28px; background: #fff; display: flex; align-items: center; padding: 0 26px; font-size: 28px; color: #334155; font-weight: 500; white-space: nowrap; overflow: hidden; }
+  #url b { color: var(--ink); }
+  #view { position: absolute; left: 0; right: 0; top: 96px; bottom: 0; overflow: hidden; }
+  #content { position: absolute; left: 0; top: 0; width: 980px; height: 1464px; }
+  .h1 { left: 52px; top: 30px; font-size: 44px; font-weight: 800; letter-spacing: -1px; }
+  .sec { left: 52px; font-size: 22px; font-weight: 800; color: #60a5fa; letter-spacing: 2px; text-transform: uppercase; }
+  .cell { width: 430px; }
+  .cell .lab { font-size: 23px; font-weight: 600; color: #9ca3af; margin-bottom: 6px; }
+  .row { left: 52px; width: 876px; height: 70px; display: flex; align-items: center; justify-content: space-between; }
+  .row .lab { font-size: 27px; font-weight: 600; color: #9ca3af; }
+  .inp { height: 64px; background: #111827; border: 3px solid #374151; border-radius: 16px; display: flex; align-items: center; padding: 0 22px; font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .cell .inp { width: 430px; }
+  .row .inp { width: 330px; }
+  .inp .pre { color: #6b7280; margin-right: 10px; }
+  .inp.on { border-color: #3b82f6; box-shadow: 0 0 0 6px rgba(59,130,246,.22); }
+  .caret { display: inline-block; width: 3px; height: 36px; background: #60a5fa; margin-left: 3px; }
+  .kpi { width: 430px; height: 128px; border-radius: 20px; background: #0d1426; border: 2px solid #1f2937; border-left: 10px solid #3b82f6; padding: 14px 24px; }
+  .kpi .l { font-size: 20px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1.5px; }
+  .kpi .v { font-size: 46px; font-weight: 800; letter-spacing: -1px; margin-top: 2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kpi .s { font-size: 21px; font-weight: 600; color: #6b7280; margin-top: 1px; }
+  #end { background: radial-gradient(800px 700px at 30% 20%, #16306a 0%, transparent 70%), radial-gradient(800px 800px at 80% 90%, #2b1a52 0%, transparent 70%), #070b16; }
+  .wm { font-weight: 800; letter-spacing: -2px; } .wm span { color: #4f8ff7; }
+  .tag { background: rgba(255,255,255,.08); border-radius: 24px; padding: 12px 24px; font-size: 30px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+
+  <!-- 1 · the coffee bike -->
+  <div class="scene" id="street"><svg id="streetSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="think" style="left:60px;top:860px;width:440px">
+      <div style="background:#fff;color:#0f172a;border-radius:60px;padding:30px 36px;text-align:center;font-size:44px;font-weight:900;line-height:1.15;box-shadow:0 20px 50px rgba(0,0,0,.25)" data-l="think">How many coffees<br>a month? 🤔</div>
+      <div style="position:absolute;left:60px;bottom:-40px;width:40px;height:40px;border-radius:50%;background:#fff"></div>
+      <div style="position:absolute;left:30px;bottom:-80px;width:24px;height:24px;border-radius:50%;background:#fff"></div></div>
+  </div>
+
+  <!-- 2–3 · the maths by hand, and the dog -->
+  <div class="scene" id="desk"><svg id="deskSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="pad"><div class="lines"></div><div class="margin"></div><div id="padLines"></div>
+      <svg class="abs" id="padInk" style="left:0;top:0" width="780" height="900" viewBox="0 0 780 900"></svg></div>
+    <svg class="abs" id="deskTop" style="left:0;top:0;pointer-events:none" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+  </div>
+
+  <!-- 4 · FinancePlots Break-Even Analysis -->
+  <div class="scene" id="app" style="background: linear-gradient(160deg, #2a62d8 0%, #3987e5 45%, #6aa8f0 100%);">
+    <div id="win">
+      <div id="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+        <div id="url" data-l="url">🔒&nbsp; <b>financeplots.com</b>/tools/break-even</div></div>
+      <div id="view"><div id="content">
+        <div class="abs h1" data-l="title">⚖️ Break-Even Analysis</div>
+        <div class="abs sec" style="top:110px" data-l="secFixed">Fixed Costs (per period)</div>
+        <div class="abs cell" style="left:52px;top:148px"><div class="lab" data-l="lRent">Rent &amp; Utilities</div><div class="inp" id="f0"></div></div>
+        <div class="abs cell" style="left:498px;top:148px"><div class="lab" data-l="lPayroll">Payroll</div><div class="inp" id="f1"></div></div>
+        <div class="abs cell" style="left:52px;top:256px"><div class="lab" data-l="lInsurance">Insurance</div><div class="inp" id="f2"></div></div>
+        <div class="abs cell" style="left:498px;top:256px"><div class="lab" data-l="lDepreciation">Depreciation</div><div class="inp" id="f3"></div></div>
+        <div class="abs cell" style="left:52px;top:364px"><div class="lab" data-l="lMarketing">Marketing</div><div class="inp" id="f4"></div></div>
+        <div class="abs cell" style="left:498px;top:364px"><div class="lab" data-l="lOther">Other Fixed</div><div class="inp" id="f5"></div></div>
+        <div class="abs" style="left:52px;top:476px;width:876px;display:flex;justify-content:space-between;font-size:28px;font-weight:800;border-top:2px solid #1f2937;padding-top:12px">
+          <span data-l="totalFixed" style="color:#9ca3af">Total Fixed</span><span id="totFixed">£0</span></div>
+        <div class="abs sec" style="top:548px" data-l="secRev">Revenue &amp; Variable</div>
+        <div class="abs row" style="top:584px"><span class="lab" data-l="lPrice">Selling price per unit</span><span class="inp" id="f6"></span></div>
+        <div class="abs row" style="top:664px"><span class="lab" data-l="lVar">Variable cost per unit</span><span class="inp" id="f7"></span></div>
+        <div class="abs row" style="top:744px"><span class="lab" data-l="lUnits">Current / expected units sold</span><span class="inp" id="f8"></span></div>
+
+        <div class="abs kpi" id="k0" style="left:52px;top:842px"><div class="l" data-l="kBep">Break-Even Units</div><div class="v" id="vBep">1,500 units</div><div class="s" id="sBep">BEP revenue: £5,250</div></div>
+        <div class="abs kpi" id="k1" style="left:498px;top:842px;border-left-color:#22c55e"><div class="l" data-l="kCm">Contribution Margin</div><div class="v" id="vCm">£2.20</div><div class="s" id="sCm">CM ratio: 62.9%</div></div>
+        <div class="abs kpi" id="k2" style="left:52px;top:984px;border-left-color:#22c55e"><div class="l" data-l="kProfit">Current Profit</div><div class="v" id="vProfit">£1,100</div><div class="s" id="sProfit">At 2,000 units</div></div>
+        <div class="abs kpi" id="k3" style="left:498px;top:984px;border-left-color:#22c55e"><div class="l" data-l="kMos">Margin of Safety</div><div class="v" id="vMos">25.0%</div><div class="s" id="sMos">500 units above BEP</div></div>
+
+        <div class="abs" data-l="chartTitle" style="left:52px;top:1132px;font-size:28px;font-weight:800">Break-Even Chart</div>
+        <svg class="abs" id="chart" style="left:30px;top:1170px" width="920" height="290" viewBox="0 0 920 290"></svg>
+      </div></div>
+    </div>
+    <svg class="abs" id="cursor" style="left:0;top:0;pointer-events:none" width="80" height="90" viewBox="0 0 80 90">
+      <circle id="ripple" cx="10" cy="8" r="30" fill="none" stroke="#fff" stroke-width="5" opacity="0"/>
+      <path d="M8 4 L8 66 L24 52 L36 80 L48 75 L36 48 L58 48 Z" fill="#0f172a" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- 5 · open for business -->
+  <div class="scene" id="open"><svg id="openSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg></div>
+
+  <!-- 6 · end card -->
+  <div class="scene" id="end">
+    <svg class="abs" id="endSvg" style="left:0;top:0" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="endWm" style="left:0;right:0;top:300px;text-align:center"><span class="wm" style="font-size:96px">Finance<span>Plots</span></span></div>
+    <div class="abs" id="endPill" style="left:0;right:0;top:470px;display:flex;justify-content:center">
+      <span data-l="endPill" style="border:2px solid rgba(79,143,247,.6);background:rgba(79,143,247,.14);color:#8ec5ff;border-radius:30px;padding:10px 28px;font-size:30px;font-weight:800;letter-spacing:3px">BREAK-EVEN ANALYSIS</span></div>
+    <div class="abs" id="endH" data-l="endH" style="left:0;right:0;top:610px;text-align:center;font-size:92px;font-weight:800;letter-spacing:-3px;line-height:1.05">How many do you<br>need to sell?</div>
+    <div class="abs" id="endSub" data-l="endSub" style="left:60px;right:60px;top:870px;text-align:center;font-size:38px;font-weight:600;color:#b9c6dd">Fixed costs, the margin on each sale,<br>break-even and margin of safety.</div>
+    <div class="abs" id="endTags" data-l="endTags" style="left:0;right:0;top:1060px;display:flex;justify-content:center;gap:18px">
+      <span class="tag">100% free</span><span class="tag">No signup</span><span class="tag">Nothing stored</span></div>
+    <div class="abs" id="endUrl" data-l="endUrl" style="left:0;right:0;top:1230px;text-align:center;font-size:52px;font-weight:800;letter-spacing:-1px">financeplots.com<span style="color:#4f8ff7">/tools/break-even</span></div>
+    <div class="abs" id="endBtn" style="left:0;right:0;top:1360px;display:flex;justify-content:center">
+      <span id="endBtnIn" data-l="endBtn" style="background:#3b82f6;border-radius:60px;padding:30px 70px;font-size:50px;font-weight:800;box-shadow:0 0 60px rgba(59,130,246,.6)">Run your numbers →</span></div>
+    <div class="abs" id="endCta" data-l="endCta" style="left:40px;right:40px;top:1560px;text-align:center;font-size:40px;font-weight:700">Tag someone starting a business ☕👇</div>
+    <div class="abs" id="endFine" data-l="endFine" style="left:80px;right:80px;top:1740px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example: £3,300 of fixed costs a month, coffees sold at £3.50 that cost £1.30 each to make. Your costs and prices will differ. Not advice.</div>
+  </div>
+
+  <div id="cap"><div id="capText"></div></div>
+</div></div>
+
+<script src="../kit.js"></script>
+<script>
+const DURATION = 67;
+ES = {
+  think: "¿Cuántos cafés<br>al mes? 🤔",
+  url: "🔒&nbsp; <b>financeplots.com</b>/es/tools/break-even",
+  title: "⚖️ Análisis del Punto de Equilibrio",
+  secFixed: "Costes Fijos (por periodo)", lRent: "Alquiler y Suministros", lPayroll: "Nóminas", lInsurance: "Seguros", lDepreciation: "Amortización", lMarketing: "Marketing", lOther: "Otros Fijos",
+  totalFixed: "Total Fijos", secRev: "Ingresos y Variables", lPrice: "Precio de venta por unidad", lVar: "Coste variable por unidad", lUnits: "Unidades vendidas esperadas",
+  kBep: "Unidades de Equilibrio", kCm: "Margen de Contribución", kProfit: "Beneficio Actual", kMos: "Margen de Seguridad",
+  chartTitle: "Gráfico del Punto de Equilibrio",
+  endPill: "PUNTO DE EQUILIBRIO", endH: "¿Cuánto tienes<br>que vender?",
+  endSub: "Costes fijos, el margen de cada venta,<br>el punto de equilibrio y el margen de seguridad.",
+  endTags: ["100% gratis", "Sin registro", "No se guarda nada"].map(x => `<span class="tag">${x}</span>`).join(""),
+  endUrl: '<span style="font-size:50px">financeplots.com<span style="color:#4f8ff7">/es/tools/break-even</span></span>',
+  endBtn: "Haz tus números →", endCta: "Etiqueta a alguien que está montando su negocio ☕👇",
+  endFine: "Ejemplo ilustrativo: 3.300 € de costes fijos al mes y cafés a 3,50 € que cuestan 1,30 € cada uno. Tus costes y precios serán otros. No es asesoramiento.",
+  // drawn in SVG or written
+  sign: "CAFÉ DE SAM", menu: "Café", padTitle: "Bici del café — al mes", pRent: "Alquiler", pHelper: "Ayudante", pIns: "Seguro", pBike: "Bici", pAds: "Anuncios", pOther: "Otros",
+  pTotal: "Total", pDiv: "÷ 3,50 € =", cups: "cafés", burp: "*eructo*", units: "unidades", bepRev: "Ingresos en equilibrio:", cmRatio: "Ratio MC:", at: "A", above: "unidades sobre el equilibrio",
+  axis: "Unidades vendidas", legR: "Ingresos", legT: "Coste total", legF: "Coste fijo", cur: "Actual", loss: "pérdida/mes", goal: "Objetivo: 1.500 al mes",
+};
+CAPS = LANG === "es" ? [
+  [0.5, 5.0, "POV: acabas de montar tu propio negocio ☕"],
+  [5.4, 10.0, "Primera pregunta: ¿cuántos cafés al mes solo para cubrir los costes?"],
+  [10.4, 15.2, "Sam lo calculó a mano: 3.300 € de costes fijos al mes…"],
+  [15.6, 20.2, "…entre 3,50 € por café = 943 cafés. ¡Fácil! 😎"],
+  [20.6, 25.2, "Entonces el perro se comió las cuentas. 🐶📄"],
+  [25.6, 30.0, "Así que Sam lo rehízo en el <b>Punto de Equilibrio</b> gratis de FinancePlots."],
+  [30.4, 35.0, "Mismos costes, mismos 3,50 €. Pero cada café cuesta 1,30 € de hacer."],
+  [35.4, 40.0, "Equilibrio: <b>1.500 cafés</b> al mes, no 943. 😳"],
+  [40.4, 45.0, "De cada 3,50 €, solo quedan 2,20 € para pagar los costes fijos. 💡"],
+  [45.4, 50.0, "Con 943 cafés, Sam perdería 1.225 € al mes. 📉"],
+  [50.4, 54.6, "Con los 2.000 que espera: 1.100 € de beneficio al mes."],
+  [55.2, 59.2, "Buen perro: 943 estaba mal de todas formas. 🐶☕"],
+] : [
+  [0.5, 5.0, "POV: you just started your own business ☕"],
+  [5.4, 10.0, "First question: how many coffees a month just to cover the costs?"],
+  [10.4, 15.2, "Sam did the maths by hand: £3,300 of fixed costs a month…"],
+  [15.6, 20.2, "…divided by £3.50 a coffee = 943 coffees. Easy! 😎"],
+  [20.6, 25.2, "Then the dog ate the maths. 🐶📄"],
+  [25.6, 30.0, "So Sam did it again in the free <b>Break-Even</b> tool on FinancePlots."],
+  [30.4, 35.0, "Same costs, same £3.50. But each coffee costs £1.30 to make."],
+  [35.4, 40.0, "Break-even: <b>1,500 coffees</b> a month, not 943. 😳"],
+  [40.4, 45.0, "Only £2.20 of each £3.50 is left to pay the fixed costs. 💡"],
+  [45.4, 50.0, "At 943 coffees, Sam would lose £1,225 a month. 📉"],
+  [50.4, 54.6, "At the 2,000 Sam expects: £1,100 profit a month."],
+  [55.2, 59.2, "Good dog: 943 was wrong anyway. 🐶☕"],
+];
+const num = v => LANG === "es" ? Math.round(v).toLocaleString("es-ES").replace(/^(\d)(\d{3})$/, "$1.$2") : Math.round(v).toLocaleString("en-GB");
+const money = v => (v < 0 ? "−" : "") + (LANG === "es" ? num(Math.abs(v)) + " €" : "£" + num(Math.abs(v)));
+const money2 = v => LANG === "es" ? v.toFixed(2).replace(".", ",") + " €" : "£" + v.toFixed(2);
+const pct = v => (LANG === "es" ? v.toFixed(1).replace(".", ",") : v.toFixed(1)) + "%";
+const CUR = LANG === "es" ? "€" : "£";
+
+// ---------- the numbers (breakEven in lib/calculators.ts) ----------
+const FIXED = [900, 1800, 100, 150, 250, 100], TOTAL = 3300, PRICE = 3.5, VAR = 1.3, UNITS = 2000;
+const CM = PRICE - VAR, BEP = TOTAL / CM; // £2.20, 1,500
+const profit = u => CM * u - TOTAL; // profit(943) = −£1,225; profit(2000) = £1,100
+
+/** Sam standing (from the mortgage cartoon), drawn at (x, y) = the feet, scaled by s; parts prefixed with k. */
+function standing(k, x, y, s = 1, shirt = HOODIE) {
+  return `<g id="${k}" class="noorigin" transform="translate(${x - 560 * s} ${y - 1700 * s}) scale(${s})">
+    <ellipse cx="560" cy="1700" rx="120" ry="18" fill="#000" opacity=".12"/>
+    <rect x="515" y="1490" width="40" height="200" rx="18" fill="#33508f"/><rect x="568" y="1490" width="40" height="200" rx="18" fill="#33508f"/>
+    <ellipse cx="532" cy="1694" rx="34" ry="16" fill="#222"/><ellipse cx="592" cy="1694" rx="34" ry="16" fill="#222"/>
+    <path d="M478 1330 Q482 1290 520 1282 Q560 1300 600 1282 Q638 1290 642 1330 L652 1510 L468 1510 Z" fill="${shirt}"/>
+    <path d="M522 1282 Q560 1306 598 1282" stroke="${HOODIE_D}" stroke-width="12" fill="none" stroke-linecap="round"/>
+    ${head(k, 560, 1190, 92)}
+    <path d="M490 1320 Q440 1400 430 1450" stroke="${shirt}" stroke-width="44" fill="none" stroke-linecap="round"/><circle cx="430" cy="1458" r="24" fill="${SKIN}"/>
+    <path id="${k}Arm" d="M630 1320 Q680 1400 690 1450" stroke="${shirt}" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle id="${k}Hand" cx="690" cy="1458" r="24" fill="${SKIN}"/></g>`;
+}
+/** The coffee bike: a cart on two wheels with an awning, the sign and a price board. */
+function bikeArt(x, y, s = 1) {
+  const stripes = Array.from({ length: 7 }, (_, i) => `<rect x="${-250 + i * 72}" y="-330" width="36" height="70" fill="#fff"/>`).join("");
+  return `<g class="noorigin" transform="translate(${x} ${y}) scale(${s})">
+    <rect x="-250" y="-330" width="500" height="70" fill="#d95926"/>${stripes}
+    <path d="M-250 -260 q36 30 72 0 q36 30 72 0 q36 30 72 0 q36 30 72 0 q36 30 72 0 q36 30 72 0 q36 30 64 0" fill="#d95926"/>
+    <rect x="-236" y="-260" width="12" height="120" fill="#8a5a37"/><rect x="224" y="-260" width="12" height="120" fill="#8a5a37"/>
+    <rect x="-260" y="-150" width="520" height="210" rx="24" fill="#2f6f5a"/>
+    <rect x="-220" y="-120" width="440" height="80" rx="14" fill="#fffdf3"/>
+    <text x="0" y="-64" font-size="46" font-weight="900" text-anchor="middle" fill="#2f6f5a">☕ ${L("sign", "SAM'S COFFEE")}</text>
+    <rect x="-200" y="-200" width="70" height="60" rx="8" fill="#94a3b8"/><rect x="-188" y="-218" width="46" height="20" rx="6" fill="#64748b"/>
+    <path d="M-160 -150 v-0" />
+    <circle cx="-170" cy="110" r="70" fill="none" stroke="#1e293b" stroke-width="16"/><circle cx="-170" cy="110" r="10" fill="#1e293b"/>
+    <circle cx="190" cy="110" r="70" fill="none" stroke="#1e293b" stroke-width="16"/><circle cx="190" cy="110" r="10" fill="#1e293b"/>
+    <!-- price board -->
+    <g transform="translate(330 -40)"><rect x="-70" y="-90" width="150" height="160" rx="12" fill="#1e293b" stroke="#8a5a37" stroke-width="10"/>
+      <text x="5" y="-38" font-size="30" font-weight="800" text-anchor="middle" fill="#fff">${L("menu", "Coffee")}</text>
+      <text x="5" y="20" font-size="40" font-weight="900" text-anchor="middle" fill="#ffcf5a">${money2(PRICE)}</text>
+      <rect x="-50" y="70" width="10" height="70" fill="#8a5a37"/><rect x="50" y="70" width="10" height="70" fill="#8a5a37"/></g></g>`;
+}
+function streetBg(id) {
+  return `<defs><linearGradient id="${id}Sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4ff"/><stop offset="1" stop-color="#d7efff"/></linearGradient></defs>
+  <rect width="1080" height="1920" fill="url(#${id}Sky)"/>
+  <circle cx="160" cy="300" r="70" fill="#ffd34d"/>
+  <rect x="0" y="560" width="300" height="760" fill="#c46a4f"/><rect x="300" y="460" width="420" height="860" fill="#e3a87c"/><rect x="720" y="600" width="360" height="720" fill="#8e7cc3"/>
+  ${[[40, 640], [160, 640], [40, 820], [160, 820], [40, 1000], [160, 1000], [350, 540], [480, 540], [610, 540], [350, 720], [480, 720], [610, 720], [350, 900], [480, 900], [610, 900], [770, 680], [900, 680], [770, 860], [900, 860], [770, 1040], [900, 1040]]
+    .map(([x, y]) => `<rect x="${x}" y="${y}" width="${x > 700 ? 100 : 90}" height="120" rx="8" fill="#fef3c7" opacity=".85"/>`).join("")}
+  <rect y="1320" width="1080" height="600" fill="#9aa5b1"/><rect y="1320" width="1080" height="20" fill="#cbd5e1"/>
+  ${Array.from({ length: 9 }, (_, i) => `<rect x="${i * 130}" y="1340" width="4" height="580" fill="#8b96a3"/>`).join("")}`;
+}
+
+// ---------- street ----------
+function buildStreet() {
+  $("streetSvg").innerHTML = `${streetBg("st")}
+    ${bikeArt(600, 1540, 1)}
+    ${standing("s", 200, 1700, .82)}
+    ${dogArt("sdog", 0, 0, 1)}`;
+}
+function renderStreet(t) {
+  const el = $("street");
+  const vis = t < 10.9;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 0, .7));
+  // Sam pops up behind the cart, waves, then wonders
+  const up = eo(p(t, 0.4, 1.0));
+  $("s").setAttribute("transform", `translate(${200 - 560 * .82} ${1700 - 1700 * .82 + (1 - up) * 300}) scale(.82)`);
+  const wave = Math.sin(t * 9) * win(t, 1.2, 4.6, .3);
+  const think = win(t, 5.4, 10.6, .3);
+  const hx = lerp(lerp(690, 740 + wave * 40, win(t, 1.2, 4.6, .3)), 600, think), hy = lerp(lerp(1458, 1120, win(t, 1.2, 4.6, .3)), 1290, think);
+  $("sArm").setAttribute("d", `M630 1320 Q${lerp(680, 720, 1 - think)} ${lerp(1400, 1260, think)} ${hx} ${hy}`);
+  $("sHand").setAttribute("cx", hx); $("sHand").setAttribute("cy", hy);
+  $("sMouth").setAttribute("d", think > .3 ? mouth(560, 1190, 92, "frown") : mouth(560, 1190, 92, "smile", 1));
+  $("sMouth").setAttribute("fill", think > .3 ? "none" : "#7a2e1f");
+  $("sPupils").setAttribute("transform", think > .3 ? "translate(10 -16)" : "translate(6 6)");
+  $("sBrowL").setAttribute("transform", `translate(0 ${-10 * think})`);
+  $("sEyes").style.transform = `scaleY(${blinkAt(t, [3.0, 7.8])})`;
+  css($("think"), think, `scale(${pop(t, 5.4, .5) || .001})`);
+  // the dog, sitting by the cart
+  $("sdog").setAttribute("transform", `translate(930 1690) scale(-.7 .7)`);
+  $("sdogTail").setAttribute("transform", `rotate(${Math.sin(t * 16) * 20} 60 -20)`);
+  const z = lerp(1, 1.06, p(t, 0, 10));
+  $("streetSvg").style.transform = `scale(${z})`;
+}
+
+// ---------- desk: the notepad and the dog ----------
+const PAD = [
+  [L("padTitle", "Coffee bike — monthly"), "", 10.6, 11.2, true],
+  [L("pRent", "Rent"), num(900), 11.3, 11.7],
+  [L("pHelper", "Helper"), num(1800), 11.8, 12.2],
+  [L("pIns", "Insurance"), num(100), 12.3, 12.7],
+  [L("pBike", "Bike"), num(150), 12.8, 13.2],
+  [L("pAds", "Ads"), num(250), 13.3, 13.7],
+  [L("pOther", "Other"), num(100), 13.8, 14.2],
+  [L("pTotal", "Total"), money(3300), 14.4, 15.0, true],
+  [L("pDiv", "÷ £3.50 ="), `943 ${L("cups", "coffees")}!`, 15.8, 16.9, true],
+];
+function buildDesk() {
+  $("padLines").innerHTML = PAD.map(([a, b, , , bold], i) => `<div class="ln" style="top:${i * 70 + 60 + (i >= 7 ? 22 : 0)}px;${bold ? "color:#0f172a" : ""}"><span id="pa${i}"></span><span id="pb${i}"></span></div>`).join("");
+  $("padInk").innerHTML = `<path id="sumLine" d="M124 ${7 * 70 + 72} L740 ${7 * 70 + 72}" stroke="#1e3a8a" stroke-width="5" stroke-dasharray="620 620"/>
+    <ellipse id="ring" cx="560" cy="${8 * 70 + 82 + 22}" rx="200" ry="52" fill="none" stroke="#e11d48" stroke-width="7" stroke-dasharray="1300 1300" transform="rotate(-4 560 660)" class="noorigin"/>
+    <text id="party" x="640" y="840" font-size="80">🎉</text>`;
+  const bits = Array.from({ length: 16 }, (_, i) => `<rect class="bit" x="-26" y="-20" width="${40 + (i % 3) * 14}" height="${32 + (i % 2) * 14}" rx="4" fill="#fffdf3" stroke="#bcd3f0" stroke-width="3"/>`).join("");
+  $("deskSvg").innerHTML = `
+    <rect width="1080" height="1920" fill="#2b4c7e"/>
+    <rect x="80" y="160" width="300" height="380" rx="16" fill="#22395f"/>
+    <rect x="96" y="176" width="268" height="348" rx="10" fill="#7cc4ff"/><rect x="226" y="176" width="10" height="348" fill="#22395f"/>
+    <circle cx="880" cy="300" r="74" fill="#fff" stroke="#1e293b" stroke-width="10"/><path d="M880 300 L880 256 M880 300 L912 318" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+    <g id="dsam">${torso(540, 520, 112)}${head("d", 540, 520, 112)}</g>
+    <rect x="0" y="700" width="1080" height="1220" fill="#b07a4f"/><rect x="0" y="700" width="1080" height="22" fill="#8a5a37"/>
+    <g id="mug"><rect x="830" y="1020" width="110" height="130" rx="18" fill="#fff"/><path d="M940 1050 q50 10 0 70" stroke="#fff" stroke-width="16" fill="none"/>
+      <path d="M860 1000 q-14 -30 0 -60 M900 1000 q-14 -30 0 -60" stroke="#fff" stroke-width="6" fill="none" opacity=".6"/></g>`;
+  $("deskTop").innerHTML = `
+    <g id="pencilHand" class="noorigin"><rect x="-8" y="-150" width="16" height="150" rx="4" fill="#ffcf5a" transform="rotate(28)" class="noorigin"/>
+      <circle r="34" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5" cx="40" cy="-40"/></g>
+    <g id="bits">${bits}</g>
+    ${dogArt("ddog", 0, 0, 1)}
+    <text id="burp" x="0" y="0" font-size="64" font-weight="900" fill="#fff" stroke="#0f172a" stroke-width="10" paint-order="stroke" text-anchor="middle">${L("burp", "*burp*")}</text>`;
+}
+function writeText(el, txt, a, b, t) { el.textContent = txt.slice(0, Math.round(p(t, a, b) * txt.length)); }
+function renderDesk(t) {
+  const el = $("desk");
+  const vis = t > 9.9 && t < 26.7;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 10.9 ? `circle(${eio(p(t, 10.0, 10.9)) * 2300}px at 540px 900px)` : "none";
+  PAD.forEach(([a, b, t0, t1], i) => {
+    const mid = t0 + (t1 - t0) * (b ? .45 : 1);
+    writeText($("pa" + i), a, t0, mid, t); writeText($("pb" + i), b, mid, t1, t);
+  });
+  $("sumLine").style.strokeDashoffset = 620 * (1 - p(t, 14.1, 14.4));
+  $("ring").style.strokeDashoffset = 1300 * (1 - p(t, 17.1, 17.7));
+  $("party").setAttribute("opacity", t > 17.7 ? 1 : 0);
+  $("party").style.transform = `scale(${pop(t, 17.7, .4)}) rotate(${Math.sin(t * 6) * 8}deg)`;
+  // the pencil follows the writing
+  const line = PAD.findIndex(([, , t0, t1]) => t >= t0 - .05 && t < t1 + .05);
+  let px = 1010, py = 1650;
+  if (line >= 0) {
+    const [, , t0, t1] = PAD[line];
+    px = 150 + 124 + p(t, t0, t1) * 560 + Math.sin(t * 40) * 6;
+    py = 760 + line * 70 + 60 + (line >= 7 ? 22 : 0) + 58 + Math.cos(t * 33) * 4;
+  } else if (t > 17.0 && t < 17.8) { const a = p(t, 17.1, 17.7) * Math.PI * 2; px = 150 + 560 + Math.cos(a) * 200; py = 760 + 664 + Math.sin(a) * 52; }
+  else if (t > 14.05 && t < 14.45) { px = 150 + 124 + p(t, 14.1, 14.4) * 616; py = 760 + 562; }
+  const handOn = t < 19.8 ? 1 : 0;
+  $("pencilHand").setAttribute("transform", `translate(${px} ${py})`);
+  $("pencilHand").setAttribute("opacity", handOn);
+  // Sam: focused, pleased, then horrified
+  const happy = win(t, 17.6, 20.8, .3), shock = win(t, 21.0, 25.4, .2);
+  $("dMouth").setAttribute("d", shock > .3 ? mouth(540, 520, 112, "o", 1.3) : mouth(540, 520, 112, "smile", lerp(.3, 1, happy)));
+  $("dPupils").setAttribute("transform", shock > .3 ? `translate(${lerp(-4, 26, p(t, 21.0, 22.6))} 18)` : "translate(0 22)");
+  $("dEyes").style.transform = `scaleY(${blinkAt(t, [12.5, 16.0, 19.2])}) scale(${1 + .2 * shock})`;
+  $("dBrowL").setAttribute("transform", `translate(0 ${-12 * shock})`); $("dBrowR").setAttribute("transform", `translate(0 ${-12 * shock})`);
+  // the dog: runs in, jumps, grabs the pad, chews it to bits, runs off
+  const run = eio(p(t, 20.4, 21.1));
+  const jump = Math.sin(clamp(p(t, 21.0, 21.5)) * Math.PI);
+  let dx = lerp(1300, 720, run), dy = 1560 - jump * 380 - (t < 21.0 ? Math.abs(Math.sin(t * 14)) * 24 : 0);
+  if (t > 21.5) dy = lerp(1180, 1560, eio(p(t, 21.5, 21.9)));
+  if (t > 24.2) dx = lerp(720, -300, eio(p(t, 24.2, 25.0)));
+  const chew = t > 21.9 && t < 24.0 ? Math.sin(t * 30) * 6 : 0;
+  $("ddog").setAttribute("transform", `translate(${dx} ${dy + chew}) scale(${t > 24.2 ? -1 : 1} 1)`);
+  $("ddogTail").setAttribute("transform", `rotate(${Math.sin(t * 18) * 22} 60 -20)`);
+  // the pad goes with the dog and shrinks to nothing as it's eaten
+  const grab = p(t, 21.3, 21.6), eaten = p(t, 21.9, 23.6);
+  const padS = lerp(1, .25, grab) * (1 - eaten);
+  const mx = lerp(540, dx - 110, grab), my = lerp(1210, dy - 40, grab);
+  css($("pad"), t > 23.6 ? 0 : 1, `translate(${mx - 540}px, ${my - 1210}px) rotate(${grab * -30 + Math.sin(t * 25) * 6 * grab}deg) scale(${padS})`);
+  document.querySelectorAll("#deskTop .bit").forEach((b, i) => {
+    const a = t - 21.9 - (i % 8) * .2; if (a < 0 || a > 1.4) { b.setAttribute("opacity", 0); return; }
+    const vx = Math.cos(i * 2.1) * 300, vy = -500 - (i % 4) * 80;
+    b.setAttribute("opacity", 1 - p(a, 1.0, 1.4));
+    b.setAttribute("transform", `translate(${dx - 100 + vx * a} ${dy - 60 + vy * a + 900 * a * a}) rotate(${a * 400 + i * 30})`);
+  });
+  $("burp").setAttribute("transform", `translate(${dx - 60} ${dy - 200 - p(t, 23.7, 24.4) * 40})`);
+  $("burp").setAttribute("opacity", win(t, 23.7, 24.5, .1));
+  $("deskSvg").style.transform = `scale(${lerp(1, 1.04, p(t, 10, 20))})`;
+}
+
+// ---------- app ----------
+const UMAX = 3300, YMAX = 12000;
+const CX = u => 96 + u / UMAX * 790, CY = v => 230 - v / YMAX * 210;
+function buildApp() {
+  const yt = [0, 4000, 8000, 12000], xt = [0, 1000, 2000, 3000];
+  $("chart").innerHTML = `
+    ${yt.map(v => `<line x1="96" x2="886" y1="${CY(v)}" y2="${CY(v)}" stroke="rgba(255,255,255,.07)" stroke-width="2" stroke-dasharray="6 6"/>
+      <text x="84" y="${CY(v) + 7}" font-size="20" text-anchor="end" fill="#6b7280" font-weight="600">${LANG === "es" ? v / 1000 + "k €" : "£" + v / 1000 + "k"}</text>`).join("")}
+    ${xt.map(u => `<text x="${CX(u)}" y="256" font-size="20" text-anchor="middle" fill="#6b7280" font-weight="600">${num(u)}</text>`).join("")}
+    <text x="491" y="282" font-size="19" text-anchor="middle" fill="#6b7280" font-weight="600">${L("axis", "Units Sold")}</text>
+    <path id="lossGap" d="M${CX(943)} ${CY(943 * PRICE)} L${CX(943)} ${CY(TOTAL + VAR * 943)}" stroke="#ef4444" stroke-width="12" opacity="0"/>
+    <path id="lF" d="M${CX(0)} ${CY(TOTAL)} L${CX(UMAX)} ${CY(TOTAL)}" stroke="#6b7280" stroke-width="4" stroke-dasharray="12 8" fill="none"/>
+    <path id="lT" d="M${CX(0)} ${CY(TOTAL)} L${CX(UMAX)} ${CY(TOTAL + VAR * UMAX)}" stroke="#f97316" stroke-width="6" fill="none"/>
+    <path id="lR" d="M${CX(0)} ${CY(0)} L${CX(UMAX)} ${CY(PRICE * UMAX)}" stroke="#3b82f6" stroke-width="6" fill="none"/>
+    <g id="bepRef"><line x1="${CX(BEP)}" x2="${CX(BEP)}" y1="20" y2="230" stroke="#22c55e" stroke-width="4" stroke-dasharray="10 8"/>
+      <text x="${CX(BEP)}" y="14" font-size="20" font-weight="800" text-anchor="middle" fill="#22c55e">BEP: ${num(BEP)}</text></g>
+    <g id="curRef"><line x1="${CX(UNITS)}" x2="${CX(UNITS)}" y1="20" y2="230" stroke="#a78bfa" stroke-width="4" stroke-dasharray="8 8"/>
+      <text x="${CX(UNITS) + 8}" y="14" font-size="20" font-weight="800" text-anchor="start" fill="#a78bfa">${L("cur", "Current")}: ${num(UNITS)}</text></g>
+    <g id="lossNote"><rect x="${CX(943) - 130}" y="40" width="200" height="70" rx="14" fill="#fff"/>
+      <text x="${CX(943) - 30}" y="70" font-size="22" font-weight="900" text-anchor="middle" fill="#0f172a">943</text>
+      <text x="${CX(943) - 30}" y="98" font-size="20" font-weight="800" text-anchor="middle" fill="#dc2626">${money(profit(943))}</text></g>
+    <rect x="620" y="150" width="18" height="6" fill="#3b82f6"/><text x="646" y="160" font-size="19" fill="#9ca3af" font-weight="600">${L("legR", "Revenue")}</text>
+    <rect x="620" y="174" width="18" height="6" fill="#f97316"/><text x="646" y="184" font-size="19" fill="#9ca3af" font-weight="600">${L("legT", "Total Cost")}</text>
+    <rect x="620" y="198" width="18" height="6" fill="#6b7280"/><text x="646" y="208" font-size="19" fill="#9ca3af" font-weight="600">${L("legF", "Fixed Cost")}</text>`;
+  ["lF", "lT", "lR"].forEach(id => { const L0 = $(id).getTotalLength(); $(id).style.strokeDasharray = `${L0} ${L0}`; $(id).dataset.len = L0; });
+  $("vBep").textContent = `${num(BEP)} ${L("units", "units")}`;
+  $("sBep").textContent = `${L("bepRev", "BEP revenue:")} ${money(BEP * PRICE)}`;
+  $("vCm").textContent = money2(CM);
+  $("sCm").textContent = `${L("cmRatio", "CM ratio:")} ${pct(CM / PRICE * 100)}`;
+  $("vProfit").textContent = money(profit(UNITS));
+  $("sProfit").textContent = `${L("at", "At")} ${num(UNITS)} ${L("units", "units")}`;
+  $("vMos").textContent = pct((UNITS - BEP) / UNITS * 100);
+  $("sMos").textContent = `${num(UNITS - BEP)} ${L("above", "units above BEP")}`;
+}
+// fields: [id, text, from, to]; the cursor clicks each just before typing
+const FIELDS = [
+  ["f0", num(900), 26.9, 27.2], ["f1", num(1800), 27.6, 28.0], ["f2", num(100), 28.4, 28.6], ["f3", num(150), 29.0, 29.2], ["f4", num(250), 29.6, 29.8], ["f5", num(100), 30.2, 30.4],
+  ["f6", LANG === "es" ? "3,50" : "3.50", 31.0, 31.3], ["f7", LANG === "es" ? "1,30" : "1.30", 31.9, 32.2], ["f8", num(2000), 32.8, 33.2],
+];
+// where each field sits on the stage (window at 50,110; content starts 96 below)
+const FPOS = [[267, 422], [713, 422], [267, 530], [713, 530], [267, 638], [713, 638], [800, 825], [800, 905], [800, 985]];
+const CURSOR = [[26.2, [700, 1100]], ...FIELDS.flatMap(([, , a], i) => [[a - .25, FPOS[i]], [a, FPOS[i]]]), [33.6, FPOS[8]], [34.2, [990, 1500]]];
+const CLICKS = FIELDS.map(([, , a]) => a - .2);
+function renderApp(t) {
+  const el = $("app");
+  const vis = t > 25.4 && t < 55.6;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 26.4 ? `circle(${eio(p(t, 25.5, 26.4)) * 2300}px at 540px 1300px)` : "none";
+  css($("win"), 1, `translateY(${(1 - eo(p(t, 25.6, 26.4))) * 120}px) scale(${lerp(.92, 1, eo(p(t, 25.6, 26.4)))})`);
+  let typed = 0;
+  FIELDS.forEach(([id, txt, a, b], i) => {
+    const n = Math.round(p(t, a, b) * txt.length);
+    const next = FIELDS[i + 1] ? FIELDS[i + 1][2] - .25 : 33.6;
+    const focus = t > a - .2 && t < next;
+    const pre = i === 8 ? "" : `<span class="pre">${CUR}</span>`;
+    $(id).innerHTML = pre + (t < a ? "" : txt.slice(0, n)) + (focus && (Math.floor(t * 3) % 2 === 0 || t < b) ? '<span class="caret"></span>' : "");
+    $(id).classList.toggle("on", focus || (id === "f7" && win(t, 32.2, 35.0, .2) > .5));
+    if (i < 6 && t >= b) typed += FIXED[i];
+  });
+  $("totFixed").textContent = money(typed);
+  // results
+  [["k0", 33.5], ["k1", 33.7], ["k2", 33.9], ["k3", 34.1]].forEach(([id, a]) => {
+    const pulse = { k0: win(t, 35.4, 36.4, .2), k1: win(t, 40.4, 41.4, .2), k2: win(t, 50.4, 51.4, .2), k3: win(t, 50.6, 51.6, .2) }[id];
+    css($(id), clamp(p(t, a, a + .2) * 2), `scale(${(pop(t, a, .45) || .001) * (1 + .05 * pulse)})`);
+  });
+  [["lF", 33.8], ["lT", 34.0], ["lR", 34.2]].forEach(([id, a]) => $(id).style.strokeDashoffset = +$(id).dataset.len * (1 - eio(p(t, a, a + 1.0))));
+  $("bepRef").setAttribute("opacity", p(t, 35.2, 35.5)); $("bepRef").style.transform = `scale(${pop(t, 35.2, .4) || .001})`;
+  $("curRef").setAttribute("opacity", p(t, 35.6, 35.9) * (t > 45.2 && t < 50.2 ? .25 : 1));
+  const loss = win(t, 45.4, 50.2, .3);
+  $("lossGap").setAttribute("opacity", loss); $("lossNote").setAttribute("opacity", loss);
+  $("lossNote").style.transform = `scale(${pop(t, 45.5, .45) || .001})`;
+  const [cx, cy] = keys(t, CURSOR);
+  const click = CLICKS.find(c => t >= c && t < c + .4);
+  const rp = click !== undefined ? p(t, click, click + .4) : 1;
+  $("ripple").setAttribute("opacity", click !== undefined ? 1 - rp : 0); $("ripple").setAttribute("r", 8 + rp * 34);
+  css($("cursor"), p(t, 26.1, 26.3) * (1 - p(t, 34.0, 34.3)), `translate(${cx - 8}px, ${cy - 4}px)`);
+}
+
+// ---------- open for business ----------
+function buildOpen() {
+  const shirts = ["#3987e5", "#16a34a", "#a855f7", "#eab308"];
+  const queue = shirts.map((c, i) => standing("c" + i, 750 + i * 110, 1720 - (i % 2) * 10, .5, c)).join("");
+  $("openSvg").innerHTML = `${streetBg("op")}
+    ${bikeArt(480, 1560, .9)}
+    ${standing("o", 150, 1720, .74)}
+    <g id="queue">${queue}</g>
+    <g id="goal" class="noorigin"><rect x="-250" y="-60" width="500" height="120" rx="18" fill="#1e293b" stroke="#8a5a37" stroke-width="10"/>
+      <text y="16" font-size="40" font-weight="900" text-anchor="middle" fill="#ffcf5a">${L("goal", "Goal: 1,500 a month")}</text></g>
+    ${dogArt("odog", 0, 0, 1)}
+    <g id="bone" class="noorigin"><rect x="-40" y="-10" width="80" height="20" rx="10" fill="#fff"/><circle cx="-40" cy="-10" r="14" fill="#fff"/><circle cx="-40" cy="10" r="14" fill="#fff"/><circle cx="40" cy="-10" r="14" fill="#fff"/><circle cx="40" cy="10" r="14" fill="#fff"/></g>`;
+}
+function renderOpen(t) {
+  const el = $("open");
+  const vis = t > 54.4 && t < 60.2;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 55.4 ? `circle(${eio(p(t, 54.5, 55.4)) * 2300}px at 540px 1300px)` : "none";
+  $("goal").setAttribute("transform", `translate(540 340) scale(${pop(t, 55.4, .5)}) rotate(-3)`);
+  $("oMouth").setAttribute("d", mouth(560, 1190, 92, "smile", 1));
+  $("oPupils").setAttribute("transform", t > 56.6 ? "translate(14 12)" : "translate(12 0)");
+  $("oEyes").style.transform = `scaleY(${blinkAt(t, [56.2, 58.6])})`;
+  // Sam hands the dog a treat
+  const give = eio(p(t, 56.4, 57.0));
+  $("oArm").setAttribute("d", `M630 1320 Q${lerp(680, 700, give)} ${lerp(1400, 1380, give)} ${lerp(690, 790, give)} ${lerp(1450, 1500, give)}`);
+  $("oHand").setAttribute("cx", lerp(690, 790, give)); $("oHand").setAttribute("cy", lerp(1458, 1508, give));
+  $("odog").setAttribute("transform", `translate(${lerp(-300, 420, eio(p(t, 55.2, 56.2)))} ${1640 - (t < 56.2 ? Math.abs(Math.sin(t * 14)) * 24 : 0)}) scale(${t < 56.2 ? -.75 : .75} .75)`);
+  $("odogTail").setAttribute("transform", `rotate(${Math.sin(t * 20) * 26} 60 -20)`);
+  const caught = t > 57.0;
+  const hand = [150 + (lerp(690, 790, give) - 560) * .74, 1720 + (lerp(1458, 1508, give) - 1700) * .74];
+  $("bone").setAttribute("transform", caught ? `translate(${420 - 92 * .75} ${1640 - 38}) rotate(-10) scale(.7)` : `translate(${hand[0]} ${hand[1]}) scale(.7)`);
+  $("bone").setAttribute("opacity", t > 56.4 ? 1 : 0);
+  for (let i = 0; i < 4; i++) {
+    const bob = Math.sin(t * 3 + i) * 4;
+    $("c" + i).setAttribute("transform", `translate(${750 + i * 110 - 560 * .5} ${1720 - (i % 2) * 10 - 1700 * .5 + bob}) scale(.5)`);
+    $("c" + i + "Mouth").setAttribute("d", mouth(560, 1190, 92, "smile", .6));
+    $("c" + i + "Pupils").setAttribute("transform", "translate(-14 4)");
+  }
+}
+
+// ---------- end card ----------
+function buildEnd() {
+  $("endSvg").innerHTML = ["☕", "📈", "🧾", "⚖️", "🐶", "🦴"].map((e, i) =>
+    `<text class="fl" x="${[150, 930, 110, 970, 110, 970][i]}" y="${[230, 270, 1500, 1500, 1060, 1060][i]}" font-size="${[90, 80, 80, 80, 70, 70][i]}" text-anchor="middle">${e}</text>`).join("");
+}
+function renderEnd(t) {
+  const el = $("end");
+  const vis = t > 59.0;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 59.1, 59.7));
+  [["endWm", 59.5], ["endPill", 59.9], ["endH", 60.3], ["endSub", 60.9], ["endTags", 61.5], ["endUrl", 62.1], ["endBtn", 62.7], ["endCta", 63.3], ["endFine", 63.9]].forEach(([id, a]) => {
+    const v = p(t, a, a + .5);
+    css($(id), eo(v), `translateY(${(1 - eo(v)) * 40}px) scale(${lerp(.94, 1, back(v))})`);
+  });
+  $("endBtnIn").style.transform = `scale(${1 + .04 * Math.sin((t - 63) * 5) * p(t, 63.2, 63.7)})`;
+  document.querySelectorAll("#endSvg .fl").forEach((f, i) => f.style.transform = `translateY(${Math.sin(t * 1.6 + i) * 18}px) rotate(${Math.sin(t + i) * 8}deg) scale(${pop(t, 59.7 + i * .15, .5)})`);
+}
+
+function render(t) { renderStreet(t); renderDesk(t); renderApp(t); renderOpen(t); renderEnd(t); renderCaps(t); }
+applyLang(); buildStreet(); buildDesk(); buildApp(); buildOpen(); buildEnd();
+boot(render, DURATION);
+</script>
+</body>
+</html>

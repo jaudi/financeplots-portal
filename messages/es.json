@@ -362,6 +362,11 @@
   },
   "breakEven": {
     "title": "⚖️ Análisis del Punto de Equilibrio",
+    "video": {
+      "title": "Mira: el perro se comió las cuentas de Sam",
+      "subtitle": "Una bici del café, cuentas a mano y un número que estaba mal… 67 segundos.",
+      "close": "Cerrar"
+    },
     "sectionGeneral": "General",
     "labelCompany": "Empresa / Nombre del producto",
     "sectionFixed": "Costes Fijos (por periodo)",
@@ -522,6 +527,11 @@
   },
   "compoundInterest": {
     "title": "💹 Calculadora de Interés Compuesto",
+    "video": {
+      "title": "Mira: Sam empieza a invertir a los 25",
+      "subtitle": "200 € al mes, una bola de nieve y lo que cuesta esperar 10 años… 68 segundos.",
+      "close": "Cerrar"
+    },
     "sectionCapital": "Capital y Aportaciones",
     "labelInitial": "Capital inicial",
     "labelMonthly": "Aportación mensual",
