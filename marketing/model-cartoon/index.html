@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam Meets the Bank</title>
+<!--
+  Episode 3 (46.5 s, 1080×1920): Sam wants a loan for a coffee roastery. The
+  bank manager asks for a 5-year plan; Sam's is on a napkin (REJECTED), and
+  the dog eats it. Sam builds a real one in the 5-Year Financial Model —
+  sales, margins, then the cash flow, where year 2 makes £31,125 profit but
+  cash only grows £11,094 — and goes back with a PDF.
+
+  Every figure is the page's own maths (app/[locale]/tools/financial-model)
+  for: year-1 sales £250,000 growing 30% a year, COGS 40%, OpEx 42%, D&A 4%,
+  interest £4,000, tax 25%, cash £25,000, PP&E £60,000, debt £50,000 repaid
+  £10,000 a year, CapEx 5%, customers paying in 45 days, suppliers paid in 30.
+  Year-5 sales £714,025 (CAGR 30.0%), average EBITDA margin 18.0%, average
+  net margin 9.7%; ending cash £132,821 in year 5, loan repaid.
+
+  Open in a browser to watch; ?t=12.5 freezes, ?lang=es is the Spanish cut.
+-->
+<style>
+  :root { --a: #3987e5; --ink: #0f172a; --muted: #64748b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #05080f; height: 100%; overflow: hidden; }
+  body { font-family: Inter, "Inter Display", system-ui, sans-serif; color: #fff; }
+  #fit { position: absolute; left: 50%; top: 50%; width: 1080px; height: 1920px; transform-origin: 0 0; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #111a3a; }
+  .scene { position: absolute; inset: 0; }
+  .abs { position: absolute; }
+  svg { display: block; }
+  svg * { transform-box: fill-box; transform-origin: center; }
+  .noorigin { transform-box: view-box; transform-origin: 0 0; }
+  #cap { position: absolute; left: 0; right: 0; top: 1712px; display: flex; justify-content: center; pointer-events: none; }
+  #capText { max-width: 960px; padding: 22px 38px; border-radius: 28px; background: rgba(5, 10, 25, .8);
+    font-weight: 800; font-size: 46px; line-height: 1.18; letter-spacing: -.5px; text-align: center; }
+  #capText b { color: #8ec5ff; }
+  .bubble { background: #fff; color: var(--ink); border: 5px solid var(--ink); border-radius: 36px; padding: 22px 30px; font-size: 40px; font-weight: 800; line-height: 1.2; text-align: center; }
+  /* browser */
+  #win { position: absolute; left: 50px; top: 110px; width: 980px; height: 1560px; border-radius: 40px; overflow: hidden; background: #fff; box-shadow: 0 40px 120px rgba(0,0,0,.45); color: var(--ink); }
+  #bar { position: absolute; left: 0; right: 0; top: 0; height: 96px; background: #eef2f8; display: flex; align-items: center; gap: 14px; padding: 0 30px; z-index: 2; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; }
+  #url { margin-left: 18px; flex: 1; height: 56px; border-radius: 28px; background: #fff; display: flex; align-items: center; padding: 0 26px; font-size: 26px; color: #334155; font-weight: 500; white-space: nowrap; }
+  #url b { color: var(--ink); }
+  #view { position: absolute; left: 0; right: 0; top: 96px; bottom: 0; overflow: hidden; }
+  #content { position: absolute; left: 0; top: 0; width: 980px; height: 2400px; }
+  .h1 { left: 52px; top: 36px; font-size: 38px; font-weight: 800; letter-spacing: -1.2px; }
+  .pdfBtn { right: 52px; top: 28px; height: 64px; padding: 0 22px; border-radius: 16px; background: var(--a); color: #fff; font-size: 24px; font-weight: 800; display: flex; align-items: center; }
+  .row { left: 52px; width: 876px; height: 78px; display: flex; align-items: center; justify-content: space-between; }
+  .lab { font-size: 27px; font-weight: 600; color: #334155; }
+  .inp { width: 400px; height: 74px; border: 3px solid #cbd5e1; border-radius: 18px; display: flex; align-items: center; padding: 0 22px; font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; }
+  .inp.on { border-color: var(--a); box-shadow: 0 0 0 6px rgba(57,135,229,.18); }
+  .caret { display: inline-block; width: 3px; height: 36px; background: var(--a); margin-left: 3px; }
+  .kpi { width: 430px; height: 136px; border-radius: 22px; background: #f4f7fb; border: 2px solid #e2e8f0; border-left: 8px solid var(--a); padding: 16px 24px; }
+  .kpi .l { font-size: 23px; font-weight: 700; color: var(--muted); }
+  .kpi .v { font-size: 46px; font-weight: 800; letter-spacing: -1px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .kpi .s { font-size: 21px; font-weight: 600; color: #94a3b8; }
+  .sec { left: 52px; font-size: 30px; font-weight: 800; letter-spacing: -.5px; }
+  .tabs { left: 52px; width: 876px; display: flex; border-bottom: 3px solid #e2e8f0; }
+  .tab { padding: 16px 22px; font-size: 25px; font-weight: 700; color: #94a3b8; border-bottom: 5px solid transparent; margin-bottom: -3px; white-space: nowrap; }
+  .tab.on { color: var(--ink); border-bottom-color: var(--a); }
+  table.cf { position: absolute; left: 52px; width: 876px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  table.cf th, table.cf td { height: 68px; font-size: 22px; text-align: right; padding: 0 8px; border-bottom: 2px solid #eef2f7; white-space: nowrap; }
+  table.cf th { color: #94a3b8; font-weight: 800; font-size: 20px; text-transform: uppercase; }
+  table.cf td:first-child, table.cf th:first-child { text-align: left; width: 300px; color: #334155; font-weight: 600; white-space: normal; line-height: 1.1; }
+  table.cf tr.b td { font-weight: 800; color: var(--ink); background: #f4f8ff; }
+  .neg { color: #b91c1c; }
+  .callout { left: 52px; width: 876px; border-radius: 22px; padding: 20px 26px; font-size: 28px; font-weight: 700; line-height: 1.35; }
+  #end { background: radial-gradient(800px 700px at 30% 20%, #16306a 0%, transparent 70%), radial-gradient(800px 800px at 80% 90%, #2b1a52 0%, transparent 70%), #070b16; }
+  .wm { font-weight: 800; letter-spacing: -2px; } .wm span { color: #4f8ff7; }
+  .tag { background: rgba(255,255,255,.08); border-radius: 24px; padding: 12px 24px; font-size: 30px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+
+  <!-- 1–3, 6 · the bank -->
+  <div class="scene" id="room"><svg id="roomSvg" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="bub1" style="left:330px;right:40px;top:470px"><div class="bubble" data-l="bub1">Lovely coffee. Now…<br>where's your 5-year plan? 🧐</div></div>
+    <div class="abs" id="bub2" style="left:330px;right:40px;top:470px"><div class="bubble" data-l="bub2">Now THAT's a plan. ☕<br>Let's talk. 🤝</div></div>
+  </div>
+
+  <!-- 4–5 · FinancePlots, 5-Year Financial Model -->
+  <div class="scene" id="app" style="background: linear-gradient(160deg, #2a62d8 0%, #3987e5 45%, #6aa8f0 100%);">
+    <div id="win">
+      <div id="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+        <div id="url" data-l="url">🔒&nbsp; <b>financeplots.com</b>/tools/financial-model</div></div>
+      <div id="view"><div id="content">
+        <div class="abs h1" data-l="title">📈 5-Year Financial Model</div>
+        <div class="abs pdfBtn" id="pdfBtn" data-l="pdf">📄 Export PDF</div>
+        <div class="abs row" style="top:120px"><span class="lab" data-l="lCompany">Company Name</span><span class="inp" id="f0"></span></div>
+        <div class="abs row" style="top:212px"><span class="lab" data-l="lRev">Year 1 Revenue</span><span class="inp" id="f1"></span></div>
+        <div class="abs row" style="top:304px"><span class="lab" data-l="lGrowth">Annual Growth Rate %</span><span class="inp" id="f2"></span></div>
+        <div class="abs row" style="top:396px"><span class="lab">COGS %</span><span class="inp" id="f3"></span></div>
+        <div class="abs row" style="top:488px"><span class="lab">OpEx %</span><span class="inp" id="f4"></span></div>
+
+        <div class="abs kpi" id="k0" style="left:52px;top:600px"><div class="l" data-l="k0l">Year 1 Revenue</div><div class="v" data-l="k0v">£250,000</div><div class="s" data-l="k0s">Base year</div></div>
+        <div class="abs kpi" id="k1" style="left:498px;top:600px;border-left-color:#22c55e"><div class="l" data-l="k1l">Year 5 Revenue</div><div class="v" data-l="k1v">£714,025</div><div class="s" data-l="k1s">CAGR 30.0%</div></div>
+        <div class="abs kpi" id="k2" style="left:52px;top:756px;border-left-color:#22c55e"><div class="l" data-l="k2l">Avg EBITDA Margin</div><div class="v">18.0%</div><div class="s" data-l="avg5">5-year average</div></div>
+        <div class="abs kpi" id="k3" style="left:498px;top:756px;border-left-color:#22c55e"><div class="l" data-l="k3l">Avg Net Margin</div><div class="v">9.7%</div><div class="s" data-l="avg5b">5-year average</div></div>
+
+        <div class="abs sec" style="top:930px" data-l="chartTitle">5-Year Revenue &amp; Profit Growth</div>
+        <svg class="abs" id="chart" style="left:40px;top:985px" width="900" height="400" viewBox="0 0 900 400"></svg>
+
+        <div class="abs tabs" style="top:1420px"><span class="tab on" id="tabIS" data-l="tabIS">Income Statement</span><span class="tab" data-l="tabBS">Balance Sheet</span><span class="tab" id="tabCF" data-l="tabCF">Cash Flow</span></div>
+        <table class="cf" id="cfTable" style="top:1510px"></table>
+        <svg class="abs" id="hl" style="left:0;top:0;pointer-events:none" width="980" height="2400" viewBox="0 0 980 2400">
+          <rect id="hlY2" x="0" y="0" width="0" height="0" rx="12" fill="none" stroke="#f59e0b" stroke-width="6"/>
+          <rect id="hlY5" x="0" y="0" width="0" height="0" rx="12" fill="none" stroke="#16a34a" stroke-width="6"/>
+        </svg>
+        <div class="abs callout" id="call1" style="top:2000px;background:#fff7e6;border:3px solid #f59e0b;color:#92400e" data-l="call1">Year 2: <b>£31,125</b> profit, but cash only grows <b>£11,094</b>.</div>
+        <div class="abs callout" id="call2" style="top:2130px;background:#ecfdf3;border:3px solid #16a34a;color:#14532d" data-l="call2">Year 5: loan repaid, <b>£132,821</b> in the bank.</div>
+      </div></div>
+    </div>
+    <svg class="abs" id="cursor" style="left:0;top:0;pointer-events:none" width="80" height="90" viewBox="0 0 80 90">
+      <circle id="ripple" cx="10" cy="8" r="30" fill="none" stroke="#3987e5" stroke-width="5" opacity="0"/>
+      <path d="M8 4 L8 66 L24 52 L36 80 L48 75 L36 48 L58 48 Z" fill="#0f172a" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- end card -->
+  <div class="scene" id="end">
+    <svg class="abs" id="endSvg" style="left:0;top:0" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+    <div class="abs" id="endWm" style="left:0;right:0;top:330px;text-align:center"><span class="wm" style="font-size:96px">Finance<span>Plots</span></span></div>
+    <div class="abs" id="endPill" style="left:0;right:0;top:500px;display:flex;justify-content:center">
+      <span data-l="endPill" style="border:2px solid rgba(79,143,247,.6);background:rgba(79,143,247,.14);color:#8ec5ff;border-radius:30px;padding:10px 28px;font-size:30px;font-weight:800;letter-spacing:3px">5-YEAR FINANCIAL MODEL</span></div>
+    <div class="abs" id="endH" data-l="endH" style="left:0;right:0;top:640px;text-align:center;font-size:92px;font-weight:800;letter-spacing:-3px;line-height:1.05">Your 5-year plan,<br>in minutes.</div>
+    <div class="abs" id="endSub" data-l="endSub" style="left:60px;right:60px;top:900px;text-align:center;font-size:36px;font-weight:600;color:#b9c6dd">Income statement, balance sheet and cash flow<br>— and a PDF for the bank.</div>
+    <div class="abs" id="endTags" data-l="endTags" style="left:0;right:0;top:1080px;display:flex;justify-content:center;gap:18px">
+      <span class="tag">100% free</span><span class="tag">No signup</span><span class="tag">Nothing stored</span></div>
+    <div class="abs" id="endUrl" data-l="endUrl" style="left:0;right:0;top:1250px;text-align:center;font-size:46px;font-weight:800;letter-spacing:-1px">financeplots.com<span style="color:#4f8ff7">/tools/financial-model</span></div>
+    <div class="abs" id="endBtn" style="left:0;right:0;top:1380px;display:flex;justify-content:center">
+      <span id="endBtnIn" data-l="endBtn" style="background:#3b82f6;border-radius:60px;padding:30px 70px;font-size:50px;font-weight:800;box-shadow:0 0 60px rgba(59,130,246,.6)">Build yours →</span></div>
+    <div class="abs" id="endCta" data-l="endCta" style="left:0;right:0;top:1580px;text-align:center;font-size:40px;font-weight:700">Tag someone with a business idea ☕👇</div>
+    <div class="abs" id="endFine" data-l="endFine" style="left:80px;right:80px;top:1760px;text-align:center;font-size:24px;color:#7c8aa5;line-height:1.4">Illustrative example: £250,000 first-year sales growing 30% a year, costs as a % of sales. A forecast is only as good as its assumptions. Not advice.</div>
+  </div>
+
+  <div id="cap"><div id="capText"></div></div>
+</div></div>
+
+<script src="../kit.js"></script>
+<script>
+const DURATION = 46.5;
+ES = {
+  bub1: "Rico café. Ahora…<br>¿y tu plan a 5 años? 🧐", bub2: "Esto SÍ es un plan. ☕<br>Hablemos. 🤝",
+  url: "🔒&nbsp; <b>financeplots.com</b>/es/tools/financial-model",
+  title: "📈 Modelo Financiero a 5 Años", pdf: "📄 Exportar PDF",
+  lCompany: "Nombre de la empresa", lRev: "Ingresos Año 1", lGrowth: "Crecimiento anual %",
+  k0l: "Ingresos Año 1", k0v: "250.000 €", k0s: "Año base", k1l: "Ingresos Año 5", k1v: "714.025 €", k1s: "CAGR 30,0 %",
+  k2l: "Margen EBITDA Medio", k3l: "Margen Neto Medio", avg5: "Media 5 años", avg5b: "Media 5 años",
+  chartTitle: "Crecimiento de Ingresos y Beneficio a 5 Años",
+  tabIS: "Cuenta de Resultados", tabBS: "Balance", tabCF: "Flujo de Caja",
+  call1: "Año 2: <b>31.125 €</b> de beneficio, pero la caja solo sube <b>11.094 €</b>.",
+  call2: "Año 5: préstamo devuelto y <b>132.821 €</b> en el banco.",
+  endPill: "MODELO FINANCIERO A 5 AÑOS", endH: "Tu plan a 5 años,<br>en minutos.",
+  endSub: "Cuenta de resultados, balance y flujo de caja<br>— y un PDF para el banco.",
+  endTags: ["100% gratis", "Sin registro", "No se guarda nada"].map(x => `<span class="tag">${x}</span>`).join(""),
+  endUrl: '<span style="font-size:42px">financeplots.com<span style="color:#4f8ff7">/es/tools/financial-model</span></span>',
+  endBtn: "Haz el tuyo →", endCta: "Etiqueta a alguien con una idea de negocio ☕👇",
+  endFine: "Ejemplo ilustrativo: 250.000 € de ventas el primer año, creciendo un 30 % anual, con los costes en % de las ventas. Una previsión vale lo que valen sus hipótesis. No es asesoramiento.",
+  // drawn in SVG or typed
+  plaque: "🏦 BANCO", nameplate: "DIRECTOR", napTitle: "PLAN A 5 AÑOS", napY1: "Año 1: café ☕", napY5: "Año 5: dominar el mundo 🌍",
+  stamp: "RECHAZADO", burp: "*burp*", bag: "CAFÉ DE SAM", f0: "Café de Sam", f1: "250.000 €", f2: "30", f3: "40", f4: "42",
+  docTitle: "MODELO A 5 AÑOS", docSub: "Café de Sam", yearN: "Año ",
+  rowNI: "Beneficio neto", rowOCF: "Caja de explotación", rowCapex: "Inversión en activos (CapEx)", rowDebt: "Devolución de deuda", rowNet: "Variación neta de caja", rowEnd: "Caja final", colItem: "Concepto",
+  legRev: "Ingresos", legNI: "Beneficio neto",
+};
+CAPS = LANG === "es" ? [
+  [0.4, 4.2, "POV: le pides al banco un préstamo para tu tostadora de café ☕"],
+  [4.4, 8.9, "El plan a 5 años de Sam. En una servilleta. 🙃"],
+  [9.0, 12.4, "(El perro se la comió. Sinceramente, mejoró. 🐶)"],
+  [12.6, 15.6, "Entonces Sam tuvo una idea. 💡"],
+  [15.9, 19.5, "Así que hizo uno de verdad: el <b>Modelo Financiero a 5 Años</b>, gratis."],
+  [19.7, 23.4, "Ventas, costes, márgenes… cinco años en segundos. 📈"],
+  [23.6, 28.0, "Giro: el año 2 gana <b>31.125 €</b>, pero la caja solo sube <b>11.094 €</b>. 🤯"],
+  [28.2, 31.4, "(Los clientes pagan a 45 días; la maquinaria y el préstamo se llevan el resto.)"],
+  [31.6, 34.0, "De vuelta al banco, con un plan de verdad (y un PDF). 📄"],
+  [34.2, 37.8, "Esto ya es otra conversación. 🤝"],
+  [37.9, 40.2, "(El perro ha pedido trabajo en el banco. 🐶👔)"],
+] : [
+  [0.4, 4.2, "POV: you ask the bank for a loan for your coffee roastery ☕"],
+  [4.4, 8.9, "Sam's 5-year plan. On a napkin. 🙃"],
+  [9.0, 12.4, "(The dog ate it. Honestly, an improvement. 🐶)"],
+  [12.6, 15.6, "Then Sam had an idea. 💡"],
+  [15.9, 19.5, "So Sam built a real one: the free <b>5-Year Financial Model</b>."],
+  [19.7, 23.4, "Sales, costs, margins… five years in seconds. 📈"],
+  [23.6, 28.0, "Plot twist: year 2 makes <b>£31,125</b> profit, but cash only grows <b>£11,094</b>. 🤯"],
+  [28.2, 31.4, "(Customers pay in 45 days, and new kit and the loan eat the rest.)"],
+  [31.6, 34.0, "Back at the bank, with a real plan (and a PDF). 📄"],
+  [34.2, 37.8, "Now that's a conversation. 🤝"],
+  [37.9, 40.2, "(The dog has applied for a job at the bank. 🐶👔)"],
+];
+const money = (v, paren) => {
+  const s = LANG === "es" ? Math.round(Math.abs(v)).toLocaleString("es-ES").replace(/^(\d)(\d{3})$/, "$1.$2") + " €" : "£" + Math.round(Math.abs(v)).toLocaleString("en-GB");
+  return v < 0 && paren ? `(${s})` : s;
+};
+
+// ---------- the model (the page's own figures, see the comment at the top) ----------
+const YEARS = [
+  { rev: 250000, ni: 23250, ocf: 33250, capex: -12500, debt: -10000, net: 10750, end: 35750 },
+  { rev: 325000, ni: 31125, ocf: 37344, capex: -16250, debt: -10000, net: 11094, end: 46844 },
+  { rev: 422500, ni: 41363, ocf: 49448, capex: -21125, debt: -10000, net: 18323, end: 65167 },
+  { rev: 549250, ni: 54671, ocf: 65181, capex: -27463, debt: -10000, net: 27719, end: 92886 },
+  { rev: 714025, ni: 71973, ocf: 85637, capex: -35701, debt: -10000, net: 39935, end: 132821 },
+];
+
+// ---------- the bank ----------
+const S = { cx: 300, cy: 900, r: 100 }, M = { cx: 770, cy: 880, r: 100 };
+const MSKIN = "#f2c9a4", SUIT = "#1e3a5f";
+function managerArt() {
+  const { cx, cy, r } = M;
+  return `<g id="mgr">
+    <path d="M${cx - 150} ${cy + 175} Q${cx - 140} ${cy + 120} ${cx - 50} ${cy + 108} L${cx + 50} ${cy + 108} Q${cx + 140} ${cy + 120} ${cx + 150} ${cy + 175} L${cx + 160} ${cy + 420} L${cx - 160} ${cy + 420} Z" fill="${SUIT}"/>
+    <path d="M${cx - 50} ${cy + 108} L${cx} ${cy + 200} L${cx + 50} ${cy + 108} Z" fill="#fff"/>
+    <path d="M${cx} ${cy + 118} L${cx - 16} ${cy + 140} L${cx} ${cy + 250} L${cx + 16} ${cy + 140} Z" fill="#dc2626"/>
+    <rect x="${cx - 28}" y="${cy + 70}" width="56" height="50" rx="18" fill="#d9a882"/>
+    <circle cx="${cx - r * .98}" cy="${cy + r * .05}" r="${r * .2}" fill="${MSKIN}"/><circle cx="${cx + r * .98}" cy="${cy + r * .05}" r="${r * .2}" fill="${MSKIN}"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r * 1.05}" fill="${MSKIN}"/>
+    <path d="M${cx - r * .98} ${cy - r * .1} Q${cx - r * .95} ${cy - r * .6} ${cx - r * .6} ${cy - r * .55} L${cx - r * .62} ${cy - r * .1} Z" fill="#9ca3af"/>
+    <path d="M${cx + r * .98} ${cy - r * .1} Q${cx + r * .95} ${cy - r * .6} ${cx + r * .6} ${cy - r * .55} L${cx + r * .62} ${cy - r * .1} Z" fill="#9ca3af"/>
+    <ellipse cx="${cx - r * .35}" cy="${cy - r * .7}" rx="${r * .18}" ry="${r * .08}" fill="#fff" opacity=".35"/>
+    <path class="noorigin" id="mBrowL" d="M${cx - r * .55} ${cy - r * .3} h${r * .34}" stroke="#6b7280" stroke-width="${r * .09}" stroke-linecap="round"/>
+    <path class="noorigin" id="mBrowR" d="M${cx + r * .21} ${cy - r * .3} h${r * .34}" stroke="#6b7280" stroke-width="${r * .09}" stroke-linecap="round"/>
+    <g id="mEyes"><circle cx="${cx - r * .38}" cy="${cy}" r="${r * .1}" fill="#1b1b2f"/><circle cx="${cx + r * .38}" cy="${cy}" r="${r * .1}" fill="#1b1b2f"/></g>
+    <g id="mGlasses" class="noorigin" fill="rgba(255,255,255,.25)" stroke="#1b1b2f" stroke-width="${r * .06}">
+      <rect x="${cx - r * .62}" y="${cy - r * .2}" width="${r * .48}" height="${r * .38}" rx="${r * .1}"/><rect x="${cx + r * .14}" y="${cy - r * .2}" width="${r * .48}" height="${r * .38}" rx="${r * .1}"/>
+      <path d="M${cx - r * .14} ${cy - r * .04} h${r * .28}" fill="none"/></g>
+    <path d="M${cx - r * .32} ${cy + r * .38} Q${cx} ${cy + r * .26} ${cx + r * .32} ${cy + r * .38} Q${cx} ${cy + r * .5} ${cx - r * .32} ${cy + r * .38} Z" fill="#9ca3af"/>
+    <path id="mMouth" d="" stroke="#7a2e1f" stroke-width="${r * .07}" fill="none" stroke-linecap="round"/>
+  </g>`;
+}
+function buildRoom() {
+  $("roomSvg").innerHTML = `
+  <defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe4d2"/><stop offset="1" stop-color="#e2d3bb"/></linearGradient>
+    <radialGradient id="bulbGlow"><stop offset="0" stop-color="#fff3b0" stop-opacity=".9"/><stop offset="1" stop-color="#fff3b0" stop-opacity="0"/></radialGradient></defs>
+  <g id="roomCam" class="noorigin">
+    <rect width="1080" height="1920" fill="url(#wall)"/>
+    <rect y="1500" width="1080" height="420" fill="#8a6a4f"/>
+    <!-- blinds -->
+    <rect x="50" y="250" width="230" height="330" rx="12" fill="#bcd7f0"/>
+    ${Array.from({ length: 9 }, (_, i) => `<rect x="50" y="${262 + i * 35}" width="230" height="18" fill="#f8fafc" opacity=".9"/>`).join("")}
+    <!-- plaque, clock, plant -->
+    <rect x="360" y="210" width="360" height="110" rx="16" fill="#1e3a5f"/><text x="540" y="282" font-size="50" font-weight="900" text-anchor="middle" fill="#fcd34d" letter-spacing="3">${L("plaque", "🏦 BANK")}</text>
+    <circle cx="920" cy="300" r="70" fill="#fff" stroke="#1e293b" stroke-width="9"/><path d="M920 300 L920 258 M920 300 L950 312" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+    <rect x="960" y="1310" width="80" height="100" rx="12" fill="#c2410c"/>
+    <path d="M1000 1310 q-40 -110 0 -190 q40 80 0 190 M1000 1310 q-70 -50 -80 -130 M1000 1310 q60 -40 70 -120" stroke="#4caf7a" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <!-- Sam -->
+    <g id="sam">
+      ${torso(S.cx, S.cy, S.r)}
+      ${head("r", S.cx, S.cy, S.r)}
+      <path id="sweat" d="M${S.cx + 70} ${S.cy - 60} q14 24 0 34 q-14 -10 0 -34 z" fill="#7cc4ff" opacity="0"/>
+    </g>
+    ${managerArt()}
+    <!-- lightbulb -->
+    <g id="bulb" class="noorigin">
+      <circle cx="${S.cx}" cy="660" r="140" fill="url(#bulbGlow)"/>
+      <circle cx="${S.cx}" cy="650" r="56" fill="#ffe066" stroke="#e8a92a" stroke-width="6"/><rect x="${S.cx - 24}" y="700" width="48" height="36" rx="8" fill="#94a3b8"/></g>
+    <!-- desk -->
+    <rect x="40" y="1210" width="1000" height="40" rx="12" fill="#7c4a2d"/><rect x="70" y="1250" width="940" height="330" fill="#6b3f26"/>
+    <rect x="110" y="1290" width="380" height="250" rx="10" fill="#5c361f"/><rect x="590" y="1290" width="380" height="250" rx="10" fill="#5c361f"/>
+    <!-- desk things: nameplate, coffee bag -->
+    <rect x="660" y="1150" width="230" height="62" rx="8" fill="#1e293b"/><text x="775" y="1192" font-size="26" font-weight="900" text-anchor="middle" fill="#fcd34d" letter-spacing="2">${L("nameplate", "MANAGER")}</text>
+    <path d="M150 1212 L160 1090 Q190 1074 220 1090 L230 1212 Z" fill="#a16207"/><rect x="150" y="1130" width="80" height="40" fill="#fef3c7"/>
+    <text x="190" y="1158" font-size="15" font-weight="900" text-anchor="middle" fill="#78350f">${L("bag", "SAM'S")}</text>
+    <!-- hands on the desk -->
+    <circle id="sHandL" cx="230" cy="1222" r="28" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+    <circle id="sHandR" cx="400" cy="1222" r="28" fill="${SKIN}" stroke="${SKIN_D}" stroke-width="5"/>
+    <circle cx="690" cy="1222" r="28" fill="${MSKIN}" stroke="#d9a882" stroke-width="5"/><circle cx="850" cy="1222" r="28" fill="${MSKIN}" stroke="#d9a882" stroke-width="5"/>
+    <!-- the phone -->
+    <g id="phone" class="noorigin"><rect x="-40" y="-72" width="80" height="144" rx="14" fill="#1e293b"/><rect x="-32" y="-62" width="64" height="122" rx="9" fill="#3987e5"/></g>
+    <!-- the napkin (small, sliding) and the report -->
+    <g id="napSmall" class="noorigin"><rect x="-60" y="-14" width="120" height="28" rx="4" fill="#fff" stroke="#cbd5e1" stroke-width="3"/></g>
+    <g id="doc" class="noorigin"><rect x="-130" y="-170" width="260" height="340" rx="14" fill="#fff" stroke="#cbd5e1" stroke-width="4"/>
+      <rect x="-130" y="-170" width="260" height="70" rx="14" fill="#3987e5"/><text x="0" y="-124" font-size="24" font-weight="900" text-anchor="middle" fill="#fff">${L("docTitle", "5-YEAR MODEL")}</text>
+      <text x="0" y="-70" font-size="22" font-weight="700" text-anchor="middle" fill="#334155">${L("docSub", "Sam's Coffee Roasters")}</text>
+      ${YEARS.map((y, i) => `<rect x="${-95 + i * 40}" y="${100 - y.rev / 714025 * 150}" width="28" height="${y.rev / 714025 * 150}" rx="4" fill="#1d4ed8"/>`).join("")}
+      <path d="M-110 110 h220" stroke="#e2e8f0" stroke-width="3"/>
+      <text x="0" y="150" font-size="20" font-weight="800" text-anchor="middle" fill="#64748b">PDF</text></g>
+  </g>
+  <!-- the napkin, close up -->
+  <g id="napkin" class="noorigin">
+    <rect x="-270" y="-220" width="540" height="440" rx="10" fill="#fffdf7" stroke="#e5e7eb" stroke-width="4"/>
+    <path d="M-270 -150 h540 M-270 150 h540" stroke="#f1f5f9" stroke-width="3"/>
+    <text x="0" y="-130" font-size="44" font-weight="900" text-anchor="middle" fill="#1e3a8a" font-style="italic">${L("napTitle", "5-YEAR PLAN")}</text>
+    <path d="M-170 -112 q170 14 340 0" stroke="#1e3a8a" stroke-width="5" fill="none"/>
+    <text x="-220" y="-30" font-size="40" font-weight="700" fill="#1e3a8a" font-style="italic">${L("napY1", "Year 1: coffee ☕")}</text>
+    <text x="-220" y="50" font-size="40" font-weight="700" fill="#1e3a8a" font-style="italic">${L("napY5", "Year 5: world domination 🌍")}</text>
+    <path d="M-200 170 L-100 140 L0 150 L190 60" stroke="#1e3a8a" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M190 60 l-34 6 m34 -6 l-10 32" stroke="#1e3a8a" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="210" cy="-170" r="34" fill="none" stroke="#a16207" stroke-width="6" opacity=".5"/>
+    <g id="stamp" class="noorigin"><rect x="-230" y="-70" width="460" height="140" rx="20" fill="none" stroke="#e11d48" stroke-width="14"/>
+      <text x="0" y="34" font-size="${LANG === "es" ? 72 : 88}" font-weight="900" text-anchor="middle" fill="#e11d48">${L("stamp", "REJECTED")}</text></g>
+  </g>
+  ${dogArt("dog", 0, 0, 1)}
+  <g id="dogTie" class="noorigin"><path d="M0 0 L-14 20 L0 90 L14 20 Z" fill="#dc2626"/><rect x="-16" y="-10" width="32" height="18" rx="6" fill="#b91c1c"/></g>
+  <g id="dogSpecs" class="noorigin" fill="rgba(255,255,255,.3)" stroke="#1b1b2f" stroke-width="6"><rect x="-58" y="-16" width="46" height="34" rx="9"/><rect x="2" y="-16" width="46" height="34" rx="9"/><path d="M-12 0 h14" fill="none"/></g>
+  <text id="burp" x="560" y="1020" font-size="56" font-weight="900" text-anchor="middle" fill="#0f172a" font-style="italic">${L("burp", "*burp*")}</text>`;
+}
+function renderRoom(t) {
+  const el = $("room");
+  const first = t < 16.8, second = t > 31.3 && t < 40.6;
+  el.style.display = first || second ? "" : "none";
+  if (!(first || second)) return;
+  css(el, first ? p(t, 0, .6) : 1);
+  el.style.clipPath = second && t < 32.3 ? `circle(${eio(p(t, 31.4, 32.3)) * 2300}px at 540px 1000px)` : "none";
+  const { cx, cy, r } = S;
+  // camera: slow push, then into the phone
+  const z = first ? lerp(1, 1.04, p(t, 0, 15)) * lerp(1, 1.7, eio(p(t, 15.2, 16.6))) : 1;
+  const fx = 420, fy = 1080;
+  $("roomCam").setAttribute("transform", `translate(${fx - fx * z} ${fy - fy * z}) scale(${z})`);
+  // Sam's face
+  const worried = first ? Math.max(win(t, 1.2, 4.4, .2), win(t, 7.2, 9.0, .2)) : 0;
+  const idea = first ? win(t, 12.6, 16.8, .2) : 0;
+  const proud = second ? p(t, 34.0, 34.4) : 0;
+  $("rPupils").setAttribute("transform", `translate(${first && t < 9 ? 12 : (t > 9 && t < 12.4 ? 4 : 10)} ${idea ? -14 : 0})`);
+  $("rEyes").style.transform = `scaleY(${blinkAt(t, [2.6, 6.4, 11.2, 14.0, 33.0, 36.6])}) scale(${1 + .2 * worried})`;
+  $("rBrowL").setAttribute("transform", `translate(0 ${-8 * worried - 8 * idea})`);
+  $("rBrowR").setAttribute("transform", `translate(0 ${-8 * worried - 8 * idea})`);
+  $("rMouth").setAttribute("d", worried > .4 ? mouth(cx, cy, r, "o", 1) : mouth(cx, cy, r, "smile", Math.max(.4, idea, proud)));
+  $("sweat").setAttribute("opacity", worried);
+  $("sweat").setAttribute("transform", `translate(0 ${((t * 40) % 30) * worried})`);
+  // the manager
+  const skeptic = first ? win(t, .5, 9.0, .3) : 0;
+  const impressed = second ? p(t, 33.3, 33.7) : 0;
+  $("mBrowL").setAttribute("transform", `translate(0 ${-14 * skeptic - 16 * impressed}) rotate(${-10 * skeptic} ${M.cx - 38} ${M.cy - 30})`);
+  $("mBrowR").setAttribute("transform", `translate(0 ${-16 * impressed})`);
+  $("mMouth").setAttribute("d", impressed > .2 ? `M${M.cx - 34} ${M.cy + 56} Q${M.cx} ${M.cy + 92} ${M.cx + 34} ${M.cy + 56}` : `M${M.cx - 26} ${M.cy + 62} L${M.cx + 26} ${M.cy + 62}`);
+  $("mGlasses").setAttribute("transform", `translate(0 ${-26 * (second ? win(t, 33.3, 34.2, .15) : 0)})`);
+  $("mEyes").style.transform = `scaleY(${blinkAt(t, [3.4, 8.2, 35.1])}) scale(${1 + .4 * (second ? win(t, 33.3, 34.2, .15) : 0)})`;
+  // bubbles
+  css($("bub1"), first ? win(t, .5, 4.3, .25) : 0, `scale(${pop(t, .5, .45)})`);
+  css($("bub2"), second ? win(t, 34.0, 37.9, .25) : 0, `scale(${pop(t, 34.0, .45)})`);
+  // napkin: slides across, then close up, stamped, eaten
+  const slide = eio(p(t, 4.4, 5.4));
+  $("napSmall").setAttribute("transform", `translate(${lerp(400, 600, slide)} 1205) scale(${first && t > 4.3 && t < 5.9 ? 1 : 0})`);
+  const nz = pop(t, 5.7, .5) * (first ? 1 : 0);
+  const eat = eio(p(t, 9.4, 10.1));
+  $("napkin").setAttribute("transform", `translate(${lerp(540, 560, eat)} ${lerp(760, 1080, eat)}) rotate(${-4 + eat * 30}) scale(${nz * (1 - eat)})`);
+  const st = t > 7.2 ? lerp(2.2, 1, eo(p(t, 7.2, 7.4))) : 0;
+  $("stamp").setAttribute("transform", `rotate(-12) scale(${st})`);
+  $("stamp").setAttribute("opacity", t > 7.2 ? 1 : 0);
+  // dog: jumps up behind the desk to eat the napkin; later sits in the manager's spot with a tie
+  let dogX = 560, dogY = 2200, dogS = 1.1, tie = 0;
+  if (first) {
+    const up = eo(p(t, 8.9, 9.4)) * (1 - eio(p(t, 12.0, 12.5)));
+    dogY = lerp(2200, 1150, up) - (t > 10.1 && t < 11.8 ? Math.abs(Math.sin(t * 14)) * 14 : 0);
+  } else {
+    const up = eo(p(t, 37.8, 38.3));
+    dogX = 470; dogY = lerp(2200, 1140, up); tie = up;
+  }
+  $("dog").setAttribute("transform", `translate(${dogX} ${dogY}) scale(${dogS})`);
+  $("dogTail").setAttribute("transform", `rotate(${Math.sin(t * 16) * 20} 60 -20)`);
+  $("dogTie").setAttribute("transform", `translate(${dogX - 70 * dogS} ${dogY - 15 * dogS}) scale(${tie})`);
+  $("dogSpecs").setAttribute("transform", `translate(${dogX - 80 * dogS} ${dogY - 72 * dogS}) scale(${tie})`);
+  $("burp").setAttribute("opacity", first ? win(t, 11.2, 12.1, .15) : 0);
+  $("burp").setAttribute("transform", `translate(0 ${-p(t, 11.2, 12.1) * 40})`);
+  // the idea, the phone
+  const bz = first ? pop(t, 12.7, .45) * (1 - p(t, 15.0, 15.3)) : 0;
+  $("bulb").setAttribute("transform", `translate(${cx} 660) scale(${bz}) translate(${-cx} -660)`);
+  const ph = first ? eo(p(t, 13.6, 14.2)) : 0;
+  $("phone").setAttribute("transform", `translate(420 ${lerp(1260, 1080, ph)}) rotate(-8) scale(${ph})`);
+  $("sHandR").setAttribute("cx", lerp(400, 430, ph)); $("sHandR").setAttribute("cy", lerp(1222, 1140, ph));
+  // the report: handed over, read
+  const give = second ? eio(p(t, 32.2, 33.1)) : 0;
+  $("doc").setAttribute("transform", `translate(${lerp(380, 690, give)} ${lerp(1120, 1140, give)}) rotate(${lerp(-6, 4, give)}) scale(${second ? pop(t, 31.9, .45) * lerp(.9, .8, give) : 0})`);
+}
+
+// ---------- app ----------
+const MAXR = 714025;
+function buildApp() {
+  const bw = 52, gap = 18, x0 = 110, base = 330, hgt = 290;
+  $("chart").innerHTML = `
+    ${[0, 250000, 500000, 750000].map(v => `<line x1="${x0 - 20}" x2="880" y1="${base - v / 750000 * hgt}" y2="${base - v / 750000 * hgt}" stroke="#e2e8f0" stroke-width="2"/>
+      <text x="${x0 - 30}" y="${base - v / 750000 * hgt + 8}" font-size="22" text-anchor="end" fill="#94a3b8" font-weight="600">${v ? (LANG === "es" ? v / 1000 + "k €" : "£" + v / 1000 + "k") : (LANG === "es" ? "0 €" : "£0")}</text>`).join("")}
+    ${YEARS.map((y, i) => {
+      const gx = x0 + i * 154;
+      return `<rect class="barR" x="${gx}" y="${base}" width="${bw}" height="0" rx="6" fill="#1d4ed8" data-v="${y.rev}"/>
+        <rect class="barN" x="${gx + bw + gap / 3}" y="${base}" width="${bw}" height="0" rx="6" fill="#f59e0b" data-v="${y.ni}"/>
+        <text x="${gx + bw}" y="${base + 34}" font-size="22" text-anchor="middle" fill="#64748b" font-weight="700">${L("yearN", "Year ")}${i + 1}</text>`;
+    }).join("")}
+    <rect x="${x0}" y="374" width="22" height="16" rx="4" fill="#1d4ed8"/><text x="${x0 + 30}" y="389" font-size="21" fill="#334155" font-weight="700">${L("legRev", "Revenue")}</text>
+    <rect x="${x0 + 200}" y="374" width="22" height="16" rx="4" fill="#f59e0b"/><text x="${x0 + 230}" y="389" font-size="21" fill="#334155" font-weight="700">${L("legNI", "Net Income")}</text>`;
+  const row = (label, key, bold) => `<tr class="${bold ? "b" : ""}"><td>${label}</td>${YEARS.map(y => `<td class="${y[key] < 0 ? "neg" : ""}">${money(y[key], true)}</td>`).join("")}</tr>`;
+  $("cfTable").innerHTML = `<tr><th>${L("colItem", "Item")}</th>${YEARS.map((_, i) => `<th>${L("yearN", "Year ")}${i + 1}</th>`).join("")}</tr>
+    ${row(L("rowNI", "Net Income"), "ni")}${row(L("rowOCF", "Cash from Operations"), "ocf", true)}${row(L("rowCapex", "Capital Expenditure"), "capex")}
+    ${row(L("rowDebt", "Debt Repayment"), "debt")}${row(L("rowNet", "Net change in cash"), "net", true)}${row(L("rowEnd", "Ending Cash"), "end", true)}`;
+}
+function placeHighlights() {
+  // measured once the table is laid out: Year 2's net income and net change, Year 5's ending cash
+  const tb = $("cfTable"), rows = tb.rows, off = { x: tb.offsetLeft, y: tb.offsetTop };
+  const cell = (r, c) => { const el = rows[r].cells[c]; return { x: off.x + el.offsetLeft, y: off.y + el.offsetTop, w: el.offsetWidth, h: el.offsetHeight }; };
+  const a = cell(1, 2), b = cell(5, 2);
+  Object.entries({ x: a.x - 4, y: a.y + 4, width: a.w + 8, height: b.y + b.h - a.y - 8 }).forEach(([k, v]) => $("hlY2").setAttribute(k, v));
+  const c = cell(6, 5);
+  Object.entries({ x: c.x - 4, y: c.y + 4, width: c.w + 8, height: c.h - 8 }).forEach(([k, v]) => $("hlY5").setAttribute(k, v));
+}
+const FIELDS = [["f0", L("f0", "Sam's Coffee Roasters"), 16.7, 17.5], ["f1", L("f1", "£250,000"), 17.65, 18.2], ["f2", L("f2", "30"), 18.35, 18.55], ["f3", L("f3", "40"), 18.7, 18.9], ["f4", L("f4", "42"), 19.05, 19.25]];
+const CURSOR = [[16.4, [760, 900]], [16.6, [740, 368]], [17.55, [740, 460]], [18.25, [740, 552]], [18.6, [740, 644]], [18.95, [740, 736]], [19.5, [1000, 1500]],
+  [23.5, [1000, 1500]], [23.9, [880, 740]], [24.3, [880, 740]], [24.8, [1010, 1600]], [29.9, [1010, 1600]], [30.4, [880, 270]], [31.0, [880, 270]]];
+const CLICKS = [16.65, 17.6, 18.3, 18.65, 19.0, 24.0, 30.5];
+function renderApp(t) {
+  const el = $("app");
+  const vis = t > 15.5 && t < 32.4;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  el.style.clipPath = t < 16.5 ? `circle(${eio(p(t, 15.6, 16.5)) * 2300}px at 420px 1080px)` : "none";
+  css($("win"), 1, `translateY(${(1 - eo(p(t, 15.7, 16.5))) * 120}px) scale(${lerp(.92, 1, eo(p(t, 15.7, 16.5)))})`);
+  FIELDS.forEach(([id, txt, a, b], i) => {
+    const n = Math.round(p(t, a, b) * txt.length);
+    const focus = t > a - .1 && t < (FIELDS[i + 1] ? FIELDS[i + 1][2] - .1 : 19.5);
+    $(id).innerHTML = txt.slice(0, n) + (focus && (Math.floor(t * 3) % 2 === 0 || t < b) ? '<span class="caret"></span>' : "");
+    $(id).classList.toggle("on", focus);
+  });
+  [["k0", 19.5], ["k1", 19.8], ["k2", 20.1], ["k3", 20.4]].forEach(([id, a]) => css($(id), clamp(p(t, a, a + .2) * 2), `scale(${pop(t, a, .45) || .001})`));
+  // bars grow, one year after the other
+  document.querySelectorAll("#chart .barR, #chart .barN").forEach((b, i) => {
+    const yi = Math.floor(i / 2), g = eo(p(t, 20.5 + yi * .32, 21.1 + yi * .32));
+    const h = (+b.dataset.v) / 750000 * 290 * g;
+    b.setAttribute("y", 330 - h); b.setAttribute("height", h);
+  });
+  const onCF = t > 24.05;
+  $("tabIS").classList.toggle("on", !onCF); $("tabCF").classList.toggle("on", onCF);
+  css($("cfTable"), onCF ? p(t, 24.05, 24.3) : 0);
+  $("hlY2").setAttribute("opacity", win(t, 24.6, 29.6, .2) * (Math.sin(t * 8) > -.6 ? 1 : .5));
+  css($("call1"), win(t, 24.8, 30.0, .25), `translateY(${(1 - eo(p(t, 24.8, 25.2))) * 30}px)`);
+  $("hlY5").setAttribute("opacity", p(t, 28.4, 28.6));
+  css($("call2"), p(t, 28.6, 28.9), `translateY(${(1 - eo(p(t, 28.6, 29.0))) * 30}px)`);
+  $("content").style.transform = `translateY(${-eio(p(t, 22.6, 23.4)) * 900 + eio(p(t, 29.9, 30.3)) * 900}px)`;
+  $("pdfBtn").style.transform = `scale(${t > 30.5 && t < 30.65 ? .92 : 1 + .05 * win(t, 30.1, 30.5)})`;
+  const [cx, cy] = keys(t, CURSOR);
+  const click = CLICKS.find(c => t >= c && t < c + .45);
+  const rp = click !== undefined ? p(t, click, click + .45) : 1;
+  $("ripple").setAttribute("opacity", click !== undefined ? 1 - rp : 0); $("ripple").setAttribute("r", 8 + rp * 34);
+  css($("cursor"), p(t, 16.4, 16.6) * (1 - p(t, 31.1, 31.3)), `translate(${cx - 8}px, ${cy - 4}px)`);
+}
+
+// ---------- end card ----------
+function buildEnd() {
+  $("endSvg").innerHTML = ["☕", "📈", "🏦", "📄", "💸", "🐶"].map((e, i) =>
+    `<text class="fl" x="${[150, 930, 110, 970, 110, 970][i]}" y="${[260, 300, 1720, 1720, 1420, 1420][i]}" font-size="${[90, 80, 80, 90, 70, 70][i]}" text-anchor="middle">${e}</text>`).join("");
+}
+function renderEnd(t) {
+  const el = $("end");
+  const vis = t > 40.0;
+  el.style.display = vis ? "" : "none";
+  if (!vis) return;
+  css(el, p(t, 40.1, 40.7));
+  [["endWm", 40.5], ["endPill", 40.8], ["endH", 41.1], ["endSub", 41.6], ["endTags", 42.1], ["endUrl", 42.6], ["endBtn", 43.1], ["endCta", 43.6], ["endFine", 44.0]].forEach(([id, a]) => {
+    const v = p(t, a, a + .5);
+    css($(id), eo(v), `translateY(${(1 - eo(v)) * 40}px) scale(${lerp(.94, 1, back(v))})`);
+  });
+  $("endBtnIn").style.transform = `scale(${1 + .04 * Math.sin((t - 43) * 5) * p(t, 43.6, 44)})`;
+  document.querySelectorAll("#endSvg .fl").forEach((f, i) => f.style.transform = `translateY(${Math.sin(t * 1.6 + i) * 18}px) rotate(${Math.sin(t + i) * 8}deg) scale(${pop(t, 40.7 + i * .15, .5)})`);
+}
+
+function render(t) { renderRoom(t); renderApp(t); renderEnd(t); renderCaps(t); }
+applyLang(); buildRoom(); buildApp(); buildEnd();
+$("app").style.display = ""; placeHighlights();
+boot(render, DURATION);
+</script>
+</body>
+</html>
