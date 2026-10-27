@@ -1,10 +1,14 @@
-# The Observer: a Claude agent drafts the weekly macro edition every Monday
-# and opens a pull request. Merging the PR publishes it (Vercel deploys master).
+# The Observer: a Claude agent writes the weekly macro edition every Monday, opens
+# a pull request and merges it, which publishes it (Vercel deploys master). An
+# edition with advice wording run.mjs couldn't get rewritten stays open for review.
 name: The Observer
 
 on:
   schedule:
-    - cron: "0 5 * * 1" # Mondays 05:00 UTC, after Asia's Monday session has started
+    # Mondays 01:23 UTC, after Tokyo's Monday open. Off the hour on purpose: GitHub
+    # starts on-the-hour schedules late (the old 05:00 slot fired at 10:30–13:00),
+    # and the edition should be live by Monday morning even if this one slips too.
+    - cron: "23 1 * * 1"
   workflow_dispatch: {}
 
 permissions:
@@ -79,6 +83,7 @@ jobs:
           '
 
       - name: Open pull request
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           branch: observer/${{ steps.write.outputs.slug }}
@@ -86,16 +91,23 @@ jobs:
           commit-message: "The Observer: ${{ steps.write.outputs.slug }}"
           title: "The Observer: ${{ steps.write.outputs.title }}"
           body: |
-            Draft edition of **The Observer** for the week of ${{ steps.write.outputs.slug }}, written by the Claude agent in `scripts/observer/run.mjs`.
-
-            Vercel posts a preview link on this PR — open `/observer/${{ steps.write.outputs.slug }}` there to read it as it will appear.
+            Edition of **The Observer** for the week of ${{ steps.write.outputs.slug }}, written by the Claude agent in `scripts/observer/run.mjs`.
 
             Audio: ${{ steps.upload.outcome == 'success' && 'read aloud with Kokoro and attached as a GitHub Release' || 'not generated this week (see the workflow log)' }}.
 
-            Before merging, check:
-            - [ ] Headline claims match the linked sources
-            - [ ] No view on any company's shares, and no buy/sell/hold language
-            - [ ] Figures look right against the tables on the page
-
-            Merge to publish. Close without merging to skip this week.
+            ${{ steps.write.outputs.needs_review == '' && 'Every link was checked against the sources the agent read, and no advice wording was found, so the workflow merges this PR straight away. To take an edition down, revert the merge commit.' || format('**Held for review:** advice wording survived two rewrites ({0}). Edit it out on this branch, then merge to publish, or close to skip this week.', steps.write.outputs.needs_review) }}
           delete-branch: true
+
+      # Merging publishes. The PR is the record, and reverting its merge takes an edition down.
+      - name: Publish
+        if: steps.cpr.outputs.pull-request-number != '' && steps.write.outputs.needs_review == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          # GitHub works out a new PR's mergeability in the background; give it a few tries.
+          for i in 1 2 3 4; do
+            gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --merge --delete-branch && exit 0
+            sleep 15
+          done
+          exit 1

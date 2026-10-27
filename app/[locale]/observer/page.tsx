@@ -95,8 +95,8 @@ export default function ObserverPage() {
         )}
 
         <p className="mt-14 text-center text-gray-600 text-xs max-w-2xl mx-auto leading-relaxed">
-          Written by an AI agent from public data and news, and reviewed before publication. General
-          commentary, not investment advice.
+          Written by an AI agent from public data and news, and checked automatically before it is
+          published. General commentary, not investment advice.
         </p>
       </div>
     </main>
