@@ -16,7 +16,7 @@
     "observerMood": "Ánimo del mercado",
     "observerCta": "Leer la edición de esta semana →",
     "observerAll": "Todas las ediciones",
-    "observerDisclaimer": "Escrito por un agente de IA a partir de datos y noticias públicas, y revisado antes de publicarse. No es asesoramiento de inversión.",
+    "observerDisclaimer": "Escrito por un agente de IA a partir de datos y noticias públicas, y comprobado automáticamente antes de publicarse. No es asesoramiento de inversión.",
     "latestArticlesTitle": "Lo último del blog",
     "blogLabel": "Del blog",
     "viewAllArticles": "Ver los {count} artículos →",

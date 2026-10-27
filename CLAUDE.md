@@ -97,7 +97,7 @@ Test by hand with `npx @modelcontextprotocol/inspector` pointed at `http://local
 
 ## AI
 
-The only Claude API call is the weekly Observer (`scripts/observer/run.mjs`), run by `.github/workflows/observer.yml` with the `ANTHROPIC_API_KEY` **GitHub Actions secret**. The live site makes no Claude calls: the macro dashboard's AI commentary (`/api/macro/report`) was removed on 2026-10-10 in favour of the Observer, so Vercel no longer needs `ANTHROPIC_API_KEY`.
+The only Claude API call is the weekly Observer (`scripts/observer/run.mjs`), run by `.github/workflows/observer.yml` with the `ANTHROPIC_API_KEY` **GitHub Actions secret**. Since 2026-10-27 it **publishes itself**: the workflow runs Mondays 01:23 UTC (off the hour — GitHub started the old 05:00 slot 5–8 hours late) and merges its own PR. Nobody reads an edition first, so `submit_edition` sends back advice wording (`ADVICE`: "investors should buy", price targets, "undervalued"…) twice; if it survives, `needs_review` keeps the PR open for a human instead. The site copy says "checked automatically", not "reviewed" — keep it true. To take an edition down, revert its merge commit. The live site makes no Claude calls: the macro dashboard's AI commentary (`/api/macro/report`) was removed on 2026-10-10 in favour of the Observer, so Vercel no longer needs `ANTHROPIC_API_KEY`.
 
 If an LLM call ever comes back to the site: route handlers are dynamic, so route-level `export const revalidate` does not stop the handler re-executing — wrap the call in its own `unstable_cache` (keyed on the prompt and model too, or a prompt change looks like it did nothing). Length instructions to the model work better as a per-paragraph budget than a total word count.
 

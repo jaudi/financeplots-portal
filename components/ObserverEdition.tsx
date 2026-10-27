@@ -286,7 +286,7 @@ export default function ObserverEdition({ edition }: { edition: Edition }) {
         <p className="mt-12 pt-6 border-t border-gray-800 text-gray-600 text-xs leading-relaxed">
           {edition.audio && "The audio version is read by Kokoro, an open-source text-to-speech model. "}
           The Observer is written by an AI agent ({edition.meta.model}) from public data — FRED, Eurostat,
-          Yahoo Finance, SEC EDGAR filings, CNN Fear &amp; Greed, Reddit and news headlines — and reviewed before it is published.
+          Yahoo Finance, SEC EDGAR filings, CNN Fear &amp; Greed, Reddit and news headlines — and published once every link has been checked against what it read.
           Market data is as of {formatEditionDate(edition.date)}. It is general commentary, not investment advice
           or a recommendation to buy or sell anything.
         </p>

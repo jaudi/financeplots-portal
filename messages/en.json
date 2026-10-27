@@ -16,7 +16,7 @@
     "observerMood": "Market mood",
     "observerCta": "Read this week’s edition →",
     "observerAll": "All editions",
-    "observerDisclaimer": "Written by an AI agent from public data and news, and reviewed before publication. Not investment advice.",
+    "observerDisclaimer": "Written by an AI agent from public data and news, and checked automatically before it is published. Not investment advice.",
     "latestArticlesTitle": "Latest from the blog",
     "blogLabel": "From the blog",
     "viewAllArticles": "View all {count} articles →",
