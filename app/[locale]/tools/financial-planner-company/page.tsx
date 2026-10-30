@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { trackEvent } from "@/lib/analytics";
 
+import NumberInput from "@/components/NumberInput";
 // Every input of the five steps as spreadsheet rows (components/SpreadsheetIO.tsx).
 // Labels match the on-screen ones in both languages, so either imports.
 const SHEET_FIELDS: SheetField[] = [
@@ -69,9 +70,9 @@ function NumInput({
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
         {prefix && <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>}
-        <input
-          type="number" min={0} step={step} value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+        <NumberInput
+          min={0} step={step} value={value}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
         {suffix && <span className="text-gray-500 text-sm ml-1.5 shrink-0">{suffix}</span>}

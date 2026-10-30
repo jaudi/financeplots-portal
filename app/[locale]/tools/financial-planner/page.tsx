@@ -11,6 +11,7 @@ import { BudgetFlow, chartImages, DebtPayoff, GlidePathChart, GrowthChart } from
 import PlannerChat from "./PlannerChat";
 import { trackEvent } from "@/lib/analytics";
 
+import NumberInput from "@/components/NumberInput";
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
 
@@ -58,9 +59,9 @@ function NumInput({ label, value, onChange, prefix: prefixProp, step = 100, note
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
         {prefix && <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>}
-        <input
-          type="number" min={0} step={step} value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+        <NumberInput
+          min={0} step={step} value={value}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
       </div>
@@ -467,10 +468,10 @@ export default function FinancialPlannerPage() {
                           </label>
                           <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
                             <span className="text-gray-500 text-sm mr-1.5 shrink-0">{currency}</span>
-                            <input
-                              type="number" min={0} step={1000}
+                            <NumberInput
+                              min={0} step={1000}
                               value={debts[d.key] ?? 0}
-                              onChange={e => setDebts(p => ({ ...p, [d.key]: parseFloat(e.target.value) || 0 }))}
+                              onChange={v => setDebts(p => ({ ...p, [d.key]: v }))}
                               className="bg-transparent text-white text-sm w-full outline-none"
                             />
                           </div>

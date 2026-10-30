@@ -15,6 +15,7 @@ import {
 import { takeHomeChart } from "@/lib/charts/tool-charts";
 import TakeHomeChat from "@/components/TakeHomeChat";
 
+import NumberInput from "@/components/NumberInput";
 // The maths lives in lib/calculators.ts, shared with the MCP tool take_home_pay,
 // so the page and the MCP always agree. Chart colours follow series position,
 // like every other chart on the site.
@@ -32,12 +33,11 @@ function NumInput({ label, value, onChange, prefix = "£", step = 1000, suffix }
       <label className="text-xs text-gray-400 font-medium">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
         {prefix && <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>}
-        <input
-          type="number"
+        <NumberInput
           min={0}
           step={step}
           value={value}
-          onChange={(e) => onChange(Math.max(0, parseFloat(e.target.value) || 0))}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
         {suffix && <span className="text-gray-500 text-sm ml-1.5 shrink-0">{suffix}</span>}

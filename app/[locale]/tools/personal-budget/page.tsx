@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { trackEvent } from "@/lib/analytics";
 
+import NumberInput from "@/components/NumberInput";
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 
 
@@ -117,11 +118,10 @@ function NumInput({ label, value, onChange, prefix }: { label: string; value: nu
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500 transition">
         <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>
-        <input
-          type="number"
+        <NumberInput
           min={0}
           value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
       </div>
@@ -272,18 +272,18 @@ export default function PersonalBudgetPage() {
       />
       <div className="fixed top-[65px] left-0 right-0 z-40 bg-[#0d1426]/95 backdrop-blur border-b border-gray-800 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link href="/tools/personal" className="text-gray-400 hover:text-white text-sm transition">{tc("backPersonal")}</Link>
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/tools/personal" className="text-gray-400 hover:text-white text-sm transition shrink-0 whitespace-nowrap">{tc("backPersonal")}</Link>
             <span className="text-gray-700 hidden sm:block">|</span>
-            <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
+            <h1 className="text-white font-bold text-sm sm:text-base truncate">{t("title")}</h1>
           </div>
           <div className="flex flex-col items-end gap-1">
             <button
               onClick={handleExportPdf}
               disabled={isExporting}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition"
+              className="flex items-center gap-2 shrink-0 whitespace-nowrap bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition"
             >
-              {isExporting ? tc("generating") : tc("exportPdf")}
+              {isExporting ? tc("generating") : <><span className="sm:hidden">📄 PDF</span><span className="hidden sm:inline">{tc("exportPdf")}</span></>}
             </button>
             {pdfError && <p className="text-red-400 text-xs max-w-xs text-right">{pdfError}</p>}
           </div>
