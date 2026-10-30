@@ -1,7 +1,7 @@
 {
  "generated_at": "2026-10-30",
  "sources": "Wikidata (CC0) headquarters location P159 / coordinates P625; SEC EDGAR business address for US listings where Wikidata has none or disagrees",
- "count": 639,
+ "count": 644,
  "missing": [
   "ACS.MC",
   "BTRW.L",
@@ -588,6 +588,13 @@
    "lat": 41.007,
    "lon": -74.208,
    "source": "sec:10795"
+  },
+  "BE": {
+   "city": "Sunnyvale",
+   "country": "United States",
+   "lat": 37.369,
+   "lon": -122.037,
+   "source": "wikidata:Q29526078"
   },
   "BEN": {
    "city": "San Mateo",
@@ -2199,6 +2206,13 @@
    "lon": -0.127,
    "source": "wikidata:Q229764"
   },
+  "ILMN": {
+   "city": "San Diego",
+   "country": "United States",
+   "lat": 32.871,
+   "lon": -117.199,
+   "source": "wikidata:Q2068984"
+  },
   "IMB.L": {
    "city": "Bristol",
    "country": "United Kingdom",
@@ -3158,6 +3172,13 @@
    "lon": -95.383,
    "source": "wikidata:Q2013357"
   },
+  "P": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.35,
+   "lon": -121.967,
+   "source": "sec:1474432"
+  },
   "PANW": {
    "city": "Santa Clara",
    "country": "United States",
@@ -3662,6 +3683,13 @@
    "lon": -81.767,
    "source": "wikidata:Q7742790"
   },
+  "SKYD": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "sec:2041610"
+  },
   "SLB": {
    "city": "Houston",
    "country": "United States",
@@ -4067,6 +4095,13 @@
    "lat": 40.713,
    "lon": -74.006,
    "source": "wikidata:Q94933"
+  },
+  "TWLO": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q7858039"
   },
   "TXN": {
    "city": "Dallas",

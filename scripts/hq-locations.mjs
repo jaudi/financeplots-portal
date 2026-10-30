@@ -18,9 +18,20 @@
  *
  *   node scripts/hq-locations.mjs
  *
+ * It reads the committed snapshot (data/universe/). The live site reads the
+ * data repo, which is newer, so point SCREENER_DATA_DIR at a copy of its
+ * data/ folder too (as lib/universe.ts does) — both are covered:
+ *
+ *   SCREENER_DATA_DIR=../sp500-quality-screener/data node scripts/hq-locations.mjs
+ *
+ * Add --update to keep the places already found and look up only companies
+ * not in the file yet.
+ *
  * SEC asks for a contact in the User-Agent; set SEC_USER_AGENT to override.
  */
 import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { displayName } from "../lib/company-names.ts";
 
 const UA = "FinancePlots hq-locations script (https://www.financeplots.com)";
@@ -38,11 +49,12 @@ const EXCHANGES = {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const round = (n) => Math.round(n * 1000) / 1000;
 
-/** fetch, retried when the connection drops (the network, not an HTTP error). */
+/** fetch, retried when the connection drops or hangs (the network, not an
+ *  HTTP error). Wikidata stops a query at 60 s, so 90 s means no answer. */
 async function get(url, init) {
   for (let attempt = 0; ; attempt++) {
     try {
-      return await fetch(url, init);
+      return await fetch(url, { ...init, signal: AbortSignal.timeout(90_000) });
     } catch (err) {
       if (attempt >= 3) throw err;
       await sleep(3000 * (attempt + 1));
@@ -116,8 +128,10 @@ function searchName(name) {
 
 async function loadCompanies() {
   const companies = new Map(); // ticker → { name, group }
-  for (const [screen, group] of Object.entries(SCREENS)) {
-    const raw = JSON.parse(await readFile(new URL(`../data/universe/universe-${screen}.json`, import.meta.url), "utf8"));
+  const dirs = [new URL("../data/universe/", import.meta.url)];
+  if (process.env.SCREENER_DATA_DIR) dirs.push(pathToFileURL(`${resolve(process.env.SCREENER_DATA_DIR)}/`));
+  for (const [screen, group] of Object.entries(SCREENS)) for (const dir of dirs) {
+    const raw = JSON.parse(await readFile(new URL(`universe-${screen}.json`, dir), "utf8"));
     for (const c of raw.companies) {
       if (!companies.has(c.ticker)) companies.set(c.ticker, { name: displayName(c.ticker, c.nombre), raw: c.nombre ?? "", group });
     }
@@ -384,19 +398,25 @@ async function secAddresses(companies) {
 const companies = await loadCompanies();
 const tickers = [...companies.keys()].sort();
 
-const { found: wdTicker, review } = await byTicker(companies);
+// --update keeps the places already in the file and looks up only the
+// companies that aren't in it yet (new index members): minutes, not half an hour.
+const kept = process.argv.includes("--update") ? JSON.parse(await readFile(OUT, "utf8")).locations : {};
+const todo = new Map([...companies].filter(([t]) => !kept[t]));
+console.log(`Looking up ${todo.size} of ${companies.size}${todo.size < companies.size ? " (--update)" : ""}`);
+
+const { found: wdTicker, review } = await byTicker(todo);
 console.log(`Wikidata by ticker: ${wdTicker.size}`);
 
-let missing = tickers.filter((t) => !wdTicker.has(t));
-const wdName = await byName(companies, missing);
+let missing = [...todo.keys()].filter((t) => !wdTicker.has(t));
+const wdName = await byName(todo, missing);
 console.log(`Wikidata by name:   ${wdName.size}`);
 
 // US listings: the address filed with the SEC is current, where Wikidata can
 // keep a predecessor's HQ under the same ticker (IR on Trane's old Irish
 // office). It fills the gaps, and wins when Wikidata puts the company more
 // than 150 km from it.
-const sec = await secAddresses(companies);
-const all = new Map([...wdTicker, ...wdName]);
+const sec = await secAddresses(todo);
+const all = new Map([...Object.entries(kept), ...wdTicker, ...wdName]);
 const overridden = [];
 let secFilled = 0;
 for (const [ticker, place] of sec) {
