@@ -1,0 +1,4492 @@
+{
+ "generated_at": "2026-10-30",
+ "sources": "Wikidata (CC0) headquarters location P159 / coordinates P625; SEC EDGAR business address for US listings where Wikidata has none or disagrees",
+ "count": 639,
+ "missing": [
+  "ACS.MC",
+  "BTRW.L",
+  "COL.MC",
+  "FCIT.L",
+  "FER",
+  "HWDN.L",
+  "JD.L",
+  "MTLN.L",
+  "RED.MC",
+  "REL.L"
+ ],
+ "locations": {
+  "A": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.35,
+   "lon": -121.967,
+   "source": "wikidata:Q393762"
+  },
+  "AAF.L": {
+   "city": "Amsterdam",
+   "country": "Netherlands",
+   "lat": 52.367,
+   "lon": 4.883,
+   "source": "wikidata:Q4699029"
+  },
+  "AAL.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q541451"
+  },
+  "AAPL": {
+   "city": "Cupertino",
+   "country": "United States",
+   "lat": 37.335,
+   "lon": -122.009,
+   "source": "wikidata:Q312"
+  },
+  "ABBV": {
+   "city": "North Chicago",
+   "country": "United States",
+   "lat": 42.317,
+   "lon": -87.859,
+   "source": "wikidata:Q14662364"
+  },
+  "ABDN.L": {
+   "city": "Edinburgh",
+   "country": "United Kingdom",
+   "lat": 55.953,
+   "lon": -3.189,
+   "source": "wikidata:Q54621936"
+  },
+  "ABF.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q117059"
+  },
+  "ABNB": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q63327"
+  },
+  "ABT": {
+   "city": "North Chicago",
+   "country": "United States",
+   "lat": 42.317,
+   "lon": -87.859,
+   "source": "wikidata:Q306764"
+  },
+  "ACGL": {
+   "city": "Hamilton",
+   "country": "Bermuda",
+   "lat": 32.295,
+   "lon": -64.783,
+   "source": "wikidata:Q28155430"
+  },
+  "ACN": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q338825"
+  },
+  "ACX.MC": {
+   "city": "Los Barrios",
+   "country": "Spain",
+   "lat": 36.183,
+   "lon": -5.493,
+   "source": "wikidata:Q1419453"
+  },
+  "ADBE": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.331,
+   "lon": -121.894,
+   "source": "wikidata:Q11463"
+  },
+  "ADI": {
+   "city": "Norwood",
+   "country": "United States",
+   "lat": 42.532,
+   "lon": -71.149,
+   "source": "wikidata:Q484930"
+  },
+  "ADM": {
+   "city": "Chicago Loop",
+   "country": "United States",
+   "lat": 41.887,
+   "lon": -87.63,
+   "source": "wikidata:Q632694"
+  },
+  "ADM.L": {
+   "city": "Cardiff",
+   "country": "United Kingdom",
+   "lat": 51.482,
+   "lon": -3.179,
+   "source": "wikidata:Q267417"
+  },
+  "ADP": {
+   "city": "Roseland",
+   "country": "United States",
+   "lat": 40.82,
+   "lon": -74.31,
+   "source": "wikidata:Q489080"
+  },
+  "ADSK": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q628051"
+  },
+  "AEE": {
+   "city": "St. Louis",
+   "country": "United States",
+   "lat": 38.626,
+   "lon": -90.199,
+   "source": "wikidata:Q462984"
+  },
+  "AENA.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q19826726"
+  },
+  "AEP": {
+   "city": "Columbus",
+   "country": "United States",
+   "lat": 39.965,
+   "lon": -83.005,
+   "source": "wikidata:Q464092"
+  },
+  "AES": {
+   "city": "Arlington County",
+   "country": "United States",
+   "lat": 38.88,
+   "lon": -77.108,
+   "source": "wikidata:Q291508"
+  },
+  "AFL": {
+   "city": "Columbus",
+   "country": "United States",
+   "lat": 32.492,
+   "lon": -84.94,
+   "source": "wikidata:Q26311"
+  },
+  "AIG": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q212235"
+  },
+  "AIZ": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "sec:1267238"
+  },
+  "AJG": {
+   "city": "Itasca",
+   "country": "United States",
+   "lat": 41.975,
+   "lon": -88.019,
+   "source": "wikidata:Q4799191"
+  },
+  "AKAM": {
+   "city": "Cambridge",
+   "country": "United States",
+   "lat": 42.364,
+   "lon": -71.089,
+   "source": "wikidata:Q415598"
+  },
+  "ALAB": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.35,
+   "lon": -121.967,
+   "source": "wikidata:Q125028873"
+  },
+  "ALB": {
+   "city": "Charlotte",
+   "country": "United States",
+   "lat": 35.227,
+   "lon": -80.843,
+   "source": "sec:915913"
+  },
+  "ALGN": {
+   "city": "Tempe",
+   "country": "United States",
+   "lat": 33.426,
+   "lon": -111.94,
+   "source": "sec:1097149"
+  },
+  "ALL": {
+   "city": "Northbrook",
+   "country": "United States",
+   "lat": 42.106,
+   "lon": -87.876,
+   "source": "wikidata:Q2645636"
+  },
+  "ALLE": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q16738121"
+  },
+  "ALNY": {
+   "city": "Cambridge",
+   "country": "United States",
+   "lat": 42.365,
+   "lon": -71.082,
+   "source": "wikidata:Q16974682"
+  },
+  "ALW.L": {
+   "city": "Dundee",
+   "country": "United Kingdom",
+   "lat": 56.461,
+   "lon": -2.97,
+   "source": "wikidata:Q4732335"
+  },
+  "AMAT": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.38,
+   "lon": -121.98,
+   "source": "wikidata:Q621610"
+  },
+  "AMCR": {
+   "city": "Zurich",
+   "country": "Switzerland",
+   "lat": 47.374,
+   "lon": 8.541,
+   "source": "wikidata:Q460307"
+  },
+  "AMD": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.383,
+   "lon": -121.97,
+   "source": "wikidata:Q128896"
+  },
+  "AME": {
+   "city": "Berwyn",
+   "country": "United States",
+   "lat": 40.046,
+   "lon": -75.439,
+   "source": "wikidata:Q470317"
+  },
+  "AMGN": {
+   "city": "Thousand Oaks",
+   "country": "United States",
+   "lat": 34.189,
+   "lon": -118.875,
+   "source": "wikidata:Q470517"
+  },
+  "AMP": {
+   "city": "Minneapolis",
+   "country": "United States",
+   "lat": 44.982,
+   "lon": -93.269,
+   "source": "wikidata:Q2843129"
+  },
+  "AMS.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.468,
+   "lon": -3.626,
+   "source": "wikidata:Q696061"
+  },
+  "AMT": {
+   "city": "Boston",
+   "country": "United States",
+   "lat": 42.349,
+   "lon": -71.077,
+   "source": "wikidata:Q4745263"
+  },
+  "AMZN": {
+   "city": "Seattle",
+   "country": "United States",
+   "lat": 47.623,
+   "lon": -122.336,
+   "source": "wikidata:Q3884"
+  },
+  "ANA.MC": {
+   "city": "Alcobendas",
+   "country": "Spain",
+   "lat": 40.533,
+   "lon": -3.633,
+   "source": "wikidata:Q339142"
+  },
+  "ANE.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q11919256"
+  },
+  "ANET": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.412,
+   "lon": -121.976,
+   "source": "wikidata:Q2861324"
+  },
+  "ANTO.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q585150"
+  },
+  "AON": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q739518"
+  },
+  "AOS": {
+   "city": "Milwaukee",
+   "country": "United States",
+   "lat": 43.05,
+   "lon": -87.95,
+   "source": "wikidata:Q4648219"
+  },
+  "APA": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.746,
+   "lon": -95.461,
+   "source": "wikidata:Q119991"
+  },
+  "APD": {
+   "city": "Allentown",
+   "country": "United States",
+   "lat": 40.6,
+   "lon": -75.483,
+   "source": "sec:2969"
+  },
+  "APH": {
+   "city": "Wallingford",
+   "country": "United States",
+   "lat": 41.457,
+   "lon": -72.823,
+   "source": "wikidata:Q474621"
+  },
+  "APO": {
+   "city": "Manhattan",
+   "country": "United States",
+   "lat": 40.764,
+   "lon": -73.975,
+   "source": "wikidata:Q619121"
+  },
+  "APP": {
+   "city": "Palo Alto",
+   "country": "United States",
+   "lat": 37.444,
+   "lon": -122.16,
+   "source": "wikidata:Q27150212"
+  },
+  "APTV": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q643626"
+  },
+  "ARE": {
+   "city": "Pasadena",
+   "country": "United States",
+   "lat": 34.148,
+   "lon": -118.144,
+   "source": "wikidata:Q48739877"
+  },
+  "ARES": {
+   "city": "Los Angeles",
+   "country": "United States",
+   "lat": 34.052,
+   "lon": -118.244,
+   "source": "wikidata:Q4789079"
+  },
+  "ARM": {
+   "city": "Cambridge",
+   "country": "United Kingdom",
+   "lat": 52.182,
+   "lon": 0.178,
+   "source": "wikidata:Q296782"
+  },
+  "ASML": {
+   "city": "Veldhoven",
+   "country": "Netherlands",
+   "lat": 51.404,
+   "lon": 5.413,
+   "source": "wikidata:Q297879"
+  },
+  "ATO": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.779,
+   "lon": -96.809,
+   "source": "wikidata:Q4817084"
+  },
+  "AUTO.L": {
+   "city": "Manchester",
+   "country": "United Kingdom",
+   "lat": 53.479,
+   "lon": -2.245,
+   "source": "wikidata:Q4826130"
+  },
+  "AV.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q791179"
+  },
+  "AVGO": {
+   "city": "Palo Alto",
+   "country": "United States",
+   "lat": 37.444,
+   "lon": -122.16,
+   "source": "wikidata:Q790060"
+  },
+  "AVY": {
+   "city": "Mentor",
+   "country": "United States",
+   "lat": 41.691,
+   "lon": -81.342,
+   "source": "sec:8818"
+  },
+  "AWK": {
+   "city": "Camden",
+   "country": "United States",
+   "lat": 39.949,
+   "lon": -75.131,
+   "source": "wikidata:Q467238"
+  },
+  "AXON": {
+   "city": "Scottsdale",
+   "country": "United States",
+   "lat": 33.493,
+   "lon": -111.926,
+   "source": "wikidata:Q690604"
+  },
+  "AXP": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.714,
+   "lon": -74.015,
+   "source": "wikidata:Q194360"
+  },
+  "AZN.L": {
+   "city": "Cambridge",
+   "country": "United Kingdom",
+   "lat": 52.175,
+   "lon": 0.133,
+   "source": "wikidata:Q731938"
+  },
+  "AZO": {
+   "city": "Memphis",
+   "country": "United States",
+   "lat": 35.142,
+   "lon": -90.056,
+   "source": "wikidata:Q4826087"
+  },
+  "BA": {
+   "city": "Arlington County",
+   "country": "United States",
+   "lat": 38.88,
+   "lon": -77.108,
+   "source": "sec:12927"
+  },
+  "BA.L": {
+   "city": "Farnborough",
+   "country": "United Kingdom",
+   "lat": 51.273,
+   "lon": -0.767,
+   "source": "wikidata:Q739416"
+  },
+  "BAB.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q385426"
+  },
+  "BAC": {
+   "city": "Charlotte",
+   "country": "United States",
+   "lat": 35.223,
+   "lon": -80.839,
+   "source": "wikidata:Q487907"
+  },
+  "BALL": {
+   "city": "Broomfield",
+   "country": "United States",
+   "lat": 39.933,
+   "lon": -105.05,
+   "source": "wikidata:Q4034815"
+  },
+  "BARC.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q245343"
+  },
+  "BATS.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q856411"
+  },
+  "BAX": {
+   "city": "Deerfield",
+   "country": "United States",
+   "lat": 42.157,
+   "lon": -87.877,
+   "source": "wikidata:Q761965"
+  },
+  "BBOX.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.513,
+   "lon": -0.145,
+   "source": "wikidata:Q20539356"
+  },
+  "BBVA.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.501,
+   "lon": -3.664,
+   "source": "wikidata:Q806189"
+  },
+  "BBY": {
+   "city": "Richfield",
+   "country": "United States",
+   "lat": 44.883,
+   "lon": -93.283,
+   "source": "wikidata:Q533415"
+  },
+  "BBY.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q804920"
+  },
+  "BDX": {
+   "city": "Franklin Lakes",
+   "country": "United States",
+   "lat": 41.007,
+   "lon": -74.208,
+   "source": "sec:10795"
+  },
+  "BEN": {
+   "city": "San Mateo",
+   "country": "United States",
+   "lat": 37.554,
+   "lon": -122.313,
+   "source": "wikidata:Q744683"
+  },
+  "BF-B": {
+   "city": "Louisville",
+   "country": "United States",
+   "lat": 38.256,
+   "lon": -85.751,
+   "source": "wikidata:Q392221"
+  },
+  "BG": {
+   "city": "White Plains",
+   "country": "United States",
+   "lat": 41.033,
+   "lon": -73.767,
+   "source": "wikidata:Q1009458"
+  },
+  "BGEO.L": {
+   "city": "Tbilisi",
+   "country": "Georgia",
+   "lat": 41.723,
+   "lon": 44.793,
+   "source": "wikidata:Q132559920"
+  },
+  "BIIB": {
+   "city": "Cambridge",
+   "country": "United States",
+   "lat": 42.371,
+   "lon": -71.089,
+   "source": "wikidata:Q864338"
+  },
+  "BKNG": {
+   "city": "Norwalk",
+   "country": "United States",
+   "lat": 41.093,
+   "lon": -73.454,
+   "source": "wikidata:Q18674747"
+  },
+  "BKR": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.761,
+   "lon": -95.397,
+   "source": "wikidata:Q804353"
+  },
+  "BKT.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q806808"
+  },
+  "BLDR": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.779,
+   "lon": -96.809,
+   "source": "wikidata:Q27686100"
+  },
+  "BLK": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.755,
+   "lon": -74,
+   "source": "wikidata:Q219635"
+  },
+  "BLND.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q919646"
+  },
+  "BMY": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.758,
+   "lon": -73.972,
+   "source": "wikidata:Q266423"
+  },
+  "BNY": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q589288"
+  },
+  "BNZL.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q872718"
+  },
+  "BP.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.508,
+   "lon": -0.134,
+   "source": "wikidata:Q152057"
+  },
+  "BR": {
+   "city": "Lake Success",
+   "country": "United States",
+   "lat": 40.77,
+   "lon": -73.713,
+   "source": "wikidata:Q4972280"
+  },
+  "BRBY.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q390107"
+  },
+  "BRK-B": {
+   "city": "Omaha",
+   "country": "United States",
+   "lat": 41.257,
+   "lon": -95.965,
+   "source": "wikidata:Q217583"
+  },
+  "BRO": {
+   "city": "Daytona Beach",
+   "country": "United States",
+   "lat": 29.211,
+   "lon": -81.023,
+   "source": "wikidata:Q4976010"
+  },
+  "BSX": {
+   "city": "Marlborough",
+   "country": "United States",
+   "lat": 42.355,
+   "lon": -71.557,
+   "source": "wikidata:Q894585"
+  },
+  "BT-A.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q593786"
+  },
+  "BX": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q880942"
+  },
+  "BXP": {
+   "city": "Boston",
+   "country": "United States",
+   "lat": 42.36,
+   "lon": -71.058,
+   "source": "wikidata:Q4844439"
+  },
+  "C": {
+   "city": "Tribeca",
+   "country": "United States",
+   "lat": 40.721,
+   "lon": -74.011,
+   "source": "wikidata:Q219508"
+  },
+  "CABK.MC": {
+   "city": "Valencia",
+   "country": "Spain",
+   "lat": 39.472,
+   "lon": -0.377,
+   "source": "wikidata:Q847225"
+  },
+  "CAH": {
+   "city": "Dublin",
+   "country": "United States",
+   "lat": 40.109,
+   "lon": -83.14,
+   "source": "wikidata:Q902397"
+  },
+  "CARR": {
+   "city": "Palm Beach Gardens",
+   "country": "United States",
+   "lat": 26.849,
+   "lon": -80.167,
+   "source": "sec:1783180"
+  },
+  "CASY": {
+   "city": "Ankeny",
+   "country": "United States",
+   "lat": 41.727,
+   "lon": -93.604,
+   "source": "wikidata:Q2940968"
+  },
+  "CAT": {
+   "city": "Irving",
+   "country": "United States",
+   "lat": 32.812,
+   "lon": -96.951,
+   "source": "wikidata:Q459965"
+  },
+  "CB": {
+   "city": "Warren",
+   "country": "United States",
+   "lat": 40.635,
+   "lon": -74.519,
+   "source": "wikidata:Q1089060"
+  },
+  "CBOE": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q30635731"
+  },
+  "CBRE": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.779,
+   "lon": -96.809,
+   "source": "wikidata:Q1023013"
+  },
+  "CCC.L": {
+   "city": "Hatfield",
+   "country": "United Kingdom",
+   "lat": 51.773,
+   "lon": -0.244,
+   "source": "wikidata:Q211237"
+  },
+  "CCEP": {
+   "city": "Issy-les-Moulineaux",
+   "country": "France",
+   "lat": 48.823,
+   "lon": 2.269,
+   "source": "wikidata:Q20811256"
+  },
+  "CCEP.L": {
+   "city": "Issy-les-Moulineaux",
+   "country": "France",
+   "lat": 48.823,
+   "lon": 2.269,
+   "source": "wikidata:Q20811256"
+  },
+  "CCH.L": {
+   "city": "Steinhausen",
+   "country": "Switzerland",
+   "lat": 47.197,
+   "lon": 8.486,
+   "source": "wikidata:Q1104910"
+  },
+  "CCI": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.755,
+   "lon": -95.483,
+   "source": "wikidata:Q5189320"
+  },
+  "CCL": {
+   "city": "Miami",
+   "country": "United States",
+   "lat": 25.774,
+   "lon": -80.194,
+   "source": "sec:815097"
+  },
+  "CDNS": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.396,
+   "lon": -121.92,
+   "source": "wikidata:Q608776"
+  },
+  "CDW": {
+   "city": "Vernon Hills",
+   "country": "United States",
+   "lat": 42.228,
+   "lon": -87.942,
+   "source": "wikidata:Q1023155"
+  },
+  "CEG": {
+   "city": "Baltimore",
+   "country": "United States",
+   "lat": 39.265,
+   "lon": -76.583,
+   "source": "wikidata:Q259195"
+  },
+  "CF": {
+   "city": "Deerfield",
+   "country": "United States",
+   "lat": 42.168,
+   "lon": -87.851,
+   "source": "wikidata:Q905806"
+  },
+  "CFG": {
+   "city": "Providence",
+   "country": "United States",
+   "lat": 41.825,
+   "lon": -71.413,
+   "source": "wikidata:Q5122694"
+  },
+  "CHD": {
+   "city": "Ewing Township",
+   "country": "United States",
+   "lat": 40.287,
+   "lon": -74.787,
+   "source": "wikidata:Q5116536"
+  },
+  "CHRW": {
+   "city": "Eden Prairie",
+   "country": "United States",
+   "lat": 44.855,
+   "lon": -93.471,
+   "source": "wikidata:Q931200"
+  },
+  "CHTR": {
+   "city": "Stamford",
+   "country": "United States",
+   "lat": 41.097,
+   "lon": -73.552,
+   "source": "wikidata:Q2961234"
+  },
+  "CI": {
+   "city": "Bloomfield",
+   "country": "United States",
+   "lat": 41.85,
+   "lon": -72.733,
+   "source": "wikidata:Q642271"
+  },
+  "CIEN": {
+   "city": "Anne Arundel County",
+   "country": "United States",
+   "lat": 39.193,
+   "lon": -76.724,
+   "source": "wikidata:Q1091783"
+  },
+  "CINF": {
+   "city": "Fairfield",
+   "country": "United States",
+   "lat": 39.331,
+   "lon": -84.543,
+   "source": "wikidata:Q5120253"
+  },
+  "CL": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.757,
+   "lon": -73.975,
+   "source": "wikidata:Q609466"
+  },
+  "CLNX.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.418,
+   "lon": -3.664,
+   "source": "wikidata:Q21081923"
+  },
+  "CLX": {
+   "city": "Oakland",
+   "country": "United States",
+   "lat": 37.803,
+   "lon": -122.272,
+   "source": "wikidata:Q910368"
+  },
+  "CMCSA": {
+   "city": "Philadelphia",
+   "country": "United States",
+   "lat": 39.953,
+   "lon": -75.165,
+   "source": "wikidata:Q1113804"
+  },
+  "CME": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q1023876"
+  },
+  "CMG": {
+   "city": "Newport Beach",
+   "country": "United States",
+   "lat": 33.617,
+   "lon": -117.897,
+   "source": "wikidata:Q465751"
+  },
+  "CMI": {
+   "city": "Columbus",
+   "country": "United States",
+   "lat": 39.203,
+   "lon": -85.923,
+   "source": "wikidata:Q173476"
+  },
+  "CMS": {
+   "city": "Jackson",
+   "country": "United States",
+   "lat": 42.246,
+   "lon": -84.401,
+   "source": "wikidata:Q5013012"
+  },
+  "CNA.L": {
+   "city": "Windsor",
+   "country": "United Kingdom",
+   "lat": 51.483,
+   "lon": -0.6,
+   "source": "wikidata:Q259013"
+  },
+  "CNC": {
+   "city": "St. Louis",
+   "country": "United States",
+   "lat": 38.626,
+   "lon": -90.199,
+   "source": "wikidata:Q5059102"
+  },
+  "CNP": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q1053560"
+  },
+  "COF": {
+   "city": "McLean",
+   "country": "United States",
+   "lat": 38.928,
+   "lon": -77.175,
+   "source": "wikidata:Q1034654"
+  },
+  "COHR": {
+   "city": "Saxonburg",
+   "country": "United States",
+   "lat": 40.754,
+   "lon": -79.816,
+   "source": "sec:820318"
+  },
+  "COIN": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "sec:1679788"
+  },
+  "COO": {
+   "city": "San Ramon",
+   "country": "United States",
+   "lat": 37.76,
+   "lon": -121.956,
+   "source": "wikidata:Q1129792"
+  },
+  "COP": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.787,
+   "lon": -95.618,
+   "source": "wikidata:Q214763"
+  },
+  "COR": {
+   "city": "Chesterbrook",
+   "country": "United States",
+   "lat": 40.074,
+   "lon": -75.455,
+   "source": "wikidata:Q470156"
+  },
+  "COST": {
+   "city": "Issaquah",
+   "country": "United States",
+   "lat": 47.55,
+   "lon": -122.051,
+   "source": "wikidata:Q715583"
+  },
+  "CPAY": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q16838618"
+  },
+  "CPG.L": {
+   "city": "Chertsey",
+   "country": "United Kingdom",
+   "lat": 51.39,
+   "lon": -0.507,
+   "source": "wikidata:Q782697"
+  },
+  "CPRT": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.779,
+   "lon": -96.809,
+   "source": "wikidata:Q16951448"
+  },
+  "CPT": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q5025803"
+  },
+  "CRDA.L": {
+   "city": "Snaith",
+   "country": "United Kingdom",
+   "lat": 53.691,
+   "lon": -1.028,
+   "source": "wikidata:Q3003175"
+  },
+  "CRH": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.278,
+   "lon": -6.264,
+   "source": "wikidata:Q1053299"
+  },
+  "CRL": {
+   "city": "Wilmington",
+   "country": "United States",
+   "lat": 42.546,
+   "lon": -71.174,
+   "source": "wikidata:Q5082076"
+  },
+  "CRM": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.79,
+   "lon": -122.397,
+   "source": "wikidata:Q941127"
+  },
+  "CRWD": {
+   "city": "Austin",
+   "country": "United States",
+   "lat": 30.3,
+   "lon": -97.733,
+   "source": "wikidata:Q24890758"
+  },
+  "CRWV": {
+   "city": "Roseland",
+   "country": "United States",
+   "lat": 40.82,
+   "lon": -74.31,
+   "source": "wikidata:Q121875386"
+  },
+  "CSCO": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.409,
+   "lon": -121.951,
+   "source": "wikidata:Q173395"
+  },
+  "CSGP": {
+   "city": "Arlington County",
+   "country": "United States",
+   "lat": 38.895,
+   "lon": -77.071,
+   "source": "wikidata:Q16988748"
+  },
+  "CSX": {
+   "city": "Jacksonville",
+   "country": "United States",
+   "lat": 30.317,
+   "lon": -81.65,
+   "source": "wikidata:Q1024454"
+  },
+  "CTAS": {
+   "city": "Cincinnati",
+   "country": "United States",
+   "lat": 39.1,
+   "lon": -84.512,
+   "source": "wikidata:Q1092571"
+  },
+  "CTEC.L": {
+   "city": "Reading",
+   "country": "United Kingdom",
+   "lat": 51.454,
+   "lon": -0.973,
+   "source": "wikidata:Q5166105"
+  },
+  "CTSH": {
+   "city": "Teaneck",
+   "country": "United States",
+   "lat": 40.898,
+   "lon": -74.016,
+   "source": "wikidata:Q1107035"
+  },
+  "CTVA": {
+   "city": "Indianapolis",
+   "country": "United States",
+   "lat": 39.769,
+   "lon": -86.158,
+   "source": "sec:1755672"
+  },
+  "CVNA": {
+   "city": "Tempe",
+   "country": "United States",
+   "lat": 33.426,
+   "lon": -111.94,
+   "source": "wikidata:Q16247191"
+  },
+  "CVS": {
+   "city": "Rhode Island",
+   "country": "United States",
+   "lat": 41.7,
+   "lon": -71.5,
+   "source": "wikidata:Q624375"
+  },
+  "CVX": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "sec:93410"
+  },
+  "D": {
+   "city": "Richmond",
+   "country": "United States",
+   "lat": 37.541,
+   "lon": -77.437,
+   "source": "wikidata:Q677464"
+  },
+  "DAL": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.656,
+   "lon": -84.424,
+   "source": "wikidata:Q188920"
+  },
+  "DASH": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q20714323"
+  },
+  "DCC.L": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q5204483"
+  },
+  "DD": {
+   "city": "Wilmington",
+   "country": "United States",
+   "lat": 39.755,
+   "lon": -75.605,
+   "source": "wikidata:Q221062"
+  },
+  "DDOG": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q16248637"
+  },
+  "DE": {
+   "city": "Moline",
+   "country": "United States",
+   "lat": 41.477,
+   "lon": -90.426,
+   "source": "wikidata:Q496302"
+  },
+  "DECK": {
+   "city": "Goleta",
+   "country": "United States",
+   "lat": 34.433,
+   "lon": -119.831,
+   "source": "wikidata:Q1181953"
+  },
+  "DELL": {
+   "city": "Round Rock",
+   "country": "United States",
+   "lat": 30.489,
+   "lon": -97.673,
+   "source": "wikidata:Q27500963"
+  },
+  "DG": {
+   "city": "Goodlettsville",
+   "country": "United States",
+   "lat": 36.327,
+   "lon": -86.704,
+   "source": "wikidata:Q145168"
+  },
+  "DGE.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q161140"
+  },
+  "DGX": {
+   "city": "Madison",
+   "country": "United States",
+   "lat": 40.759,
+   "lon": -74.416,
+   "source": "wikidata:Q7271456"
+  },
+  "DHI": {
+   "city": "Fort Worth",
+   "country": "United States",
+   "lat": 32.756,
+   "lon": -97.332,
+   "source": "wikidata:Q5203782"
+  },
+  "DHR": {
+   "city": "Washington, D.C.",
+   "country": "United States",
+   "lat": 38.895,
+   "lon": -77.037,
+   "source": "wikidata:Q1159256"
+  },
+  "DIS": {
+   "city": "Burbank",
+   "country": "United States",
+   "lat": 34.157,
+   "lon": -118.325,
+   "source": "wikidata:Q7414"
+  },
+  "DLR": {
+   "city": "Austin",
+   "country": "United States",
+   "lat": 30.3,
+   "lon": -97.733,
+   "source": "wikidata:Q5275969"
+  },
+  "DLTR": {
+   "city": "Chesapeake",
+   "country": "United States",
+   "lat": 36.767,
+   "lon": -76.287,
+   "source": "wikidata:Q5289230"
+  },
+  "DOC": {
+   "city": "Denver",
+   "country": "United States",
+   "lat": 39.739,
+   "lon": -104.985,
+   "source": "sec:765880"
+  },
+  "DOV": {
+   "city": "Downers Grove",
+   "country": "United States",
+   "lat": 41.795,
+   "lon": -88.017,
+   "source": "wikidata:Q16974527"
+  },
+  "DOW": {
+   "city": "Midland",
+   "country": "United States",
+   "lat": 43.616,
+   "lon": -84.247,
+   "source": "wikidata:Q62739842"
+  },
+  "DPLM.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q5279891"
+  },
+  "DPZ": {
+   "city": "Ann Arbor Charter Township",
+   "country": "United States",
+   "lat": 42.317,
+   "lon": -83.683,
+   "source": "wikidata:Q839466"
+  },
+  "DRI": {
+   "city": "Orange County",
+   "country": "United States",
+   "lat": 28.51,
+   "lon": -81.32,
+   "source": "wikidata:Q742196"
+  },
+  "DTE": {
+   "city": "Detroit",
+   "country": "United States",
+   "lat": 42.332,
+   "lon": -83.047,
+   "source": "wikidata:Q5206232"
+  },
+  "DUK": {
+   "city": "Charlotte",
+   "country": "United States",
+   "lat": 35.227,
+   "lon": -80.843,
+   "source": "wikidata:Q1264404"
+  },
+  "DVA": {
+   "city": "Denver",
+   "country": "United States",
+   "lat": 39.739,
+   "lon": -104.985,
+   "source": "wikidata:Q5207184"
+  },
+  "DVN": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "sec:1090012"
+  },
+  "DXCM": {
+   "city": "San Diego",
+   "country": "United States",
+   "lat": 32.715,
+   "lon": -117.162,
+   "source": "wikidata:Q15109865"
+  },
+  "EBAY": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.295,
+   "lon": -121.926,
+   "source": "wikidata:Q58024"
+  },
+  "ECHO": {
+   "city": "Englewood",
+   "country": "United States",
+   "lat": 39.647,
+   "lon": -104.992,
+   "source": "wikidata:Q1280748"
+  },
+  "ECL": {
+   "city": "Saint Paul",
+   "country": "United States",
+   "lat": 44.943,
+   "lon": -93.097,
+   "source": "wikidata:Q1282031"
+  },
+  "ED": {
+   "city": "Manhattan",
+   "country": "United States",
+   "lat": 40.728,
+   "lon": -73.994,
+   "source": "wikidata:Q1127536"
+  },
+  "EDV.L": {
+   "city": "Vancouver",
+   "country": "Canada",
+   "lat": 49.261,
+   "lon": -123.114,
+   "source": "wikidata:Q5375992"
+  },
+  "EFX": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q5384453"
+  },
+  "EG": {
+   "city": "Hamilton",
+   "country": "Bermuda",
+   "lat": 32.295,
+   "lon": -64.783,
+   "source": "wikidata:Q1381973"
+  },
+  "EIX": {
+   "city": "Rosemead",
+   "country": "United States",
+   "lat": 34.054,
+   "lon": -118.082,
+   "source": "wikidata:Q662095"
+  },
+  "EL": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "sec:1001250"
+  },
+  "ELE.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q1275336"
+  },
+  "ELV": {
+   "city": "Indianapolis",
+   "country": "United States",
+   "lat": 39.769,
+   "lon": -86.158,
+   "source": "wikidata:Q677488"
+  },
+  "EME": {
+   "city": "Norwalk",
+   "country": "United States",
+   "lat": 41.094,
+   "lon": -73.42,
+   "source": "wikidata:Q5370289"
+  },
+  "EMR": {
+   "city": "St. Louis",
+   "country": "United States",
+   "lat": 38.626,
+   "lon": -90.199,
+   "source": "wikidata:Q1335585"
+  },
+  "ENG.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q1124060"
+  },
+  "EOG": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.759,
+   "lon": -95.371,
+   "source": "wikidata:Q1275577"
+  },
+  "EQIX": {
+   "city": "Redwood City",
+   "country": "United States",
+   "lat": 37.483,
+   "lon": -122.236,
+   "source": "wikidata:Q851641"
+  },
+  "EQT": {
+   "city": "Pittsburgh",
+   "country": "United States",
+   "lat": 40.443,
+   "lon": -80.001,
+   "source": "wikidata:Q5323987"
+  },
+  "ERIE": {
+   "city": "Erie",
+   "country": "United States",
+   "lat": 42.13,
+   "lon": -80.085,
+   "source": "wikidata:Q5388314"
+  },
+  "ES": {
+   "city": "Berlin",
+   "country": "United States",
+   "lat": 41.614,
+   "lon": -72.772,
+   "source": "wikidata:Q3344199"
+  },
+  "ESS": {
+   "city": "San Mateo",
+   "country": "United States",
+   "lat": 37.554,
+   "lon": -122.313,
+   "source": "wikidata:Q27964091"
+  },
+  "ETN": {
+   "city": "Cleveland",
+   "country": "United States",
+   "lat": 41.499,
+   "lon": -81.695,
+   "source": "wikidata:Q48872"
+  },
+  "ETR": {
+   "city": "New Orleans",
+   "country": "United States",
+   "lat": 29.954,
+   "lon": -90.08,
+   "source": "wikidata:Q1344587"
+  },
+  "EVRG": {
+   "city": "Topeka",
+   "country": "United States",
+   "lat": 39.048,
+   "lon": -95.678,
+   "source": "wikidata:Q7987107"
+  },
+  "EW": {
+   "city": "Irvine",
+   "country": "United States",
+   "lat": 33.684,
+   "lon": -117.792,
+   "source": "wikidata:Q16966841"
+  },
+  "EXC": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q1383669"
+  },
+  "EXE": {
+   "city": "Spring",
+   "country": "United States",
+   "lat": 30.054,
+   "lon": -95.387,
+   "source": "sec:895126"
+  },
+  "EXPD": {
+   "city": "Seattle",
+   "country": "United States",
+   "lat": 47.606,
+   "lon": -122.335,
+   "source": "wikidata:Q1384324"
+  },
+  "EXPE": {
+   "city": "Seattle",
+   "country": "United States",
+   "lat": 47.605,
+   "lon": -122.33,
+   "source": "wikidata:Q8085893"
+  },
+  "EXPN.L": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.342,
+   "lon": -6.248,
+   "source": "wikidata:Q692157"
+  },
+  "EXR": {
+   "city": "Salt Lake City",
+   "country": "United States",
+   "lat": 40.75,
+   "lon": -111.883,
+   "source": "wikidata:Q5422162"
+  },
+  "EZJ.L": {
+   "city": "Luton",
+   "country": "United Kingdom",
+   "lat": 51.875,
+   "lon": -0.368,
+   "source": "wikidata:Q191551"
+  },
+  "F": {
+   "city": "Dearborn",
+   "country": "United States",
+   "lat": 42.315,
+   "lon": -83.21,
+   "source": "wikidata:Q44294"
+  },
+  "FANG": {
+   "city": "Midland",
+   "country": "United States",
+   "lat": 32.005,
+   "lon": -102.099,
+   "source": "wikidata:Q65091423"
+  },
+  "FAST": {
+   "city": "Winona",
+   "country": "United States",
+   "lat": 44.048,
+   "lon": -91.64,
+   "source": "wikidata:Q3067119"
+  },
+  "FCX": {
+   "city": "Phoenix",
+   "country": "United States",
+   "lat": 33.448,
+   "lon": -112.074,
+   "source": "wikidata:Q1453620"
+  },
+  "FDR.MC": {
+   "city": "Sant Cugat del Vallès",
+   "country": "Spain",
+   "lat": 41.474,
+   "lon": 2.085,
+   "source": "wikidata:Q11922225"
+  },
+  "FDS": {
+   "city": "Norwalk",
+   "country": "United States",
+   "lat": 41.094,
+   "lon": -73.42,
+   "source": "wikidata:Q1885491"
+  },
+  "FDX": {
+   "city": "Memphis",
+   "country": "United States",
+   "lat": 35.106,
+   "lon": -89.859,
+   "source": "wikidata:Q459477"
+  },
+  "FE": {
+   "city": "Akron",
+   "country": "United States",
+   "lat": 41.073,
+   "lon": -81.518,
+   "source": "wikidata:Q1419248"
+  },
+  "FER.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q1408037"
+  },
+  "FERG": {
+   "city": "Newport News",
+   "country": "United States",
+   "lat": 37.071,
+   "lon": -76.484,
+   "source": "wikidata:Q5444235"
+  },
+  "FFIV": {
+   "city": "Seattle",
+   "country": "United States",
+   "lat": 47.623,
+   "lon": -122.364,
+   "source": "wikidata:Q3029296"
+  },
+  "FICO": {
+   "city": "Bozeman",
+   "country": "United States",
+   "lat": 45.679,
+   "lon": -111.037,
+   "source": "sec:814547"
+  },
+  "FIS": {
+   "city": "Jacksonville",
+   "country": "United States",
+   "lat": 30.317,
+   "lon": -81.65,
+   "source": "wikidata:Q1411295"
+  },
+  "FISV": {
+   "city": "Brookfield",
+   "country": "United States",
+   "lat": 43.034,
+   "lon": -88.141,
+   "source": "wikidata:Q1420513"
+  },
+  "FITB": {
+   "city": "Cincinnati",
+   "country": "United States",
+   "lat": 39.1,
+   "lon": -84.512,
+   "source": "wikidata:Q130624258"
+  },
+  "FIX": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q5151691"
+  },
+  "FLEX": {
+   "city": "Austin",
+   "country": "United States",
+   "lat": 30.3,
+   "lon": -97.733,
+   "source": "sec:866374"
+  },
+  "FOX": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.759,
+   "lon": -73.982,
+   "source": "wikidata:Q60238941"
+  },
+  "FOXA": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.759,
+   "lon": -73.982,
+   "source": "wikidata:Q60238941"
+  },
+  "FRES.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q3087545"
+  },
+  "FRT": {
+   "city": "Rockville",
+   "country": "United States",
+   "lat": 39.084,
+   "lon": -77.153,
+   "source": "wikidata:Q27988152"
+  },
+  "FSLR": {
+   "city": "Tempe",
+   "country": "United States",
+   "lat": 33.441,
+   "lon": -111.954,
+   "source": "wikidata:Q1138888"
+  },
+  "FTNT": {
+   "city": "Sunnyvale",
+   "country": "United States",
+   "lat": 37.369,
+   "lon": -122.037,
+   "source": "wikidata:Q2749364"
+  },
+  "FTV": {
+   "city": "Everett",
+   "country": "United States",
+   "lat": 47.963,
+   "lon": -122.201,
+   "source": "wikidata:Q27919383"
+  },
+  "GAW.L": {
+   "city": "Nottingham",
+   "country": "United Kingdom",
+   "lat": 52.955,
+   "lon": -1.149,
+   "source": "wikidata:Q587270"
+  },
+  "GD": {
+   "city": "Reston",
+   "country": "United States",
+   "lat": 38.959,
+   "lon": -77.359,
+   "source": "wikidata:Q502940"
+  },
+  "GDDY": {
+   "city": "Tempe",
+   "country": "United States",
+   "lat": 33.617,
+   "lon": -111.905,
+   "source": "wikidata:Q1416215"
+  },
+  "GE": {
+   "city": "Evendale",
+   "country": "United States",
+   "lat": 39.248,
+   "lon": -84.431,
+   "source": "wikidata:Q1485061"
+  },
+  "GEHC": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.881,
+   "lon": -87.641,
+   "source": "wikidata:Q1152374"
+  },
+  "GEN": {
+   "city": "Tempe",
+   "country": "United States",
+   "lat": 33.431,
+   "lon": -111.94,
+   "source": "wikidata:Q677085"
+  },
+  "GEV": {
+   "city": "Cambridge",
+   "country": "United States",
+   "lat": 42.375,
+   "lon": -71.106,
+   "source": "wikidata:Q118957699"
+  },
+  "GILD": {
+   "city": "Foster City",
+   "country": "United States",
+   "lat": 37.567,
+   "lon": -122.282,
+   "source": "wikidata:Q663596"
+  },
+  "GIS": {
+   "city": "Golden Valley",
+   "country": "United States",
+   "lat": 45.01,
+   "lon": -93.349,
+   "source": "wikidata:Q629998"
+  },
+  "GL": {
+   "city": "McKinney",
+   "country": "United States",
+   "lat": 33.2,
+   "lon": -96.633,
+   "source": "wikidata:Q7825574"
+  },
+  "GLEN.L": {
+   "city": "Baar",
+   "country": "Switzerland",
+   "lat": 47.181,
+   "lon": 8.527,
+   "source": "wikidata:Q169339"
+  },
+  "GLW": {
+   "city": "Corning",
+   "country": "United States",
+   "lat": 42.141,
+   "lon": -77.032,
+   "source": "wikidata:Q5842736"
+  },
+  "GM": {
+   "city": "Detroit",
+   "country": "United States",
+   "lat": 42.33,
+   "lon": -83.04,
+   "source": "wikidata:Q81965"
+  },
+  "GNRC": {
+   "city": "Waukesha",
+   "country": "United States",
+   "lat": 43.012,
+   "lon": -88.232,
+   "source": "wikidata:Q5531627"
+  },
+  "GOOG": {
+   "city": "Mountain View",
+   "country": "United States",
+   "lat": 37.422,
+   "lon": -122.084,
+   "source": "wikidata:Q20800404"
+  },
+  "GOOGL": {
+   "city": "Mountain View",
+   "country": "United States",
+   "lat": 37.422,
+   "lon": -122.084,
+   "source": "wikidata:Q20800404"
+  },
+  "GPC": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q5533818"
+  },
+  "GPN": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q5570544"
+  },
+  "GRF.MC": {
+   "city": "Sant Cugat del Vallès",
+   "country": "Spain",
+   "lat": 41.474,
+   "lon": 2.085,
+   "source": "wikidata:Q901262"
+  },
+  "GRMN": {
+   "city": "Schaffhausen",
+   "country": "Switzerland",
+   "lat": 47.7,
+   "lon": 8.632,
+   "source": "wikidata:Q30338591"
+  },
+  "GS": {
+   "city": "Battery Park City",
+   "country": "United States",
+   "lat": 40.715,
+   "lon": -74.014,
+   "source": "wikidata:Q193326"
+  },
+  "GSK.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.517,
+   "lon": -0.128,
+   "source": "wikidata:Q212322"
+  },
+  "GWW": {
+   "city": "Lake Forest",
+   "country": "United States",
+   "lat": 42.235,
+   "lon": -87.851,
+   "source": "wikidata:Q1627894"
+  },
+  "HAL": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.936,
+   "lon": -95.34,
+   "source": "wikidata:Q656165"
+  },
+  "HAS": {
+   "city": "Pawtucket",
+   "country": "United States",
+   "lat": 41.876,
+   "lon": -71.376,
+   "source": "wikidata:Q501476"
+  },
+  "HBAN": {
+   "city": "Columbus",
+   "country": "United States",
+   "lat": 39.961,
+   "lon": -83.001,
+   "source": "wikidata:Q798819"
+  },
+  "HCA": {
+   "city": "Nashville",
+   "country": "United States",
+   "lat": 36.162,
+   "lon": -86.774,
+   "source": "wikidata:Q1630431"
+  },
+  "HD": {
+   "city": "Cobb County",
+   "country": "United States",
+   "lat": 33.94,
+   "lon": -84.58,
+   "source": "wikidata:Q864407"
+  },
+  "HIG": {
+   "city": "Hartford",
+   "country": "United States",
+   "lat": 41.763,
+   "lon": -72.685,
+   "source": "wikidata:Q444110"
+  },
+  "HII": {
+   "city": "Newport News",
+   "country": "United States",
+   "lat": 37.071,
+   "lon": -76.484,
+   "source": "wikidata:Q7257522"
+  },
+  "HLMA.L": {
+   "city": "Amersham",
+   "country": "United Kingdom",
+   "lat": 51.667,
+   "lon": -0.616,
+   "source": "wikidata:Q5643254"
+  },
+  "HLN.L": {
+   "city": "Weybridge",
+   "country": "United Kingdom",
+   "lat": 51.367,
+   "lon": -0.467,
+   "source": "wikidata:Q112860932"
+  },
+  "HLT": {
+   "city": "McLean",
+   "country": "United States",
+   "lat": 38.928,
+   "lon": -77.175,
+   "source": "wikidata:Q1057464"
+  },
+  "HON": {
+   "city": "Charlotte",
+   "country": "United States",
+   "lat": 35.227,
+   "lon": -80.846,
+   "source": "wikidata:Q898208"
+  },
+  "HOOD": {
+   "city": "Palo Alto",
+   "country": "United States",
+   "lat": 37.444,
+   "lon": -122.16,
+   "source": "wikidata:Q18155123"
+  },
+  "HPE": {
+   "city": "Spring",
+   "country": "United States",
+   "lat": 30.096,
+   "lon": -95.441,
+   "source": "wikidata:Q19923099"
+  },
+  "HPQ": {
+   "city": "Palo Alto",
+   "country": "United States",
+   "lat": 37.414,
+   "lon": -122.147,
+   "source": "wikidata:Q21404084"
+  },
+  "HRL": {
+   "city": "Austin",
+   "country": "United States",
+   "lat": 43.682,
+   "lon": -92.967,
+   "source": "wikidata:Q1454852"
+  },
+  "HSBA.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.505,
+   "lon": -0.017,
+   "source": "wikidata:Q190464"
+  },
+  "HSIC": {
+   "city": "Melville",
+   "country": "United States",
+   "lat": 40.768,
+   "lon": -73.417,
+   "source": "wikidata:Q905086"
+  },
+  "HST": {
+   "city": "Bethesda",
+   "country": "United States",
+   "lat": 38.985,
+   "lon": -77.095,
+   "source": "wikidata:Q1630559"
+  },
+  "HSX.L": {
+   "city": "Hamilton",
+   "country": "Bermuda",
+   "lat": 32.295,
+   "lon": -64.783,
+   "source": "wikidata:Q821058"
+  },
+  "HSY": {
+   "city": "Hershey",
+   "country": "United States",
+   "lat": 40.287,
+   "lon": -76.649,
+   "source": "wikidata:Q1056637"
+  },
+  "HUBB": {
+   "city": "Shelton",
+   "country": "United States",
+   "lat": 41.304,
+   "lon": -73.138,
+   "source": "wikidata:Q21036456"
+  },
+  "HUM": {
+   "city": "Louisville",
+   "country": "United States",
+   "lat": 38.256,
+   "lon": -85.751,
+   "source": "wikidata:Q910866"
+  },
+  "HWM": {
+   "city": "Pittsburgh",
+   "country": "United States",
+   "lat": 40.442,
+   "lon": -80,
+   "source": "wikidata:Q25104597"
+  },
+  "IAG.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q8774"
+  },
+  "IAG.MC": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q8774"
+  },
+  "IBE.MC": {
+   "city": "Bilbao",
+   "country": "Spain",
+   "lat": 43.263,
+   "lon": -2.935,
+   "source": "wikidata:Q1437502"
+  },
+  "IBKR": {
+   "city": "Greenwich",
+   "country": "United States",
+   "lat": 41.026,
+   "lon": -73.628,
+   "source": "wikidata:Q3901581"
+  },
+  "IBM": {
+   "city": "Armonk",
+   "country": "United States",
+   "lat": 41.108,
+   "lon": -73.72,
+   "source": "wikidata:Q37156"
+  },
+  "ICE": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.905,
+   "lon": -84.438,
+   "source": "wikidata:Q841458"
+  },
+  "ICG.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q6047302"
+  },
+  "IDR.MC": {
+   "city": "Alcobendas",
+   "country": "Spain",
+   "lat": 40.529,
+   "lon": -3.642,
+   "source": "wikidata:Q1661823"
+  },
+  "IDXX": {
+   "city": "Westbrook",
+   "country": "United States",
+   "lat": 43.685,
+   "lon": -70.357,
+   "source": "wikidata:Q1758392"
+  },
+  "IEX": {
+   "city": "Lake Forest",
+   "country": "United States",
+   "lat": 42.235,
+   "lon": -87.851,
+   "source": "wikidata:Q5970002"
+  },
+  "IFF": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q1666568"
+  },
+  "IGG.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q481356"
+  },
+  "IHG.L": {
+   "city": "Denham",
+   "country": "United Kingdom",
+   "lat": 51.563,
+   "lon": -0.499,
+   "source": "wikidata:Q1424962"
+  },
+  "III.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q229764"
+  },
+  "IMB.L": {
+   "city": "Bristol",
+   "country": "United Kingdom",
+   "lat": 51.454,
+   "lon": -2.597,
+   "source": "wikidata:Q1471161"
+  },
+  "IMI.L": {
+   "city": "Birmingham",
+   "country": "United Kingdom",
+   "lat": 52.48,
+   "lon": -1.902,
+   "source": "wikidata:Q3146728"
+  },
+  "INCY": {
+   "city": "Wilmington",
+   "country": "United States",
+   "lat": 39.748,
+   "lon": -75.551,
+   "source": "wikidata:Q6015591"
+  },
+  "INF.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q680946"
+  },
+  "INTC": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.388,
+   "lon": -121.964,
+   "source": "wikidata:Q248"
+  },
+  "INTU": {
+   "city": "Mountain View",
+   "country": "United States",
+   "lat": 37.427,
+   "lon": -122.096,
+   "source": "wikidata:Q1318848"
+  },
+  "INVH": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.779,
+   "lon": -96.809,
+   "source": "sec:1687229"
+  },
+  "INVP.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1671741"
+  },
+  "IP": {
+   "city": "Memphis",
+   "country": "United States",
+   "lat": 35.1,
+   "lon": -89.85,
+   "source": "wikidata:Q202972"
+  },
+  "IQV": {
+   "city": "Durham",
+   "country": "United States",
+   "lat": 35.994,
+   "lon": -78.899,
+   "source": "sec:1478242"
+  },
+  "IR": {
+   "city": "Davidson",
+   "country": "United States",
+   "lat": 35.491,
+   "lon": -80.833,
+   "source": "sec:1699150"
+  },
+  "IRM": {
+   "city": "Boston",
+   "country": "United States",
+   "lat": 42.36,
+   "lon": -71.058,
+   "source": "wikidata:Q1673079"
+  },
+  "ISRG": {
+   "city": "Sunnyvale",
+   "country": "United States",
+   "lat": 37.373,
+   "lon": -122.004,
+   "source": "wikidata:Q2743863"
+  },
+  "IT": {
+   "city": "Stamford",
+   "country": "United States",
+   "lat": 41.031,
+   "lon": -73.549,
+   "source": "wikidata:Q174198"
+  },
+  "ITH.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q117231076"
+  },
+  "ITRK.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1136085"
+  },
+  "ITW": {
+   "city": "Glenview",
+   "country": "United States",
+   "lat": 42.079,
+   "lon": -87.816,
+   "source": "wikidata:Q1510378"
+  },
+  "ITX.MC": {
+   "city": "Arteixo",
+   "country": "Spain",
+   "lat": 43.316,
+   "lon": -8.498,
+   "source": "wikidata:Q44504"
+  },
+  "IVZ": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q522617"
+  },
+  "J": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.785,
+   "lon": -96.797,
+   "source": "wikidata:Q3157622"
+  },
+  "JBHT": {
+   "city": "Lowell",
+   "country": "United States",
+   "lat": 36.261,
+   "lon": -94.139,
+   "source": "wikidata:Q4041705"
+  },
+  "JBL": {
+   "city": "St. Petersburg",
+   "country": "United States",
+   "lat": 27.773,
+   "lon": -82.64,
+   "source": "wikidata:Q2171646"
+  },
+  "JCI": {
+   "city": "Cork",
+   "country": "Ireland",
+   "lat": 51.9,
+   "lon": -8.473,
+   "source": "wikidata:Q667865"
+  },
+  "JKHY": {
+   "city": "Monett",
+   "country": "United States",
+   "lat": 36.924,
+   "lon": -93.922,
+   "source": "wikidata:Q6113060"
+  },
+  "JNJ": {
+   "city": "New Brunswick",
+   "country": "United States",
+   "lat": 40.5,
+   "lon": -74.442,
+   "source": "wikidata:Q333718"
+  },
+  "JPM": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.756,
+   "lon": -73.976,
+   "source": "wikidata:Q192314"
+  },
+  "KDP": {
+   "city": "Frisco",
+   "country": "United States",
+   "lat": 33.141,
+   "lon": -96.813,
+   "source": "sec:1418135"
+  },
+  "KEY": {
+   "city": "Cleveland",
+   "country": "United States",
+   "lat": 41.501,
+   "lon": -81.694,
+   "source": "wikidata:Q1740314"
+  },
+  "KEYS": {
+   "city": "Santa Rosa",
+   "country": "United States",
+   "lat": 38.449,
+   "lon": -122.705,
+   "source": "wikidata:Q17551096"
+  },
+  "KGF.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q683098"
+  },
+  "KHC": {
+   "city": "Pittsburgh",
+   "country": "United States",
+   "lat": 40.442,
+   "lon": -80,
+   "source": "wikidata:Q19681433"
+  },
+  "KIM": {
+   "city": "New Hyde Park",
+   "country": "United States",
+   "lat": 40.732,
+   "lon": -73.685,
+   "source": "wikidata:Q6410043"
+  },
+  "KKR": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q1570773"
+  },
+  "KLAC": {
+   "city": "Milpitas",
+   "country": "United States",
+   "lat": 37.421,
+   "lon": -121.926,
+   "source": "wikidata:Q624649"
+  },
+  "KMB": {
+   "city": "Irving",
+   "country": "United States",
+   "lat": 32.869,
+   "lon": -96.949,
+   "source": "wikidata:Q1741634"
+  },
+  "KMI": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.758,
+   "lon": -95.37,
+   "source": "wikidata:Q931032"
+  },
+  "KO": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.771,
+   "lon": -84.397,
+   "source": "wikidata:Q3295867"
+  },
+  "KR": {
+   "city": "Cincinnati",
+   "country": "United States",
+   "lat": 39.106,
+   "lon": -84.514,
+   "source": "wikidata:Q153417"
+  },
+  "KVUE": {
+   "city": "Summit",
+   "country": "United States",
+   "lat": 40.716,
+   "lon": -74.365,
+   "source": "sec:1944048"
+  },
+  "L": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q826526"
+  },
+  "LAND.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q506160"
+  },
+  "LDOS": {
+   "city": "Reston",
+   "country": "United States",
+   "lat": 38.923,
+   "lon": -77.233,
+   "source": "wikidata:Q502132"
+  },
+  "LEN": {
+   "city": "Miami-Dade County",
+   "country": "United States",
+   "lat": 25.774,
+   "lon": -80.194,
+   "source": "wikidata:Q16981175"
+  },
+  "LGEN.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1470848"
+  },
+  "LH": {
+   "city": "Burlington",
+   "country": "United States",
+   "lat": 36.09,
+   "lon": -79.446,
+   "source": "wikidata:Q6466630"
+  },
+  "LHX": {
+   "city": "Melbourne",
+   "country": "United States",
+   "lat": 28.084,
+   "lon": -80.608,
+   "source": "wikidata:Q30291091"
+  },
+  "LII": {
+   "city": "Richardson",
+   "country": "United States",
+   "lat": 32.981,
+   "lon": -96.761,
+   "source": "wikidata:Q224751"
+  },
+  "LIN": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q682759"
+  },
+  "LITE": {
+   "city": "Milpitas",
+   "country": "United States",
+   "lat": 37.434,
+   "lon": -121.922,
+   "source": "wikidata:Q30272341"
+  },
+  "LLOY.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1152764"
+  },
+  "LLY": {
+   "city": "Indianapolis",
+   "country": "United States",
+   "lat": 39.769,
+   "lon": -86.158,
+   "source": "wikidata:Q632240"
+  },
+  "LMP.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q6669750"
+  },
+  "LMT": {
+   "city": "Bethesda",
+   "country": "United States",
+   "lat": 39.029,
+   "lon": -77.135,
+   "source": "wikidata:Q7240"
+  },
+  "LNT": {
+   "city": "Madison",
+   "country": "United States",
+   "lat": 43.075,
+   "lon": -89.384,
+   "source": "wikidata:Q4732492"
+  },
+  "LOG.MC": {
+   "city": "Leganés",
+   "country": "Spain",
+   "lat": 40.328,
+   "lon": -3.765,
+   "source": "wikidata:Q28226300"
+  },
+  "LOW": {
+   "city": "Mooresville",
+   "country": "United States",
+   "lat": 35.584,
+   "lon": -80.82,
+   "source": "wikidata:Q1373493"
+  },
+  "LRCX": {
+   "city": "Fremont",
+   "country": "United States",
+   "lat": 37.49,
+   "lon": -121.956,
+   "source": "wikidata:Q1342041"
+  },
+  "LSEG.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.515,
+   "lon": -0.1,
+   "source": "wikidata:Q5573225"
+  },
+  "LULU": {
+   "city": "Vancouver",
+   "country": "Canada",
+   "lat": 49.261,
+   "lon": -123.114,
+   "source": "wikidata:Q6702957"
+  },
+  "LUV": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.846,
+   "lon": -96.864,
+   "source": "wikidata:Q503308"
+  },
+  "LVS": {
+   "city": "Las Vegas",
+   "country": "United States",
+   "lat": 36.167,
+   "lon": -115.149,
+   "source": "wikidata:Q1506045"
+  },
+  "LYB": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q899255"
+  },
+  "LYV": {
+   "city": "Beverly Hills",
+   "country": "United States",
+   "lat": 34.073,
+   "lon": -118.399,
+   "source": "wikidata:Q1061903"
+  },
+  "MA": {
+   "city": "Purchase",
+   "country": "United States",
+   "lat": 41.041,
+   "lon": -73.714,
+   "source": "wikidata:Q489921"
+  },
+  "MAA": {
+   "city": "Germantown",
+   "country": "United States",
+   "lat": 35.089,
+   "lon": -89.794,
+   "source": "sec:912595"
+  },
+  "MAP.MC": {
+   "city": "Majadahonda",
+   "country": "Spain",
+   "lat": 40.473,
+   "lon": -3.872,
+   "source": "wikidata:Q544532"
+  },
+  "MAR": {
+   "city": "Bethesda",
+   "country": "United States",
+   "lat": 39.025,
+   "lon": -77.137,
+   "source": "wikidata:Q1141173"
+  },
+  "MAS": {
+   "city": "Taylor",
+   "country": "United States",
+   "lat": 42.241,
+   "lon": -83.27,
+   "source": "wikidata:Q6782872"
+  },
+  "MCD": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.884,
+   "lon": -87.654,
+   "source": "wikidata:Q38076"
+  },
+  "MCHP": {
+   "city": "Chandler",
+   "country": "United States",
+   "lat": 33.304,
+   "lon": -111.883,
+   "source": "wikidata:Q1545076"
+  },
+  "MCK": {
+   "city": "Irving",
+   "country": "United States",
+   "lat": 32.812,
+   "lon": -96.951,
+   "source": "wikidata:Q570473"
+  },
+  "MCO": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.012,
+   "source": "wikidata:Q675585"
+  },
+  "MDLZ": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q12857502"
+  },
+  "MDT": {
+   "city": "Ireland",
+   "country": "Ireland",
+   "lat": 53,
+   "lon": -8,
+   "source": "wikidata:Q642189"
+  },
+  "MELI": {
+   "city": "Saavedra",
+   "country": "Argentina",
+   "lat": -34.55,
+   "lon": -58.483,
+   "source": "wikidata:Q950419"
+  },
+  "MET": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q607131"
+  },
+  "META": {
+   "city": "Menlo Park",
+   "country": "United States",
+   "lat": 37.485,
+   "lon": -122.147,
+   "source": "wikidata:Q380"
+  },
+  "MGM": {
+   "city": "Las Vegas",
+   "country": "United States",
+   "lat": 36.167,
+   "lon": -115.149,
+   "source": "wikidata:Q568532"
+  },
+  "MKC": {
+   "city": "Baltimore County",
+   "country": "United States",
+   "lat": 39.492,
+   "lon": -76.659,
+   "source": "wikidata:Q1915049"
+  },
+  "MKS.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q714491"
+  },
+  "MLM": {
+   "city": "Raleigh",
+   "country": "United States",
+   "lat": 35.78,
+   "lon": -78.64,
+   "source": "wikidata:Q6776123"
+  },
+  "MMM": {
+   "city": "Maplewood",
+   "country": "United States",
+   "lat": 44.953,
+   "lon": -92.995,
+   "source": "wikidata:Q159433"
+  },
+  "MNG.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q838553"
+  },
+  "MNST": {
+   "city": "Corona",
+   "country": "United States",
+   "lat": 33.867,
+   "lon": -117.567,
+   "source": "sec:865752"
+  },
+  "MO": {
+   "city": "Richmond",
+   "country": "United States",
+   "lat": 37.58,
+   "lon": -77.492,
+   "source": "wikidata:Q445007"
+  },
+  "MOS": {
+   "city": "Tampa",
+   "country": "United States",
+   "lat": 27.948,
+   "lon": -82.459,
+   "source": "sec:1285785"
+  },
+  "MPC": {
+   "city": "Findlay",
+   "country": "United States",
+   "lat": 41.043,
+   "lon": -83.642,
+   "source": "wikidata:Q458363"
+  },
+  "MPWR": {
+   "city": "West Palm Beach",
+   "country": "United States",
+   "lat": 26.71,
+   "lon": -80.064,
+   "source": "sec:1280452"
+  },
+  "MRK": {
+   "city": "Rahway",
+   "country": "United States",
+   "lat": 40.607,
+   "lon": -74.281,
+   "source": "wikidata:Q247489"
+  },
+  "MRL.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q28226309"
+  },
+  "MRNA": {
+   "city": "Cambridge",
+   "country": "United States",
+   "lat": 42.375,
+   "lon": -71.106,
+   "source": "wikidata:Q17081612"
+  },
+  "MRO.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q3305280"
+  },
+  "MRSH": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "sec:62709"
+  },
+  "MRVL": {
+   "city": "Wilmington",
+   "country": "United States",
+   "lat": 39.748,
+   "lon": -75.551,
+   "source": "sec:1835632"
+  },
+  "MS": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q334204"
+  },
+  "MSCI": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q768773"
+  },
+  "MSFT": {
+   "city": "Redmond",
+   "country": "United States",
+   "lat": 47.64,
+   "lon": -122.128,
+   "source": "wikidata:Q2283"
+  },
+  "MSI": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q634815"
+  },
+  "MSTR": {
+   "city": "Tysons",
+   "country": "United States",
+   "lat": 38.919,
+   "lon": -77.23,
+   "source": "wikidata:Q1192211"
+  },
+  "MTB": {
+   "city": "Buffalo",
+   "country": "United States",
+   "lat": 42.886,
+   "lon": -78.878,
+   "source": "wikidata:Q3272257"
+  },
+  "MTD": {
+   "city": "Columbus",
+   "country": "United States",
+   "lat": 39.962,
+   "lon": -83.001,
+   "source": "sec:1037646"
+  },
+  "MTS.MC": {
+   "city": "Luxembourg",
+   "country": "Luxembourg",
+   "lat": 49.611,
+   "lon": 6.13,
+   "source": "wikidata:Q27893"
+  },
+  "MU": {
+   "city": "Boise",
+   "country": "United States",
+   "lat": 43.531,
+   "lon": -116.15,
+   "source": "wikidata:Q1197548"
+  },
+  "NBIS": {
+   "city": "Amsterdam",
+   "country": "Netherlands",
+   "lat": 52.367,
+   "lon": 4.883,
+   "source": "wikidata:Q47120756"
+  },
+  "NCLH": {
+   "city": "Miami-Dade County",
+   "country": "United States",
+   "lat": 25.774,
+   "lon": -80.194,
+   "source": "wikidata:Q60767471"
+  },
+  "NDAQ": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q1472929"
+  },
+  "NDSN": {
+   "city": "Westlake",
+   "country": "United States",
+   "lat": 41.454,
+   "lon": -81.929,
+   "source": "wikidata:Q1998662"
+  },
+  "NEE": {
+   "city": "Juno Beach",
+   "country": "United States",
+   "lat": 26.873,
+   "lon": -80.054,
+   "source": "wikidata:Q967868"
+  },
+  "NEM": {
+   "city": "Denver",
+   "country": "United States",
+   "lat": 39.739,
+   "lon": -104.985,
+   "source": "wikidata:Q1785405"
+  },
+  "NFLX": {
+   "city": "Los Gatos",
+   "country": "United States",
+   "lat": 37.257,
+   "lon": -121.964,
+   "source": "wikidata:Q116452644"
+  },
+  "NG.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1465461"
+  },
+  "NI": {
+   "city": "Merrillville",
+   "country": "United States",
+   "lat": 41.486,
+   "lon": -87.335,
+   "source": "wikidata:Q1984481"
+  },
+  "NKE": {
+   "city": "Beaverton",
+   "country": "United States",
+   "lat": 45.509,
+   "lon": -122.83,
+   "source": "wikidata:Q483915"
+  },
+  "NOC": {
+   "city": "Falls Church",
+   "country": "United States",
+   "lat": 38.867,
+   "lon": -77.215,
+   "source": "wikidata:Q329953"
+  },
+  "NOW": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.35,
+   "lon": -121.967,
+   "source": "wikidata:Q7455653"
+  },
+  "NRG": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "sec:1013871"
+  },
+  "NSC": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "sec:702165"
+  },
+  "NTAP": {
+   "city": "Sunnyvale",
+   "country": "United States",
+   "lat": 37.369,
+   "lon": -122.037,
+   "source": "wikidata:Q727883"
+  },
+  "NTGY.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q474690"
+  },
+  "NTRS": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "sec:73124"
+  },
+  "NUE": {
+   "city": "Charlotte",
+   "country": "United States",
+   "lat": 35.159,
+   "lon": -80.835,
+   "source": "wikidata:Q1645081"
+  },
+  "NVDA": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.373,
+   "lon": -121.966,
+   "source": "wikidata:Q182477"
+  },
+  "NVR": {
+   "city": "Reston",
+   "country": "United States",
+   "lat": 38.959,
+   "lon": -77.359,
+   "source": "wikidata:Q6955706"
+  },
+  "NWG.L": {
+   "city": "Edinburgh",
+   "country": "United Kingdom",
+   "lat": 55.953,
+   "lon": -3.189,
+   "source": "wikidata:Q13218598"
+  },
+  "NWS": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q14289857"
+  },
+  "NWSA": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q14289857"
+  },
+  "NXPI": {
+   "city": "Eindhoven",
+   "country": "Netherlands",
+   "lat": 51.409,
+   "lon": 5.461,
+   "source": "wikidata:Q1155668"
+  },
+  "NXT.L": {
+   "city": "Leicester",
+   "country": "United Kingdom",
+   "lat": 52.636,
+   "lon": -1.133,
+   "source": "wikidata:Q246655"
+  },
+  "O": {
+   "city": "San Diego",
+   "country": "United States",
+   "lat": 32.715,
+   "lon": -117.162,
+   "source": "wikidata:Q7301386"
+  },
+  "ODFL": {
+   "city": "Thomasville",
+   "country": "United States",
+   "lat": 35.886,
+   "lon": -80.077,
+   "source": "wikidata:Q7083862"
+  },
+  "OKE": {
+   "city": "Tulsa",
+   "country": "United States",
+   "lat": 36.151,
+   "lon": -95.991,
+   "source": "wikidata:Q11074156"
+  },
+  "OMC": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q1519267"
+  },
+  "ON": {
+   "city": "Scottsdale",
+   "country": "United States",
+   "lat": 33.52,
+   "lon": -111.889,
+   "source": "wikidata:Q1671509"
+  },
+  "ORCL": {
+   "city": "Austin",
+   "country": "United States",
+   "lat": 30.3,
+   "lon": -97.733,
+   "source": "wikidata:Q19900"
+  },
+  "ORLY": {
+   "city": "Springfield",
+   "country": "United States",
+   "lat": 37.195,
+   "lon": -93.286,
+   "source": "wikidata:Q7071951"
+  },
+  "OTIS": {
+   "city": "Farmington",
+   "country": "United States",
+   "lat": 41.728,
+   "lon": -72.84,
+   "source": "wikidata:Q1134069"
+  },
+  "OXY": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q2013357"
+  },
+  "PANW": {
+   "city": "Santa Clara",
+   "country": "United States",
+   "lat": 37.35,
+   "lon": -121.967,
+   "source": "wikidata:Q7128508"
+  },
+  "PAYX": {
+   "city": "Rochester",
+   "country": "United States",
+   "lat": 43.166,
+   "lon": -77.611,
+   "source": "wikidata:Q946080"
+  },
+  "PCAR": {
+   "city": "Bellevue",
+   "country": "United States",
+   "lat": 47.617,
+   "lon": -122.2,
+   "source": "wikidata:Q1477661"
+  },
+  "PCG": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q1815011"
+  },
+  "PCT.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q7209022"
+  },
+  "PDD": {
+   "city": "George Town",
+   "country": "Cayman Islands",
+   "lat": 19.296,
+   "lon": -81.382,
+   "source": "wikidata:Q124461238"
+  },
+  "PEG": {
+   "city": "Newark",
+   "country": "United States",
+   "lat": 40.736,
+   "lon": -74.172,
+   "source": "wikidata:Q930919"
+  },
+  "PEP": {
+   "city": "Purchase",
+   "country": "United States",
+   "lat": 41.041,
+   "lon": -73.714,
+   "source": "wikidata:Q334800"
+  },
+  "PFE": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.75,
+   "lon": -73.972,
+   "source": "wikidata:Q206921"
+  },
+  "PFG": {
+   "city": "Des Moines",
+   "country": "United States",
+   "lat": 41.591,
+   "lon": -93.621,
+   "source": "wikidata:Q3403513"
+  },
+  "PG": {
+   "city": "Cincinnati",
+   "country": "United States",
+   "lat": 39.1,
+   "lon": -84.512,
+   "source": "sec:80424"
+  },
+  "PGR": {
+   "city": "Mayfield",
+   "country": "United States",
+   "lat": 41.548,
+   "lon": -81.443,
+   "source": "wikidata:Q7248721"
+  },
+  "PH": {
+   "city": "Cleveland",
+   "country": "United States",
+   "lat": 41.506,
+   "lon": -81.461,
+   "source": "wikidata:Q1470619"
+  },
+  "PHM": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q7259716"
+  },
+  "PKG": {
+   "city": "Lake Forest",
+   "country": "United States",
+   "lat": 42.243,
+   "lon": -87.893,
+   "source": "wikidata:Q16983334"
+  },
+  "PLD": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q16983765"
+  },
+  "PLTR": {
+   "city": "Miami",
+   "country": "United States",
+   "lat": 25.774,
+   "lon": -80.194,
+   "source": "wikidata:Q2047336"
+  },
+  "PM": {
+   "city": "Stamford",
+   "country": "United States",
+   "lat": 41.097,
+   "lon": -73.552,
+   "source": "wikidata:Q1852556"
+  },
+  "PNC": {
+   "city": "Pittsburgh",
+   "country": "United States",
+   "lat": 40.441,
+   "lon": -80.001,
+   "source": "wikidata:Q38928"
+  },
+  "PNR": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q7165001"
+  },
+  "PNW": {
+   "city": "Phoenix",
+   "country": "United States",
+   "lat": 33.448,
+   "lon": -112.074,
+   "source": "wikidata:Q26110522"
+  },
+  "PODD": {
+   "city": "Bedford",
+   "country": "United States",
+   "lat": 42.491,
+   "lon": -71.277,
+   "source": "wikidata:Q104480795"
+  },
+  "PPG": {
+   "city": "Pittsburgh",
+   "country": "United States",
+   "lat": 40.442,
+   "lon": -80,
+   "source": "wikidata:Q48754"
+  },
+  "PPL": {
+   "city": "Allentown",
+   "country": "United States",
+   "lat": 40.6,
+   "lon": -75.483,
+   "source": "wikidata:Q2044512"
+  },
+  "PRU": {
+   "city": "Prudential Headquarters",
+   "country": "United States",
+   "lat": 40.734,
+   "lon": -74.171,
+   "source": "wikidata:Q2114414"
+  },
+  "PRU.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1374135"
+  },
+  "PSA": {
+   "city": "Frisco",
+   "country": "United States",
+   "lat": 33.141,
+   "lon": -96.813,
+   "source": "sec:1393311"
+  },
+  "PSH.L": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q30682229"
+  },
+  "PSKY": {
+   "city": "Los Angeles",
+   "country": "United States",
+   "lat": 34.052,
+   "lon": -118.244,
+   "source": "wikidata:Q135485147"
+  },
+  "PSON.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.51,
+   "lon": -0.122,
+   "source": "wikidata:Q1916402"
+  },
+  "PSX": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.741,
+   "lon": -95.562,
+   "source": "wikidata:Q1656230"
+  },
+  "PTC": {
+   "city": "Boston",
+   "country": "United States",
+   "lat": 42.296,
+   "lon": -71.215,
+   "source": "wikidata:Q1760641"
+  },
+  "PUIG.MC": {
+   "city": "L'Hospitalet de Llobregat",
+   "country": "Spain",
+   "lat": 41.358,
+   "lon": 2.122,
+   "source": "wikidata:Q3410623"
+  },
+  "PWR": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.737,
+   "lon": -95.461,
+   "source": "wikidata:Q7268886"
+  },
+  "PYPL": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.304,
+   "lon": -121.873,
+   "source": "wikidata:Q135683211"
+  },
+  "QCOM": {
+   "city": "San Diego",
+   "country": "United States",
+   "lat": 32.897,
+   "lon": -117.196,
+   "source": "wikidata:Q544847"
+  },
+  "RCL": {
+   "city": "Miami",
+   "country": "United States",
+   "lat": 25.774,
+   "lon": -80.194,
+   "source": "wikidata:Q427881"
+  },
+  "RDDT": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q111759432"
+  },
+  "REG": {
+   "city": "Jacksonville",
+   "country": "United States",
+   "lat": 30.325,
+   "lon": -81.656,
+   "source": "wikidata:Q7308000"
+  },
+  "REGN": {
+   "city": "Mount Pleasant",
+   "country": "United States",
+   "lat": 41.082,
+   "lon": -73.829,
+   "source": "wikidata:Q7308054"
+  },
+  "REP.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.398,
+   "lon": -3.684,
+   "source": "wikidata:Q174747"
+  },
+  "RF": {
+   "city": "Birmingham",
+   "country": "United States",
+   "lat": 33.518,
+   "lon": -86.809,
+   "source": "wikidata:Q917131"
+  },
+  "RIO.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q821293"
+  },
+  "RJF": {
+   "city": "St. Petersburg",
+   "country": "United States",
+   "lat": 27.773,
+   "lon": -82.64,
+   "source": "wikidata:Q7298901"
+  },
+  "RKLB": {
+   "city": "Long Beach",
+   "country": "United States",
+   "lat": 33.831,
+   "lon": -118.149,
+   "source": "wikidata:Q140994560"
+  },
+  "RKT.L": {
+   "city": "Slough",
+   "country": "United Kingdom",
+   "lat": 51.512,
+   "lon": -0.61,
+   "source": "wikidata:Q1190881"
+  },
+  "RL": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.764,
+   "lon": -73.972,
+   "source": "wikidata:Q1641437"
+  },
+  "RMD": {
+   "city": "San Diego",
+   "country": "United States",
+   "lat": 32.715,
+   "lon": -117.162,
+   "source": "wikidata:Q7314903"
+  },
+  "ROK": {
+   "city": "Milwaukee",
+   "country": "United States",
+   "lat": 43.05,
+   "lon": -87.95,
+   "source": "wikidata:Q1529234"
+  },
+  "ROL": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q7361273"
+  },
+  "ROP": {
+   "city": "Sarasota",
+   "country": "United States",
+   "lat": 27.337,
+   "lon": -82.535,
+   "source": "sec:882835"
+  },
+  "ROST": {
+   "city": "Dublin",
+   "country": "United States",
+   "lat": 37.714,
+   "lon": -121.912,
+   "source": "wikidata:Q3442791"
+  },
+  "ROVI.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q65180652"
+  },
+  "RR.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q243278"
+  },
+  "RSG": {
+   "city": "Phoenix",
+   "country": "United States",
+   "lat": 33.672,
+   "lon": -111.967,
+   "source": "wikidata:Q7314415"
+  },
+  "RTO.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q2622493"
+  },
+  "RTX": {
+   "city": "Arlington County",
+   "country": "United States",
+   "lat": 38.894,
+   "lon": -77.069,
+   "source": "wikidata:Q89368734"
+  },
+  "RVTY": {
+   "city": "Waltham",
+   "country": "United States",
+   "lat": 42.381,
+   "lon": -71.235,
+   "source": "wikidata:Q120467527"
+  },
+  "SAB.MC": {
+   "city": "Sabadell",
+   "country": "Spain",
+   "lat": 41.548,
+   "lon": 2.108,
+   "source": "wikidata:Q762330"
+  },
+  "SAN.MC": {
+   "city": "Santander",
+   "country": "Spain",
+   "lat": 43.467,
+   "lon": -3.8,
+   "source": "wikidata:Q6496310"
+  },
+  "SBAC": {
+   "city": "Boca Raton",
+   "country": "United States",
+   "lat": 26.369,
+   "lon": -80.1,
+   "source": "wikidata:Q7388926"
+  },
+  "SBRY.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q18043414"
+  },
+  "SBUX": {
+   "city": "Seattle",
+   "country": "United States",
+   "lat": 47.581,
+   "lon": -122.336,
+   "source": "wikidata:Q37158"
+  },
+  "SCHW": {
+   "city": "Westlake",
+   "country": "United States",
+   "lat": 32.983,
+   "lon": -97.206,
+   "source": "sec:316709"
+  },
+  "SCYR.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q525955"
+  },
+  "SDLF.L": {
+   "city": "Edinburgh",
+   "country": "United Kingdom",
+   "lat": 55.948,
+   "lon": -3.207,
+   "source": "wikidata:Q471958"
+  },
+  "SGE.L": {
+   "city": "Newcastle upon Tyne",
+   "country": "United Kingdom",
+   "lat": 55.02,
+   "lon": -1.502,
+   "source": "wikidata:Q1469903"
+  },
+  "SGRO.L": {
+   "city": "Slough",
+   "country": "United Kingdom",
+   "lat": 51.51,
+   "lon": -0.593,
+   "source": "wikidata:Q2205753"
+  },
+  "SHEL.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q154950"
+  },
+  "SHOP": {
+   "city": "Ottawa",
+   "country": "Canada",
+   "lat": 45.425,
+   "lon": -75.695,
+   "source": "wikidata:Q7501150"
+  },
+  "SHW": {
+   "city": "Cleveland",
+   "country": "United States",
+   "lat": 41.498,
+   "lon": -81.692,
+   "source": "wikidata:Q48881"
+  },
+  "SJM": {
+   "city": "Orrville",
+   "country": "United States",
+   "lat": 40.833,
+   "lon": -81.767,
+   "source": "wikidata:Q7742790"
+  },
+  "SLB": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q1425316"
+  },
+  "SLR.MC": {
+   "city": "Madrid",
+   "country": "Spain",
+   "lat": 40.417,
+   "lon": -3.703,
+   "source": "wikidata:Q6131430"
+  },
+  "SMCI": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.304,
+   "lon": -121.873,
+   "source": "wikidata:Q1817174"
+  },
+  "SMIN.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q2295406"
+  },
+  "SMT.L": {
+   "city": "Edinburgh",
+   "country": "United Kingdom",
+   "lat": 55.953,
+   "lon": -3.189,
+   "source": "wikidata:Q7437862"
+  },
+  "SN.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q502509"
+  },
+  "SNA": {
+   "city": "Kenosha",
+   "country": "United States",
+   "lat": 42.582,
+   "lon": -87.846,
+   "source": "wikidata:Q1631922"
+  },
+  "SNDK": {
+   "city": "Milpitas",
+   "country": "United States",
+   "lat": 37.444,
+   "lon": -121.923,
+   "source": "wikidata:Q260833"
+  },
+  "SNPS": {
+   "city": "Mountain View",
+   "country": "United States",
+   "lat": 37.395,
+   "lon": -122.05,
+   "source": "wikidata:Q2303478"
+  },
+  "SO": {
+   "city": "Atlanta",
+   "country": "United States",
+   "lat": 33.754,
+   "lon": -84.39,
+   "source": "wikidata:Q2304693"
+  },
+  "SOLV": {
+   "city": "Eagan",
+   "country": "United States",
+   "lat": 44.818,
+   "lon": -93.167,
+   "source": "wikidata:Q124795355"
+  },
+  "SPG": {
+   "city": "Indianapolis",
+   "country": "United States",
+   "lat": 39.767,
+   "lon": -86.162,
+   "source": "wikidata:Q2287759"
+  },
+  "SPGI": {
+   "city": "Manhattan",
+   "country": "United States",
+   "lat": 40.759,
+   "lon": -73.979,
+   "source": "wikidata:Q868587"
+  },
+  "SPX.L": {
+   "city": "Cheltenham",
+   "country": "United Kingdom",
+   "lat": 51.897,
+   "lon": -2.078,
+   "source": "wikidata:Q4049943"
+  },
+  "SRE": {
+   "city": "San Diego",
+   "country": "United States",
+   "lat": 32.715,
+   "lon": -117.162,
+   "source": "wikidata:Q7449804"
+  },
+  "SSE.L": {
+   "city": "Perth",
+   "country": "United Kingdom",
+   "lat": 56.396,
+   "lon": -3.433,
+   "source": "wikidata:Q493854"
+  },
+  "STAN.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q548278"
+  },
+  "STE": {
+   "city": "Mentor",
+   "country": "United States",
+   "lat": 41.691,
+   "lon": -81.342,
+   "source": "wikidata:Q80947821"
+  },
+  "STJ.L": {
+   "city": "Cirencester",
+   "country": "United Kingdom",
+   "lat": 51.719,
+   "lon": -1.968,
+   "source": "wikidata:Q7588412"
+  },
+  "STLD": {
+   "city": "Fort Wayne",
+   "country": "United States",
+   "lat": 41.08,
+   "lon": -85.139,
+   "source": "wikidata:Q7605667"
+  },
+  "STT": {
+   "city": "Boston",
+   "country": "United States",
+   "lat": 42.36,
+   "lon": -71.058,
+   "source": "wikidata:Q2037125"
+  },
+  "STX": {
+   "city": "Cupertino",
+   "country": "United States",
+   "lat": 37.321,
+   "lon": -122.032,
+   "source": "wikidata:Q705392"
+  },
+  "STZ": {
+   "city": "Victor",
+   "country": "United States",
+   "lat": 42.983,
+   "lon": -77.406,
+   "source": "wikidata:Q1128160"
+  },
+  "SVT.L": {
+   "city": "Birmingham",
+   "country": "United Kingdom",
+   "lat": 52.48,
+   "lon": -1.902,
+   "source": "wikidata:Q503077"
+  },
+  "SW": {
+   "city": "Dublin",
+   "country": "Ireland",
+   "lat": 53.35,
+   "lon": -6.26,
+   "source": "wikidata:Q1536176"
+  },
+  "SWK": {
+   "city": "New Britain",
+   "country": "United States",
+   "lat": 41.675,
+   "lon": -72.787,
+   "source": "wikidata:Q706094"
+  },
+  "SWKS": {
+   "city": "Irvine",
+   "country": "United States",
+   "lat": 33.684,
+   "lon": -117.792,
+   "source": "sec:4127"
+  },
+  "SYF": {
+   "city": "Stamford",
+   "country": "United States",
+   "lat": 41.097,
+   "lon": -73.552,
+   "source": "wikidata:Q18387139"
+  },
+  "SYK": {
+   "city": "Portage",
+   "country": "United States",
+   "lat": 42.201,
+   "lon": -85.58,
+   "source": "wikidata:Q2357515"
+  },
+  "SYY": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.758,
+   "lon": -95.619,
+   "source": "wikidata:Q2376711"
+  },
+  "T": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.78,
+   "lon": -96.799,
+   "source": "wikidata:Q35476"
+  },
+  "TAP": {
+   "city": "Golden",
+   "country": "United States",
+   "lat": 39.747,
+   "lon": -105.211,
+   "source": "sec:24545"
+  },
+  "TDG": {
+   "city": "Cleveland",
+   "country": "United States",
+   "lat": 41.504,
+   "lon": -81.69,
+   "source": "wikidata:Q7833612"
+  },
+  "TDY": {
+   "city": "Thousand Oaks",
+   "country": "United States",
+   "lat": 34.194,
+   "lon": -118.904,
+   "source": "wikidata:Q7696127"
+  },
+  "TECH": {
+   "city": "Minneapolis",
+   "country": "United States",
+   "lat": 44.982,
+   "lon": -93.269,
+   "source": "wikidata:Q19873469"
+  },
+  "TEF.MC": {
+   "city": "Moosach",
+   "country": "Germany",
+   "lat": 48.177,
+   "lon": 11.532,
+   "source": "wikidata:Q2401561"
+  },
+  "TEL": {
+   "city": "Schaffhausen",
+   "country": "Switzerland",
+   "lat": 47.697,
+   "lon": 8.634,
+   "source": "wikidata:Q663452"
+  },
+  "TER": {
+   "city": "North Reading",
+   "country": "United States",
+   "lat": 42.556,
+   "lon": -71.134,
+   "source": "wikidata:Q2404292"
+  },
+  "TFC": {
+   "city": "Charlotte",
+   "country": "United States",
+   "lat": 35.227,
+   "lon": -80.843,
+   "source": "wikidata:Q795486"
+  },
+  "TGT": {
+   "city": "Minneapolis",
+   "country": "United States",
+   "lat": 44.982,
+   "lon": -93.269,
+   "source": "wikidata:Q1046951"
+  },
+  "TJX": {
+   "city": "Framingham",
+   "country": "United States",
+   "lat": 42.279,
+   "lon": -71.417,
+   "source": "wikidata:Q1285819"
+  },
+  "TKO": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q120435068"
+  },
+  "TMO": {
+   "city": "Waltham",
+   "country": "United States",
+   "lat": 42.381,
+   "lon": -71.235,
+   "source": "wikidata:Q643674"
+  },
+  "TMUS": {
+   "city": "Bellevue",
+   "country": "United States",
+   "lat": 47.577,
+   "lon": -122.167,
+   "source": "wikidata:Q3511885"
+  },
+  "TPL": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.779,
+   "lon": -96.809,
+   "source": "wikidata:Q7707900"
+  },
+  "TPR": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q56273715"
+  },
+  "TRGP": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "sec:1389170"
+  },
+  "TRI": {
+   "city": "Toronto",
+   "country": "Canada",
+   "lat": 43.65,
+   "lon": -79.381,
+   "source": "wikidata:Q1141267"
+  },
+  "TRMB": {
+   "city": "Westminster",
+   "country": "United States",
+   "lat": 39.836,
+   "lon": -105.037,
+   "source": "wikidata:Q2297063"
+  },
+  "TROW": {
+   "city": "Baltimore",
+   "country": "United States",
+   "lat": 39.287,
+   "lon": -76.613,
+   "source": "wikidata:Q3511946"
+  },
+  "TRV": {
+   "city": "Saint Paul",
+   "country": "United States",
+   "lat": 44.944,
+   "lon": -93.094,
+   "source": "sec:86312"
+  },
+  "TSCO": {
+   "city": "Brentwood",
+   "country": "United States",
+   "lat": 35.998,
+   "lon": -86.793,
+   "source": "wikidata:Q15109925"
+  },
+  "TSCO.L": {
+   "city": "Welwyn Garden City",
+   "country": "United Kingdom",
+   "lat": 51.81,
+   "lon": -0.196,
+   "source": "wikidata:Q487494"
+  },
+  "TSLA": {
+   "city": "Austin",
+   "country": "United States",
+   "lat": 30.3,
+   "lon": -97.733,
+   "source": "wikidata:Q478214"
+  },
+  "TSN": {
+   "city": "Springdale",
+   "country": "United States",
+   "lat": 36.154,
+   "lon": -94.154,
+   "source": "wikidata:Q1325987"
+  },
+  "TT": {
+   "city": "Swords",
+   "country": "Ireland",
+   "lat": 53.46,
+   "lon": -6.218,
+   "source": "wikidata:Q1663044"
+  },
+  "TTD": {
+   "city": "Ventura",
+   "country": "United States",
+   "lat": 34.268,
+   "lon": -119.254,
+   "source": "wikidata:Q60744565"
+  },
+  "TTWO": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q94933"
+  },
+  "TXN": {
+   "city": "Dallas",
+   "country": "United States",
+   "lat": 32.91,
+   "lon": -96.752,
+   "source": "wikidata:Q193412"
+  },
+  "TXT": {
+   "city": "Rhode Island",
+   "country": "United States",
+   "lat": 41.7,
+   "lon": -71.5,
+   "source": "wikidata:Q2140315"
+  },
+  "TYL": {
+   "city": "Plano",
+   "country": "United States",
+   "lat": 33.05,
+   "lon": -96.75,
+   "source": "wikidata:Q48802335"
+  },
+  "UAL": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q174769"
+  },
+  "UBER": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.776,
+   "lon": -122.418,
+   "source": "wikidata:Q780442"
+  },
+  "UDR": {
+   "city": "Highlands Ranch",
+   "country": "United States",
+   "lat": 39.544,
+   "lon": -104.968,
+   "source": "wikidata:Q27988153"
+  },
+  "UHS": {
+   "city": "King of Prussia",
+   "country": "United States",
+   "lat": 40.095,
+   "lon": -75.378,
+   "source": "wikidata:Q7893967"
+  },
+  "ULTA": {
+   "city": "Bolingbrook",
+   "country": "United States",
+   "lat": 41.699,
+   "lon": -88.089,
+   "source": "wikidata:Q7880076"
+  },
+  "ULVR.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q157062"
+  },
+  "UNH": {
+   "city": "Minnetonka",
+   "country": "United States",
+   "lat": 44.896,
+   "lon": -93.406,
+   "source": "wikidata:Q2103926"
+  },
+  "UNI.MC": {
+   "city": "Málaga",
+   "country": "Spain",
+   "lat": 36.717,
+   "lon": -4.43,
+   "source": "wikidata:Q20908850"
+  },
+  "UNP": {
+   "city": "Omaha",
+   "country": "United States",
+   "lat": 41.259,
+   "lon": -95.937,
+   "source": "wikidata:Q20183163"
+  },
+  "UPS": {
+   "city": "Sandy Springs",
+   "country": "United States",
+   "lat": 33.943,
+   "lon": -84.36,
+   "source": "wikidata:Q155026"
+  },
+  "URI": {
+   "city": "Stamford",
+   "country": "United States",
+   "lat": 41.097,
+   "lon": -73.552,
+   "source": "wikidata:Q7889101"
+  },
+  "USB": {
+   "city": "Minneapolis",
+   "country": "United States",
+   "lat": 44.982,
+   "lon": -93.269,
+   "source": "wikidata:Q739084"
+  },
+  "UU.L": {
+   "city": "Warrington",
+   "country": "United Kingdom",
+   "lat": 53.387,
+   "lon": -2.603,
+   "source": "wikidata:Q503038"
+  },
+  "V": {
+   "city": "Mission Rock",
+   "country": "United States",
+   "lat": 37.774,
+   "lon": -122.388,
+   "source": "wikidata:Q328840"
+  },
+  "VEEV": {
+   "city": "Pleasanton",
+   "country": "United States",
+   "lat": 37.673,
+   "lon": -121.882,
+   "source": "wikidata:Q24204493"
+  },
+  "VICI": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q54263910"
+  },
+  "VLO": {
+   "city": "San Antonio",
+   "country": "United States",
+   "lat": 29.425,
+   "lon": -98.494,
+   "source": "wikidata:Q1283291"
+  },
+  "VLTO": {
+   "city": "Waltham",
+   "country": "United States",
+   "lat": 42.381,
+   "lon": -71.235,
+   "source": "wikidata:Q124721239"
+  },
+  "VMC": {
+   "city": "Birmingham",
+   "country": "United States",
+   "lat": 33.518,
+   "lon": -86.809,
+   "source": "wikidata:Q1685287"
+  },
+  "VMRK": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "sec:906107"
+  },
+  "VOD.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q122141"
+  },
+  "VRSK": {
+   "city": "Jersey City",
+   "country": "United States",
+   "lat": 40.71,
+   "lon": -74.06,
+   "source": "wikidata:Q7921370"
+  },
+  "VRSN": {
+   "city": "Reston",
+   "country": "United States",
+   "lat": 38.959,
+   "lon": -77.359,
+   "source": "wikidata:Q734338"
+  },
+  "VRT": {
+   "city": "Westerville",
+   "country": "United States",
+   "lat": 40.14,
+   "lon": -82.948,
+   "source": "wikidata:Q5370909"
+  },
+  "VRTX": {
+   "city": "Boston",
+   "country": "United States",
+   "lat": 42.36,
+   "lon": -71.058,
+   "source": "wikidata:Q2744099"
+  },
+  "VST": {
+   "city": "Irving",
+   "country": "United States",
+   "lat": 32.812,
+   "lon": -96.951,
+   "source": "wikidata:Q104158381"
+  },
+  "VTR": {
+   "city": "Chicago",
+   "country": "United States",
+   "lat": 41.882,
+   "lon": -87.628,
+   "source": "wikidata:Q19865761"
+  },
+  "VTRS": {
+   "city": "Pittsburgh",
+   "country": "United States",
+   "lat": 40.442,
+   "lon": -80,
+   "source": "wikidata:Q101983981"
+  },
+  "VZ": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q467752"
+  },
+  "WAB": {
+   "city": "Wilmerding",
+   "country": "United States",
+   "lat": 40.394,
+   "lon": -79.809,
+   "source": "wikidata:Q741707"
+  },
+  "WAT": {
+   "city": "Milford",
+   "country": "United States",
+   "lat": 42.14,
+   "lon": -71.517,
+   "source": "wikidata:Q1322011"
+  },
+  "WBD": {
+   "city": "New York City",
+   "country": "United States",
+   "lat": 40.713,
+   "lon": -74.006,
+   "source": "wikidata:Q107074885"
+  },
+  "WDAY": {
+   "city": "Pleasanton",
+   "country": "United States",
+   "lat": 37.673,
+   "lon": -121.882,
+   "source": "wikidata:Q8034666"
+  },
+  "WDC": {
+   "city": "San Jose",
+   "country": "United States",
+   "lat": 37.246,
+   "lon": -121.793,
+   "source": "wikidata:Q738770"
+  },
+  "WEC": {
+   "city": "Milwaukee",
+   "country": "United States",
+   "lat": 43.05,
+   "lon": -87.95,
+   "source": "wikidata:Q8027166"
+  },
+  "WEIR.L": {
+   "city": "Glasgow",
+   "country": "United Kingdom",
+   "lat": 55.861,
+   "lon": -4.25,
+   "source": "wikidata:Q3178400"
+  },
+  "WELL": {
+   "city": "Toledo",
+   "country": "United States",
+   "lat": 41.653,
+   "lon": -83.538,
+   "source": "wikidata:Q20486917"
+  },
+  "WFC": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.793,
+   "lon": -122.403,
+   "source": "wikidata:Q744149"
+  },
+  "WM": {
+   "city": "Houston",
+   "country": "United States",
+   "lat": 29.763,
+   "lon": -95.383,
+   "source": "wikidata:Q2552219"
+  },
+  "WMB": {
+   "city": "Tulsa",
+   "country": "United States",
+   "lat": 36.131,
+   "lon": -95.937,
+   "source": "wikidata:Q930639"
+  },
+  "WMT": {
+   "city": "Bentonville",
+   "country": "United States",
+   "lat": 36.366,
+   "lon": -94.22,
+   "source": "wikidata:Q483551"
+  },
+  "WPP.L": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q1318049"
+  },
+  "WRB": {
+   "city": "Greenwich",
+   "country": "United States",
+   "lat": 41.026,
+   "lon": -73.628,
+   "source": "wikidata:Q1369955"
+  },
+  "WSM": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q2581220"
+  },
+  "WST": {
+   "city": "Exton",
+   "country": "United States",
+   "lat": 40.061,
+   "lon": -75.68,
+   "source": "wikidata:Q30338243"
+  },
+  "WTB.L": {
+   "city": "Dunstable",
+   "country": "United Kingdom",
+   "lat": 51.886,
+   "lon": -0.521,
+   "source": "wikidata:Q1435702"
+  },
+  "WTW": {
+   "city": "London",
+   "country": "United Kingdom",
+   "lat": 51.507,
+   "lon": -0.127,
+   "source": "wikidata:Q21189883"
+  },
+  "WY": {
+   "city": "Seattle",
+   "country": "United States",
+   "lat": 47.605,
+   "lon": -122.33,
+   "source": "wikidata:Q1780382"
+  },
+  "WYNN": {
+   "city": "Las Vegas",
+   "country": "United States",
+   "lat": 36.129,
+   "lon": -115.167,
+   "source": "wikidata:Q2274089"
+  },
+  "XEL": {
+   "city": "Minneapolis",
+   "country": "United States",
+   "lat": 44.982,
+   "lon": -93.269,
+   "source": "wikidata:Q1486956"
+  },
+  "XOM": {
+   "city": "Spring",
+   "country": "United States",
+   "lat": 30.054,
+   "lon": -95.387,
+   "source": "wikidata:Q156238"
+  },
+  "XYL": {
+   "city": "White Plains",
+   "country": "United States",
+   "lat": 41.033,
+   "lon": -73.767,
+   "source": "wikidata:Q3146975"
+  },
+  "XYZ": {
+   "city": "San Francisco",
+   "country": "United States",
+   "lat": 37.775,
+   "lon": -122.419,
+   "source": "wikidata:Q110778747"
+  },
+  "YUM": {
+   "city": "Louisville",
+   "country": "United States",
+   "lat": 38.198,
+   "lon": -85.694,
+   "source": "wikidata:Q668737"
+  },
+  "ZBH": {
+   "city": "Warsaw",
+   "country": "United States",
+   "lat": 41.241,
+   "lon": -85.847,
+   "source": "wikidata:Q203552"
+  },
+  "ZBRA": {
+   "city": "Lincolnshire",
+   "country": "United States",
+   "lat": 42.196,
+   "lon": -87.917,
+   "source": "wikidata:Q2443609"
+  },
+  "ZTS": {
+   "city": "Florham Park",
+   "country": "United States",
+   "lat": 40.776,
+   "lon": -74.394,
+   "source": "wikidata:Q8073337"
+  }
+ }
+}

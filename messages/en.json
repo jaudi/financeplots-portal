@@ -276,6 +276,11 @@
         "name": "Stocks",
         "desc": "Search any company, chart its price, compare up to four, analyse a portfolio or filter an index by measures you choose — all in one place."
       },
+      "company-map": {
+        "icon": "🌍",
+        "name": "Company Map",
+        "desc": "Every company in the S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 at its headquarters — click one for its key figures."
+      },
       "portfolio-analysis": {
         "icon": "📊",
         "name": "Portfolio Analysis",
@@ -1385,6 +1390,43 @@
       "There is no tax on savings, no pensions other than the income you set at retirement, and no selling of homes unless you choose it. It's a plan to think with, not a forecast or advice."
     ],
     "afterHorizon": "After the years shown (to {year}) — make the plan longer to see it."
+  },
+  "companyMap": {
+    "metaTitle": "Company Headquarters Map — S&P 500, Nasdaq-100, FTSE 100 and IBEX 35",
+    "metaDescription": "Where the companies of the S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 have their headquarters, on one interactive world map. Click a company for its sector, index and key ratios. Free, no signup — figures only, not a recommendation.",
+    "eyebrow": "Stocks · World map",
+    "title": "Company headquarters on a world map",
+    "intro": "Every company in the S&P 500, Nasdaq-100, FTSE 100 and IBEX 35, placed at its headquarters. Pick an index or a sector, zoom in on a city, and click a company to see its sector and the same key figures as its company page. Every company gets the same dot: the map shows where companies are, not how they are doing.",
+    "back": "← Stocks",
+    "indexLabel": "Index",
+    "allIndices": "All four",
+    "sectorLabel": "Sector",
+    "allSectors": "All sectors",
+    "shown": "{placed} of {total} companies on the map",
+    "mapLabel": "World map with {count} company headquarters",
+    "bubble": "{count} companies here — click to zoom in",
+    "inCity": "{count} companies in {city}",
+    "nearCity": "{count} companies around {city}",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "world": "World",
+    "northAmerica": "North America",
+    "europe": "Europe",
+    "hint": "Drag to move, scroll or pinch to zoom. A number is several companies close together: click it to zoom in, or to list them when they share a city.",
+    "missingNote": "{count, plural, one {# company has} other {# companies have}} no recorded headquarters in our sources and {count, plural, one {is} other {are}} left off the map:",
+    "listTitle": "All companies by country and city",
+    "listIntro": "The same companies as the map, A–Z within each city. Each name opens its company page.",
+    "companies": "{count, plural, one {# company} other {# companies}}",
+    "showOnMap": "show on map",
+    "close": "Close",
+    "backToList": "← Back to the list",
+    "loading": "Loading figures…",
+    "cardError": "The figures couldn't be loaded just now — the company page has them.",
+    "openPage": "Open the company page →",
+    "cardNote": "Each bar places the company among the {index} companies that report that figure. Further right means higher — not better.",
+    "asOf": "Figures as of {date}.",
+    "sources": "Headquarters come from Wikidata (CC0) and, for US listings, the business address each company files with the SEC. Country outlines from Natural Earth. A headquarters is where a company says it is run from or registered, which can differ from where most of its people work.",
+    "dataAsOf": "Company lists and figures as of {date}, refreshed weekly."
   },
   "companyPlanner": {
     "backToTools": "← Companies",

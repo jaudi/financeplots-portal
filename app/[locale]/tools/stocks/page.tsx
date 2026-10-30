@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import StocksHub from "@/components/StocksHub";
 import StocksNav from "@/components/StocksNav";
@@ -29,6 +30,18 @@ export default async function StocksPage() {
           </div>
 
           <StocksHub />
+
+          <Link
+            href="/tools/company-map"
+            className="max-w-2xl mx-auto mt-10 flex items-center gap-4 bg-[#0d1426] border border-gray-800 hover:border-blue-500 rounded-2xl px-5 py-4 transition group"
+          >
+            <span className="text-3xl" aria-hidden>🌍</span>
+            <span className="flex-1">
+              <span className="block text-white font-bold group-hover:text-blue-300">See every company on a world map</span>
+              <span className="block text-gray-400 text-sm">The S&amp;P 500, Nasdaq-100, FTSE 100 and IBEX 35 at their headquarters — click one for its key figures.</span>
+            </span>
+            <span className="text-blue-400" aria-hidden>→</span>
+          </Link>
 
           <div className="max-w-2xl mx-auto mt-12 bg-amber-500/5 border border-amber-500/30 rounded-xl px-5 py-4">
             <p className="text-amber-300 text-sm font-bold mb-1">⚠️ {tc("screenerDisclaimerTitle")}</p>

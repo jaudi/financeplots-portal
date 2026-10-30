@@ -34,6 +34,7 @@ const TOOL_SLUGS = [
   "annual-budget",
   "break-even",
   "cash-flow",
+  "company-map",
   "compound-interest",
   "financial-model",
   "financial-planner",

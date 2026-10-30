@@ -21,7 +21,7 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     planner: "financial-planner",
     groups: [
       { key: "plan", icon: "💸", slugs: ["take-home-pay", "personal-budget", "life-plan", "compound-interest", "investment-return", "lending"] },
-      { key: "invest", icon: "📈", slugs: ["stocks"] },
+      { key: "invest", icon: "📈", slugs: ["stocks", "company-map"] },
     ],
   },
   business: {
