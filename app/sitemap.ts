@@ -10,6 +10,7 @@ const BLOG_SLUGS = [
   "bootstrapping-runway",
   "break-even-analysis-guide",
   "cash-flow-forecast-guide",
+  "china-economy-long-game",
   "claude-artifacts-vs-power-bi",
   "claude-products-guide",
   "control-is-the-whole-game",

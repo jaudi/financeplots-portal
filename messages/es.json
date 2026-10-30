@@ -79,6 +79,13 @@
     },
     "articles": [
       {
+        "slug": "china-economy-long-game",
+        "title": "La economía china a finales de 2026: trabajo, paciencia y visión a largo plazo",
+        "date": "Octubre 2026",
+        "description": "Un 4,5% de crecimiento en el tercer trimestre, tres de cada cuatro coches eléctricos del mundo e I+D por encima de la media de la OCDE. Cómo está de verdad la economía china — y los hábitos que hay detrás: esfuerzo, ahorrar primero, planificar en décadas y la comunidad antes que el individuo.",
+        "tag": "Opinión"
+      },
+      {
         "slug": "famous-investor-playbooks",
         "title": "Diez inversores famosos, diez formas de mantener una acción",
         "date": "Septiembre 2026",
