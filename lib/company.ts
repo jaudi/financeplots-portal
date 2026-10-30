@@ -1,4 +1,4 @@
-import { METRIC_GROUPS, METRICS, positionIn, type MetricDef, type MetricGroup } from "@/lib/stock-metrics";
+import { METRIC_GROUPS, METRICS, positionIn, type MetricDef, type MetricGroup, type MetricKey } from "@/lib/stock-metrics";
 import { getUniverse, UNIVERSE_SCREENS, type UniverseCompany, type UniverseData, type UniverseScreen } from "@/lib/universe";
 
 // What the company page shows about one ticker: its reported figures, and for
@@ -71,4 +71,31 @@ function profileFrom(universes: UniverseData[], ticker: string): CompanyProfile 
   }));
 
   return { company, index: home.screen, memberOf: memberOf.map((u) => u.screen), generatedAt: home.generated_at, groups };
+}
+
+// The plain-English line under each figure, on the company page and on the
+// company map's card.
+
+const n = (v: number, dp = 1) => Math.abs(v).toLocaleString("en-GB", { maximumFractionDigits: dp });
+
+/** What the figure means, in a sentence. Descriptive only: never "cheap",
+ *  "strong", "overbought" or any other judgement. */
+export function plainSentence(key: MetricKey, v: number): string {
+  switch (key) {
+    case "per": return `The share price is ${n(v)} times the last twelve months' earnings per share.`;
+    case "per_normalizado": return `The share price is ${n(v)} times earnings per share averaged over recent years.`;
+    case "precio_valor_libros": return `The market values the company at ${n(v)} times the accounting value of its equity.`;
+    case "ev_ebit": return `The company's value including its debt is ${n(v)} times its operating profit.`;
+    case "fcf_yield": return v >= 0 ? `Free cash flow equals ${n(v)}% of the company's market value.` : `Free cash flow was negative, equal to −${n(v)}% of market value.`;
+    case "roe": return `Each 100 of shareholders' money produced ${v < 0 ? "a loss of " : ""}${n(v)} of net profit.`;
+    case "roa": return `Each 100 of assets produced ${v < 0 ? "a loss of " : ""}${n(v)} of net profit.`;
+    case "roic": return `Each 100 invested by lenders and owners produced ${v < 0 ? "a loss of " : ""}${n(v)} of profit.`;
+    case "margen_operativo": return v >= 0 ? `Of every 100 in sales, ${n(v)} was left as operating profit.` : `Operating costs exceeded sales by ${n(v)} per 100 of sales.`;
+    case "deuda_patrimonio": return `Total debt equals ${n(v, 0)}% of shareholders' equity.`;
+    case "deuda_neta_ebitda": return v < 0 ? "The company holds more cash than debt." : `Net debt equals ${n(v)} years of operating earnings (EBITDA).`;
+    case "cobertura_intereses": return `Operating profit was ${n(v)} times the interest bill.`;
+    case "crecimiento_ingresos_normalizado": return `Latest revenue is ${n(v)}% ${v >= 0 ? "above" : "below"} the average of earlier reported years.`;
+    case "crecimiento_beneficios_normalizado": return `Latest net profit is ${n(v)}% ${v >= 0 ? "above" : "below"} the average of earlier reported years.`;
+    default: return "";
+  }
 }

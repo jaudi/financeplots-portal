@@ -269,6 +269,11 @@
         "name": "Acciones",
         "desc": "Busca cualquier empresa, mira su precio, compara hasta cuatro, analiza una cartera o filtra un índice con los criterios que elijas, todo en un mismo sitio."
       },
+      "company-map": {
+        "icon": "🌍",
+        "name": "Mapa de empresas",
+        "desc": "Todas las empresas del S&P 500, Nasdaq-100, FTSE 100 e IBEX 35 en su sede: haz clic en una para ver sus cifras clave."
+      },
       "portfolio-analysis": {
         "icon": "📊",
         "name": "Análisis de Cartera",
@@ -1378,6 +1383,43 @@
       "No hay impuestos sobre los ahorros, ni pensiones aparte del ingreso que pongas al jubilarte, ni venta de viviendas salvo que la elijas. Es un plan para pensar, no una previsión ni un consejo."
     ],
     "afterHorizon": "Después de los años que se muestran (hasta {year}): alarga el plan para verlo."
+  },
+  "companyMap": {
+    "metaTitle": "Mapa de sedes de empresas — S&P 500, Nasdaq-100, FTSE 100 e IBEX 35",
+    "metaDescription": "Dónde tienen su sede las empresas del S&P 500, Nasdaq-100, FTSE 100 e IBEX 35, en un mapa mundial interactivo. Haz clic en una empresa para ver su sector, su índice y sus ratios clave. Gratis y sin registro: solo datos, no una recomendación.",
+    "eyebrow": "Acciones · Mapa mundial",
+    "title": "Sedes de las empresas en un mapa mundial",
+    "intro": "Todas las empresas del S&P 500, Nasdaq-100, FTSE 100 e IBEX 35, situadas en su sede. Elige un índice o un sector, acércate a una ciudad y haz clic en una empresa para ver su sector y las mismas cifras clave que en su página. Todas tienen el mismo punto: el mapa muestra dónde están las empresas, no cómo les va.",
+    "back": "← Acciones",
+    "indexLabel": "Índice",
+    "allIndices": "Los cuatro",
+    "sectorLabel": "Sector",
+    "allSectors": "Todos los sectores",
+    "shown": "{placed} de {total} empresas en el mapa",
+    "mapLabel": "Mapa mundial con las sedes de {count} empresas",
+    "bubble": "{count} empresas aquí: haz clic para acercarte",
+    "inCity": "{count} empresas en {city}",
+    "nearCity": "{count} empresas en torno a {city}",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "world": "Mundo",
+    "northAmerica": "Norteamérica",
+    "europe": "Europa",
+    "hint": "Arrastra para moverte; usa la rueda o pellizca para hacer zoom. Un número son varias empresas muy juntas: haz clic para acercarte o, si comparten ciudad, para verlas en una lista.",
+    "missingNote": "{count, plural, one {# empresa no tiene} other {# empresas no tienen}} sede registrada en nuestras fuentes y {count, plural, one {queda} other {quedan}} fuera del mapa:",
+    "listTitle": "Todas las empresas por país y ciudad",
+    "listIntro": "Las mismas empresas que en el mapa, de la A a la Z dentro de cada ciudad. Cada nombre abre su página.",
+    "companies": "{count, plural, one {# empresa} other {# empresas}}",
+    "showOnMap": "ver en el mapa",
+    "close": "Cerrar",
+    "backToList": "← Volver a la lista",
+    "loading": "Cargando cifras…",
+    "cardError": "No se han podido cargar las cifras ahora mismo; están en la página de la empresa.",
+    "openPage": "Abrir la página de la empresa →",
+    "cardNote": "Cada barra sitúa a la empresa entre las del {index} que publican esa cifra. Más a la derecha significa más alta, no mejor.",
+    "asOf": "Cifras a {date}.",
+    "sources": "Las sedes proceden de Wikidata (CC0) y, para las cotizadas en EE. UU., de la dirección que cada empresa declara ante la SEC. Contornos de países de Natural Earth. La sede es donde la empresa dice que se dirige o está registrada, que puede no coincidir con donde trabaja la mayoría de su plantilla.",
+    "dataAsOf": "Listas de empresas y cifras a {date}, actualizadas cada semana."
   },
   "companyPlanner": {
     "backToTools": "← Empresas",
