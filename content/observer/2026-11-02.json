@@ -1,0 +1,812 @@
+{
+  "slug": "2026-11-02",
+  "date": "2026-11-02",
+  "title": "Central banks sit still while oil, AI and an election do the moving",
+  "dek": "The Fed, ECB and Bank of Japan all held rates; Lagarde announced an early exit; Hormuz attacks swung crude; and an AI spending scare knocked the Nasdaq.",
+  "mood": {
+    "label": "Nervous",
+    "explanation": "The VIX — the options market's gauge of expected S&P 500 swings — sat at 19.41 on 2 November, up about a quarter over the month, and CNN's Fear & Greed index was at 25, \"extreme fear\", down from 30 a week earlier. High-yield credit spreads widened to 3.26 percentage points on 29 October from 3.14 the day before, and Reddit chatter skewed towards index trackers and leveraged chip bets rather than calm."
+  },
+  "regions": [
+    {
+      "region": "US",
+      "headline": "Fed on hold, tech wobbles, voters go to the polls",
+      "summary": "The Federal Reserve left rates unchanged on 28 October, saying it wanted more information even though inflation is still elevated. An AI-spending scare pushed the Nasdaq Composite down 2% on the week and 6.45% over the month to 30 October. Midterm elections on 3 November and the October jobs report give markets two more things to digest."
+    },
+    {
+      "region": "Euro",
+      "headline": "Growth of 0.4% and a surprise exit at the ECB",
+      "summary": "Euro area GDP rose 0.4% in the third quarter, with Germany beating expectations and France contracting. The ECB held rates at a 2.5% deposit rate, and Christine Lagarde said she will step down early, in February. The Bank of England is expected to raise rates this week, which matters for UK households remortgaging."
+    },
+    {
+      "region": "Asia",
+      "headline": "BoJ holds, China factories shrink, Korea rebounds",
+      "summary": "The Bank of Japan kept rates steady while saying underlying inflation has reached its 2% target; the yen was near 157.89 per dollar. China's official manufacturing PMI fell to 49.3 in October, below the 50 line that separates growth from contraction. The KOSPI jumped 7.12% on the week on chip and AI news, though it is still down 15.59% over the month."
+    }
+  ],
+  "watchNextWeek": [
+    "US midterm elections, Tuesday 3 November, and the days of counting that follow",
+    "US October employment report",
+    "Bank of England rate decision, Thursday",
+    "US Treasury quarterly refunding announcement on issuance sizes",
+    "China October trade data and further PMI readings",
+    "Reserve Bank of Australia meeting and Australian housing data"
+  ],
+  "body": "## The week in one paragraph\n\nThree big central banks met and all three did nothing. The Federal Reserve [held rates steady](https://news.google.com/rss/articles/CBMikAFBVV95cUxPaU93czlpTHJXMTJGby0yOGppZGVlVkZzZW4tNC11WTcwVk1yQUZHTVMza0dTLURMRi0tTUtYTHhITkI2OVBWN2k0anZCN2liNnlyNFpaTmFTaWlFTHItWmtBXzh1VWhkRjZBNjVDejQxOGNUTW1HWWRBUzNjbGdKUDV0MlFSWXRsaWQwMXpWQXI?oc=5) on 28 October, [so did the European Central Bank](https://news.google.com/rss/articles/CBMivwFBVV95cUxOcG81Z2FUM3Y0clJEaWJ6SFhSRU5Ed3JuVUZGZXZpOXRBZVN4YmhWMUJ2eDZJNWttc1NCV0dxWFVWV0ppM2d5OE1zVDZ5V1RyMHFUbGdQcG9QelFheHQwMl9oRUwwX3V0SEpCdGxJcVVvbVFDTU5CeVdzSXA3WEhuT1pWa1JsWXdNTksxd2pPQjBmSmd0c3g3YjZlV1dxamF3eEQxOWp4YTVpRWE3UmRoT3lXZ2hfNzVOTFFCZzVPZw?oc=5), and [the Bank of Japan kept policy unchanged](https://news.google.com/rss/articles/CBMiqAFBVV95cUxNSnRoUnFPTXd3aThEbHFYOXpiS2RwcUhURmhyc2RVMWtxdENYOGg0cjVYWllUS012TnI2Rmxxd3d2dEx4QURuVW9ZWUhFdzVuOHNvWlpYOV9Rd0xCNHRfNTNuMVFZeVQwOUZ1ZHVlTkFnMUllanAwRkQzLXMyaE9qMzY1Vmp4Vy1GU0NTYVpLbkQ5eG5PVXlSYUh0T0l2YjJ3RVVIX0hzUmM?oc=5) while saying inflation has finally reached its target. The real movement came from elsewhere: attacks on shipping in the Strait of Hormuz pushed oil up and then back down again as peace talk emerged, a spending scare hit the biggest artificial-intelligence companies, and Christine Lagarde announced she is leaving the ECB early. American voters go to the polls on Tuesday. Markets ended the week jittery rather than panicked: the S&P 500 closed at 7,580.07 on 30 October, down 0.57% on the week, while the Nasdaq Composite fell 2%.\n\n## United States\n\nThe Fed left its policy rate alone, saying it wanted an \"accumulation of more information\" before moving again, [despite inflation it called elevated](https://news.google.com/rss/articles/CBMiiAFBVV95cUxQTE1BdGtmWVdsaDdsWktpYlk1d2lzWGN2OGdvc3VSNFZxcC1EZ0lWVHhuT1ZpOWphTHoxMzlVY2U2cWxKZDNIZVBhTkR4OXNzbW5fVG41SFZ1b0U1cHFtempLQzVQQmRuQmhpWVJXdy1mV2NxSERSZjZqVnJRZkRJR1diMFY1dkxT?oc=5). It is easy to see why it is stuck. September CPI inflation was 4.02% year on year, up from 3.71% in August, but core inflation — which strips out food and energy — was much calmer at 2.79%. In other words, the headline jump is largely an energy story, and energy is being set in the Gulf rather than in Washington. Unemployment was 4.2% in September, a touch above August's 4.1%.\n\nBorrowing costs stayed high. The 10-year Treasury yield, the benchmark for corporate borrowing and US mortgages, closed at 4.93% on 30 October; the two-year was 4.61% on 29 October. The gap between the two — the \"yield curve\", which shows whether investors demand more to lend for longer — was a positive 0.38 percentage points, the normal shape, but at a high level overall. For finance directors that means refinancing in 2027 will not be obviously cheaper than refinancing today.\n\nEquities had an uncomfortable month. The Nasdaq is down 6.45% over four weeks, while the Russell 2000 index of smaller companies actually rose 1.29% on the week — a rotation away from the biggest technology names rather than a broad retreat. This week brings the October jobs report and [the midterm elections on 3 November](https://news.google.com/rss/articles/CBMiogFBVV95cUxONHhuUTlfWTZEWmR2REVvZnJQcEJFX2dpLWFqV0t1WnJUVjZIN1BXUGJNMW5zbGVxQXhUaXY3MWlya1lCNlhkYTFEY2Y3bGxTVVBoOXRERmh0WlAtcWZvTWtQcWNlV1VKVFo2SGt4aXhtTjN2SlZhWnVJT0VmRmpjSzZITGZaSTNtUlNzc1lUaThNRlVSckhRREo3UHdVUkpGcnc?oc=5), with investors already [gaming out what different outcomes in Congress mean for spending and AI policy](https://news.google.com/rss/articles/CBMirwFBVV95cUxPSndxQlZKTnRLd3BYVTNReUZRU1Z5dDlrdGpidzBlWVhITzgzTkJrXzJlNlhHZHZvQS1JV0E3YUZmT3gzNy1KbWVGVGs4NjR0bVFDanJ4RjYybjU2Rm9DS2tNR0w3SVNpb0puX2NwUjctM1U2cm1EYmZRUWRXd08tY1dfT1BGYmF0TG5UREVHTUVfM0s5MGhHZE1EVVhVUlRCbk5tZmExZU8zUi05bm9B?oc=5).\n\n## Euro area\n\nThe economy grew 0.4% in the third quarter, [with France contracting while the bloc as a whole held up](https://news.google.com/rss/articles/CBMiaEFVX3lxTE1xeXhCelpVMWs1b3pzeXZOU0psRExTMlhIa01NTmdJWE1NZEh0ajZ0dmtRbFZPUklSUmdpS3NuSFU5UkV6bUVUODBFamdGU2E1ejJUN21rdlpSRWVkeDhFcFJybU84YkhT0gFuQVVfeXFMT0M4S3kzNEJiN0NFVkZjdVMzSkhqaml4LUpuYW16ck9iT1lzV2k2QUlrLVo3dHRaaS1mck9iNm1JZGRYcEVJSS1VVzhlTi11d2d5dnpJRW9RMjU3VHZXQTIyakdxb0hGNTgzdHR2NGc?oc=5). [German inflation cooled, helped by a fuel tax cut, and the German economy grew more than expected](https://news.google.com/rss/articles/CBMiowFBVV95cUxOT2VyTFJQdHM3YjBFYUJJbDA4Y0JfSFZUTm5XNDloeUJCeUlRcU4wdEtvNXJISGtKc0h3MHFCajg5YTEtYUh6NkJ0eWxmdTRJOEtfRnh5OUFBUUpGNWdQV1FUY2NRN2tMbllZVUFDZWhqVG9SUjR3X2xnOXdDQkJiQUdxWGVkWEN6ZVNsdUprZnBmWlpOT0JSa0w4LTlzSHdfX3U0?oc=5). Euro area HICP inflation was 3.75% in September, up from 3.23% in August, and unemployment held at 6.5% — low by the region's own history.\n\nThe week's surprise was personnel, not policy. [Lagarde said she will step down in February, nine months early](https://news.google.com/rss/articles/CBMihAFBVV95cUxNemp5dVBmbU1jdWFEX1pWbmZzSUxhbDU4bzBXdEM4cWw4UTBYMDBERnZId051WTVyekp4NDZLQUlXLU40NE95LXhnUTE4S1hISlZKV3prVkNTOS1rREZ1dVloeVlkSGtVdmNmbWhRck9hTTkwbWZhT3ZaVjliWkRwQ01JeXA?oc=5), telling reporters [she could not remain neutral on world events](https://news.google.com/rss/articles/CBMisgFBVV95cUxOZldaRFJxZExRTzZ2T1lfc1pYUWtpbFJwRHk0YmpCaHdkYXd4ZV9vbGpmellrN1Ztck8wallTMnphd1V6VWFLckM4bTRiX1c5VmZmSUZwdUROem02ZXlUY3NKT1poTEhFWDRQOThHcEQ5YkMzY1gxU1NoTm5mdFhVR2xWakJSYUFVSTRKS0Rva1JIR0FhOHFJck5Ic3AzNzNWQTJuMXFySnNFcDNIYXN0TWtn?oc=5) and, as several outlets framed it, [allowing EU leaders to choose a successor before France's elections](https://news.google.com/rss/articles/CBMijAFBVV95cUxQT0ZULXZqVG03S2wtMFE5SHVoS1c4SmZmSUhxTzRjSFdTdllkOFliM1Ewa1MxTjhaTS0yYUQ3QW9xODRrR0xjNHlBZkItQlBrc2NMdGgwR3EzVlN4UXpJeFZlOEdqX3ZhWjJaZ0w0SEVhTnBOTUZodmh1ampsYmI5dC1kTlB5ZXVFcWJURg?oc=5). The deposit rate stayed at 2.5%. French government bond yields were already the highest of the big three at 4.48% in September, against 3.47% in Germany, a reminder that politics still shows up in national borrowing costs.\n\nIn Britain, [the Bank of England is expected to raise rates this week, while possibly pushing back on bets for more](https://news.google.com/rss/articles/CBMiogFBVV95cUxPOFVxcW9DcnR5S1BVdndGZkhXT1F1SUR0WEZTbkRsSzRLSmtiOXFZdXNneUs4VXVCaV9ldFZQVVdHMnVvWDBrZERDTFo5bHc4NE9GelZKbmloVi1VVTVmN0tiZXFUSW5fMFIzMXZCWE5CWHd5TEdHc2VvRVA3T1VCRV9XampjTDBmd3BpTlkyNjBScTJReVhCanlUX21XX1dhbWc?oc=5). [Millions of households are due to remortgage onto worse deals](https://news.google.com/rss/articles/CBMikgFBVV95cUxPR0xfdi1WS1FBanVxeHdBd1MyaGdDaE9WSDdHUTVBNlRwZmxfd3lYOVVkVkMzTVB1b0g5VWo1SEtaVDZGRzdjMTFOY044dTBycDlMLUp3dHFUcmlkRG5oeEV0eGl4cGQ4bjdRdXBPWlBXYjAxQ3YzdUhDdUlVOTIzVHhDY1VNbnc3TWZMWVc1LUQwQQ?oc=5) — a direct hit to disposable income. Away from markets, [Gen Z protests in Germany turned violent](https://news.google.com/rss/articles/CBMirwFBVV95cUxQYmIyNllhTkFrTXZlQ3ZqZkhUczVpY0ZqZzlONFdfUXdpWU95VkxfMy1oazdjclhEYlJSRVRac0MtcTAyak5GNGNsNXBER0Y2Vk1uRm95aDBZX292LVJDb0dlVzJLR1k0VW04Q01Cb0FaR05ZUG81WnFHZ2tWbW16YjBraU5pcVZKV0IzNGxIZzZ4MmVzRG5KeXN1YzlmN2MwdURPVXJMUDRlT1NfSExn?oc=5) as [unrest in France eased](https://news.google.com/rss/articles/CBMiowFBVV95cUxPX0QtNjJvRnpjT3Y5eTVBcEI5dkZMaFNuZnJDMkR1cWY5aWRWV2FjX3QxVVVHNUZRMlp1VFBYYnpCdE1NcmRqQlUtbVV0akY5RUF5WXdjaXcxYnBtNk4xZDhJNmtKWGlaTGhkcTltaW9TTHlBTmdlU0I1cFlVbjdmckVaMDBaTllsNmJCYWlZM0NCaFZsdk00b3Z4bV9BYlhiSnhZ?oc=5), and [Bulgaria elected a new president](https://news.google.com/rss/articles/CBMinAFBVV95cUxPVHpITnVoT04zYU9CWW12UzJaYUFLdDRDck04OV9IRmFwaXlCQ2czOVY5X1I3VVhUbVJaRE9zODRNcDBGQWJEcloyTW84UHJLRjNUUWhXMmNvVDZydmMtT3RmVnlZb0lId2xaenRJb3o0c3dXWjRfVHR5eTBtYWNETzhYd1RQazJmVVRFUkM0UjVFS3BHcndoNFctMjHSAaIBQVVfeXFMTTdvNDBlQmR4dmNuM0kwODFXaDdoRTRqNUhwRnJ6UzhLbzd0UEk5MExCbHBhM1B0aGtYMFBoVXE0MVdHWFhfaFNsaFpSUmQ1WG1RU1VQQ1FFZnBTbXUwRFpBSmRIZkxyLUFseGo4S2Fza1pYYTdXTExhckgxUkFMTG5mMEFaZU9uRGlSSDFrNXg1UnhnNnBUVmxtSkZYdk5JaE13?oc=5).\n\n## Asia\n\nThe Bank of Japan held, but with a notable line: [it judged that trend inflation has hit the 2% target](https://news.google.com/rss/articles/CBMitgFBVV95cUxNcnhYX2pTREQwTVpVRkliZlptQl81YWowMUtRS1VSYU5nN1BsR3ZvWjlxMTkyVXk3Y2VuMktGR2k2M3AxTTQ2dmo2aVRBRlNreHBxb1pFeWtIb2VzbW56UHpsRDEteGVJTXluYmthbWVWWVNWaWpMcmduTDRMMXRTdjZuSkpHX084a2tEblN5NDVLVzMzTmVuRE9SWWV1TUptN1JWOUYyMFU3OEp0WEt6YkhkTHN2Zw?oc=5). [Tokyo CPI rose 2.8% in October](https://news.google.com/rss/articles/CBMioAFBVV95cUxNNzdEOWZBcTJGM0pORlRMVW1SUVpiSWdFYkZJMW5yYlZxTk5GUk5Zblp3Y2lCTERBTjBoSDhicW02YzZaOXRYRmhlc1hhUDNWSnA4MG01bzdtTExhMDZJdl83bW9SbXp6Z1kxdlp5SXJzTmVnd0ZDZ0pOTllJU08tZHJDZXBpTUhJVXdjYTFBcDFHbmU0YjJscHRkOTUzc2Mx?oc=5), and [core inflation stayed above target ahead of the decision](https://news.google.com/rss/articles/CBMipAFBVV95cUxPUVJOQjlQV2RMWlM5UDhDcTIxN1RCOFVwYWxOOElaZGxWRTRJajZ2YzNLM2wzeGlBNW9KYkxiVW1LZUNrbjlpNUdFeGJQQmYxdnhDZXR0TTRSWkpGUGdxdFA4RUtOdWJMUmdQR0lmd1RIQVAxa2FaMURNaVVkZEZzTkg3X0pnY1d0MEhLOVhDVkxzS2p1VWpkbjkxTjcxSG1VYW90cg?oc=5). The yen was at 157.89 to the dollar, barely changed on the week; Japan's 10-year yield was 3.05% in September, a level that would have been unthinkable a few years ago. The Nikkei rose 1.43% on the week but is down 9.81% over the month.\n\nChina went the other way. [The official manufacturing PMI fell to 49.3 in October, with the non-manufacturing index at 49.7](https://news.google.com/rss/articles/CBMivAFBVV95cUxQVGF6cGFuMDFPSlQ4T1dBc0ZWcEVBOEtmVmFKaW5PSWkzOXJhQ3JzaXVDb1RhYTZ1Yk1rdDhJa0oycmFOdEZjU3FEeldpYnUzM1FDQUVYLUlJVzNyVWdKd082WmtBSWtQaFFpWmh5SFdRLXRVWTdpaHRSTUlHY3czV1RNRkVUUUcyakh5S1ZkZ0NTSHB6OFFWRGR3RFZNOUZMejJsdHdJWExtbDJkdExfa0d6QUliTkszOG1xTg?oc=5) — both below the 50 mark, meaning activity is shrinking. [New export orders weakened](https://news.google.com/rss/articles/CBMioAFBVV95cUxOUjYxcFNzbUhDZ2VfVXowN2ZEM0ppaVNFV2NMT0h1aHBZZGZSRkVRMGQwNGpGc0ZBb2hYbXdjSWVoc0VoNE1xWENGLTdOcWswcWdVaW55TmlybjFNVnUzMGMyQ1lLVTM0Q0FWNDdILWx4cUszekVUMGRSenVnNXdfZXpOTmVnSW16bWVzTGFqRHFoMDNtUWFfUUxsYlQ5U3ZZ?oc=5), and [it was the third contraction in four months](https://news.google.com/rss/articles/CBMi0AFBVV95cUxQekp5UHR1VTVUUkhHc28wR0hhYlFhbUNaR0VUZW5QZWxOczNGakNYeTZwYlZ3d0pjRDBLa0dTWkZUd3BQQy1ndnk2aFVGSlBCSDNob1ktd3U5ZXgyMVplNEJQRFlzMDRkVWFONldzSEJvSUE3dHlhQUVBN0VTNFFYY3RhUGpHLWdxRzJPOFEwMnJOYXUwWE51TXFpRlFCM2pWc2JPRTdKS3RjdnZPX09NZW5aS0VHUGV2V2E2SjF6dElWZllrc3F2andkY2Z3QUUz?oc=5). The Shanghai Composite fell 1.61% on the week. India looks very different: [the RBI raised its FY27 inflation forecast to 5.2% while projecting 7.1% GDP growth](https://news.google.com/rss/articles/CBMi1gFBVV95cUxPMWhDVjVldFc0blJIbVRLMUJDd1ltSVJuNDhBQVNWY1NvNk5iN0pxbmhvZGZjcUhIQVZKY2t5clRrMnFGekhwMlhma29XMl94YUhYLTlRQW5pQ3BfVWF5RVdTMWhRRVpxY1dydUs3djFqQVhLN2FhMGVOUmVObWJ6ZnpURXZubVhMNThQd1hSbnBqMjFfeC11ZHJfTEJXWFJ4UmhYcWVtVlJadk9QRE9odXltcFN3b1RpYkZkU2hiM3NhNDhQRGw1dXpFWGpWNTdWV2NRODZn0gHbAUFVX3lxTFBkWFNoVXFBV28xdVpNYzJwTFFOUUduejVQQ09tZ2hHdjlSWnQzcy0weFB2WnVfeW1fTm16ZDMzM2pieHdPVUM1Q3AyaGw4YXBpdFB5cXdRN0FtNlpiYlAwYU5pY0hDRlhuOTRrYTQ1MVVKdEx3azZqZldMRVhUbUVmSXdpbTl0a0lTXzBkT3Rid20tTy1JdGt3a0RKS2ZjMkRJd0tHNjM3cTBkcEpCVk95RHc2UkgwUkx3NHpjd3NDTXpWQXdyeU1IZ09vcEYtcnFCR2ZZOFY0MmhCSQ?oc=5), and [the finance ministry pegged second-quarter growth at 7.35%](https://news.google.com/rss/articles/CBMi5gFBVV95cUxQdnhlSnphTmRiZEhsV2RlRS1Dc3RGWGJNM2NtUUFBaXNuUnIzQXZYZmRvRUVxUGgxX1F0OHZIZWlzLXlEUlQwMVBGNjIxbW90OFBNMG1KUHdtN2ZBOE5fU19EZzRQbDlxck4taTVzUmdEVWZJOEtwSzBNNVlZcVZPdzRfd09aRkxMYkszaFgxcVRDS09uTk5iY3E2U3g5eGxtSmpEcEdZQm91RDJJQ0dDSWtqVlJkTDVkUFRaa25OdTBuRGhPaTg2UXhnSkxwUHhvSDBBc2pxZ0M0dzVvQmtLXzByczRUQQ?oc=5). The Sensex gained 2.83%. Korea's KOSPI jumped 7.12% as [investors looked past the US tech rout](https://news.google.com/rss/articles/CBMipAFBVV95cUxQQUxTRVVjbWV3WkZzQ3FnczJ0TEZXSGdkNkNWc1lYT1I3LXZiR19HemgyX3BORzlrenJrU08xWlRoZFhWY2hIVVpUNFlweUNsR0h5YUVpMUw5ODhzQ2JsWW9zNkpMSXJuSDZLTjVNQXdRVXJxYUYyek5MWkNQdW5iSlppaE5wZ3lHbTBXal93RVh3czlpMU5zdGUxb2M3dU5LUVZvbNIBqgFBVV95cUxNSWFIUVZlLTJxR1U5VmtJQk8zR3M3RVZWUE1fam5MTXFNdV9wQkFPZUZfWFE3U0ZNZVJPaXI5M3JPUlRUNGVhT1FSQkVtSDZSbWgwT1NmOFJLTVdYRjRYeHZTbmhCdzRtSWdQUS1ra0NtMERudFRlUnJCai1RNWRkODlVTHQ2OHphSGpzbWl6aVFjRlkzWlVud0FLdFJBbWFIbUhRM29PZVF2dw?oc=5). Elsewhere, [Australia's housing slump deepened as the RBA prepares another rate rise](https://news.google.com/rss/articles/CBMiuwFBVV95cUxONzMzYXY1WFZINk5mclI1MmtHUlBMVElDN1I1NXljaFgyXzRPenE1ZnBhZUhsNEp2bE0xdmczT2F0NHBfWDVHTTNJVVpfU2xIc2tQLTU2X3ROZ2g4WmJwaXQ4dXduX1B3RmtEWjVtSVV2S3c5cjNYY245LXNXYW5HbFk5UGhWYkpXTHVLZzM2ZE1DRzhxa2xUdUcyWUdGeXhfeTZzT0lfQi1admtJN2Z2cElxQjBXZnp6WlRn?oc=5), and [Taiwan accused China of harassment after a standoff between ships](https://news.google.com/rss/articles/CBMigwFBVV95cUxPLWl6Yi00bDFaUUJsWkpTdHlRT0h3eE9aUTJrcW9DT1ZvQ2YtQjZ2MlliR1l2WGZ6VHdIUE41X1Y0Z0Q5UUNqRVpKTnZMc3VvdjduNWRLY3RjRHZRUkhwcnB3Ny1QN3NFMURxNlVTZ3J6Zl9JN3piUC1CeFdMcE05WmFrbw?oc=5).\n\n## Debt and politics\n\nOil dominated. [Iran's IRGC Navy said two tankers exploded after hitting mines in Hormuz](https://news.google.com/rss/articles/CBMivwFBVV95cUxNZmk2dmxjdk1sOW96UkZiaUlJVXhzc1pJMjZJUnY2WGtvaXd4aXRJY3d4UTNoUmFJdUVQQjlkb0JPSmxEc2YzS1JOZ2NSWmpTUnhzYzBiU1hfeXBvb2F2WEp2NHc5YkFfUUNKSHc2NW1PMUVKT0xqUTdOa0tfUmZpQWE2SDFtdzJ5TmZleWpLd0Zid1JWR2Z0d0dOeVMwekFzNTNTYndHMmMyV0poZ2h0UmFOVWc2M3o3Z2h6TUR2SQ?oc=5), [with ships carrying around 2m barrels affected](https://news.google.com/rss/articles/CBMilwFBVV95cUxQajJOOUdQdDNTMl9uOTZQN1RqUTdxQnJXUjVYZU4tUkRfenZ4MXBIemFHR2x6cVNHemU2R2dybG90TkZtbFRuTDQ1N3liZ0t1NHhUZlA1R2t2UEl0OUZnLV9NODBEbEhKX1BqNi01c2pWWnp2cXRxNEpRSWpPT195N3FXUzA4NVZObl9JRERnb3B0eTdmOUxV?oc=5), though [tankers kept crude flowing](https://news.google.com/rss/articles/CBMigwFBVV95cUxOTjZlVnBjQWc3TU0zdGE1QmhZOVdvZzhYSzZyci1hZE1scFJyY3hnaGUzSlpIZG1CcG5JVXhLQWxWaDRVS05UTUNYRkxSVEhGSW11SmhlMHBmM3FyZHhPWkJkeDJqS0ZDS2VsWWpRa3p6RFkyUTl5a0ZJYk90d1FvcVFsRdIBiAFBVV95cUxPV0ZFNlB2SnBqR1NCRWVlRTRmWkR0Z2ZyRmR6cUpPMjRtREFsb2RkRnBaTnRWVkVBRDM5QUJJa0lybXpRUzZQVFBnS3htaXdiTko3SzZJLUlUWDZacEpiSEJpdXlrVENkcjd5YVJZMTMwY05jR3BIbjROS00xMjVHQnh6Vmp4T0xG?oc=5). Then on Monday [prices fell more than 4% as peace talks eased supply fears](https://news.google.com/rss/articles/CBMisgFBVV95cUxNSGlnQ2hWb0xhREU3dG5ZeGtaV3cxb1kzRk9TT2FOanNnRW8yWWVkd0xCLWpmbDRLVkVqRVpMWXJuY2E1N2tfMGRnV3hkWE1IRmtjYWU0M3Z0V1FlMmoyaTlGSXl2Y1R1ZVZYUUdvdnJnZjNVRzBTNzhtb0FnaWJuV3hhWkpVQU1iRkVtSmFhWjQ0XzM3T0NBVmFudVVldWhZemFoeDJPSy1hWXhCbmdEbUVB?oc=5), leaving Brent at 108.63 a barrel, down 6.2% on the week but still 8.28% higher over the month. That swing is the single biggest input into household fuel bills and freight costs right now. Meanwhile [nine big oil firms are on track to share more than $95bn of profit for a second straight quarter](https://news.google.com/rss/articles/CBMitgFBVV95cUxQeXBJYWlwMjdwM3djOG81dHVZNHlIX1dUZWM2dEYya2YzOVp1TTR6bmN1dm9hbWxqLU5zMFYzYTVtTzFkOHdVdG9hWGlaWmEtaGM2dmlveGVCODZDY3FiYk5BeTFaLW5QeF9FVGxPQmdBOWwteEc5bjFZMTh2d0I2c2NCVm94VTlHT1M1REhIWU9WeTJReTFRV3ZfWm5rc05EUWFjLTN2dHhETE1pWXRNWS0xOFZ0dw?oc=5).\n\nOn debt, [Wall Street is bracing for the biggest overhaul of Treasury issuance in years](https://news.google.com/rss/articles/CBMitAFBVV95cUxQQ3N2ZVdrWVZaekU3UUdvbWgzZE4wTUF5X2tsajg4V042UDRJeEpwa2RqY1RxLWlNNk5sWTl4QUFlQk1mQjhsTzh3STlDR0lVN3ByaVQyUFRFUnlpZG95dGpuZjVtN3lMX3lfQkZRWnUyM3FqSnAyeE9sQ25fSHI1Mmo2M1dPT3d4RkwxM1hjSkRYbFBrdlFtUXpnUlNCc05aRkJvOWNFSFZBQjRqaXFHUVVGZzQ?oc=5), with [long-bond cuts and greater reliance on short-dated bills in focus](https://news.google.com/rss/articles/CBMidkFVX3lxTFB2dTI4WFBnRWpmUlBmYUxmUTZJeEYzUFIyVzdwWEU5bGt0UEVEdTBrcXpnX3lwTG5NcnJtWkYxOHpINVM5Wkx0OGZHZVNObEdncUhxRmZUUW1rSkM0V3Y4VlVsN1B2Wjl4aC12bDY4NzdnU1NVYmc?oc=5). US federal debt was 121.19% of GDP in the second quarter, and [commentators argue the Treasury is now managing debt costs as much as inflation](https://news.google.com/rss/articles/CBMizwFBVV95cUxOVkphbi1JbkpNU1htVTU5TDJFajBlMHktbHlwb1lVdGE5LVN3ZlVoRkhIa1ptcDU4Y0hIajRJYnhnUHdaQ1Q2MjRCcTNhSFZLODFsbzNyMGt6V0QtMFRqWEdCVDkwWDhuWTJOdXF4WkxFX3I3VUNpdUNBV3d0OUtjeEJXRUtCWjEzVE1kampUbXEzampzQUh5eVNaNU1sQ2VWS3ZPVGR4V2lJdUJqbjRhdU5yZGhXQW03UDZwb196QVdfbzB5aUM1b0lPRTRtZ2M?oc=5). Euro area government debt was 88.8% of GDP in the second quarter.\n\n## AI and technology\n\nThe AI trade had its worst stretch in a while. [Big Tech shed close to $900bn in a rout over soaring AI spending](https://news.google.com/rss/articles/CBMihAFBVV95cUxOSnZtb2F5QWc3U085dm1WalA2WEV0VnhyYnN4azV0WE9yRDhtSGRiUXFfTUF4dUkxNTYyMGItYUJxN2k5ZFdXS3hPb09sLVdsc3ZNV2ZqdGwxdm9VN3l6YW42bFVIcjdSS2ZjdFJyYlNCQVBiazU4dGhBVDRGYW9wLUhiZEU?oc=5), and [the Nasdaq faced a roughly $2trn wipeout in October as those fears deepened](https://news.google.com/rss/articles/CBMiwAFBVV95cUxPNkNDLXpLZ1A0VklROTJVenpDRlZBWE10ZE1qWWk4ZFVqalgzWWJFdThSd2ZKeUhDanVRQjRhVVVZZGlGZzY1UWYzLXRSZTNHNDNPTkZZRUFJazAzYmV6NzF3QUJtNjhkWHY5OHZNZWVsSFdyY0NScGJadnE3T0dPTWtBUXZOaDJPYWJuX1NOVXkwbGlQSW9MdjlXTlNQTzdLZEdzTHFsQ2gzaEcwTkNHZTNCNF9hMG9lazFHRXItSzg?oc=5); [Google and Microsoft held off raising their capital-spending forecasts](https://news.google.com/rss/articles/CBMifEFVX3lxTE1pM0RNUDRnMFJXZkRoZG5ZdVVXRHozTUtidUxjMXdKbFBHVW9hTjg1NlFPcFcwLTZCQzM3cTRQYnpzRE1LQ3pNUkpxQmN1OEdnN25fZGhNUDlMZ0w0VW5kUGdoWWd4ZDFWNlZBTHFQaVpDd3B2M01UN3ZrcWzSAYIBQVVfeXFMUDhDNzNOa204RlZoNUNMTUZnWEVNY0RVbmtlNjQwc0N6YU0wWlhla29xRE5GRkhZbmwxRjEwNE9lZ2VoaG9mU0loVVJGaEprdmY2TkE3U1luNlE3Q2g2VmJVSlZkQ0RPYVdpSGYzV1lSMFZzZmRjU2lFanhOUThXUzZGZw?oc=5). Against that, [Anthropic plans to sell up to $3.5bn of shares to Japanese investors as part of its US IPO](https://news.google.com/rss/articles/CBMixAFBVV95cUxOazUtcTBWVFNLd21jTk9YOFRDRHoyc2ZuV1haZ21JaUdIei1leFkxVVF5V0JpLXJGdV9raXhrV0k0bU1xM0g5TnR6cTA5dWNFZ3VVVUo1UHVyU3pUUWw0YjFreXNTZ3Q4TXdoazBwT1dxRU52bTkxMXlEbG95LVY1eUlLMGZHUk9hQUd4aVZxWkxMUzBMVmhELWNpaUhSaGR3V19UYy00R3UzMUVkWU80ZHl0aW9URGdlQ19RX2dmZHFreHNS?oc=5), and [Marvell agreed to buy optical-components maker Lumentum in a $115bn deal aimed at AI data centres](https://news.google.com/rss/articles/CBMipgFBVV95cUxNT0xteERmc1hPNzBXUDZEdXNvSDZvOHROVnVMbTJ5bmtUdEZZd1hXTWF2UTduakhfZ2VITXNQUVdkTzdXS0VVRXlBaU5WbVNyUEhfN25OQmNQT0FQNDBHZEk5UEhRSGptY3V1ekNJTlhBeW9OQnpKeTdzT2xQWk40Q3lvaEdiZmhFSVgwaDlNMTRJLWlJWVRzQ2dlMEl0cDFleHBYeURR0gGrAUFVX3lxTFB6dVdOVjRSTGtzTDN4T2R6T0Nral9ZX1JjUEdZalJPeE1TTFUwVm1TQThVQlJvakgyeG5QNW5nMl8ydUR2dnJFZ0wzdlNOdXpwd0FTM0NYaGxXenQtbUdadUJMelF6YUFGSVdpb0xMelZWbV9qVDJLemxKSzVxR05KVFlkMUdaRWNWck5jZlFoZHl6RUJOS1RDbHFEdXJ0R0ljQVdKR3QxZnctWQ?oc=5). The gap between enthusiasm for AI infrastructure deals and nervousness about who pays for it is the defining market tension of the moment.\n\n## Company news and results\n\nReported figures this week were mixed across sectors. Linde, the industrial gases group, [reported third-quarter sales of $9,404m, up 9% year on year, with diluted EPS of $3.66, down 11%, and adjusted EPS of $4.59, up 9%](https://www.sec.gov/Archives/edgar/data/1707925/000165495426009199/lin_ex991.htm), in its SEC filing; it guided full-year adjusted EPS to $17.82–$17.92 and capital expenditure of $5.5bn–$6.0bn. Volumes grew fastest in electronics, chemicals and energy — the same end markets feeding the data-centre build-out.\n\nIn deals and incidents: [Marvell's purchase of Lumentum was confirmed](https://news.google.com/rss/articles/CBMisgFBVV95cUxOelFpUlRuWUdrd3oyYkZTNkxFMW9mQlBTY01YTl9ERVRsYTc1VGNWQjR1VF90aEcwY01sTDNXN3NiWVBZNTY4aGVFSlR3WlBlb0laSkptRS1EMF9fMGlna1BXSVExN2dFVGlTNWMyQzYyM1RsYm5pMGxXOWxhbmp1UGRYVjk3RVA0b25WWVZPcFZMS05IOE1CTUgzY1BsQWY3MW5DbDF1bGs1M185UlM4cjlB?oc=5) after [earlier reports of advanced talks](https://news.google.com/rss/articles/CBMipgFBVV95cUxNR2xWTFdaYmFQNV9rVnZVcmltcTJqWGoyUVBzUlVPcDJaZm4xLXVCMmt4Szk2YnF1VjVXUEdjV0xDbGxRdjc2WjBzQjVnTnU0SWpSWkJmdlg0WS15eGNhc09ZNWpHUVc2Znk0aE9haUpPVlZOeUdqNl9CSzdHaUtITm1BTWh1d0tKTWtCYWM1M183ekZkSGptb3B4MUthVzhiM1hUOEhR?oc=5); [the FBI linked North Korea's TraderTraitor group to a record $6.43bn crypto heist at Binance](https://news.google.com/rss/articles/CBMihAFBVV95cUxQWmVOUTJ5cEo0bUU2Unp2V093dXNIN3hEaHB5VXRrZlBYRjc5RkVzM2lraGRpZGNIM0s0Uk15bVdPOHNSNGJsN29Ma3lVTzBleWd2WHRuSGlzOXVtV193RE8wbXgyaGNjdGdJRkUxdkR2ajN0MGh2STQ2T2p3YTVMTnRVME8?oc=5); and [supermarket freezers in Belgium, Sweden and Luxembourg were hit by a suspected cyber-attack](https://news.google.com/rss/articles/CBMiW0FVX3lxTFBhcE44b2ZsOG9fMFFnNTY4Q3hZUDk5QW9Oa1JkUkRKLVJhcGJHellrUU5kdExKNVpGRnJhbHJSZjRhODJfa0xhN05iQ2czckM3TjJ4TU5WQ1Z0T00?oc=5) — a reminder that operational resilience is now a board-level cost line.\n\n## Market mood\n\nFear is the word. The VIX stood at 19.41 on 2 November, up about 25% over the month, and CNN's Fear & Greed index fell to 25 — \"extreme fear\" — from 30 a week earlier and 38 a month ago. High-yield credit spreads, the extra interest riskier companies pay over the government, widened to 3.26 percentage points on 29 October from 3.14 the previous day: a nudge wider, not a credit event. Gold fell 3.19% on the week to 3,909.40 and bitcoin dropped 4.49%, so this was not a simple flight to safety. On Reddit, attention was split between broad index trackers and a cluster of chip and AI names — unverified opinion, but it suggests retail investors are still watching the same story as everyone else.\n",
+  "sources": [
+    {
+      "title": "Taiwan accuses China of harassment after standoff between ships - Politico",
+      "publisher": "Politico",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPLWl6Yi00bDFaUUJsWkpTdHlRT0h3eE9aUTJrcW9DT1ZvQ2YtQjZ2MlliR1l2WGZ6VHdIUE41X1Y0Z0Q5UUNqRVpKTnZMc3VvdjduNWRLY3RjRHZRUkhwcnB3Ny1QN3NFMURxNlVTZ3J6Zl9JN3piUC1CeFdMcE05WmFrbw?oc=5"
+    },
+    {
+      "title": "French protest violence eases while scattered riots hit Germany ahead of school return - AP News",
+      "publisher": "AP News",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPX0QtNjJvRnpjT3Y5eTVBcEI5dkZMaFNuZnJDMkR1cWY5aWRWV2FjX3QxVVVHNUZRMlp1VFBYYnpCdE1NcmRqQlUtbVV0akY5RUF5WXdjaXcxYnBtNk4xZDhJNmtKWGlaTGhkcTltaW9TTHlBTmdlU0I1cFlVbjdmckVaMDBaTllsNmJCYWlZM0NCaFZsdk00b3Z4bV9BYlhiSnhZ?oc=5"
+    },
+    {
+      "title": "Initial results indicate victory for Iotova in Bulgarian presidential vote - Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPVHpITnVoT04zYU9CWW12UzJaYUFLdDRDck04OV9IRmFwaXlCQ2czOVY5X1I3VVhUbVJaRE9zODRNcDBGQWJEcloyTW84UHJLRjNUUWhXMmNvVDZydmMtT3RmVnlZb0lId2xaenRJb3o0c3dXWjRfVHR5eTBtYWNETzhYd1RQazJmVVRFUkM0UjVFS3BHcndoNFctMjHSAaIBQVVfeXFMTTdvNDBlQmR4dmNuM0kwODFXaDdoRTRqNUhwRnJ6UzhLbzd0UEk5MExCbHBhM1B0aGtYMFBoVXE0MVdHWFhfaFNsaFpSUmQ1WG1RU1VQQ1FFZnBTbXUwRFpBSmRIZkxyLUFseGo4S2Fza1pYYTdXTExhckgxUkFMTG5mMEFaZU9uRGlSSDFrNXg1UnhnNnBUVmxtSkZYdk5JaE13?oc=5"
+    },
+    {
+      "title": "Gen Z protests in Germany turn violent as tens of thousands take to streets - The Washington Post",
+      "publisher": "The Washington Post",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQYmIyNllhTkFrTXZlQ3ZqZkhUczVpY0ZqZzlONFdfUXdpWU95VkxfMy1oazdjclhEYlJSRVRac0MtcTAyak5GNGNsNXBER0Y2Vk1uRm95aDBZX292LVJDb0dlVzJLR1k0VW04Q01Cb0FaR05ZUG81WnFHZ2tWbW16YjBraU5pcVZKV0IzNGxIZzZ4MmVzRG5KeXN1YzlmN2MwdURPVXJMUDRlT1NfSExn?oc=5"
+    },
+    {
+      "title": "FBI Links North Korea's TraderTraitor to Record $6.43 Billion Binance Crypto Heist - The Hacker News",
+      "publisher": "The Hacker News",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQWmVOUTJ5cEo0bUU2Unp2V093dXNIN3hEaHB5VXRrZlBYRjc5RkVzM2lraGRpZGNIM0s0Uk15bVdPOHNSNGJsN29Ma3lVTzBleWd2WHRuSGlzOXVtV193RE8wbXgyaGNjdGdJRkUxdkR2ajN0MGh2STQ2T2p3YTVMTnRVME8?oc=5"
+    },
+    {
+      "title": "Investors gaming out Congress control for spending, AI outlook - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPSndxQlZKTnRLd3BYVTNReUZRU1Z5dDlrdGpidzBlWVhITzgzTkJrXzJlNlhHZHZvQS1JV0E3YUZmT3gzNy1KbWVGVGs4NjR0bVFDanJ4RjYybjU2Rm9DS2tNR0w3SVNpb0puX2NwUjctM1U2cm1EYmZRUWRXd08tY1dfT1BGYmF0TG5UREVHTUVfM0s5MGhHZE1EVVhVUlRCbk5tZmExZU8zUi05bm9B?oc=5"
+    },
+    {
+      "title": "Anthropic plans to sell $3.5 billion of shares to Japan investors in IPO, filing shows - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOazUtcTBWVFNLd21jTk9YOFRDRHoyc2ZuV1haZ21JaUdIei1leFkxVVF5V0JpLXJGdV9raXhrV0k0bU1xM0g5TnR6cTA5dWNFZ3VVVUo1UHVyU3pUUWw0YjFreXNTZ3Q4TXdoazBwT1dxRU52bTkxMXlEbG95LVY1eUlLMGZHUk9hQUd4aVZxWkxMUzBMVmhELWNpaUhSaGR3V19UYy00R3UzMUVkWU80ZHl0aW9URGdlQ19RX2dmZHFreHNS?oc=5"
+    },
+    {
+      "title": "Marvell to buy Lumentum in $115 billion deal in AI data-center bet - CNBC",
+      "publisher": "CNBC",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNT0xteERmc1hPNzBXUDZEdXNvSDZvOHROVnVMbTJ5bmtUdEZZd1hXTWF2UTduakhfZ2VITXNQUVdkTzdXS0VVRXlBaU5WbVNyUEhfN25OQmNQT0FQNDBHZEk5UEhRSGptY3V1ekNJTlhBeW9OQnpKeTdzT2xQWk40Q3lvaEdiZmhFSVgwaDlNMTRJLWlJWVRzQ2dlMEl0cDFleHBYeURR0gGrAUFVX3lxTFB6dVdOVjRSTGtzTDN4T2R6T0Nral9ZX1JjUEdZalJPeE1TTFUwVm1TQThVQlJvakgyeG5QNW5nMl8ydUR2dnJFZ0wzdlNOdXpwd0FTM0NYaGxXenQtbUdadUJMelF6YUFGSVdpb0xMelZWbV9qVDJLemxKSzVxR05KVFlkMUdaRWNWck5jZlFoZHl6RUJOS1RDbHFEdXJ0R0ljQVdKR3QxZnctWQ?oc=5"
+    },
+    {
+      "title": "Oil Prices Fall More Than 4% as Iran Peace Talks Ease Supply Fears - WSJ",
+      "publisher": "WSJ",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNSGlnQ2hWb0xhREU3dG5ZeGtaV3cxb1kzRk9TT2FOanNnRW8yWWVkd0xCLWpmbDRLVkVqRVpMWXJuY2E1N2tfMGRnV3hkWE1IRmtjYWU0M3Z0V1FlMmoyaTlGSXl2Y1R1ZVZYUUdvdnJnZjNVRzBTNzhtb0FnaWJuV3hhWkpVQU1iRkVtSmFhWjQ0XzM3T0NBVmFudVVldWhZemFoeDJPSy1hWXhCbmdEbUVB?oc=5"
+    },
+    {
+      "title": "Australia’s Housing Slump Deepens as RBA Prepares Another Rate Rise - WSJ",
+      "publisher": "WSJ",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxONzMzYXY1WFZINk5mclI1MmtHUlBMVElDN1I1NXljaFgyXzRPenE1ZnBhZUhsNEp2bE0xdmczT2F0NHBfWDVHTTNJVVpfU2xIc2tQLTU2X3ROZ2g4WmJwaXQ4dXduX1B3RmtEWjVtSVV2S3c5cjNYY245LXNXYW5HbFk5UGhWYkpXTHVLZzM2ZE1DRzhxa2xUdUcyWUdGeXhfeTZzT0lfQi1admtJN2Z2cElxQjBXZnp6WlRn?oc=5"
+    },
+    {
+      "title": "Nine big oil firms on track to share more than $95bn profit two quarters in a row - The Guardian",
+      "publisher": "The Guardian",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQeXBJYWlwMjdwM3djOG81dHVZNHlIX1dUZWM2dEYya2YzOVp1TTR6bmN1dm9hbWxqLU5zMFYzYTVtTzFkOHdVdG9hWGlaWmEtaGM2dmlveGVCODZDY3FiYk5BeTFaLW5QeF9FVGxPQmdBOWwteEc5bjFZMTh2d0I2c2NCVm94VTlHT1M1REhIWU9WeTJReTFRV3ZfWm5rc05EUWFjLTN2dHhETE1pWXRNWS0xOFZ0dw?oc=5"
+    },
+    {
+      "title": "Kevin Warsh is managing US debt costs not inflation as interest rates risk topping GDP growth soon - Fortune",
+      "publisher": "Fortune",
+      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOVkphbi1JbkpNU1htVTU5TDJFajBlMHktbHlwb1lVdGE5LVN3ZlVoRkhIa1ptcDU4Y0hIajRJYnhnUHdaQ1Q2MjRCcTNhSFZLODFsbzNyMGt6V0QtMFRqWEdCVDkwWDhuWTJOdXF4WkxFX3I3VUNpdUNBV3d0OUtjeEJXRUtCWjEzVE1kampUbXEzampzQUh5eVNaNU1sQ2VWS3ZPVGR4V2lJdUJqbjRhdU5yZGhXQW03UDZwb196QVdfbzB5aUM1b0lPRTRtZ2M?oc=5"
+    },
+    {
+      "title": "Euro zone economy slows to 0.4% growth in Q3 as crisis-hit France contracts - CNBC",
+      "publisher": "CNBC",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1xeXhCelpVMWs1b3pzeXZOU0psRExTMlhIa01NTmdJWE1NZEh0ajZ0dmtRbFZPUklSUmdpS3NuSFU5UkV6bUVUODBFamdGU2E1ejJUN21rdlpSRWVkeDhFcFJybU84YkhT0gFuQVVfeXFMT0M4S3kzNEJiN0NFVkZjdVMzSkhqaml4LUpuYW16ck9iT1lzV2k2QUlrLVo3dHRaaS1mck9iNm1JZGRYcEVJSS1VVzhlTi11d2d5dnpJRW9RMjU3VHZXQTIyakdxb0hGNTgzdHR2NGc?oc=5"
+    },
+    {
+      "title": "German inflation cools on fuel tax cut, economy grows more than expected in Q3 - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOT2VyTFJQdHM3YjBFYUJJbDA4Y0JfSFZUTm5XNDloeUJCeUlRcU4wdEtvNXJISGtKc0h3MHFCajg5YTEtYUh6NkJ0eWxmdTRJOEtfRnh5OUFBUUpGNWdQV1FUY2NRN2tMbllZVUFDZWhqVG9SUjR3X2xnOXdDQkJiQUdxWGVkWEN6ZVNsdUprZnBmWlpOT0JSa0w4LTlzSHdfX3U0?oc=5"
+    },
+    {
+      "title": "Fed leaves rates unchanged as it awaits 'accumulation of more information' - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPaU93czlpTHJXMTJGby0yOGppZGVlVkZzZW4tNC11WTcwVk1yQUZHTVMza0dTLURMRi0tTUtYTHhITkI2OVBWN2k0anZCN2liNnlyNFpaTmFTaWlFTHItWmtBXzh1VWhkRjZBNjVDejQxOGNUTW1HWWRBUzNjbGdKUDV0MlFSWXRsaWQwMXpWQXI?oc=5"
+    },
+    {
+      "title": "Fed holds interest rates steady in last decision before midterms - The Guardian",
+      "publisher": "The Guardian",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQbXpNWFREek1pS2Etd19yTGZPODI1YktUbHdXRVBub0lWS1NLZ0xGRGRMNzZDV3lzUVdvVWU5cVEzWERhcUJielk5OERUYzFXVGpJTUk1WWxMaG9wUU9qeF9HdkhfQ2EtYkN1RE9lbmo1US1tWW50T3FLdjJhZVB5a0F3?oc=5"
+    },
+    {
+      "title": "Fed Holds Rates Steady Despite ‘Elevated’ Inflation - The New York Times",
+      "publisher": "The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQTE1BdGtmWVdsaDdsWktpYlk1d2lzWGN2OGdvc3VSNFZxcC1EZ0lWVHhuT1ZpOWphTHoxMzlVY2U2cWxKZDNIZVBhTkR4OXNzbW5fVG41SFZ1b0U1cHFtempLQzVQQmRuQmhpWVJXdy1mV2NxSERSZjZqVnJRZkRJR1diMFY1dkxT?oc=5"
+    },
+    {
+      "title": "VIEW Analysts react to BOJ decision to keep rates steady - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNSnRoUnFPTXd3aThEbHFYOXpiS2RwcUhURmhyc2RVMWtxdENYOGg0cjVYWllUS012TnI2Rmxxd3d2dEx4QURuVW9ZWUhFdzVuOHNvWlpYOV9Rd0xCNHRfNTNuMVFZeVQwOUZ1ZHVlTkFnMUllanAwRkQzLXMyaE9qMzY1Vmp4Vy1GU0NTYVpLbkQ5eG5PVXlSYUh0T0l2YjJ3RVVIX0hzUmM?oc=5"
+    },
+    {
+      "title": "BOJ Says Japan’s Inflation Trend Hits 2% Target as it Holds Rates - Bloomberg",
+      "publisher": "Bloomberg",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNcnhYX2pTREQwTVpVRkliZlptQl81YWowMUtRS1VSYU5nN1BsR3ZvWjlxMTkyVXk3Y2VuMktGR2k2M3AxTTQ2dmo2aVRBRlNreHBxb1pFeWtIb2VzbW56UHpsRDEteGVJTXluYmthbWVWWVNWaWpMcmduTDRMMXRTdjZuSkpHX084a2tEblN5NDVLVzMzTmVuRE9SWWV1TUptN1JWOUYyMFU3OEp0WEt6YkhkTHN2Zw?oc=5"
+    },
+    {
+      "title": "China's factory activity shrinks in October, third contraction in four months - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQekp5UHR1VTVUUkhHc28wR0hhYlFhbUNaR0VUZW5QZWxOczNGakNYeTZwYlZ3d0pjRDBLa0dTWkZUd3BQQy1ndnk2aFVGSlBCSDNob1ktd3U5ZXgyMVplNEJQRFlzMDRkVWFONldzSEJvSUE3dHlhQUVBN0VTNFFYY3RhUGpHLWdxRzJPOFEwMnJOYXUwWE51TXFpRlFCM2pWc2JPRTdKS3RjdnZPX09NZW5aS0VHUGV2V2E2SjF6dElWZllrc3F2andkY2Z3QUUz?oc=5"
+    },
+    {
+      "title": "China's manufacturing PMI at 49.3, non-manufacturing PMI at 49.7 in October - CGTN",
+      "publisher": "CGTN",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQVGF6cGFuMDFPSlQ4T1dBc0ZWcEVBOEtmVmFKaW5PSWkzOXJhQ3JzaXVDb1RhYTZ1Yk1rdDhJa0oycmFOdEZjU3FEeldpYnUzM1FDQUVYLUlJVzNyVWdKd082WmtBSWtQaFFpWmh5SFdRLXRVWTdpaHRSTUlHY3czV1RNRkVUUUcyakh5S1ZkZ0NTSHB6OFFWRGR3RFZNOUZMejJsdHdJWExtbDJkdExfa0d6QUliTkszOG1xTg?oc=5"
+    },
+    {
+      "title": "Tankers defy sharp escalation of Iranian attacks to keep crude oil flowing through Strait of Hormuz - CNBC",
+      "publisher": "CNBC",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOTjZlVnBjQWc3TU0zdGE1QmhZOVdvZzhYSzZyci1hZE1scFJyY3hnaGUzSlpIZG1CcG5JVXhLQWxWaDRVS05UTUNYRkxSVEhGSW11SmhlMHBmM3FyZHhPWkJkeDJqS0ZDS2VsWWpRa3p6RFkyUTl5a0ZJYk90d1FvcVFsRdIBiAFBVV95cUxPV0ZFNlB2SnBqR1NCRWVlRTRmWkR0Z2ZyRmR6cUpPMjRtREFsb2RkRnBaTnRWVkVBRDM5QUJJa0lybXpRUzZQVFBnS3htaXdiTko3SzZJLUlUWDZacEpiSEJpdXlrVENkcjd5YVJZMTMwY05jR3BIbjROS00xMjVHQnh6Vmp4T0xG?oc=5"
+    },
+    {
+      "title": "Ships carrying 2M barrels of oil hit mines, explode in Strait of Hormuz: Iran - New York Post",
+      "publisher": "New York Post",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQajJOOUdQdDNTMl9uOTZQN1RqUTdxQnJXUjVYZU4tUkRfenZ4MXBIemFHR2x6cVNHemU2R2dybG90TkZtbFRuTDQ1N3liZ0t1NHhUZlA1R2t2UEl0OUZnLV9NODBEbEhKX1BqNi01c2pWWnp2cXRxNEpRSWpPT195N3FXUzA4NVZObl9JRERnb3B0eTdmOUxV?oc=5"
+    },
+    {
+      "title": "Oil price falls on optimism talks will bring end to Iran war - The Times",
+      "publisher": "The Times",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQY2JfVHdIM185VS1YWTFjcGkxUUtQajc1dWpRa3otZkliLU41NTZTZm5uX0ZXWkFXb2gzSTB5V2NzYUlWSTVXUGRsd29ZNnAxOUdSaURRb29mbmdWSC1pelg5ODdRQnU4QlItOU5QOG5tV2NXbUgyZk5kS05vN1pNSUFxVFlhN2wyWWZ6M0ZaUERZYW9qMG9yRl9QX0hTTFM4Rms1dWFKVEFaRThwSDlnbjY4Yw?oc=5"
+    },
+    {
+      "title": "These are the House races to watch in the 2026 midterm election on Nov. 3 - NPR",
+      "publisher": "NPR",
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxONHhuUTlfWTZEWmR2REVvZnJQcEJFX2dpLWFqV0t1WnJUVjZIN1BXUGJNMW5zbGVxQXhUaXY3MWlya1lCNlhkYTFEY2Y3bGxTVVBoOXRERmh0WlAtcWZvTWtQcWNlV1VKVFo2SGt4aXhtTjN2SlZhWnVJT0VmRmpjSzZITGZaSTNtUlNzc1lUaThNRlVSckhRREo3UHdVUkpGcnc?oc=5"
+    },
+    {
+      "title": "Wall Street Braces for Biggest Treasury Sales Overhaul in Years - Bloomberg",
+      "publisher": "Bloomberg",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQQ3N2ZVdrWVZaekU3UUdvbWgzZE4wTUF5X2tsajg4V042UDRJeEpwa2RqY1RxLWlNNk5sWTl4QUFlQk1mQjhsTzh3STlDR0lVN3ByaVQyUFRFUnlpZG95dGpuZjVtN3lMX3lfQkZRWnUyM3FqSnAyeE9sQ25fSHI1Mmo2M1dPT3d4RkwxM1hjSkRYbFBrdlFtUXpnUlNCc05aRkJvOWNFSFZBQjRqaXFHUVVGZzQ?oc=5"
+    },
+    {
+      "title": "US Treasury issuance guidance set for biggest overhaul in nearly three years, with long-bond cuts and greater T-bill reliance in focus - BigGo Finance",
+      "publisher": "BigGo Finance",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFB2dTI4WFBnRWpmUlBmYUxmUTZJeEYzUFIyVzdwWEU5bGt0UEVEdTBrcXpnX3lwTG5NcnJtWkYxOHpINVM5Wkx0OGZHZVNObEdncUhxRmZUUW1rSkM0V3Y4VlVsN1B2Wjl4aC12bDY4NzdnU1NVYmc?oc=5"
+    },
+    {
+      "title": "Tokyo core inflation exceeds BOJ target in October - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPUVJOQjlQV2RMWlM5UDhDcTIxN1RCOFVwYWxOOElaZGxWRTRJajZ2YzNLM2wzeGlBNW9KYkxiVW1LZUNrbjlpNUdFeGJQQmYxdnhDZXR0TTRSWkpGUGdxdFA4RUtOdWJMUmdQR0lmd1RIQVAxa2FaMURNaVVkZEZzTkg3X0pnY1d0MEhLOVhDVkxzS2p1VWpkbjkxTjcxSG1VYW90cg?oc=5"
+    },
+    {
+      "title": "Breaking: Japan’s Tokyo CPI inflation climbs 2.8% in October - FXStreet",
+      "publisher": "FXStreet",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNNzdEOWZBcTJGM0pORlRMVW1SUVpiSWdFYkZJMW5yYlZxTk5GUk5Zblp3Y2lCTERBTjBoSDhicW02YzZaOXRYRmhlc1hhUDNWSnA4MG01bzdtTExhMDZJdl83bW9SbXp6Z1kxdlp5SXJzTmVnd0ZDZ0pOTllJU08tZHJDZXBpTUhJVXdjYTFBcDFHbmU0YjJscHRkOTUzc2Mx?oc=5"
+    },
+    {
+      "title": "RBI MPC raises FY27 inflation forecast to 5.2%, projects GDP growth at 7.1% - Business Standard",
+      "publisher": "Business Standard",
+      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPMWhDVjVldFc0blJIbVRLMUJDd1ltSVJuNDhBQVNWY1NvNk5iN0pxbmhvZGZjcUhIQVZKY2t5clRrMnFGekhwMlhma29XMl94YUhYLTlRQW5pQ3BfVWF5RVdTMWhRRVpxY1dydUs3djFqQVhLN2FhMGVOUmVObWJ6ZnpURXZubVhMNThQd1hSbnBqMjFfeC11ZHJfTEJXWFJ4UmhYcWVtVlJadk9QRE9odXltcFN3b1RpYkZkU2hiM3NhNDhQRGw1dXpFWGpWNTdWV2NRODZn0gHbAUFVX3lxTFBkWFNoVXFBV28xdVpNYzJwTFFOUUduejVQQ09tZ2hHdjlSWnQzcy0weFB2WnVfeW1fTm16ZDMzM2pieHdPVUM1Q3AyaGw4YXBpdFB5cXdRN0FtNlpiYlAwYU5pY0hDRlhuOTRrYTQ1MVVKdEx3azZqZldMRVhUbUVmSXdpbTl0a0lTXzBkT3Rid20tTy1JdGt3a0RKS2ZjMkRJd0tHNjM3cTBkcEpCVk95RHc2UkgwUkx3NHpjd3NDTXpWQXdyeU1IZ09vcEYtcnFCR2ZZOFY0MmhCSQ?oc=5"
+    },
+    {
+      "title": "Finance ministry pegs real GDP growth at 7.35% in Q2 FY27; cautions about ‘considerable’ uncertainties - The New Indian Express",
+      "publisher": "The New Indian Express",
+      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQdnhlSnphTmRiZEhsV2RlRS1Dc3RGWGJNM2NtUUFBaXNuUnIzQXZYZmRvRUVxUGgxX1F0OHZIZWlzLXlEUlQwMVBGNjIxbW90OFBNMG1KUHdtN2ZBOE5fU19EZzRQbDlxck4taTVzUmdEVWZJOEtwSzBNNVlZcVZPdzRfd09aRkxMYkszaFgxcVRDS09uTk5iY3E2U3g5eGxtSmpEcEdZQm91RDJJQ0dDSWtqVlJkTDVkUFRaa25OdTBuRGhPaTg2UXhnSkxwUHhvSDBBc2pxZ0M0dzVvQmtLXzByczRUQQ?oc=5"
+    },
+    {
+      "title": "Big Tech sheds nearly $900bn in rout over soaring AI spending - Financial Times",
+      "publisher": "Financial Times",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOSnZtb2F5QWc3U085dm1WalA2WEV0VnhyYnN4azV0WE9yRDhtSGRiUXFfTUF4dUkxNTYyMGItYUJxN2k5ZFdXS3hPb09sLVdsc3ZNV2ZqdGwxdm9VN3l6YW42bFVIcjdSS2ZjdFJyYlNCQVBiazU4dGhBVDRGYW9wLUhiZEU?oc=5"
+    },
+    {
+      "title": "AI buildout hits snag as Google and Microsoft put off raising capex forecasts - CNBC",
+      "publisher": "CNBC",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1pM0RNUDRnMFJXZkRoZG5ZdVVXRHozTUtidUxjMXdKbFBHVW9hTjg1NlFPcFcwLTZCQzM3cTRQYnpzRE1LQ3pNUkpxQmN1OEdnN25fZGhNUDlMZ0w0VW5kUGdoWWd4ZDFWNlZBTHFQaVpDd3B2M01UN3ZrcWzSAYIBQVVfeXFMUDhDNzNOa204RlZoNUNMTUZnWEVNY0RVbmtlNjQwc0N6YU0wWlhla29xRE5GRkhZbmwxRjEwNE9lZ2VoaG9mU0loVVJGaEprdmY2TkE3U1luNlE3Q2g2VmJVSlZkQ0RPYVdpSGYzV1lSMFZzZmRjU2lFanhOUThXUzZGZw?oc=5"
+    },
+    {
+      "title": "Nasdaq faces $2 trillion wipeout in October as AI spending fears deepen - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPNkNDLXpLZ1A0VklROTJVenpDRlZBWE10ZE1qWWk4ZFVqalgzWWJFdThSd2ZKeUhDanVRQjRhVVVZZGlGZzY1UWYzLXRSZTNHNDNPTkZZRUFJazAzYmV6NzF3QUJtNjhkWHY5OHZNZWVsSFdyY0NScGJadnE3T0dPTWtBUXZOaDJPYWJuX1NOVXkwbGlQSW9MdjlXTlNQTzdLZEdzTHFsQ2gzaEcwTkNHZTNCNF9hMG9lazFHRXItSzg?oc=5"
+    },
+    {
+      "title": "ECB Leaves Rates Unchanged as Challenges Mount for Lagarde’s Successor - WSJ",
+      "publisher": "WSJ",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOcG81Z2FUM3Y0clJEaWJ6SFhSRU5Ed3JuVUZGZXZpOXRBZVN4YmhWMUJ2eDZJNWttc1NCV0dxWFVWV0ppM2d5OE1zVDZ5V1RyMHFUbGdQcG9QelFheHQwMl9oRUwwX3V0SEpCdGxJcVVvbVFDTU5CeVdzSXA3WEhuT1pWa1JsWXdNTksxd2pPQjBmSmd0c3g3YjZlV1dxamF3eEQxOWp4YTVpRWE3UmRoT3lXZ2hfNzVOTFFCZzVPZw?oc=5"
+    },
+    {
+      "title": "ECB's Lagarde steps down, saying she can't remain neutral on world events - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOZldaRFJxZExRTzZ2T1lfc1pYUWtpbFJwRHk0YmpCaHdkYXd4ZV9vbGpmellrN1Ztck8wallTMnphd1V6VWFLckM4bTRiX1c5VmZmSUZwdUROem02ZXlUY3NKT1poTEhFWDRQOThHcEQ5YkMzY1gxU1NoTm5mdFhVR2xWakJSYUFVSTRKS0Rva1JIR0FhOHFJck5Ic3AzNzNWQTJuMXFySnNFcDNIYXN0TWtn?oc=5"
+    },
+    {
+      "title": "Christine Lagarde is resigning early to let EU leaders pick a successor before France's elections - Fortune",
+      "publisher": "Fortune",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQT0ZULXZqVG03S2wtMFE5SHVoS1c4SmZmSUhxTzRjSFdTdllkOFliM1Ewa1MxTjhaTS0yYUQ3QW9xODRrR0xjNHlBZkItQlBrc2NMdGgwR3EzVlN4UXpJeFZlOEdqX3ZhWjJaZ0w0SEVhTnBOTUZodmh1ampsYmI5dC1kTlB5ZXVFcWJURg?oc=5"
+    },
+    {
+      "title": "Christine Lagarde to step down as ECB president in February - Financial Times",
+      "publisher": "Financial Times",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNemp5dVBmbU1jdWFEX1pWbmZzSUxhbDU4bzBXdEM4cWw4UTBYMDBERnZId051WTVyekp4NDZLQUlXLU40NE95LXhnUTE4S1hISlZKV3prVkNTOS1rREZ1dVloeVlkSGtVdmNmbWhRck9hTTkwbWZhT3ZaVjliWkRwQ01JeXA?oc=5"
+    },
+    {
+      "title": "Anthropic plans to sell $3.5 billion of shares to Japan investors in IPO, filing shows - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOazUtcTBWVFNLd21jTk9YOFRDRHoyc2ZuV1haZ21JaUdIei1leFkxVVF5V0JpLXJGdV9raXhrV0k0bU1xM0g5TnR6cTA5dWNFZ3VVVUo1UHVyU3pUUWw0YjFreXNTZ3Q4TXdoazBwT1dxRU52bTkxMXlEbG95LVY1eUlLMGZHUk9hQUd4aVZxWkxMUzBMVmhELWNpaUhSaGR3V19UYy00R3UzMUVkWU80ZHl0aW9URGdlQ19RX2dmZHFreHNS?oc=5"
+    },
+    {
+      "title": "Marvell to buy Lumentum in $115 billion deal in AI data-center bet - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOelFpUlRuWUdrd3oyYkZTNkxFMW9mQlBTY01YTl9ERVRsYTc1VGNWQjR1VF90aEcwY01sTDNXN3NiWVBZNTY4aGVFSlR3WlBlb0laSkptRS1EMF9fMGlna1BXSVExN2dFVGlTNWMyQzYyM1RsYm5pMGxXOWxhbmp1UGRYVjk3RVA0b25WWVZPcFZMS05IOE1CTUgzY1BsQWY3MW5DbDF1bGs1M185UlM4cjlB?oc=5"
+    },
+    {
+      "title": "[Closing Market] KOSPI Surges Past 6,000 on SK hynix Earnings - Businesskorea",
+      "publisher": "Businesskorea",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE56RHFLUXZKQWRJeXk1Z3lZTkhZRFE2Q19zX21xWkdRWmZJakx6dGp5QTI2LWlPWU5hRFlNZnp3VlE0OENyNkhpLS1PbjIycng3WW16MEVWRnRvbFFlRVpJNF9yejF1eEtZQW5TeDBFYy0xOEFC?oc=5"
+    },
+    {
+      "title": "KOSPI rallies over 2% as investors look past US tech rout - The Korea Times",
+      "publisher": "The Korea Times",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQQUxTRVVjbWV3WkZzQ3FnczJ0TEZXSGdkNkNWc1lYT1I3LXZiR19HemgyX3BORzlrenJrU08xWlRoZFhWY2hIVVpUNFlweUNsR0h5YUVpMUw5ODhzQ2JsWW9zNkpMSXJuSDZLTjVNQXdRVXJxYUYyek5MWkNQdW5iSlppaE5wZ3lHbTBXal93RVh3czlpMU5zdGUxb2M3dU5LUVZvbNIBqgFBVV95cUxNSWFIUVZlLTJxR1U5VmtJQk8zR3M3RVZWUE1fam5MTXFNdV9wQkFPZUZfWFE3U0ZNZVJPaXI5M3JPUlRUNGVhT1FSQkVtSDZSbWgwT1NmOFJLTVdYRjRYeHZTbmhCdzRtSWdQUS1ra0NtMERudFRlUnJCai1RNWRkODlVTHQ2OHphSGpzbWl6aVFjRlkzWlVud0FLdFJBbWFIbUhRM29PZVF2dw?oc=5"
+    },
+    {
+      "title": "Week Ahead for FX, Bonds: U.S. Midterms, Jobs Data in Focus; BOE Expected to Raise Rates - WSJ",
+      "publisher": "WSJ",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQNnh0RUxfMGk2OW1JOE1LUUFsNkJzamc4RkZKODNFTlVSWk1wR2VseGlFWF9zZ1RKdTlrNVZldm94LWpIa3hHcVdjV3NmdlhqdWh5UlE3UTVyR1AyWUhrRGlpTVN3RkJOZGE4WVBDM0FHdW9jYmZua3RBWFhVOV80alRyUkY2V0ROb0Vrem1Jbmw3Qml2Zm1WZERhdWFCVUIyazVDc1VWemVEall3dGhDVG1RaE9Lc05KVXpDMg?oc=5"
+    },
+    {
+      "title": "Bank of England poised to raise rates but may push back on bets for more - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPOFVxcW9DcnR5S1BVdndGZkhXT1F1SUR0WEZTbkRsSzRLSmtiOXFZdXNneUs4VXVCaV9ldFZQVVdHMnVvWDBrZERDTFo5bHc4NE9GelZKbmloVi1VVTVmN0tiZXFUSW5fMFIzMXZCWE5CWHd5TEdHc2VvRVA3T1VCRV9XampjTDBmd3BpTlkyNjBScTJReVhCanlUX21XX1dhbWc?oc=5"
+    },
+    {
+      "title": "Millions in UK brace to remortgage on worse deals as rate rise looms - The Guardian",
+      "publisher": "The Guardian",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPR0xfdi1WS1FBanVxeHdBd1MyaGdDaE9WSDdHUTVBNlRwZmxfd3lYOVVkVkMzTVB1b0g5VWo1SEtaVDZGRzdjMTFOY044dTBycDlMLUp3dHFUcmlkRG5oeEV0eGl4cGQ4bjdRdXBPWlBXYjAxQ3YzdUhDdUlVOTIzVHhDY1VNbnc3TWZMWVc1LUQwQQ?oc=5"
+    },
+    {
+      "title": "lin_ex991.htmEXHIBIT 99.1",
+      "publisher": "SEC EDGAR",
+      "url": "https://www.sec.gov/Archives/edgar/data/1707925/000165495426009199/lin_ex991.htm"
+    },
+    {
+      "title": "China’s factory activity slips as new export orders weaken - AP News",
+      "publisher": "AP News",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOUjYxcFNzbUhDZ2VfVXowN2ZEM0ppaVNFV2NMT0h1aHBZZGZSRkVRMGQwNGpGc0ZBb2hYbXdjSWVoc0VoNE1xWENGLTdOcWswcWdVaW55TmlybjFNVnUzMGMyQ1lLVTM0Q0FWNDdILWx4cUszekVUMGRSenVnNXdfZXpOTmVnSW16bWVzTGFqRHFoMDNtUWFfUUxsYlQ5U3ZZ?oc=5"
+    },
+    {
+      "title": "Iran's IRGC Navy says two tankers 'exploded' after hitting mines in Hormuz - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNZmk2dmxjdk1sOW96UkZiaUlJVXhzc1pJMjZJUnY2WGtvaXd4aXRJY3d4UTNoUmFJdUVQQjlkb0JPSmxEc2YzS1JOZ2NSWmpTUnhzYzBiU1hfeXBvb2F2WEp2NHc5YkFfUUNKSHc2NW1PMUVKT0xqUTdOa0tfUmZpQWE2SDFtdzJ5TmZleWpLd0Zid1JWR2Z0d0dOeVMwekFzNTNTYndHMmMyV0poZ2h0UmFOVWc2M3o3Z2h6TUR2SQ?oc=5"
+    },
+    {
+      "title": "Marvell Technology in advanced talks to buy optics maker Lumentum, source says - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNR2xWTFdaYmFQNV9rVnZVcmltcTJqWGoyUVBzUlVPcDJaZm4xLXVCMmt4Szk2YnF1VjVXUEdjV0xDbGxRdjc2WjBzQjVnTnU0SWpSWkJmdlg0WS15eGNhc09ZNWpHUVc2Znk0aE9haUpPVlZOeUdqNl9CSzdHaUtITm1BTWh1d0tKTWtCYWM1M183ekZkSGptb3B4MUthVzhiM1hUOEhR?oc=5"
+    },
+    {
+      "title": "Supermarket freezers in Belgium, Sweden and Luxembourg hit by suspected cyber-attack - BBC",
+      "publisher": "BBC",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBhcE44b2ZsOG9fMFFnNTY4Q3hZUDk5QW9Oa1JkUkRKLVJhcGJHellrUU5kdExKNVpGRnJhbHJSZjRhODJfa0xhN05iQ2czckM3TjJ4TU5WQ1Z0T00?oc=5"
+    }
+  ],
+  "data": {
+    "markets": [
+      {
+        "symbol": "^GSPC",
+        "label": "S&P 500",
+        "region": "US",
+        "date": "2026-10-30",
+        "close": 7580.07,
+        "change1w": -0.57,
+        "change1m": -1.85
+      },
+      {
+        "symbol": "^IXIC",
+        "label": "Nasdaq Composite",
+        "region": "US",
+        "date": "2026-10-30",
+        "close": 25437,
+        "change1w": -2,
+        "change1m": -6.45
+      },
+      {
+        "symbol": "^RUT",
+        "label": "Russell 2000",
+        "region": "US",
+        "date": "2026-10-30",
+        "close": 2811.84,
+        "change1w": 1.29,
+        "change1m": -0.74
+      },
+      {
+        "symbol": "^VIX",
+        "label": "VIX (S&P 500 implied volatility)",
+        "region": "US",
+        "date": "2026-11-02",
+        "close": 19.41,
+        "change1w": 5.55,
+        "change1m": 25.06
+      },
+      {
+        "symbol": "^TNX",
+        "label": "US 10-year yield",
+        "region": "US",
+        "date": "2026-10-30",
+        "close": 4.93,
+        "change1w": -1.18,
+        "change1m": -7.19
+      },
+      {
+        "symbol": "DX-Y.NYB",
+        "label": "US Dollar Index",
+        "region": "US",
+        "date": "2026-11-02",
+        "close": 101.63,
+        "change1w": -0.33,
+        "change1m": -0.53
+      },
+      {
+        "symbol": "^STOXX50E",
+        "label": "Euro Stoxx 50",
+        "region": "Euro",
+        "date": "2026-11-02",
+        "close": 6126.2,
+        "change1w": 0.16,
+        "change1m": -1.86
+      },
+      {
+        "symbol": "^GDAXI",
+        "label": "DAX",
+        "region": "Euro",
+        "date": "2026-11-02",
+        "close": 25788.37,
+        "change1w": 1.49,
+        "change1m": 2.12
+      },
+      {
+        "symbol": "^FCHI",
+        "label": "CAC 40",
+        "region": "Euro",
+        "date": "2026-11-02",
+        "close": 7973.66,
+        "change1w": 1.61,
+        "change1m": 1.78
+      },
+      {
+        "symbol": "^IBEX",
+        "label": "IBEX 35",
+        "region": "Euro",
+        "date": "2026-11-02",
+        "close": 18723.5,
+        "change1w": -1.63,
+        "change1m": -2.99
+      },
+      {
+        "symbol": "^FTSE",
+        "label": "FTSE 100",
+        "region": "Euro",
+        "date": "2026-11-02",
+        "close": 10708.48,
+        "change1w": -0.55,
+        "change1m": 2.01
+      },
+      {
+        "symbol": "EURUSD=X",
+        "label": "EUR/USD",
+        "region": "Euro",
+        "date": "2026-11-02",
+        "close": 1.12,
+        "change1w": 0.02,
+        "change1m": -0.31
+      },
+      {
+        "symbol": "^N225",
+        "label": "Nikkei 225",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 63081.86,
+        "change1w": 1.43,
+        "change1m": -9.81
+      },
+      {
+        "symbol": "^HSI",
+        "label": "Hang Seng",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 23393.32,
+        "change1w": 0.78,
+        "change1m": -2.69
+      },
+      {
+        "symbol": "000001.SS",
+        "label": "Shanghai Composite",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 3638.03,
+        "change1w": -1.61,
+        "change1m": -4.56
+      },
+      {
+        "symbol": "^BSESN",
+        "label": "BSE Sensex",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 75692.78,
+        "change1w": 2.83,
+        "change1m": 4.57
+      },
+      {
+        "symbol": "^KS11",
+        "label": "KOSPI",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 5859.08,
+        "change1w": 7.12,
+        "change1m": -15.59
+      },
+      {
+        "symbol": "JPY=X",
+        "label": "USD/JPY",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 157.89,
+        "change1w": 0.67,
+        "change1m": 0.1
+      },
+      {
+        "symbol": "CNY=X",
+        "label": "USD/CNY",
+        "region": "Asia",
+        "date": "2026-11-02",
+        "close": 6.64,
+        "change1w": -0.62,
+        "change1m": -1.01
+      },
+      {
+        "symbol": "CL=F",
+        "label": "WTI crude oil",
+        "region": "Global",
+        "date": "2026-11-02",
+        "close": 99.54,
+        "change1w": -2.18,
+        "change1m": 11.3
+      },
+      {
+        "symbol": "BZ=F",
+        "label": "Brent crude oil",
+        "region": "Global",
+        "date": "2026-11-02",
+        "close": 108.63,
+        "change1w": -6.2,
+        "change1m": 8.28
+      },
+      {
+        "symbol": "GC=F",
+        "label": "Gold",
+        "region": "Global",
+        "date": "2026-11-02",
+        "close": 3909.4,
+        "change1w": -3.19,
+        "change1m": -5.95
+      },
+      {
+        "symbol": "HG=F",
+        "label": "Copper",
+        "region": "Global",
+        "date": "2026-11-02",
+        "close": 6.51,
+        "change1w": 0.07,
+        "change1m": -1.11
+      },
+      {
+        "symbol": "BTC-USD",
+        "label": "Bitcoin",
+        "region": "Global",
+        "date": "2026-11-02",
+        "close": 77622.59,
+        "change1w": -4.49,
+        "change1m": -8.42
+      }
+    ],
+    "macro": {
+      "US": [
+        {
+          "id": "GDPC1",
+          "label": "Real GDP growth, YoY",
+          "unit": "%",
+          "date": "2026-07-01",
+          "value": 2.07,
+          "prior": {
+            "date": "2026-04-01",
+            "value": 2.19
+          },
+          "stale": false
+        },
+        {
+          "id": "CPIAUCSL",
+          "label": "CPI inflation, YoY",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 4.02,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.71
+          },
+          "stale": false
+        },
+        {
+          "id": "CPILFESL",
+          "label": "Core CPI inflation, YoY",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 2.79,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 2.76
+          },
+          "stale": false
+        },
+        {
+          "id": "UNRATE",
+          "label": "Unemployment rate",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 4.2,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 4.1
+          },
+          "stale": false
+        },
+        {
+          "id": "FEDFUNDS",
+          "label": "Fed funds rate",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.75,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.63
+          },
+          "stale": false
+        },
+        {
+          "id": "DGS2",
+          "label": "2-year Treasury yield",
+          "unit": "%",
+          "date": "2026-10-29",
+          "value": 4.61,
+          "prior": {
+            "date": "2026-10-28",
+            "value": 4.67
+          },
+          "stale": false
+        },
+        {
+          "id": "DGS10",
+          "label": "10-year Treasury yield",
+          "unit": "%",
+          "date": "2026-10-29",
+          "value": 4.98,
+          "prior": {
+            "date": "2026-10-28",
+            "value": 5.05
+          },
+          "stale": false
+        },
+        {
+          "id": "T10Y2Y",
+          "label": "10y minus 2y Treasury spread",
+          "unit": "pp",
+          "date": "2026-10-30",
+          "value": 0.38,
+          "prior": {
+            "date": "2026-10-29",
+            "value": 0.37
+          },
+          "stale": false
+        },
+        {
+          "id": "BAMLH0A0HYM2",
+          "label": "High-yield credit spread",
+          "unit": "pp",
+          "date": "2026-10-29",
+          "value": 3.26,
+          "prior": {
+            "date": "2026-10-28",
+            "value": 3.14
+          },
+          "stale": false
+        },
+        {
+          "id": "GFDEGDQ188S",
+          "label": "Federal debt, % of GDP",
+          "unit": "%",
+          "date": "2026-04-01",
+          "value": 121.19,
+          "prior": {
+            "date": "2026-01-01",
+            "value": 122.44
+          },
+          "stale": false
+        },
+        {
+          "id": "FYFSGDA188S",
+          "label": "Federal surplus/deficit, % of GDP",
+          "unit": "%",
+          "date": "2025-01-01",
+          "value": -5.75,
+          "prior": {
+            "date": "2024-01-01",
+            "value": -6.24
+          },
+          "stale": false
+        }
+      ],
+      "Euro": [
+        {
+          "id": "CLVMNACSCAB1GQEA19",
+          "label": "Euro area real GDP growth, YoY",
+          "unit": "%",
+          "date": "2026-04-01",
+          "value": 1.19,
+          "prior": {
+            "date": "2026-01-01",
+            "value": 0.55
+          },
+          "stale": false
+        },
+        {
+          "id": "CP0000EZ19M086NEST",
+          "label": "Euro area HICP inflation, YoY",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.75,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.23
+          },
+          "stale": false
+        },
+        {
+          "id": "ECBDFR",
+          "label": "ECB deposit facility rate",
+          "unit": "%",
+          "date": "2026-11-02",
+          "value": 2.5,
+          "prior": {
+            "date": "2026-11-01",
+            "value": 2.5
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01DEM156N",
+          "label": "Germany 10-year yield",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.47,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.19
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01ITM156N",
+          "label": "Italy 10-year yield",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 3.99,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 3.88
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01FRM156N",
+          "label": "France 10-year yield",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 4.48,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 4.03
+          },
+          "stale": false
+        },
+        {
+          "id": "eurostat:une_rt_m",
+          "label": "Euro area unemployment rate",
+          "unit": "%",
+          "date": "2026-09",
+          "value": 6.5,
+          "prior": {
+            "date": "2026-08",
+            "value": 6.5
+          },
+          "stale": false
+        },
+        {
+          "id": "eurostat:gov_10q_ggdebt",
+          "label": "Euro area government debt, % of GDP",
+          "unit": "%",
+          "date": "2026-Q2",
+          "value": 88.8,
+          "prior": {
+            "date": "2026-Q1",
+            "value": 88.4
+          },
+          "stale": false
+        }
+      ],
+      "Asia": [
+        {
+          "id": "IRLTLT01JPM156N",
+          "label": "Japan 10-year yield",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.05,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 2.94
+          },
+          "stale": false
+        },
+        {
+          "id": "IR3TIB01CNM156N",
+          "label": "China 3-month interbank rate",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 1.49,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 1.54
+          },
+          "stale": false
+        },
+        {
+          "id": "GGGDTAJPA188N",
+          "label": "Japan government debt, % of GDP (IMF)",
+          "unit": "%",
+          "date": "2023-01-01",
+          "value": 239.97,
+          "prior": null,
+          "stale": true
+        },
+        {
+          "id": "GGGDTACNA188N",
+          "label": "China government debt, % of GDP (IMF)",
+          "unit": "%",
+          "date": "2024-01-01",
+          "value": 88.33,
+          "prior": {
+            "date": "2023-01-01",
+            "value": 82.01
+          },
+          "stale": true
+        }
+      ]
+    },
+    "fearAndGreed": {
+      "score": 25,
+      "rating": "extreme fear",
+      "previousWeek": 30,
+      "previousMonth": 38,
+      "date": "2026-11-02"
+    }
+  },
+  "meta": {
+    "model": "claude-opus-5",
+    "generatedAt": "2026-11-02T13:16:09.899Z",
+    "toolCalls": 26,
+    "usage": {
+      "input_tokens": 18,
+      "cache_creation_input_tokens": 53459,
+      "cache_read_input_tokens": 287678,
+      "output_tokens": 7875
+    },
+    "unavailableSources": []
+  },
+  "audio": {
+    "url": "https://github.com/jaudi/financeplots-portal/releases/download/observer-2026-11-02/the-observer-2026-11-02.mp3",
+    "durationSeconds": 683
+  }
+}
