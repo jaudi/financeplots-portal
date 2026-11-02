@@ -24,6 +24,7 @@ import {
 } from "recharts";
 import { trackEvent } from "@/lib/analytics";
 
+import NumberInput from "@/components/NumberInput";
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const fmt = (n: number) =>
@@ -63,12 +64,11 @@ function NumInput({
         {prefix && (
           <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>
         )}
-        <input
-          type="number"
+        <NumberInput
           min={min}
           step={step}
           value={value}
-          onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
       </div>
@@ -259,15 +259,15 @@ export default function BreakEvenPage() {
       {/* Tool header bar */}
       <div className="fixed top-[65px] left-0 right-0 z-40 bg-[#0d1426]/95 backdrop-blur border-b border-gray-800 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <Link
               href="/tools/business"
-              className="text-gray-400 hover:text-white text-sm transition"
+              className="text-gray-400 hover:text-white text-sm transition shrink-0 whitespace-nowrap"
             >
               {tc("backBusiness")}
             </Link>
             <span className="text-gray-700 hidden sm:block">|</span>
-            <h1 className="text-white font-bold hidden sm:block">
+            <h1 className="text-white font-bold text-sm sm:text-base truncate">
               {t("title")}
             </h1>
           </div>
@@ -275,9 +275,9 @@ export default function BreakEvenPage() {
           <button
             onClick={handleExportPdf}
             disabled={invalid || isExporting}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-4 py-2 rounded-lg text-sm transition"
+            className="flex items-center gap-2 shrink-0 whitespace-nowrap bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold px-4 py-2 rounded-lg text-sm transition"
           >
-            {isExporting ? tc("generating") : tc("exportPdf")}
+            {isExporting ? tc("generating") : <><span className="sm:hidden">📄 PDF</span><span className="hidden sm:inline">{tc("exportPdf")}</span></>}
           </button>
         </div>
       </div>

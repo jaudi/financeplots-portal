@@ -10,6 +10,7 @@ import {
   type PitchData, type SlideKey,
 } from "@/lib/pitch-deck";
 
+import NumberInput from "@/components/NumberInput";
 // ── Form helpers ─────────────────────────────────────────────────────────────
 
 function Label({ children }: { children: React.ReactNode }) {
@@ -48,12 +49,11 @@ function NumInput({ value, onChange, min, step = 1, prefix }: { value: number; o
   return (
     <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
       {prefix && <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>}
-      <input
-        type="number"
+      <NumberInput
         value={value}
         min={min}
         step={step}
-        onChange={e => onChange(Number(e.target.value))}
+        onChange={onChange}
         className="bg-transparent w-full text-sm text-white outline-none min-w-0"
       />
     </div>
@@ -508,8 +508,8 @@ export default function PitchDeckPage() {
                             placeholder={["Product & Engineering", "Sales & Marketing", "Operations", ""][i]} />
                         </div>
                         <div className="w-20">
-                          <input type="number" value={u.pct} min={0} max={100}
-                            onChange={e => updArr<typeof u>("useOfFunds", i, "pct", Number(e.target.value))}
+                          <NumberInput value={u.pct} min={0} max={100}
+                            onChange={v => updArr<typeof u>("useOfFunds", i, "pct", v)}
                             className="w-full bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500" />
                         </div>
                         <span className="text-gray-500 text-sm">%</span>

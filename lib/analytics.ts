@@ -17,7 +17,8 @@ export type AppEvent =
   | "share_link" // a link to the figures on screen copied
   | "connector_copy" // the MCP URL or Claude Code command copied on /mcp
   | "video_play" // an explainer video opened (VideoTeaser)
-  | "email_signup"
+  | "email_signup" // asked for The Observer by email (a confirmation link was sent)
+  | "email_confirm" // clicked through and confirmed it
   | "contact_click";
 
 type Props = Record<string, string | number | boolean>;

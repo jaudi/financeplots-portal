@@ -6,10 +6,12 @@ import CompanyHistory from "@/components/CompanyHistory";
 import CompanySnowflake, { type SnowflakeLayer } from "@/components/CompanySnowflake";
 import { AddToListButton } from "@/components/MyList";
 import StocksNav from "@/components/StocksNav";
-import { getCompanyProfile, getCompanyProfiles, INDEX_LABELS, type CompanyMeasure, type CompanyProfile } from "@/lib/company";
+import PositionBar from "@/components/PositionBar";
+import { getCompanyProfile, getCompanyProfiles, INDEX_LABELS, plainSentence, type CompanyProfile } from "@/lib/company";
+import { headquartersOf } from "@/lib/company-map";
 import { tryFinancialHistory } from "@/lib/edgar";
 import { normaliseSymbol } from "@/lib/price-types";
-import { formatMetric, MAX_VS, type MetricKey } from "@/lib/stock-metrics";
+import { formatMetric, MAX_VS } from "@/lib/stock-metrics";
 
 // A page per company, Simply Wall St-style but neutral (UK MAR, CLAUDE.md):
 // the reported figures, a plain-English line for each, and where each sits in
@@ -38,48 +40,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: { index: indexable, follow: true },
     ...(indexable && { alternates: { canonical: `https://www.financeplots.com/tools/stocks/${encodeURIComponent(ticker)}` } }),
   };
-}
-
-const n = (v: number, dp = 1) => Math.abs(v).toLocaleString("en-GB", { maximumFractionDigits: dp });
-
-/** What the figure means, in a sentence. Descriptive only: never "cheap",
- *  "strong", "overbought" or any other judgement. */
-function plain(key: MetricKey, v: number): string {
-  switch (key) {
-    case "per": return `The share price is ${n(v)} times the last twelve months' earnings per share.`;
-    case "per_normalizado": return `The share price is ${n(v)} times earnings per share averaged over recent years.`;
-    case "precio_valor_libros": return `The market values the company at ${n(v)} times the accounting value of its equity.`;
-    case "ev_ebit": return `The company's value including its debt is ${n(v)} times its operating profit.`;
-    case "fcf_yield": return v >= 0 ? `Free cash flow equals ${n(v)}% of the company's market value.` : `Free cash flow was negative, equal to −${n(v)}% of market value.`;
-    case "roe": return `Each 100 of shareholders' money produced ${v < 0 ? "a loss of " : ""}${n(v)} of net profit.`;
-    case "roa": return `Each 100 of assets produced ${v < 0 ? "a loss of " : ""}${n(v)} of net profit.`;
-    case "roic": return `Each 100 invested by lenders and owners produced ${v < 0 ? "a loss of " : ""}${n(v)} of profit.`;
-    case "margen_operativo": return v >= 0 ? `Of every 100 in sales, ${n(v)} was left as operating profit.` : `Operating costs exceeded sales by ${n(v)} per 100 of sales.`;
-    case "deuda_patrimonio": return `Total debt equals ${n(v, 0)}% of shareholders' equity.`;
-    case "deuda_neta_ebitda": return v < 0 ? "The company holds more cash than debt." : `Net debt equals ${n(v)} years of operating earnings (EBITDA).`;
-    case "cobertura_intereses": return `Operating profit was ${n(v)} times the interest bill.`;
-    case "crecimiento_ingresos_normalizado": return `Latest revenue is ${n(v)}% ${v >= 0 ? "above" : "below"} the average of earlier reported years.`;
-    case "crecimiento_beneficios_normalizado": return `Latest net profit is ${n(v)}% ${v >= 0 ? "above" : "below"} the average of earlier reported years.`;
-    default: return "";
-  }
-}
-
-function PositionBar({ m, indexLabel }: { m: CompanyMeasure; indexLabel: string }) {
-  if (m.position === null) return <p className="text-xs text-gray-600">No figure for this company.</p>;
-  const p = Math.round(m.position);
-  return (
-    <div>
-      <div className="relative h-2 rounded-full bg-gray-800" role="img" aria-label={`Higher than ${p}% of the ${indexLabel}`}>
-        <div className="absolute inset-y-0 left-1/2 w-px bg-gray-700" />
-        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-blue-400 ring-2 ring-[#0d1426]" style={{ left: `${p}%` }} />
-      </div>
-      <div className="flex justify-between text-[11px] text-gray-500 mt-1">
-        <span>lowest</span>
-        <span className="text-gray-400">higher than {p}% of the {indexLabel}</span>
-        <span>highest</span>
-      </div>
-    </div>
-  );
 }
 
 /** One snowflake layer per company with figures, in the order typed. */
@@ -113,6 +73,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
     ? await Promise.all([getCompanyProfiles([ticker, ...vs]), tryFinancialHistory(ticker)])
     : [[null], null];
   const indexLabel = profile ? INDEX_LABELS[profile.index] : "";
+  const hq = profile ? headquartersOf(profile.company.ticker) : null;
   const asOf = profile?.generatedAt
     ? new Date(profile.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
     : null;
@@ -133,6 +94,14 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                 {profile && (
                   <p className="text-gray-400 text-sm mt-1">
                     {profile.company.sector} · in the {profile.memberOf.map((s) => INDEX_LABELS[s]).join(" and the ")}
+                  </p>
+                )}
+                {hq && (
+                  <p className="text-gray-500 text-sm mt-0.5">
+                    📍 {hq.city}, {hq.country} ·{" "}
+                    <Link href={`/tools/company-map?focus=${encodeURIComponent(ticker)}`} className="text-blue-400 hover:underline">
+                      See it on the company map
+                    </Link>
                   </p>
                 )}
                 <div className="flex flex-wrap gap-2 mt-4">
@@ -190,8 +159,8 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                                 </p>
                                 <p className="font-mono text-sm text-gray-200 shrink-0">{formatMetric(m.value, m.metric)}</p>
                               </div>
-                              {m.value !== null && <p className="text-xs text-gray-400 mt-0.5 mb-2">{plain(m.metric.key, m.value)}</p>}
-                              <PositionBar m={m} indexLabel={indexLabel} />
+                              {m.value !== null && <p className="text-xs text-gray-400 mt-0.5 mb-2">{plainSentence(m.metric.key, m.value)}</p>}
+                              <PositionBar position={m.position} indexLabel={indexLabel} />
                             </div>
                           ))}
                         </div>

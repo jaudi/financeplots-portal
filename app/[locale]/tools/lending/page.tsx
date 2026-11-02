@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { trackEvent } from "@/lib/analytics";
 
+import NumberInput from "@/components/NumberInput";
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -38,7 +39,7 @@ function NumInput({ label, value, onChange, min = 0, step = 1000, prefix: prefix
       <label className="text-xs text-gray-400 font-medium">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
         {prefix && <span className="text-gray-500 text-sm mr-1.5 shrink-0">{prefix}</span>}
-        <input type="number" min={min} step={step} value={value} onChange={e => onChange(parseFloat(e.target.value) || 0)} className="bg-transparent text-white text-sm w-full outline-none" />
+        <NumberInput min={min} step={step} value={value} onChange={onChange} className="bg-transparent text-white text-sm w-full outline-none" />
       </div>
     </div>
   );
@@ -166,14 +167,14 @@ export default function LendingPage() {
       />
       <div className="fixed top-[65px] left-0 right-0 z-40 bg-[#0d1426]/95 backdrop-blur border-b border-gray-800 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link href="/tools/personal" className="text-gray-400 hover:text-white text-sm transition">{tc("backPersonal")}</Link>
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/tools/personal" className="text-gray-400 hover:text-white text-sm transition shrink-0 whitespace-nowrap">{tc("backPersonal")}</Link>
             <span className="text-gray-700 hidden sm:block">|</span>
-            <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
+            <h1 className="text-white font-bold text-sm sm:text-base truncate">{t("title")}</h1>
           </div>
           <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
-          <button onClick={handleExportPdf} disabled={isExporting} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
-            {isExporting ? tc("generating") : tc("exportPdf")}
+          <button onClick={handleExportPdf} disabled={isExporting} className="flex items-center gap-2 shrink-0 whitespace-nowrap bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition">
+            {isExporting ? tc("generating") : <><span className="sm:hidden">📄 PDF</span><span className="hidden sm:inline">{tc("exportPdf")}</span></>}
           </button>
         </div>
       </div>

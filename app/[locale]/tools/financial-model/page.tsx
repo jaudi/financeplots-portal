@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { trackEvent } from "@/lib/analytics";
 
+import NumberInput from "@/components/NumberInput";
 const fmt = (n: number) => n.toLocaleString("en-GB", { maximumFractionDigits: 0 });
 const fmtM = (n: number) => n.toLocaleString("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
@@ -32,11 +33,10 @@ function PctInput({ label, value, onChange }: { label: string; value: number; on
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500 transition">
-        <input
-          type="number"
+        <NumberInput
           step={0.5}
           value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
         <span className="text-gray-500 text-sm ml-1 shrink-0">%</span>
@@ -52,12 +52,11 @@ function NumInput({ label, value, onChange, step = 10000 }: { label: string; val
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500 transition">
         <span className="text-gray-500 text-sm mr-1.5 shrink-0">{currency}</span>
-        <input
-          type="number"
+        <NumberInput
           min={0}
           step={step}
           value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
       </div>
@@ -70,12 +69,11 @@ function DaysInput({ label, value, onChange, unit }: { label: string; value: num
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-400">{label}</label>
       <div className="flex items-center bg-[#111827] border border-gray-700 rounded-lg px-3 py-1.5 focus-within:border-blue-500 transition">
-        <input
-          type="number"
+        <NumberInput
           min={0}
           step={1}
           value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
+          onChange={onChange}
           className="bg-transparent text-white text-sm w-full outline-none"
         />
         <span className="text-gray-500 text-sm ml-1 shrink-0">{unit}</span>
@@ -320,18 +318,18 @@ export default function FinancialModelPage() {
       />
       <div className="fixed top-[65px] left-0 right-0 z-40 bg-[#0d1426]/95 backdrop-blur border-b border-gray-800 px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link href="/tools/business" className="text-gray-400 hover:text-white text-sm transition">{tc("backBusiness")}</Link>
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/tools/business" className="text-gray-400 hover:text-white text-sm transition shrink-0 whitespace-nowrap">{tc("backBusiness")}</Link>
             <span className="text-gray-700 hidden sm:block">|</span>
-            <h1 className="text-white font-bold hidden sm:block">{t("title")}</h1>
+            <h1 className="text-white font-bold text-sm sm:text-base truncate">{t("title")}</h1>
           </div>
           <CurrencyPicker label={tc("currency")} hideLabel className="ml-auto" />
           <button
             onClick={handleExportPdf}
             disabled={isExporting}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition"
+            className="flex items-center gap-2 shrink-0 whitespace-nowrap bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold px-4 py-2 rounded-lg text-sm transition"
           >
-            {isExporting ? tc("generating") : tc("exportPdf")}
+            {isExporting ? tc("generating") : <><span className="sm:hidden">📄 PDF</span><span className="hidden sm:inline">{tc("exportPdf")}</span></>}
           </button>
         </div>
       </div>

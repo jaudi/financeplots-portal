@@ -17,6 +17,7 @@
     "observerCta": "Leer la edición de esta semana →",
     "observerAll": "Todas las ediciones",
     "observerDisclaimer": "Escrito por un agente de IA a partir de datos y noticias públicas, y comprobado automáticamente antes de publicarse. No es asesoramiento de inversión.",
+    "observerEmail": "Recíbelo por email cada lunes →",
     "latestArticlesTitle": "Lo último del blog",
     "blogLabel": "Del blog",
     "viewAllArticles": "Ver los {count} artículos →",
@@ -78,6 +79,13 @@
       "Analysis": "Análisis"
     },
     "articles": [
+      {
+        "slug": "china-economy-long-game",
+        "title": "La economía china a finales de 2026: trabajo, paciencia y visión a largo plazo",
+        "date": "Octubre 2026",
+        "description": "Un 4,5% de crecimiento en el tercer trimestre, tres de cada cuatro coches eléctricos del mundo e I+D por encima de la media de la OCDE. Cómo está de verdad la economía china — y los hábitos que hay detrás: esfuerzo, ahorrar primero, planificar en décadas y la comunidad antes que el individuo.",
+        "tag": "Opinión"
+      },
       {
         "slug": "famous-investor-playbooks",
         "title": "Diez inversores famosos, diez formas de mantener una acción",
@@ -261,6 +269,11 @@
         "icon": "📈",
         "name": "Acciones",
         "desc": "Busca cualquier empresa, mira su precio, compara hasta cuatro, analiza una cartera o filtra un índice con los criterios que elijas, todo en un mismo sitio."
+      },
+      "company-map": {
+        "icon": "🌍",
+        "name": "Mapa de empresas",
+        "desc": "Todas las empresas del S&P 500, Nasdaq-100, FTSE 100 e IBEX 35 en su sede: haz clic en una para ver sus cifras clave."
       },
       "portfolio-analysis": {
         "icon": "📊",
@@ -1372,6 +1385,43 @@
     ],
     "afterHorizon": "Después de los años que se muestran (hasta {year}): alarga el plan para verlo."
   },
+  "companyMap": {
+    "metaTitle": "Mapa de sedes de empresas — S&P 500, Nasdaq-100, FTSE 100 e IBEX 35",
+    "metaDescription": "Dónde tienen su sede las empresas del S&P 500, Nasdaq-100, FTSE 100 e IBEX 35, en un mapa mundial interactivo. Haz clic en una empresa para ver su sector, su índice y sus ratios clave. Gratis y sin registro: solo datos, no una recomendación.",
+    "eyebrow": "Acciones · Mapa mundial",
+    "title": "Sedes de las empresas en un mapa mundial",
+    "intro": "Todas las empresas del S&P 500, Nasdaq-100, FTSE 100 e IBEX 35, situadas en su sede. Elige un índice o un sector, acércate a una ciudad y haz clic en una empresa para ver su sector y las mismas cifras clave que en su página. Todas tienen el mismo punto: el mapa muestra dónde están las empresas, no cómo les va.",
+    "back": "← Acciones",
+    "indexLabel": "Índice",
+    "allIndices": "Los cuatro",
+    "sectorLabel": "Sector",
+    "allSectors": "Todos los sectores",
+    "shown": "{placed} de {total} empresas en el mapa",
+    "mapLabel": "Mapa mundial con las sedes de {count} empresas",
+    "bubble": "{count} empresas aquí: haz clic para acercarte",
+    "inCity": "{count} empresas en {city}",
+    "nearCity": "{count} empresas en torno a {city}",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "world": "Mundo",
+    "northAmerica": "Norteamérica",
+    "europe": "Europa",
+    "hint": "Arrastra para moverte; usa la rueda o pellizca para hacer zoom. Un número son varias empresas muy juntas: haz clic para acercarte o, si comparten ciudad, para verlas en una lista.",
+    "missingNote": "{count, plural, one {# empresa no tiene} other {# empresas no tienen}} sede registrada en nuestras fuentes y {count, plural, one {queda} other {quedan}} fuera del mapa:",
+    "listTitle": "Todas las empresas por país y ciudad",
+    "listIntro": "Las mismas empresas que en el mapa, de la A a la Z dentro de cada ciudad. Cada nombre abre su página.",
+    "companies": "{count, plural, one {# empresa} other {# empresas}}",
+    "showOnMap": "ver en el mapa",
+    "close": "Cerrar",
+    "backToList": "← Volver a la lista",
+    "loading": "Cargando cifras…",
+    "cardError": "No se han podido cargar las cifras ahora mismo; están en la página de la empresa.",
+    "openPage": "Abrir la página de la empresa →",
+    "cardNote": "Cada barra sitúa a la empresa entre las del {index} que publican esa cifra. Más a la derecha significa más alta, no mejor.",
+    "asOf": "Cifras a {date}.",
+    "sources": "Las sedes proceden de Wikidata (CC0) y, para las cotizadas en EE. UU., de la dirección que cada empresa declara ante la SEC. Contornos de países de Natural Earth. La sede es donde la empresa dice que se dirige o está registrada, que puede no coincidir con donde trabaja la mayoría de su plantilla.",
+    "dataAsOf": "Listas de empresas y cifras a {date}, actualizadas cada semana."
+  },
   "companyPlanner": {
     "backToTools": "← Empresas",
     "pageTitle": "Plan Financiero — Empresas",
@@ -1607,13 +1657,25 @@
     "chatDone": "Ya está todo. Tu estimación del precio de salida está lista detrás de esta ventana: ciérrala para ver tu plan.",
     "chatSeeResult": "Ver mi plan"
   },
-  "emailCapture": {
+  "observerSignup": {
+    "label": "The Observer por email",
+    "title": "Recibe The Observer en tu correo",
+    "intro": "Un email cada lunes, cuando se publica la nueva edición (en inglés): el titular, el ánimo del mercado y las tres regiones, con un enlace al texto completo y al audio.",
     "placeholder": "Tu dirección de email",
-    "cta": "Recibir actualizaciones →",
+    "cta": "Suscribirme",
     "loading": "Enviando…",
-    "successMsg": "✓ ¡Apuntado! Te avisaremos pronto.",
-    "errorMsg": "Algo salió mal. Inténtalo de nuevo.",
-    "label": "Mantente al día"
+    "sent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No te enviaremos nada hasta que hagas clic.",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "privacy": "Solo guardamos tu dirección de email, en nuestro proveedor de correo Resend, para enviarte The Observer. Cada email lleva un enlace para darte de baja con un clic.",
+    "confirmTitle": "Confirma tu suscripción",
+    "confirmIntro": "Haz clic abajo para empezar a recibir The Observer por email cada lunes.",
+    "confirmCta": "Sí, enviadme The Observer",
+    "confirming": "Confirmando…",
+    "confirmed": "Ya estás suscrito. La próxima edición llega el lunes.",
+    "expired": "Este enlace ha caducado. Vuelve a apuntarte abajo y te enviaremos uno nuevo.",
+    "invalid": "Este enlace no funciona: puede que se haya cortado. Vuelve a apuntarte abajo.",
+    "failed": "No hemos podido confirmar ahora mismo. Inténtalo de nuevo en un minuto.",
+    "back": "Leer la última edición →"
   },
   "mcp": {
     "metaTitle": "Usa FinancePlots en Claude — Herramientas financieras gratis para tu asistente de IA",

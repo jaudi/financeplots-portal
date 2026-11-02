@@ -1,0 +1,65 @@
+# Emails each new edition of The Observer to the people who signed up for it
+# (Resend Broadcast to RESEND_SEGMENT_ID). scripts/observer/send-newsletter.mjs
+# sends an edition once, only when its page is live, and never one older than six
+# days, so it is safe for this to run often.
+name: The Observer newsletter
+
+on:
+  # An edition merged by a person.
+  push:
+    branches: [master]
+    paths: ["content/observer/*.json"]
+  # An edition merged by the Observer workflow itself: merges made with the
+  # workflow's GITHUB_TOKEN don't trigger other workflows, so a push trigger alone
+  # would miss them. Hourly on Mondays and Tuesdays, off the hour.
+  schedule:
+    - cron: "41 * * * 1,2"
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Edition date (YYYY-MM-DD). Empty = the newest edition."
+        required: false
+        default: ""
+      dry_run:
+        description: "Build the email and attach it to the run, but send nothing"
+        type: boolean
+        default: false
+      force:
+        description: "Send even if the edition is more than six days old"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: observer-newsletter
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Send
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
+          NEWSLETTER_PREVIEW_DIR: ${{ runner.temp }}
+          SLUG: ${{ inputs.slug }}
+          DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
+        run: node scripts/observer/send-newsletter.mjs $SLUG $DRY_RUN $FORCE
+
+      - name: Attach preview
+        if: inputs.dry_run
+        uses: actions/upload-artifact@v4
+        with:
+          name: observer-email-preview
+          path: ${{ runner.temp }}/observer-*.*
