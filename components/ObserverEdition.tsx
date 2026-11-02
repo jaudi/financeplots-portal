@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import ObserverSignup from "@/components/ObserverSignup";
 import { MOODS, formatDuration, formatEditionDate, type Edition, type Region } from "@/lib/observer";
 
 // Neutral palette on purpose: an index falling is news, not a warning sign.
@@ -266,6 +267,8 @@ export default function ObserverEdition({ edition }: { edition: Edition }) {
             </ul>
           </section>
         )}
+
+        <ObserverSignup id="subscribe" className="mt-12" />
 
         {edition.sources.length > 0 && (
           <section className="mt-12">

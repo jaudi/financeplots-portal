@@ -241,7 +241,12 @@ export default async function Home() {
               </div>
             </Link>
 
-            <p className="mt-4 text-gray-600 text-xs">{t("observerDisclaimer")}</p>
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <p className="text-gray-600 text-xs">{t("observerDisclaimer")}</p>
+              <Link href="/observer#subscribe" className="text-blue-400 hover:text-blue-300 text-sm font-semibold transition shrink-0">
+                {t("observerEmail")}
+              </Link>
+            </div>
           </div>
         </section>
       )}

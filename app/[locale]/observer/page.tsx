@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ObserverSignup from "@/components/ObserverSignup";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
 
 export const metadata: Metadata = {
@@ -74,6 +75,8 @@ export default function ObserverPage() {
             </div>
           </Link>
         )}
+
+        <ObserverSignup id="subscribe" className="mb-12" />
 
         {archive.length > 0 && (
           <section>
