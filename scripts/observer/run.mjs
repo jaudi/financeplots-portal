@@ -5,10 +5,11 @@
  * 2. Gives Claude that snapshot plus a few tools to dig further (news search, SEC
  *    earnings releases, any FRED series) and lets it decide what matters this week.
  * 3. Claude submits the edition through `submit_edition`; this script checks every
- *    cited link was actually returned by a tool, then writes
- *    content/observer/<date>.json.
+ *    cited link was actually returned by a tool and that no advice wording slipped
+ *    in, then writes content/observer/<date>.json.
  *
- * Runs weekly in .github/workflows/observer.yml, which opens a pull request for review.
+ * Runs weekly in .github/workflows/observer.yml, which opens a pull request and merges
+ * it straight away — unless advice wording survived two rewrites (`needs_review`).
  * Needs ANTHROPIC_API_KEY, and FRED_API_KEY on cloud runners. Everything else is keyless.
  */
 import fs from "node:fs";
@@ -73,6 +74,30 @@ if (headlines) {
 const json = (v) => JSON.stringify(v, null, 1);
 let submitted = null;
 let submitAttempts = 0;
+let adviceRejections = 0;
+let adviceWording = [];
+
+// Editions publish without a human read, so wording that reads as investment advice
+// (UK MAR) is caught here and sent back. Narrow on purpose: macro prose says "sell",
+// "buy" and "hold" all the time ("the Fed will hold"), so only advice phrasing counts.
+const ADVICE = [
+  /\b(?:we|I) (?:recommend|suggest|advise)\b/gi,
+  /\b(?:you|investors|readers) should (?:buy|sell|hold|consider|avoid)\b/gi,
+  /\btime to (?:buy|sell)\b/gi,
+  /\b(?:strong )?(?:buy|sell|hold|outperform|underperform|overweight|underweight) rating\b/gi,
+  /\bstrong (?:buy|sell)\b/gi,
+  /\b(?:price target|target price)s?\b/gi,
+  /\b(?:undervalued|overvalued)\b/gi,
+  /\b(?:buying|selling) opportunit(?:y|ies)\b/gi,
+];
+const findAdvice = (e) => {
+  const text = [
+    e.title, e.dek, e.mood.explanation,
+    ...e.regions.flatMap((r) => [r.headline, r.summary]),
+    ...e.watch_next_week, e.body_markdown,
+  ].join("\n");
+  return [...new Set(ADVICE.flatMap((re) => [...text.matchAll(re)].map((m) => m[0])))];
+};
 
 const tools = [
   betaTool({
@@ -204,6 +229,19 @@ const tools = [
       additionalProperties: false,
     },
     run: async (edition) => {
+      // Advice wording goes back twice; if it survives, the edition is kept but held
+      // for a human (the workflow leaves its PR open) rather than lost or published.
+      const advice = findAdvice(edition);
+      if (advice.length && adviceRejections < 2) {
+        adviceRejections++;
+        log("submit rejected, advice wording:", advice.join(", "));
+        return (
+          "Rejected: this reads as investment advice, which The Observer never gives. Rewrite each passage " +
+          "as a report of what happened, without the phrase, then submit again.\n" + advice.join("\n")
+        );
+      }
+      adviceWording = advice;
+
       submitAttempts++;
       const LINK = /\[([^\]]+)\]\(([^)\s]*)\)/g;
       const cited = [...edition.body_markdown.matchAll(LINK)].map((m) => m[2].replace(/^ref:/, ""));
@@ -344,6 +382,7 @@ const edition = {
     toolCalls,
     usage,
     unavailableSources: sourceErrors,
+    ...(adviceWording.length && { adviceWording }),
   },
 };
 
@@ -356,5 +395,8 @@ const costUsd =
 log("wrote", path.relative(process.cwd(), file), `(${toolCalls} tool calls, ~${costUsd.toFixed(2)})`, JSON.stringify(usage));
 
 if (process.env.GITHUB_OUTPUT) {
-  fs.appendFileSync(process.env.GITHUB_OUTPUT, `slug=${today}\ntitle=${edition.title.replace(/\n/g, " ")}\n`);
+  fs.appendFileSync(
+    process.env.GITHUB_OUTPUT,
+    `slug=${today}\ntitle=${edition.title.replace(/\n/g, " ")}\nneeds_review=${adviceWording.join("; ")}\n`,
+  );
 }
