@@ -2,7 +2,7 @@
  * Emails one edition of The Observer to its subscribers, as a Resend Broadcast to
  * the segment confirmed sign-ups join (lib/newsletter.ts, /api/subscribe/confirm).
  *
- *   node scripts/observer/send-newsletter.mjs [slug] [--dry-run] [--force] [--no-wait]
+ *   node scripts/observer/send-newsletter.mjs [slug] [--dry-run] [--force] [--no-wait] [--hold-until HH:MM]
  *
  * - No slug: the newest edition in content/observer/.
  * - Sends each edition once: a broadcast named `observer-<slug>` that is already
@@ -10,6 +10,10 @@
  *   push and on a schedule without anyone getting it twice.
  * - Never sends an old edition by accident: one dated more than MAX_AGE_DAYS ago is
  *   skipped unless --force.
+ * - --hold-until 07:30 (the scheduled runs): nothing goes out before that London time on
+ *   the edition's own date, so an edition that published itself overnight can be read
+ *   and reverted before it reaches inboxes. A revert removes the file, and the newest
+ *   edition left is a week old, so nothing is sent.
  * - Waits until the edition's page is live before sending (the email links to it),
  *   up to WAIT_MINUTES; --no-wait skips that.
  * - --dry-run writes the email to $NEWSLETTER_PREVIEW_DIR (default: the OS temp dir)
@@ -22,7 +26,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { broadcastName, editionEmail, editionUrl, SITE_URL } from "./email.mjs";
+import { broadcastName, editionEmail, editionUrl, isHeld, londonClock, SITE_URL } from "./email.mjs";
 
 const MAX_AGE_DAYS = 6;
 const WAIT_MINUTES = 20;
@@ -32,7 +36,10 @@ const REPLY_TO = process.env.CONTACT_TO || "hello@financeplots.com";
 
 const args = process.argv.slice(2);
 const flag = (f) => args.includes(f);
-const slugArg = args.find((a) => !a.startsWith("--"));
+const holdIdx = args.indexOf("--hold-until");
+const holdUntil = holdIdx >= 0 ? args[holdIdx + 1] : null;
+if (holdUntil !== null && !/^\d{2}:\d{2}$/.test(holdUntil ?? "")) throw new Error("--hold-until takes HH:MM");
+const slugArg = args.find((a, i) => !a.startsWith("--") && (holdIdx < 0 || i !== holdIdx + 1));
 const DIR = path.join(process.cwd(), "content", "observer");
 
 const log = (...m) => console.log("[newsletter]", ...m);
@@ -92,6 +99,12 @@ log(`edition ${edition.slug}: ${edition.title}`);
 
 if (ageDays > MAX_AGE_DAYS && !flag("--force")) {
   log(`dated ${Math.floor(ageDays)} days ago — older than ${MAX_AGE_DAYS}, not sending (use --force to send it anyway)`);
+  process.exit(0);
+}
+
+if (holdUntil && isHeld(edition.date, holdUntil) && !flag("--dry-run")) {
+  const now = londonClock();
+  log(`held until ${holdUntil} London time on ${edition.date} (it is ${now.time} on ${now.date}) — a later run will send it`);
   process.exit(0);
 }
 

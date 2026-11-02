@@ -119,3 +119,32 @@ ${watchHtml}
     text,
   };
 }
+
+/** The date ("2026-11-02") and time ("07:41") in London at `now`, whatever the season. */
+export function londonClock(now = new Date()) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/London",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    })
+      .formatToParts(now)
+      .map((p) => [p.type, p.value]),
+  );
+  return { date: `${parts.year}-${parts.month}-${parts.day}`, time: `${parts.hour}:${parts.minute}` };
+}
+
+/**
+ * True while an edition should not be emailed yet: before `holdUntil` ("07:30",
+ * London time) on the edition's own date. An edition that published itself
+ * overnight then sits on the site for the morning, so a mistake can be reverted
+ * before it reaches anyone's inbox.
+ */
+export function isHeld(editionDate, holdUntil, now = new Date()) {
+  const { date, time } = londonClock(now);
+  return date < editionDate || (date === editionDate && time < holdUntil);
+}

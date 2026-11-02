@@ -121,3 +121,20 @@ describe("edition email", () => {
     expect(formatDate("2026-01-01")).toBe("1 January 2026");
   });
 });
+
+describe("morning hold for editions that published themselves", () => {
+  // isHeld / londonClock come from the same plain-JS module as editionEmail.
+  it("holds until 07:30 London time on the edition's date, in winter and summer", async () => {
+    const { isHeld } = await import("../scripts/observer/email.mjs");
+    // 2 November (GMT = UTC)
+    expect(isHeld("2026-11-02", "07:30", new Date("2026-11-02T01:41:00Z"))).toBe(true);
+    expect(isHeld("2026-11-02", "07:30", new Date("2026-11-02T07:29:00Z"))).toBe(true);
+    expect(isHeld("2026-11-02", "07:30", new Date("2026-11-02T07:41:00Z"))).toBe(false);
+    // 6 April (BST = UTC+1): 06:41 UTC is 07:41 in London
+    expect(isHeld("2026-04-06", "07:30", new Date("2026-04-06T06:20:00Z"))).toBe(true);
+    expect(isHeld("2026-04-06", "07:30", new Date("2026-04-06T06:41:00Z"))).toBe(false);
+    // Later days are never held; an edition dated ahead of London's date is.
+    expect(isHeld("2026-11-02", "07:30", new Date("2026-11-03T00:41:00Z"))).toBe(false);
+    expect(isHeld("2026-11-02", "07:30", new Date("2026-11-01T23:41:00Z"))).toBe(true);
+  });
+});
