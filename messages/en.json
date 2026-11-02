@@ -17,6 +17,7 @@
     "observerCta": "Read this week’s edition →",
     "observerAll": "All editions",
     "observerDisclaimer": "Written by an AI agent from public data and news, and reviewed before publication. Not investment advice.",
+    "observerEmail": "Get it by email every Monday →",
     "latestArticlesTitle": "Latest from the blog",
     "blogLabel": "From the blog",
     "viewAllArticles": "View all {count} articles →",
@@ -1670,13 +1671,25 @@
     "chatDone": "That's everything. Your exit-price estimate is ready behind this window — close it to see your plan.",
     "chatSeeResult": "See my plan"
   },
-  "emailCapture": {
+  "observerSignup": {
+    "label": "The Observer by email",
+    "title": "Get The Observer in your inbox",
+    "intro": "One email each Monday, when the new edition is published: the headline, the market mood and the three regions, with a link to the full piece and the audio.",
     "placeholder": "Your email address",
-    "cta": "Get Updates →",
+    "cta": "Subscribe",
     "loading": "Sending…",
-    "successMsg": "✓ You're in! We'll be in touch.",
-    "errorMsg": "Something went wrong. Please try again.",
-    "label": "Stay updated"
+    "sent": "Check your inbox: we have sent you a link to confirm. Nothing is sent until you click it.",
+    "error": "Something went wrong. Please try again.",
+    "privacy": "We keep only your email address, with our email provider Resend, to send The Observer. Every email has a one-click unsubscribe link.",
+    "confirmTitle": "Confirm your subscription",
+    "confirmIntro": "Click below to start getting The Observer by email each Monday.",
+    "confirmCta": "Yes, send me The Observer",
+    "confirming": "Confirming…",
+    "confirmed": "You are subscribed. The next edition arrives on Monday.",
+    "expired": "This link has expired. Sign up again below and we will send a new one.",
+    "invalid": "This link does not work: it may have been cut short. Sign up again below.",
+    "failed": "We could not confirm just now. Please try again in a minute.",
+    "back": "Read the latest edition →"
   },
   "mcp": {
     "metaTitle": "Use FinancePlots in Claude — Free Finance Tools for Your AI Assistant",

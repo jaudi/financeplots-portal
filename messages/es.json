@@ -17,6 +17,7 @@
     "observerCta": "Leer la edición de esta semana →",
     "observerAll": "Todas las ediciones",
     "observerDisclaimer": "Escrito por un agente de IA a partir de datos y noticias públicas, y revisado antes de publicarse. No es asesoramiento de inversión.",
+    "observerEmail": "Recíbelo por email cada lunes →",
     "latestArticlesTitle": "Lo último del blog",
     "blogLabel": "Del blog",
     "viewAllArticles": "Ver los {count} artículos →",
@@ -1656,13 +1657,25 @@
     "chatDone": "Ya está todo. Tu estimación del precio de salida está lista detrás de esta ventana: ciérrala para ver tu plan.",
     "chatSeeResult": "Ver mi plan"
   },
-  "emailCapture": {
+  "observerSignup": {
+    "label": "The Observer por email",
+    "title": "Recibe The Observer en tu correo",
+    "intro": "Un email cada lunes, cuando se publica la nueva edición (en inglés): el titular, el ánimo del mercado y las tres regiones, con un enlace al texto completo y al audio.",
     "placeholder": "Tu dirección de email",
-    "cta": "Recibir actualizaciones →",
+    "cta": "Suscribirme",
     "loading": "Enviando…",
-    "successMsg": "✓ ¡Apuntado! Te avisaremos pronto.",
-    "errorMsg": "Algo salió mal. Inténtalo de nuevo.",
-    "label": "Mantente al día"
+    "sent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No te enviaremos nada hasta que hagas clic.",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "privacy": "Solo guardamos tu dirección de email, en nuestro proveedor de correo Resend, para enviarte The Observer. Cada email lleva un enlace para darte de baja con un clic.",
+    "confirmTitle": "Confirma tu suscripción",
+    "confirmIntro": "Haz clic abajo para empezar a recibir The Observer por email cada lunes.",
+    "confirmCta": "Sí, enviadme The Observer",
+    "confirming": "Confirmando…",
+    "confirmed": "Ya estás suscrito. La próxima edición llega el lunes.",
+    "expired": "Este enlace ha caducado. Vuelve a apuntarte abajo y te enviaremos uno nuevo.",
+    "invalid": "Este enlace no funciona: puede que se haya cortado. Vuelve a apuntarte abajo.",
+    "failed": "No hemos podido confirmar ahora mismo. Inténtalo de nuevo en un minuto.",
+    "back": "Leer la última edición →"
   },
   "mcp": {
     "metaTitle": "Usa FinancePlots en Claude — Herramientas financieras gratis para tu asistente de IA",
