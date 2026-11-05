@@ -5,7 +5,18 @@ name: The Observer
 on:
   schedule:
     - cron: "0 5 * * 1" # Mondays 05:00 UTC, after Asia's Monday session has started
-  workflow_dispatch: {}
+  # Run by hand for the weekly edition, or with `special` set for an extra,
+  # one-topic edition dated today (scripts/observer/run.mjs, OBSERVER_SPECIAL).
+  workflow_dispatch:
+    inputs:
+      special:
+        description: "Special edition topic, e.g. 'US midterms'. Empty = the weekly edition."
+        required: false
+        default: ""
+      brief:
+        description: "Special edition only: what the agent should cover (optional)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -36,6 +47,8 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          OBSERVER_SPECIAL: ${{ inputs.special }}
+          OBSERVER_BRIEF: ${{ inputs.brief }}
         run: node scripts/observer/run.mjs
 
       # Audio is a bonus: if any audio step fails, the edition still goes out without it.
@@ -84,9 +97,9 @@ jobs:
           branch: observer/${{ steps.write.outputs.slug }}
           add-paths: content/observer/*.json
           commit-message: "The Observer: ${{ steps.write.outputs.slug }}"
-          title: "The Observer: ${{ steps.write.outputs.title }}"
+          title: "The Observer${{ inputs.special && ' (special edition)' || '' }}: ${{ steps.write.outputs.title }}"
           body: |
-            Draft edition of **The Observer** for the week of ${{ steps.write.outputs.slug }}, written by the Claude agent in `scripts/observer/run.mjs`.
+            Draft ${{ inputs.special && format('**special edition** ({0}) of **The Observer**, dated', inputs.special) || 'edition of **The Observer** for the week of' }} ${{ steps.write.outputs.slug }}, written by the Claude agent in `scripts/observer/run.mjs`.
 
             Vercel posts a preview link on this PR — open `/observer/${{ steps.write.outputs.slug }}` there to read it as it will appear.
 

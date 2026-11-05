@@ -95,6 +95,14 @@ describe("edition email", () => {
     expect(mail.subject).toBe(`The Observer: ${edition.title}`);
   });
 
+  it("labels a special edition in place of the week", () => {
+    expect(mail.text).toContain(edition.special ? `${edition.special} · ` : "Week of ");
+    const special = editionEmail({ ...edition, special: "Special edition: US midterms" });
+    expect(special.html).toContain("The Observer · Special edition: US midterms · ");
+    expect(special.text).toContain("THE OBSERVER · Special edition: US midterms · ");
+    expect(special.text).not.toContain("Week of");
+  });
+
   it("says it is not investment advice", () => {
     expect(mail.html).toMatch(/not investment advice/);
     expect(mail.text).toMatch(/not investment advice/);

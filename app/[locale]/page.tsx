@@ -206,7 +206,9 @@ export default async function Home() {
                 <span className="text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-0.5 rounded-full font-semibold">
                   {t("observerLatest")}
                 </span>
-                <span className="text-gray-400 text-xs">{t("observerWeekOf", { date: formatEditionDate(observer.date, dateLocale) })}</span>
+                <span className="text-gray-400 text-xs">{observer.special
+                    ? `${observer.special} · ${formatEditionDate(observer.date, dateLocale)}`
+                    : t("observerWeekOf", { date: formatEditionDate(observer.date, dateLocale) })}</span>
                 {observer.audio && (
                   <span className="text-gray-400 text-xs">· 🎧 {formatDuration(observer.audio.durationSeconds)}</span>
                 )}

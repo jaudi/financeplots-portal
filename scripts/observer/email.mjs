@@ -42,6 +42,7 @@ export function broadcastName(edition) {
 export function editionEmail(edition, { site = SITE_URL } = {}) {
   const url = editionUrl(edition, site);
   const date = formatDate(edition.date);
+  const kicker = edition.special ? `${edition.special} · ${date}` : `Week of ${date}`;
   const minutes = edition.audio ? Math.max(1, Math.round(edition.audio.durationSeconds / 60)) : null;
   const e = escapeHtml;
 
@@ -71,7 +72,7 @@ export function editionEmail(edition, { site = SITE_URL } = {}) {
 <body style="margin:0;background:#f3f4f6">
 <span style="display:none;max-height:0;overflow:hidden">${e(edition.dek)}</span>
 <div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px 20px;color:#111827;background:#ffffff">
-  <p style="margin:0 0 6px;color:#1d4ed8;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">The Observer · Week of ${e(date)}</p>
+  <p style="margin:0 0 6px;color:#1d4ed8;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">The Observer · ${e(kicker)}</p>
   <h1 style="margin:0 0 12px;font-size:26px;line-height:1.25">${e(edition.title)}</h1>
   <p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#4b5563">${e(edition.dek)}</p>
   <p style="margin:0 0 24px"><a href="${e(url)}" style="background:#1d4ed8;color:#ffffff;text-decoration:none;font-weight:700;padding:11px 20px;border-radius:10px;display:inline-block">Read the full edition</a>${audioHtml}</p>
@@ -94,7 +95,7 @@ ${watchHtml}
 </body></html>`;
 
   const text = [
-    `THE OBSERVER · Week of ${date}`,
+    `THE OBSERVER · ${kicker}`,
     "",
     edition.title,
     "",

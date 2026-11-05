@@ -44,6 +44,8 @@ export interface Edition {
     macro: Record<Region, MacroPoint[]>;
     fearAndGreed: { score: number; rating: string; previousWeek: number; previousMonth: number; date: string } | null;
   };
+  /** Set on an extra, one-topic edition (e.g. "Special edition: US midterms"); shown in place of "Week of". */
+  special?: string;
   /** Kokoro read-aloud MP3, hosted as a GitHub Release asset. Absent if audio failed that week. */
   audio?: { url: string; durationSeconds: number };
   meta: { model: string; generatedAt: string };
@@ -71,6 +73,12 @@ export function getEdition(slug: string): Edition | null {
   const file = path.join(DIR, `${slug}.json`);
   if (!fs.existsSync(file)) return null;
   return JSON.parse(fs.readFileSync(file, "utf8")) as Edition;
+}
+
+/** The line above an edition's headline: "Week of 2 November 2026", or the special-edition label and its date. */
+export function editionKicker(edition: Pick<Edition, "date" | "special">, locale = "en-GB"): string {
+  const date = formatEditionDate(edition.date, locale);
+  return edition.special ? `${edition.special} · ${date}` : `Week of ${date}`;
 }
 
 export function formatEditionDate(date: string, locale = "en-GB"): string {

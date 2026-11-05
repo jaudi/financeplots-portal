@@ -2,7 +2,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ObserverSignup from "@/components/ObserverSignup";
-import { MOODS, formatDuration, formatEditionDate, type Edition, type Region } from "@/lib/observer";
+import { MOODS, editionKicker, formatDuration, formatEditionDate, type Edition, type Region } from "@/lib/observer";
 
 // Neutral palette on purpose: an index falling is news, not a warning sign.
 // Text codes rather than flag emoji: Windows renders flag emoji as bare letters.
@@ -186,7 +186,7 @@ export default function ObserverEdition({ edition }: { edition: Edition }) {
 
       <header className="mb-10 max-w-3xl">
         <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">
-          The Observer · Week of {formatEditionDate(edition.date)}
+          The Observer · {editionKicker(edition)}
         </p>
         <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">{edition.title}</h1>
         <p className="text-gray-400 text-lg leading-relaxed">{edition.dek}</p>

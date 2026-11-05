@@ -10,6 +10,10 @@
  *
  * Runs weekly in .github/workflows/observer.yml, which opens a pull request for review.
  * Needs ANTHROPIC_API_KEY, and FRED_API_KEY on cloud runners. Everything else is keyless.
+ *
+ * Special edition: set OBSERVER_SPECIAL to a short topic ("US midterms") and, optionally,
+ * OBSERVER_BRIEF to what the agent should cover. It then writes one shorter, single-topic
+ * edition, dated today and labelled "Special edition: <topic>" on the page and in the email.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -23,6 +27,12 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(here, "../../content/observer");
 
 const today = new Date().toISOString().slice(0, 10);
+const SPECIAL = process.env.OBSERVER_SPECIAL?.trim() || null;
+const BRIEF = process.env.OBSERVER_BRIEF?.trim() || SPECIAL;
+if (SPECIAL && fs.existsSync(path.join(OUT_DIR, `${today}.json`))) {
+  console.error(`An edition dated ${today} already exists; a special edition would overwrite it.`);
+  process.exit(1);
+}
 const t0 = Date.now();
 const log = (...a) => console.log(`[observer ${Math.round((Date.now() - t0) / 1000)}s]`, ...a);
 
@@ -234,22 +244,45 @@ const tools = [
 
 // ── 3. Prompt ────────────────────────────────────────────────────────────────
 
-const SYSTEM = `You write The Observer, the weekly macro edition on FinancePlots, a free finance site read by finance directors, CFOs and curious individuals. Explain what happened this week across the US, the euro area and Asia, and how markets felt about it.
+const WEEKLY = {
+  intro:
+    "You write The Observer, the weekly macro edition on FinancePlots, a free finance site read by finance directors, CFOs and curious individuals. Explain what happened this week across the US, the euro area and Asia, and how markets felt about it.",
+  work: `- Start from the snapshot in the user message. Use search_news for the week's big stories: central banks, inflation and growth data (Japan, China and India prints are not in the snapshot), debt and elections, trade, wars and energy, and AI. For company news, use list_sec_earnings_filings and read_sec_earnings_release for the official figures.
+- Run independent searches in the same turn. About 15 tool calls is enough.`,
+  write: `about 1,200 words (a six-minute read) with these ## sections: a one-paragraph opening; United States; Euro area; Asia; Debt and politics; AI and technology (one paragraph); Company news and results (one or two paragraphs); Market mood (VIX, Fear & Greed, credit spreads, Reddit chatter); What to watch next week.`,
+  companies:
+    `Outside the AI and company sections, do not name listed companies unless they are themselves major macro news. In those two sections report only what happened: figures as the company reported them in its SEC filing (say so), deals as announced. No view on shares, valuation or prospects, no share-price reactions, and no "strong" or "disappointing": compare with the company's prior period or guidance instead.`,
+};
+
+const SPECIAL_EDITION = SPECIAL && {
+  intro: `You write The Observer, the macro edition on FinancePlots, a free finance site read by finance directors, CFOs and curious individuals. This is a special edition, outside the weekly cycle, on one topic: ${SPECIAL}. Explain what happened, how markets in the US, the euro area and Asia reacted, and why it matters for businesses and households.`,
+  work: `- Brief for this edition: ${BRIEF}
+- Use search_news to establish exactly what happened and what is still undecided, then how rates, currencies, equity indices, oil and volatility moved, and what officials, parties and central banks have said since. The snapshot in the user message has the market and macro figures.
+- Run independent searches in the same turn. About 15 tool calls is enough.`,
+  write: `about 900 words (a five-minute read) with these ## sections: a one-paragraph opening; What happened; How markets reacted; What it means for policy (only what was announced, proposed or said, attributed to whoever said it — not your forecast); What it means for businesses and households; Beyond the US (euro area and Asia); Market mood (VIX, Fear & Greed, credit spreads, Reddit chatter); What to watch next. In regions, say how this topic played in each region. In watch_next_week, list the dated events that follow from it (results still to be called, deadlines, votes, central bank meetings, data).`,
+  companies:
+    'Do not name listed companies unless they are themselves major news on this topic; if one is, report only what happened, with no view on its shares, valuation or prospects and no share-price reaction.',
+  politics:
+    "- Report results only as called in the headlines the tools returned, and say which are still uncalled. Give each side's stated positions in its own terms, attributed, with equal care; use neutral words for outcomes and no view on who is right.",
+};
+
+const brief = SPECIAL_EDITION || WEEKLY;
+
+const SYSTEM = `${brief.intro}
 
 How to work:
-- Start from the snapshot in the user message. Use search_news for the week's big stories: central banks, inflation and growth data (Japan, China and India prints are not in the snapshot), debt and elections, trade, wars and energy, and AI. For company news, use list_sec_earnings_filings and read_sec_earnings_release for the official figures.
-- Run independent searches in the same turn. About 15 tool calls is enough.
+${brief.work}
 
-What to write: about 1,200 words (a six-minute read) with these ## sections: a one-paragraph opening; United States; Euro area; Asia; Debt and politics; AI and technology (one paragraph); Company news and results (one or two paragraphs); Market mood (VIX, Fear & Greed, credit spreads, Reddit chatter); What to watch next week.
+What to write: ${brief.write}
 Plain English, short paragraphs. Explain a term like "yield curve" or "VIX" in a few words the first time. Say why things matter for businesses and households: borrowing costs, prices, jobs, currencies, energy.
 
 Rules:
 - Numbers only from the snapshot or tool results, with their date (e.g. "August CPI", "Friday's close"). Never estimate. Leave out stale series or name their date.
 - Report only events in headlines the tools returned, and add no details a headline does not contain. Link each claim with its ref as [text](ref:s12), never a URL, and list every ref you relied on in sources. Barron's is paywalled: use its headlines as pointers, not for figures.
 - Reddit is unverified opinion: describe it only as a mood signal.
-- This is commentary, not investment advice, and the site is UK-regulated. Never recommend buying, selling or holding, never forecast a price or level, never call an asset cheap, expensive or an opportunity. Outside the AI and company sections, do not name listed companies unless they are themselves major macro news. In those two sections report only what happened: figures as the company reported them in its SEC filing (say so), deals as announced. No view on shares, valuation or prospects, no share-price reactions, and no "strong" or "disappointing": compare with the company's prior period or guidance instead.
+- This is commentary, not investment advice, and the site is UK-regulated. Never recommend buying, selling or holding, never forecast a price or level, never call an asset cheap, expensive or an opportunity. ${brief.companies}
 - Be even-handed on politics.
-- Do not repeat the title in the body. No sign-off.`;
+${brief.politics ? `${brief.politics}\n` : ""}- Do not repeat the title in the body. No sign-off.`;
 
 const snapshot = {
   date: today,
@@ -261,7 +294,7 @@ const snapshot = {
   unavailableSources: sourceErrors,
 };
 
-const userMessage = `Today is ${today}. Write this week's edition of The Observer.
+const userMessage = `Today is ${today}. ${SPECIAL ? `Write a special edition of The Observer on ${SPECIAL}.` : "Write this week's edition of The Observer."}
 
 Snapshot (collected just now):
 ${JSON.stringify(snapshot, null, 1)}
@@ -326,6 +359,7 @@ if (!submitted) {
 const edition = {
   slug: today,
   date: today,
+  ...(SPECIAL && { special: `Special edition: ${SPECIAL}` }),
   title: submitted.title,
   dek: submitted.dek,
   mood: submitted.mood,

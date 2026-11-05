@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ObserverSignup from "@/components/ObserverSignup";
-import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
+import { editionKicker, formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
 
 export const metadata: Metadata = {
   title: "The Observer — Weekly Macro Across the US, Europe and Asia",
@@ -43,7 +43,7 @@ export default function ObserverPage() {
               <span className="text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-0.5 rounded-full font-semibold">
                 Latest edition
               </span>
-              <span className="text-gray-400 text-xs">Week of {formatEditionDate(latest.date)}</span>
+              <span className="text-gray-400 text-xs">{editionKicker(latest)}</span>
               {latest.audio && (
                 <span className="text-gray-400 text-xs">· 🎧 {formatDuration(latest.audio.durationSeconds)}</span>
               )}
