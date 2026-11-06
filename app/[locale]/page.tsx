@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
 import { toolCount } from "@/lib/audiences";
+import { UNIVERSE_SCREENS } from "@/lib/universe";
 import { MCP_TOOL_NAMES, type McpToolName } from "@/lib/mcp-tools";
 import AudienceDoors from "@/components/AudienceDoors";
 import HeroSearch from "@/components/HeroSearch";
@@ -118,7 +119,7 @@ export default async function Home() {
           {[
             [String(toolCount()), t("proofTools")],
             ["0", t("proofSignup")],
-            ["3", t("proofIndices")],
+            [String(UNIVERSE_SCREENS.length), t("proofIndices")],
             [String(totalArticles), t("proofArticles")],
           ].map(([value, label]) => (
             <div key={label} className="flex flex-col bg-[#0b1122] px-5 py-4">

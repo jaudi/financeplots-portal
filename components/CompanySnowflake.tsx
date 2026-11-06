@@ -118,7 +118,7 @@ export default function CompanySnowflake({
   ticker: string;
   /** The company drawn alongside, if the visitor chose one. */
   vs?: string | null;
-  /** That company has no figures (outside the three indices). */
+  /** That company has no figures (outside the four indices). */
   vsMissing?: boolean;
 }) {
   const [mode, setMode] = useState<"flat" | "3d">("3d");
