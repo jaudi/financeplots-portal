@@ -176,7 +176,9 @@ export async function getCik(ticker: string): Promise<string | null> {
 
 async function concept(cik: string, tag: string): Promise<SecFact[]> {
   const data = await secJson<{ units?: { USD?: SecFact[] } }>(`https://data.sec.gov/api/xbrl/companyconcept/CIK${cik}/us-gaap/${tag}.json`);
-  return data?.units?.USD ?? [];
+  // Usually a list, but the SEC sends {} for some filers (JCI, 2026-11) — treat that as no data.
+  const usd = data?.units?.USD;
+  return Array.isArray(usd) ? usd : [];
 }
 
 export async function getFinancialHistory(ticker: string): Promise<FinancialHistory | null> {
