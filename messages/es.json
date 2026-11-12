@@ -2145,5 +2145,13 @@
     },
     "done": "La indicada es {name}: {desc}",
     "go": "Abrir {name} →"
+  },
+  "feedback": {
+    "question": "¿Te ha sido útil esta herramienta?",
+    "up": "Útil",
+    "down": "No útil",
+    "thanks": "Gracias por tu voto.",
+    "counts": "{up, plural, one {A # persona le ha sido útil} other {A # personas les ha sido útil}} y {down, plural, one {a # no} other {a # no}}.",
+    "failed": "No hemos podido guardar tu voto ahora. Inténtalo más tarde."
   }
 }

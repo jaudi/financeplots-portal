@@ -3,6 +3,7 @@
 import { useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import PitchChat from "./PitchChat";
+import RelatedTools from "@/components/RelatedTools";
 import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import {
   COMPETITORS, CRITERIA, DEFAULT_PITCH, SLIDES, SLIDE_NAMES,
@@ -625,6 +626,7 @@ export default function PitchDeckPage() {
         sym={sym}
         download={handleGenerate}
       />
+      <RelatedTools current="pitch-deck" />
     </main>
   );
 }

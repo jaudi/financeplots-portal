@@ -157,6 +157,10 @@ If an LLM call ever comes back to the site: route handlers are dynamic, so route
 - A chat that fills a list with examples in it (Pitch Deck) must clear the later slots when the visitor says "none", or the examples reach the output.
 - Checking a deploy: every page embeds the whole message file, so curl for copy that is new in that deploy — an existing string proves nothing.
 
+## "Was this tool useful?" votes
+
+`components/ToolFeedback.tsx` (2026-11-12) puts 👍 Useful / 👎 Not useful at the top of `RelatedTools`, which every tool page renders (the pitch deck got its own "Also try" for it). `/api/feedback` keeps two counts per tool in **Upstash Redis** (free plan, connected to the Vercel project through the Marketplace: `KV_REST_API_URL` / `KV_REST_API_TOKEN`, or `UPSTASH_REDIS_REST_*`), as the hash `feedback:tool:<slug>` — no IP, cookie or text. A visitor's own vote is in `localStorage` (`financeplots:feedback:<slug>`); they can switch it, which moves the count. Counts are shown only after voting. The page-view GET answers `enabled` without calling Redis; only voters fetch counts. **Without the env vars the API says `enabled: false` and the widget renders nothing.** Logic in `lib/feedback.ts`, tested in `tests/feedback.test.ts` against a fake pipeline. To read the totals: Upstash console, `HGETALL feedback:tool:lending`.
+
 ## Analytics
 
 Vercel Web Analytics (page views, cookieless) plus custom events (2026-10-07) so we can see which tools people *finish* with. **Custom events need a Vercel Pro or Enterprise plan** to show in the dashboard; on Hobby the calls are harmless but nothing is recorded.

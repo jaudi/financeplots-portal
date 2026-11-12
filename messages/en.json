@@ -2159,5 +2159,13 @@
     },
     "done": "{name} is the one: {desc}",
     "go": "Open {name} →"
+  },
+  "feedback": {
+    "question": "Was this tool useful?",
+    "up": "Useful",
+    "down": "Not useful",
+    "thanks": "Thanks for your vote.",
+    "counts": "{up, plural, one {# person found it useful} other {# people found it useful}}, {down, plural, one {# didn't} other {# didn't}}.",
+    "failed": "Your vote couldn't be saved just now. Please try again later."
   }
 }

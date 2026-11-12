@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ToolFeedback from "@/components/ToolFeedback";
 
 const ALL_TOOLS: { slug: string; icon: string; name: string }[] = [
   { slug: "financial-planner",         icon: "🗺️", name: "Personal Financial Planner" },
@@ -34,6 +35,7 @@ const RELATED: Record<string, string[]> = {
   "cash-flow":                 ["annual-budget", "break-even", "financial-planner-company"],
   "valuation":                 ["financial-model", "break-even", "financial-planner-company"],
   "cap-table":                 ["pitch-deck", "valuation", "financial-model"],
+  "pitch-deck":                ["cap-table", "valuation", "financial-model"],
   "lending":                   ["financial-planner", "compound-interest", "personal-budget"],
   "take-home-pay":             ["personal-budget", "compound-interest", "financial-planner"],
   "personal-budget":           ["take-home-pay", "financial-planner", "compound-interest"],
@@ -54,11 +56,11 @@ export default function RelatedTools({ current }: { current: string }) {
     .map(s => ALL_TOOLS.find(t => t.slug === s))
     .filter(Boolean) as { slug: string; icon: string; name: string }[];
 
-  if (tools.length === 0) return null;
-
   return (
     <section className="border-t border-gray-800 mt-12 pt-10 px-6 pb-16 max-w-5xl mx-auto">
-      <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-5">Also try</p>
+      {/* Every tool page renders this block, so the "Was this tool useful?" thumbs live here. */}
+      <ToolFeedback tool={current} />
+      {tools.length > 0 && <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-5">Also try</p>}
       <div className="flex flex-wrap gap-3">
         {tools.map(tool => (
           <Link
