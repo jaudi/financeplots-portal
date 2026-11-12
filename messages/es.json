@@ -80,6 +80,13 @@
     },
     "articles": [
       {
+        "slug": "financeplots-mcp-claude",
+        "title": "FinancePlots dentro de Claude: 17 herramientas de finanzas que solo tienes que pedir",
+        "date": "Noviembre 2026",
+        "description": "Conecta FinancePlots a Claude en un minuto y pregunta con tus palabras: sueldo neto en Reino Unido, hipotecas, un plan de vida, la rentabilidad real de tus ahorros, punto muerto, valoraciones, macro de EE. UU., mercados y un screener. Respuestas reales, gratis.",
+        "tag": "IA y Agentes"
+      },
+      {
         "slug": "roce-margin-turnover",
         "title": "¿Ferrari o Costco? El ratio que cuenta cómo gana dinero un negocio",
         "date": "Noviembre 2026",

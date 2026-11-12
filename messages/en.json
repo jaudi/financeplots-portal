@@ -80,6 +80,13 @@
     },
     "articles": [
       {
+        "slug": "financeplots-mcp-claude",
+        "title": "FinancePlots Inside Claude: 17 Finance Tools You Can Just Ask For",
+        "date": "November 2026",
+        "description": "Connect FinancePlots to Claude in a minute and ask in plain English: UK take-home pay, mortgages, a life plan, the real return on your savings, break-even, valuations, US macro data, live markets and a stock screener. Real answers, free.",
+        "tag": "AI & Agents"
+      },
+      {
         "slug": "roce-margin-turnover",
         "title": "Ferrari or Costco? The One Ratio That Shows How a Business Makes Money",
         "date": "November 2026",

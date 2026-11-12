@@ -18,6 +18,7 @@ const BLOG_SLUGS = [
   "ecb-rate-hike-mistake",
   "famous-investor-playbooks",
   "finance-dashboard-problem",
+  "financeplots-mcp-claude",
   "financial-forecasting",
   "ifrs-ias-standards-guide",
   "investment-portfolio-analysis",
