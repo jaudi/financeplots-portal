@@ -29,7 +29,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.financeplots.com"),
   title: {
-    default: "FinancePlots — Free FP&A Tools for Individuals & Companies",
+    default: "FinancePlots — Free FP&A Tools for Individuals & Businesses",
     template: "%s | FinancePlots",
   },
   description:
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     locale: "en_GB",
     url: "https://www.financeplots.com",
     siteName: "FinancePlots",
-    title: "FinancePlots — Free FP&A Tools for Individuals & Companies",
+    title: "FinancePlots — Free FP&A Tools for Individuals & Businesses",
     description:
       "Free financial planning & analysis tools — personal budget, portfolio analysis, cash flow forecast, DCF valuation and more. No signup required.",
     images: [
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FinancePlots — Free FP&A Tools for Individuals & Companies",
+    title: "FinancePlots — Free FP&A Tools for Individuals & Businesses",
     description:
       "Free financial planning & analysis tools — personal budget, portfolio analysis, cash flow forecast, DCF valuation and more.",
     images: ["/og-image.png"],

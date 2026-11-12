@@ -24,7 +24,7 @@
     "contactLabel": "Contacto",
     "contactTitle": "Escríbenos",
     "contactDesc": "Preguntas, solicitudes de dashboard personalizado o comentarios — respondemos en menos de 24 horas.",
-    "footerTagline": "Herramientas financieras gratuitas para particulares y empresas",
+    "footerTagline": "Herramientas financieras gratuitas para particulares, empresas y emprendedores",
     "footerCopyright": "© 2026 FinancePlots · No es asesoramiento financiero",
     "heroEyebrow": "Gratis · Sin registro · Sin anuncios",
     "heroLine1": "Finanzas que por fin",
@@ -35,15 +35,15 @@
     "heroSearchCta": "Ver →",
     "heroOr": "O empieza a planificar:",
     "heroForYou": "para ti",
-    "heroForCompany": "para una empresa",
+    "heroForCompany": "para tu negocio",
     "heroSnowflakeCaption": "Ilustración. Cada página de empresa dibuja su propio snowflake con las cifras reales de esa empresa.",
     "proofTools": "Herramientas gratis",
     "proofSignup": "Cuentas necesarias",
     "proofIndices": "Índices bursátiles",
     "proofArticles": "Guías y artículos",
     "doorsLabel": "Empieza aquí",
-    "doorsTitle": "¿Planificas para ti o para una empresa?",
-    "doorsSub": "Tu dinero y las finanzas de una empresa son trabajos distintos, así que cada uno tiene su espacio y sus herramientas.",
+    "doorsTitle": "¿Planificas para ti o para tu negocio?",
+    "doorsSub": "Tu dinero y las finanzas de un negocio son trabajos distintos, así que cada uno tiene su espacio y sus herramientas.",
     "whyLabel": "Por qué FinancePlots",
     "whyTitle": "Cifras que se ven, no solo se leen",
     "feature1Title": "La forma de una empresa",
@@ -370,7 +370,7 @@
     "screenerDisclaimerPast": "Este cribado se apoya en parte en la evolución pasada del precio. La rentabilidad pasada no garantiza rentabilidades futuras, y el valor de las inversiones puede tanto bajar como subir.",
     "alsoTry": "También puedes usar",
     "backPersonal": "← Particulares",
-    "backBusiness": "← Empresas",
+    "backBusiness": "← Negocio",
     "sheetTitle": "Tu hoja de cálculo",
     "sheetHelp": "Importa tus cifras desde Excel o CSV en lugar de escribirlas. Descarga la plantilla para ver el formato: viene rellenada con los valores de la pantalla.",
     "sheetImport": "⬆ Importar Excel / CSV",
@@ -1579,7 +1579,7 @@
     "dataAsOf": "Listas de empresas y cifras a {date}, actualizadas cada semana."
   },
   "companyPlanner": {
-    "backToTools": "← Empresas",
+    "backToTools": "← Negocio",
     "pageTitle": "Plan Financiero — Empresas",
     "stepPL": "Cuenta de resultados",
     "stepCashFlow": "Flujo de caja",
@@ -1777,7 +1777,7 @@
     "actionDocumentContracts": "Documenta todos los contratos de clientes y el reconocimiento de ingresos — los ingresos recurrentes y contractuales cotizan a los múltiplos más altos en cualquier proceso de venta.",
     "disclaimerTitle": "Aviso legal:",
     "disclaimerText": "Esta herramienta es solo para fines ilustrativos y de planificación. Las valoraciones e información presentadas son estimaciones indicativas basadas en modelos simplificados. No constituyen asesoramiento financiero, una valoración formal ni una oferta de compra o venta de ningún negocio. Consulta a un asesor de fusiones y adquisiciones cualificado, a un profesional de finanzas corporativas o a un contable antes de tomar cualquier decisión relacionada con la venta, adquisición o reestructuración de una empresa.",
-    "backToAllTools": "← Volver a herramientas para empresas",
+    "backToAllTools": "← Volver a herramientas de negocio",
     "exportPdf": "📄 Exportar PDF",
     "chatOpen": "Rellénalo por chat o por voz",
     "chatTitle": "El plan de tu empresa, pregunta a pregunta",
@@ -1949,7 +1949,7 @@
   },
   "audiences": {
     "chooserTitle": "¿Para quién planificas?",
-    "chooserSubtitle": "Tu dinero y las finanzas de una empresa son trabajos distintos, así que las herramientas están en dos espacios separados.",
+    "chooserSubtitle": "Tu dinero y las finanzas de un negocio son trabajos distintos, así que las herramientas están en dos espacios separados.",
     "toolsCount": "{count} herramientas",
     "enter": "Entrar →",
     "viewAll": "Ver las {count} herramientas →",
@@ -1962,8 +1962,8 @@
       "metaTitle": "Herramientas gratuitas de finanzas personales — presupuesto, préstamos, ahorro e inversión",
       "metaDescription": "Herramientas gratuitas para tu dinero: plan financiero paso a paso, presupuesto personal, interés compuesto, calculadora de hipotecas y préstamos, y análisis de cartera y acciones. Sin registro.",
       "back": "← Particulares",
-      "otherSide": "¿Planificas para una empresa?",
-      "otherSideCta": "Ir a herramientas para empresas →",
+      "otherSide": "¿Planificas para un negocio?",
+      "otherSideCta": "Ir a herramientas de negocio →",
       "groups": {
         "plan": {
           "title": "Planifica tu dinero",
@@ -1976,13 +1976,13 @@
       }
     },
     "business": {
-      "nav": "Empresas",
-      "label": "Para empresas",
-      "title": "Herramientas para empresas",
-      "subtitle": "Presupuestos, tesorería, valoración y financiación — para equipos financieros, CFOs y fundadores.",
-      "metaTitle": "Herramientas FP&A gratuitas para empresas — presupuesto, tesorería, valoración",
-      "metaDescription": "Herramientas gratuitas para las finanzas de una empresa: planificador con cuenta de resultados, flujo de caja y balance vinculados, presupuesto anual, previsión de caja a 13 semanas, punto de equilibrio, modelo a 5 años, valoración y pitch deck. Sin registro.",
-      "back": "← Empresas",
+      "nav": "Negocio",
+      "label": "Para tu negocio",
+      "title": "Herramientas para empresas y emprendedores",
+      "subtitle": "Presupuestos, tesorería, valoración y financiación — para emprendedores que empiezan, equipos financieros y CFOs.",
+      "metaTitle": "Herramientas FP&A gratuitas para empresas y startups — presupuesto, tesorería, valoración",
+      "metaDescription": "Herramientas gratuitas para las finanzas de empresas y startups: planificador con cuenta de resultados, flujo de caja y balance vinculados, presupuesto anual, previsión de caja a 13 semanas, punto de equilibrio, modelo a 5 años, valoración de empresas y startups, pitch deck y cap table. Sin registro.",
+      "back": "← Negocio",
       "otherSide": "¿Planificas tu propio dinero?",
       "otherSideCta": "Ir a herramientas para particulares →",
       "groups": {
@@ -1994,9 +1994,9 @@
           "title": "Contexto económico",
           "subtitle": "Indicadores macro y mercados para enmarcar tus hipótesis"
         },
-        "funding": {
-          "title": "Financiación",
-          "subtitle": "Levanta capital con confianza"
+        "startup": {
+          "title": "Para emprender",
+          "subtitle": "Comprueba que la idea sale a cuenta, convence a inversores y mira quién tiene qué"
         }
       }
     }
@@ -2118,11 +2118,11 @@
   "toolFinder": {
     "open": "¿Qué herramienta necesito?",
     "title": "Encuentra la herramienta",
-    "askWho": "¿Es para ti y tu propio dinero, o para una empresa?",
+    "askWho": "¿Es para ti y tu propio dinero, o para tu negocio?",
     "whoPersonal": "Mi propio dinero",
-    "whoBusiness": "Una empresa",
+    "whoBusiness": "Mi negocio",
     "askGoalPersonal": "¿Qué quieres saber?",
-    "askGoalBusiness": "¿Qué necesita saber la empresa?",
+    "askGoalBusiness": "¿Qué necesita saber tu negocio?",
     "goal": {
       "takeHome": "Cuánto cobro de verdad tras impuestos",
       "budget": "A dónde va mi dinero cada mes",

@@ -1,5 +1,5 @@
 // The site's tools are split by who they are for: individuals planning their
-// own money, and companies. Each audience has its own hub (/tools/personal,
+// own money, and businesses (finance teams and founders). Each audience has its own hub (/tools/personal,
 // /tools/business) and its own menu. Copy lives in the `audiences` and
 // `tools.catalog` message namespaces.
 //
@@ -29,9 +29,9 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     icon: "🏢",
     planner: "financial-planner-company",
     groups: [
-      { key: "plan", icon: "🧮", slugs: ["annual-budget", "cash-flow", "break-even", "financial-model", "valuation"] },
+      { key: "plan", icon: "🧮", slugs: ["annual-budget", "cash-flow", "financial-model", "valuation"] },
+      { key: "startup", icon: "🚀", slugs: ["break-even", "pitch-deck", "cap-table"] },
       { key: "context", icon: "📡", slugs: ["macro-dashboard", "stocks"] },
-      { key: "funding", icon: "🎯", slugs: ["pitch-deck", "cap-table"] },
     ],
   },
 };

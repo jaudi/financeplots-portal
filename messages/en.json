@@ -24,7 +24,7 @@
     "contactLabel": "Contact",
     "contactTitle": "Get in Touch",
     "contactDesc": "Questions, custom dashboard requests, or feedback — we reply within 24 hours.",
-    "footerTagline": "Free finance tools for individuals and companies",
+    "footerTagline": "Free finance tools for individuals, businesses and founders",
     "footerCopyright": "© 2026 FinancePlots · Not financial advice",
     "heroEyebrow": "Free · No signup · No ads",
     "heroLine1": "Finance you can",
@@ -35,15 +35,15 @@
     "heroSearchCta": "Show me →",
     "heroOr": "Or start planning:",
     "heroForYou": "for yourself",
-    "heroForCompany": "for a company",
+    "heroForCompany": "for a business",
     "heroSnowflakeCaption": "Illustration. Every company page draws its own snowflake from that company's real figures.",
     "proofTools": "Free tools",
     "proofSignup": "Accounts needed",
     "proofIndices": "Stock indices covered",
     "proofArticles": "Guides & articles",
     "doorsLabel": "Start here",
-    "doorsTitle": "Planning for yourself, or for a company?",
-    "doorsSub": "Your own money and a company's finances are different jobs, so each has its own space and its own tools.",
+    "doorsTitle": "Planning for yourself, or for a business?",
+    "doorsSub": "Your own money and a business's finances are different jobs, so each has its own space and its own tools.",
     "whyLabel": "Why FinancePlots",
     "whyTitle": "Numbers you can see, not just read",
     "feature1Title": "The shape of a company",
@@ -384,7 +384,7 @@
     "screenerDisclaimerPast": "This screen ranks partly on past price performance. Past performance is not a guide to future returns, and the value of investments can fall as well as rise.",
     "alsoTry": "Also try",
     "backPersonal": "← Individuals",
-    "backBusiness": "← Companies",
+    "backBusiness": "← Business",
     "sheetTitle": "Your spreadsheet",
     "sheetHelp": "Import your figures from Excel or CSV instead of typing them. Download the template to see the layout — it comes filled with the values on screen.",
     "sheetImport": "⬆ Import Excel / CSV",
@@ -1593,7 +1593,7 @@
     "dataAsOf": "Company lists and figures as of {date}, refreshed weekly."
   },
   "companyPlanner": {
-    "backToTools": "← Companies",
+    "backToTools": "← Business",
     "pageTitle": "Financial Journey — Companies",
     "stepPL": "P&L",
     "stepCashFlow": "Cash Flow",
@@ -1791,7 +1791,7 @@
     "actionDocumentContracts": "Document all customer contracts and revenue recognition — recurring, contracted revenue commands the highest multiples in any sale process.",
     "disclaimerTitle": "Disclaimer:",
     "disclaimerText": "This tool is for illustrative and planning purposes only. The valuations and insights above are indicative estimates based on simplified models. They do not constitute financial advice, a formal valuation or an offer to buy or sell any business. Consult a qualified M&A advisor, corporate finance professional or accountant before making any decisions related to a business sale, acquisition or restructuring.",
-    "backToAllTools": "← Back to tools for companies",
+    "backToAllTools": "← Back to business tools",
     "exportPdf": "📄 Export PDF",
     "chatOpen": "Fill in by chat or voice",
     "chatTitle": "Your company plan, one question at a time",
@@ -1963,7 +1963,7 @@
   },
   "audiences": {
     "chooserTitle": "Who are you planning for?",
-    "chooserSubtitle": "Your own money and a company's finances are different jobs, so the tools live in two separate spaces.",
+    "chooserSubtitle": "Your own money and a business's finances are different jobs, so the tools live in two separate spaces.",
     "toolsCount": "{count} tools",
     "enter": "Open →",
     "viewAll": "See all {count} tools →",
@@ -1976,8 +1976,8 @@
       "metaTitle": "Free Personal Finance Tools — Budget, Loans, Savings & Investing",
       "metaDescription": "Free tools for your own money: a step-by-step financial plan, personal budget, compound interest, mortgage and loan calculator, and portfolio and stock analysis. No signup.",
       "back": "← Individuals",
-      "otherSide": "Planning for a company instead?",
-      "otherSideCta": "Go to tools for companies →",
+      "otherSide": "Planning for a business instead?",
+      "otherSideCta": "Go to business tools →",
       "groups": {
         "plan": {
           "title": "Plan your money",
@@ -1990,13 +1990,13 @@
       }
     },
     "business": {
-      "nav": "Companies",
-      "label": "For companies",
-      "title": "Tools for companies",
-      "subtitle": "Budgets, cash flow, valuation and fundraising — for finance teams, CFOs and founders.",
-      "metaTitle": "Free FP&A Tools for Companies — Budget, Cash Flow, Valuation",
-      "metaDescription": "Free tools for company finance: a linked P&L, cash flow and balance sheet planner, annual budget, 13-week cash forecast, break-even, 5-year model, business valuation and pitch deck. No signup.",
-      "back": "← Companies",
+      "nav": "Business",
+      "label": "For business",
+      "title": "Tools for businesses and founders",
+      "subtitle": "Budgets, cash flow, valuation and fundraising — for founders starting out, finance teams and CFOs.",
+      "metaTitle": "Free FP&A Tools for Businesses and Startups — Budget, Cash Flow, Valuation",
+      "metaDescription": "Free tools for business and startup finance: a linked P&L, cash flow and balance sheet planner, annual budget, 13-week cash forecast, break-even, 5-year model, business and startup valuation, pitch deck and cap table. No signup.",
+      "back": "← Business",
       "otherSide": "Planning your own money instead?",
       "otherSideCta": "Go to tools for individuals →",
       "groups": {
@@ -2008,9 +2008,9 @@
           "title": "Economic context",
           "subtitle": "Macro indicators and markets to frame your assumptions"
         },
-        "funding": {
-          "title": "Fundraising",
-          "subtitle": "Raise capital with confidence"
+        "startup": {
+          "title": "Starting up",
+          "subtitle": "Check the idea pays, pitch investors and see who owns what"
         }
       }
     }
@@ -2132,11 +2132,11 @@
   "toolFinder": {
     "open": "Which tool do I need?",
     "title": "Find the right tool",
-    "askWho": "Is this for you and your own money, or for a company?",
+    "askWho": "Is this for you and your own money, or for a business?",
     "whoPersonal": "My own money",
-    "whoBusiness": "A company",
+    "whoBusiness": "A business",
     "askGoalPersonal": "What do you want to find out?",
-    "askGoalBusiness": "What does the company need to know?",
+    "askGoalBusiness": "What does the business need to know?",
     "goal": {
       "takeHome": "What I really earn after tax",
       "budget": "Where my money goes each month",
