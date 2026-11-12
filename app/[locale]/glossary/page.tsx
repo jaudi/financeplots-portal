@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Finance Glossary — 32 Key Terms Explained",
-  description: "Plain-English definitions of 32 essential finance terms: WACC, EBITDA, DCF, ROE, RSI, PEG, reverse DCF, alpha, break-even, IRR, NPV and more — including every measure in the FinancePlots stock screener.",
-  alternates: { canonical: "https://www.financeplots.com/glossary" },
-  openGraph: {
-    title: "Finance Glossary — 32 Key Terms Explained",
-    description: "Plain-English definitions of WACC, EBITDA, DCF, ROE, RSI, PEG, reverse DCF, alpha and 24 more essential finance terms.",
-    url: "https://www.financeplots.com/glossary",
-    siteName: "FinancePlots",
-    type: "website",
-    images: [{ url: "https://www.financeplots.com/og-image.png", width: 1200, height: 630 }],
-  },
-};
+  description:
+    "Plain-English definitions of 32 essential finance terms: WACC, EBITDA, DCF, ROE, RSI, PEG, reverse DCF, alpha, break-even, IRR, NPV and more — including every measure in the FinancePlots stock screener.",
+  path: "/glossary",
+});
 
 interface Term {
   id: string;

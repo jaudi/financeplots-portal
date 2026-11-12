@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import CapTable from "@/components/CapTable";
 import RelatedTools from "@/components/RelatedTools";
+import { pageMetadata } from "@/lib/page-metadata";
 
 const BASE = "https://www.financeplots.com";
 const PATH = "/tools/cap-table";
@@ -12,13 +13,7 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "capTable" });
-  const url = locale === "es" ? `${BASE}/es${PATH}` : `${BASE}${PATH}`;
-  return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: { canonical: url, languages: { en: `${BASE}${PATH}`, es: `${BASE}/es${PATH}` } },
-    openGraph: { title: t("metaTitle"), description: t("metaDescription"), url, siteName: "FinancePlots", type: "website" },
-  };
+  return pageMetadata({ title: t("metaTitle"), description: t("metaDescription"), path: PATH, locale, localized: true });
 }
 
 export default async function CapTablePage({ params }: Props) {

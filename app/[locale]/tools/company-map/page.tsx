@@ -5,6 +5,7 @@ import CompanyMap from "@/components/CompanyMap";
 import RelatedTools from "@/components/RelatedTools";
 import StocksNav from "@/components/StocksNav";
 import { getCompanyMapData } from "@/lib/company-map";
+import { pageMetadata } from "@/lib/page-metadata";
 
 // Where the companies of the S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 have
 // their headquarters. Every company in the chosen index, one dot each, same
@@ -22,13 +23,7 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "companyMap" });
-  const url = locale === "es" ? `${BASE}/es${PATH}` : `${BASE}${PATH}`;
-  return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: { canonical: url, languages: { en: `${BASE}${PATH}`, es: `${BASE}/es${PATH}` } },
-    openGraph: { title: t("metaTitle"), description: t("metaDescription"), url, siteName: "FinancePlots", type: "website" },
-  };
+  return pageMetadata({ title: t("metaTitle"), description: t("metaDescription"), path: PATH, locale, localized: true });
 }
 
 export default async function CompanyMapPage({ params }: Props) {

@@ -4,13 +4,14 @@ import StockAnalysis from "@/components/StockAnalysis";
 import RelatedTools from "@/components/RelatedTools";
 import StocksNav from "@/components/StocksNav";
 import { normaliseSymbol, PRICE_RANGES, type PriceRange } from "@/lib/price-types";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Stock Price History — Chart Any Ticker With Its 200-Day Average",
   description:
     "Chart the closing-price history of any stock, index or currency: 1 month to all available history, with the 200-day moving average, highs and lows, change over the period and volatility. Free, no signup.",
-  alternates: { canonical: "https://www.financeplots.com/tools/stock-analysis" },
-};
+  path: "/tools/stock-analysis",
+});
 
 type Props = { searchParams: Promise<{ symbol?: string; range?: string }> };
 

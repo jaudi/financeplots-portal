@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import StockAnalysis from "@/components/StockAnalysis";
@@ -34,12 +35,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const indexable =
     profile !== null &&
     (history === "unavailable" ? !ticker.includes(".") : history !== null && history.years.length >= 3);
-  return {
+  return pageMetadata({
     title: `${name} (${ticker}) — Price History and Key Figures`,
     description: `${name}: share price history, valuation, profitability, debt and growth figures, each shown against the rest of its index. Figures only — not a recommendation.`,
+    path: `/tools/stocks/${encodeURIComponent(ticker)}`,
+    canonical: indexable,
     robots: { index: indexable, follow: true },
-    ...(indexable && { alternates: { canonical: `https://www.financeplots.com/tools/stocks/${encodeURIComponent(ticker)}` } }),
-  };
+  });
 }
 
 /** One snowflake layer per company with figures, in the order typed. */

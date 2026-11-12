@@ -4,13 +4,14 @@ import { getTranslations } from "next-intl/server";
 import StocksHub from "@/components/StocksHub";
 import StocksNav from "@/components/StocksNav";
 import RelatedTools from "@/components/RelatedTools";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Stocks — Price History, Comparison, Portfolio Analysis and a Neutral Screener",
   description:
     "One place for stocks: search any company, chart its price, compare up to four, analyse a portfolio's risk and return, or filter the S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 by measures you choose. Free, no signup.",
-  alternates: { canonical: "https://www.financeplots.com/tools/stocks" },
-};
+  path: "/tools/stocks",
+});
 
 export default async function StocksPage() {
   // English on every locale, like the stock tools it gathers.

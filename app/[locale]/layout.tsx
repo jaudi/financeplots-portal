@@ -81,9 +81,9 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-snippet": -1 },
   },
-  alternates: {
-    canonical: "https://www.financeplots.com",
-  },
+  // No site-wide canonical: every page inherited the homepage's, telling
+  // search engines that pages without their own were duplicates of it. Each
+  // page sets its own (lib/page-metadata.ts).
 };
 
 export default async function LocaleLayout({

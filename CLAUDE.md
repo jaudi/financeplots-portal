@@ -21,6 +21,8 @@ Next.js portal serving https://www.financeplots.com — free finance and FP&A to
 
 Adding a tool means: a route under `app/[locale]/tools/`, an entry in both message files, and its slug in `app/sitemap.ts`. Missing the third is easy to do and makes the page invisible to crawlers.
 
+**Page metadata** goes through `lib/page-metadata.ts` (2026-11-12): `pageMetadata()` sets title, description, canonical (plus en/es alternates when `localized`) and both share cards — Open Graph with the image, and `twitter`. Next merges metadata one key deep, so a page that sets only part of it keeps the root layout's generic "FinancePlots — Free FP&A Tools…" card on X; and the root layout no longer sets a canonical, because every page without its own inherited the homepage's. A "use client" page gets its metadata from a `layout.tsx` next to it — `export const generateMetadata = messagesMetadata("<key>", "/tools/<slug>")`, copy in the `pageMeta` message namespace. `tests/page-metadata.test.ts` fails if a page skips the helper. X caches a link's card for about a week, so a corrected card only shows on posts made after that.
+
 ## Data sources
 
 - **FRED** — `lib/fred.ts` fetches 9 US macro series server-side; needs `FRED_API_KEY`

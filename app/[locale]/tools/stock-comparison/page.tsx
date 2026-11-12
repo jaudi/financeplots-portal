@@ -4,13 +4,14 @@ import StockComparison from "@/components/StockComparison";
 import RelatedTools from "@/components/RelatedTools";
 import StocksNav from "@/components/StocksNav";
 import { normaliseSymbol, PRICE_RANGES, type PriceRange } from "@/lib/price-types";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Stock Comparison — Compare Up to Four Tickers on One Chart",
   description:
     "Compare the price performance of up to four stocks, indices or currencies, rebased to 100: change over the period, annualised return, volatility, largest fall and correlation. Free, no signup.",
-  alternates: { canonical: "https://www.financeplots.com/tools/stock-comparison" },
-};
+  path: "/tools/stock-comparison",
+});
 
 type Props = { searchParams: Promise<{ symbols?: string; range?: string }> };
 

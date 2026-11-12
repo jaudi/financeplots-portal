@@ -5,13 +5,14 @@ import RelatedTools from "@/components/RelatedTools";
 import StocksNav from "@/components/StocksNav";
 import { UNIVERSE_SCREENS, type UniverseScreen } from "@/lib/universe";
 import { parseMetricList } from "@/lib/stock-metrics";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Stock Screener — Set Your Own Criteria for the S&P 500, Nasdaq-100, FTSE 100 and IBEX 35",
   description:
     "Choose your own criteria — valuation, profitability, debt, growth and price trend — and filter every company in the S&P 500, Nasdaq-100, FTSE 100 or IBEX 35. Nothing is ranked or picked for you. Free, no signup.",
-  alternates: { canonical: "https://www.financeplots.com/tools/stock-screener" },
-};
+  path: "/tools/stock-screener",
+});
 
 type Props = { searchParams: Promise<{ index?: string; measures?: string }> };
 

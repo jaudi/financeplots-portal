@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ContactLink from "@/components/ContactLink";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "About — Javier Audibert | FinancePlots",
+export const metadata: Metadata = pageMetadata({
+  title: "About — Javier Audibert",
   description:
     "Javier Audibert, ACCA — 20+ years in finance across biotech, higher education and financial services. The person behind FinancePlots.",
-  alternates: { canonical: "https://www.financeplots.com/about" },
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

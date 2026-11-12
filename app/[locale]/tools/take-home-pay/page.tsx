@@ -4,13 +4,14 @@ import Link from "next/link";
 import TakeHomePay from "@/components/TakeHomePay";
 import RelatedTools from "@/components/RelatedTools";
 import { TAX_YEAR } from "@/lib/calculators";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: `UK Take-Home Pay Calculator ${TAX_YEAR} — Salary After Tax, NI, Pension & Student Loan`,
   description:
     "What you really take home from a UK salary: income tax (including Scotland), National Insurance, pension and student loan, monthly and yearly. Or work backwards from the take-home you want. Free, no signup.",
-  alternates: { canonical: "https://www.financeplots.com/tools/take-home-pay" },
-};
+  path: "/tools/take-home-pay",
+});
 
 type Props = { searchParams: Promise<{ salary?: string; target?: string }> };
 

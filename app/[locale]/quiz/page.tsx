@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import QuizClient from "./QuizClient";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Finance Quiz — Test Your Knowledge | FinancePlots",
-  description: "10 finance questions covering WACC, break-even, EBITDA, compound interest, DCF and more. Test your knowledge and learn from the explanations.",
-  alternates: { canonical: "https://www.financeplots.com/quiz" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Finance Quiz — Test Your Knowledge",
+  description:
+    "10 finance questions covering WACC, break-even, EBITDA, compound interest, DCF and more. Test your knowledge and learn from the explanations.",
+  path: "/quiz",
+});
 
 export default function QuizPage() {
   return (

@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ObserverSignup from "@/components/ObserverSignup";
 import { editionKicker, formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "The Observer — Weekly Macro Across the US, Europe and Asia",
   description:
     "A weekly read on the world economy: the news that mattered, inflation, rates, debt and politics across the US, the euro area and Asia, and how markets and social media felt about it.",
-  alternates: { canonical: "https://www.financeplots.com/observer" },
-};
+  path: "/observer",
+});
 
 export default function ObserverPage() {
   const editions = listEditions();

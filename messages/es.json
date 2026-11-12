@@ -2153,5 +2153,63 @@
     "thanks": "Gracias por tu voto.",
     "counts": "{up, plural, one {A # persona le ha sido útil} other {A # personas les ha sido útil}} y {down, plural, one {a # no} other {a # no}}.",
     "failed": "No hemos podido guardar tu voto ahora. Inténtalo más tarde."
+  },
+  "pageMeta": {
+    "tools": {
+      "title": "Herramientas financieras gratis — para tu dinero o tu negocio",
+      "description": "Herramientas gratuitas para particulares y empresas: presupuestos, préstamos, tesorería, valoración, pitch deck y cap table, más datos de bolsa y mercados. Sin registro."
+    },
+    "blog": {
+      "title": "Blog de finanzas — FP&A, valoración y finanzas personales, explicadas",
+      "description": "Artículos claros sobre FP&A, presupuestos, tesorería, valoración, modelos de negocio y finanzas personales, con ejemplos y herramientas gratis para probar los números."
+    },
+    "annual-budget": {
+      "title": "Plantilla de presupuesto anual — cuenta de resultados mensual con estacionalidad",
+      "description": "Crea el presupuesto de 12 meses de tu empresa: crecimiento de ventas, estacionalidad, coste de ventas y gastos generales, en una cuenta de resultados mensual. Gratis, sin registro."
+    },
+    "break-even": {
+      "title": "Calculadora del punto de equilibrio — unidades, margen de contribución y margen de seguridad",
+      "description": "Cuánto necesitas vender para cubrir costes: costes fijos y variables, margen de contribución, punto de equilibrio y margen de seguridad, en un gráfico. Gratis, sin registro."
+    },
+    "cash-flow": {
+      "title": "Previsión de tesorería a 13 semanas — planificador de caja semanal gratis",
+      "description": "Prevé la caja semana a semana: cobros de clientes, pagos a proveedores, nóminas, impuestos y domiciliaciones con su calendario, y un colchón mínimo que avisa de las semanas justas."
+    },
+    "compound-interest": {
+      "title": "Calculadora de interés compuesto — ahorro con aportaciones mensuales",
+      "description": "Mira cómo crecen un capital inicial y unas aportaciones mensuales al tipo que elijas, año a año, con rentabilidades históricas del mercado como referencia. Gratis, sin registro."
+    },
+    "financial-model": {
+      "title": "Modelo financiero a 5 años — proyección de ingresos, costes y beneficio",
+      "description": "Proyecta un negocio a cinco años: crecimiento de ingresos, coste de ventas, gastos generales y beneficio, con cuenta de resultados y márgenes de cada año. Gratis, sin registro."
+    },
+    "financial-planner-company": {
+      "title": "Plan financiero de empresa — cuenta de resultados, tesorería, balance y valoración",
+      "description": "Un plan paso a paso para una empresa: vincula cuenta de resultados, tesorería y balance, estima cuánto vale el negocio y qué arreglar antes de venderlo. Gratis, sin registro."
+    },
+    "financial-planner": {
+      "title": "Plan financiero personal — presupuesto, deuda, ahorro e inversión paso a paso",
+      "description": "Una guía de cuatro pasos para tu dinero: haz tu presupuesto, calcula tu deuda, proyecta tu ahorro con interés compuesto y elige un reparto de activos. Gratis, sin registro."
+    },
+    "lending": {
+      "title": "Calculadora de préstamos e hipotecas — cuotas, amortización y amortización anticipada",
+      "description": "Cuota mensual y cuadro completo de cualquier préstamo o hipoteca. Añade amortizaciones anticipadas y mira cuándo terminas de pagar y cuántos intereses te ahorras. Gratis."
+    },
+    "macro-dashboard": {
+      "title": "Panel macro de EE. UU. — PIB, inflación, desempleo y tipos",
+      "description": "Los principales indicadores de EE. UU. en una página — crecimiento del PIB, inflación IPC, desempleo, tipos de la Fed y bono a 10 años — con datos de FRED, actualizados a diario."
+    },
+    "personal-budget": {
+      "title": "Presupuesto personal — ingresos, gastos y tasa de ahorro",
+      "description": "Planifica tu mes: ingresos, gasto en ocho categorías, lo que te queda para ahorrar y tu tasa de ahorro, con un gráfico del reparto. Gratis, sin registro y sin guardar nada."
+    },
+    "pitch-deck": {
+      "title": "Creador de pitch deck — presentación para inversores en PowerPoint editable",
+      "description": "Crea una presentación de 14 diapositivas — problema, mercado, tracción, unit economics, finanzas y la ronda — y mira qué señalaría un inversor. Descárgala en PowerPoint."
+    },
+    "valuation": {
+      "title": "Calculadora de valoración de empresas — DCF y múltiplos sectoriales",
+      "description": "Valora un negocio con un DCF y múltiplos EV/EBITDA, EV/ventas y PER con datos sectoriales de Damodaran, cada método al lado del otro. Gratis, sin registro."
+    }
   }
 }

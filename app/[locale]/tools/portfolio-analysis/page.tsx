@@ -5,13 +5,14 @@ import RelatedTools from "@/components/RelatedTools";
 import StocksNav from "@/components/StocksNav";
 import { fetchIndicators } from "@/lib/fred";
 import { normaliseSymbol, type PriceRange } from "@/lib/price-types";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Portfolio Analysis — Return, Volatility, Sharpe Ratio and VaR for Your Holdings",
   description:
     "Enter up to eight stocks, ETFs or indices with their weights and see the portfolio's historical return, volatility, Sharpe ratio, largest fall, value at risk and each holding's share of the risk. Free, no signup.",
-  alternates: { canonical: "https://www.financeplots.com/tools/portfolio-analysis" },
-};
+  path: "/tools/portfolio-analysis",
+});
 
 const RANGES: PriceRange[] = ["6m", "1y", "5y", "max"];
 const FALLBACK_RISK_FREE = 4;

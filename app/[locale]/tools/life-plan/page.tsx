@@ -5,6 +5,7 @@ import LifePlan from "@/components/LifePlan";
 import RelatedTools from "@/components/RelatedTools";
 import VideoTeaser from "@/components/VideoTeaser";
 import { decodeShared, examplePlan } from "@/lib/life-plan";
+import { pageMetadata } from "@/lib/page-metadata";
 
 const BASE = "https://www.financeplots.com";
 const PATH = "/tools/life-plan";
@@ -17,13 +18,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "lifePlan" });
-  const url = locale === "es" ? `${BASE}/es${PATH}` : `${BASE}${PATH}`;
-  return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: { canonical: url, languages: { en: `${BASE}${PATH}`, es: `${BASE}/es${PATH}` } },
-    openGraph: { title: t("metaTitle"), description: t("metaDescription"), url, siteName: "FinancePlots", type: "website" },
-  };
+  return pageMetadata({ title: t("metaTitle"), description: t("metaDescription"), path: PATH, locale, localized: true });
 }
 
 export default async function LifePlanPage({ params, searchParams }: Props) {

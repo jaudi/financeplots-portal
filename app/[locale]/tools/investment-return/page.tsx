@@ -5,6 +5,7 @@ import InvestmentReturn from "@/components/InvestmentReturn";
 import RelatedTools from "@/components/RelatedTools";
 import { decodeFlows, isIsoDate, type DatedFlow } from "@/lib/investment-return";
 import { normaliseSymbol } from "@/lib/price-types";
+import { pageMetadata } from "@/lib/page-metadata";
 
 const BASE = "https://www.financeplots.com";
 const PATH = "/tools/investment-return";
@@ -17,13 +18,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "investmentReturn" });
-  const url = locale === "es" ? `${BASE}/es${PATH}` : `${BASE}${PATH}`;
-  return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: { canonical: url, languages: { en: `${BASE}${PATH}`, es: `${BASE}/es${PATH}` } },
-    openGraph: { title: t("metaTitle"), description: t("metaDescription"), url, siteName: "FinancePlots", type: "website" },
-  };
+  return pageMetadata({ title: t("metaTitle"), description: t("metaDescription"), path: PATH, locale, localized: true });
 }
 
 // An example to show how the page reads, used only when the link carries no

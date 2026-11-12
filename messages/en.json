@@ -2167,5 +2167,63 @@
     "thanks": "Thanks for your vote.",
     "counts": "{up, plural, one {# person found it useful} other {# people found it useful}}, {down, plural, one {# didn't} other {# didn't}}.",
     "failed": "Your vote couldn't be saved just now. Please try again later."
+  },
+  "pageMeta": {
+    "tools": {
+      "title": "Free Finance Tools — For Your Own Money or Your Business",
+      "description": "Free tools for individuals and businesses: budgets, loans, take-home pay, cash flow, valuation, a pitch deck and a cap table, plus stock and market data. No signup."
+    },
+    "blog": {
+      "title": "Finance Blog — FP&A, Valuation and Personal Finance, Explained",
+      "description": "Plain-English articles on FP&A, budgeting, cash flow, valuation, business models and personal finance, with worked examples and free tools to try the numbers."
+    },
+    "annual-budget": {
+      "title": "Annual Budget Template — Monthly P&L With Seasonality",
+      "description": "Build a 12-month company budget: revenue growth, seasonality, cost of sales and overheads, shown as a monthly P&L with margins. Import from Excel. Free, no signup."
+    },
+    "break-even": {
+      "title": "Break-Even Calculator — Units, Contribution Margin and Margin of Safety",
+      "description": "How much you need to sell to cover your costs: fixed and variable costs, contribution margin, the break-even point and your margin of safety, on a chart. Free, no signup."
+    },
+    "cash-flow": {
+      "title": "13-Week Cash Flow Forecast — Free Weekly Cash Planner",
+      "description": "Forecast cash week by week: customer receipts, supplier runs, payroll, taxes and direct debits on their own schedules, with a minimum-cash buffer that flags the tight weeks."
+    },
+    "compound-interest": {
+      "title": "Compound Interest Calculator — Savings With Monthly Contributions",
+      "description": "See how a starting sum and monthly contributions grow at the rate you choose, year by year, with historical market returns for reference. Free, no signup."
+    },
+    "financial-model": {
+      "title": "5-Year Financial Model — Revenue, Costs and Profit Projections",
+      "description": "Project a business five years ahead: revenue growth, cost of sales, overheads and profit, with a full income statement and margins for every year. Free, no signup."
+    },
+    "financial-planner-company": {
+      "title": "Company Financial Planner — Linked P&L, Cash Flow, Balance Sheet and Valuation",
+      "description": "A step-by-step plan for a company: link the P&L, cash flow and balance sheet, estimate what the business is worth and see what to fix before a sale. Free, no signup."
+    },
+    "financial-planner": {
+      "title": "Personal Financial Plan — Budget, Debt, Savings and Investing, Step by Step",
+      "description": "A four-step guide to your own money: build a budget, work out your debt, project your savings with compound interest and choose an asset mix. Free, no signup."
+    },
+    "lending": {
+      "title": "Loan and Mortgage Calculator — Repayments, Amortisation and Overpayments",
+      "description": "Monthly repayments and the full schedule for any loan or mortgage. Add overpayments to see your mortgage-free date, the interest saved and the yearly allowance. Free, no signup."
+    },
+    "macro-dashboard": {
+      "title": "US Macro Dashboard — GDP, Inflation, Unemployment and Rates",
+      "description": "The main US economic indicators on one page — GDP growth, CPI inflation, unemployment, the Fed funds rate and the 10-year Treasury yield — from FRED, updated daily."
+    },
+    "personal-budget": {
+      "title": "Personal Budget Planner — Income, Spending and Savings Rate",
+      "description": "Plan your month: income, spending across eight categories, what is left to save and your savings rate, with a breakdown chart. Free, no signup, nothing stored."
+    },
+    "pitch-deck": {
+      "title": "Pitch Deck Builder — Investor Deck as Editable PowerPoint",
+      "description": "Build a 14-slide investor deck — problem, market, traction, unit economics, financials and the ask — and see what an investor's first read would flag. Download as PowerPoint."
+    },
+    "valuation": {
+      "title": "Business Valuation Calculator — DCF and Industry Multiples",
+      "description": "Value a business with a DCF and EV/EBITDA, EV/Revenue and P/E multiples from Damodaran's industry data, each method side by side. Free, no signup."
+    }
   }
 }

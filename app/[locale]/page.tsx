@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatDuration, formatEditionDate, listEditions, MOODS } from "@/lib/observer";
@@ -20,20 +21,10 @@ import ContactLink from "@/components/ContactLink";
 // illustration with invented positions, the search suggests nothing until the
 // visitor types, and no example uses a real ticker.
 
-const BASE = "https://www.financeplots.com";
-
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
-  const url = locale === "es" ? `${BASE}/es` : BASE;
-  const title = t("metaTitle");
-  const description = t("metaDescription");
-  return {
-    title,
-    description,
-    alternates: { canonical: url, languages: { en: BASE, es: `${BASE}/es` } },
-    openGraph: { title, description, url, siteName: "FinancePlots", type: "website" },
-  };
+  return pageMetadata({ title: t("metaTitle"), description: t("metaDescription"), path: "", locale, localized: true });
 }
 
 // The connector tools named on the homepage's chat card; the rest are "+ N more".

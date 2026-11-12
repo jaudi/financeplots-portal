@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import CopyText from "@/components/CopyText";
+import { pageMetadata } from "@/lib/page-metadata";
 
 // How to connect the FinancePlots MCP server (/api/mcp) to Claude and other
 // AI assistants. The tool list here is written for people, not taken from
@@ -22,16 +23,7 @@ interface Group {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "mcp" });
-  const url = locale === "es" ? "https://www.financeplots.com/es/mcp" : "https://www.financeplots.com/mcp";
-  return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
-    alternates: {
-      canonical: url,
-      languages: { en: "https://www.financeplots.com/mcp", es: "https://www.financeplots.com/es/mcp" },
-    },
-    openGraph: { title: t("metaTitle"), description: t("metaDescription"), url, siteName: "FinancePlots", type: "website" },
-  };
+  return pageMetadata({ title: t("metaTitle"), description: t("metaDescription"), path: "/mcp", locale, localized: true });
 }
 
 export default async function McpPage({ params }: Props) {
