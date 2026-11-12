@@ -1,7 +1,7 @@
 import { RESOURCE_MIME_TYPE, registerAppResource } from "@modelcontextprotocol/ext-apps/server";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, payoffWithExtra, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
+import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, overpaymentPlan, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type AnyChartSpec } from "@/lib/charts/spec";
 import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, investmentReturnChart, lifePlanCharts, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
@@ -177,18 +177,29 @@ export function createFinancePlotsServer() {
     {
       title: "Loan / mortgage repayment",
       description:
-        "Repayment schedule for a fixed-rate, fully amortising loan or mortgage with monthly payments. Returns the monthly payment, total interest and a year-by-year summary of interest, principal and remaining balance, with charts of each year's interest and capital and of the balance owed. With `extra_monthly_payment`, also how many months and how much interest overpaying saves.",
+        "Repayment schedule for a fixed-rate, fully amortising loan or mortgage with monthly payments. Returns the monthly payment, total interest and a year-by-year summary of interest, principal and remaining balance, with charts of each year's interest and capital and of the balance owed. With `extra_monthly_payment` and/or `lump_sums`, also how many months and how much interest overpaying saves, assuming the lender keeps the payment and shortens the term, plus what was overpaid each year as a share of the balance at the start of that year (many UK fixed-rate deals allow about 10% a year without an early repayment charge).",
       inputSchema: {
         amount: z.number().positive().describe("Amount borrowed"),
         annual_rate_pct: z.number().min(0).max(100).describe("Annual interest rate in percent, e.g. 4.5"),
         years: z.number().int().min(1).max(50).describe("Term in years"),
         extra_monthly_payment: z.number().positive().optional().describe("Amount overpaid every month on top of the scheduled payment"),
+        lump_sums: z
+          .array(
+            z.object({
+              year: z.number().int().min(1).max(50).describe("Year of the loan, 1 = the first twelve payments"),
+              month: z.number().int().min(1).max(12).describe("Month within that year, 1–12"),
+              amount: z.number().positive().describe("One-off overpayment"),
+            }),
+          )
+          .max(50)
+          .optional()
+          .describe("One-off overpayments; ones after the end of the term are ignored"),
         chart: chartParam,
       },
       annotations: readOnly,
       _meta: chartUi,
     },
-    async ({ amount, annual_rate_pct, years, extra_monthly_payment, chart }) => {
+    async ({ amount, annual_rate_pct, years, extra_monthly_payment, lump_sums, chart }) => {
       const schedule = buildSchedule(annual_rate_pct / 100, years, amount);
       const yearly = [];
       for (let y = 0; y < years; y++) {
@@ -201,19 +212,24 @@ export function createFinancePlotsServer() {
         });
       }
       const totalInterest = schedule.reduce((s, r) => s + r.interest, 0);
-      const extra = extra_monthly_payment === undefined ? null : payoffWithExtra(annual_rate_pct / 100, years, amount, extra_monthly_payment);
+      const overpaying = extra_monthly_payment !== undefined || (lump_sums?.length ?? 0) > 0;
+      const extra = overpaying ? overpaymentPlan(annual_rate_pct / 100, years, amount, extra_monthly_payment ?? 0, lump_sums ?? []) : null;
       const result = json({
         monthly_payment: round2(schedule[0].payment),
         total_paid: round2(schedule.reduce((s, r) => s + r.payment, 0)),
         total_interest: round2(totalInterest),
         ...(extra && {
           with_extra_payment: {
-            extra_monthly_payment,
-            monthly_payment: round2(schedule[0].payment + extra_monthly_payment!),
+            extra_monthly_payment: extra_monthly_payment ?? 0,
+            monthly_payment: round2(schedule[0].payment + (extra_monthly_payment ?? 0)),
             months_to_repay: extra.months,
             months_saved: years * 12 - extra.months,
             total_interest: round2(extra.totalInterest),
             interest_saved: round2(totalInterest - extra.totalInterest),
+            total_overpaid: round2(extra.totalOverpaid),
+            overpaid_by_year: extra.yearly
+              .filter((y) => y.overpaid > 0.005)
+              .map((y) => ({ year: y.year, overpaid: round2(y.overpaid), share_of_opening_balance_pct: round2(y.shareOfOpening * 100) })),
           },
         }),
         yearly,

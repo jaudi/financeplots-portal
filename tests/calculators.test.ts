@@ -54,6 +54,22 @@ describe("loan_repayment — overpaying (item 8)", () => {
     expect(r.months_saved).toBe(300 - n);
     expect(r.interest_saved).toBeGreaterThan(0);
     expect(r.interest_saved).toBeCloseTo(base.total_interest - r.total_interest, 1);
+    expect(r.total_overpaid).toBeGreaterThan(0);
+  });
+
+  it("takes one-off lump sums, alone or with a monthly overpayment", async () => {
+    const args = { amount: 200_000, annual_rate_pct: 5, years: 25 };
+    const lump = (await callTool("loan_repayment", { ...args, lump_sums: [{ year: 2, month: 1, amount: 10_000 }] })).json.with_extra_payment;
+    expect(lump.extra_monthly_payment).toBe(0);
+    expect(lump.monthly_payment).toBe(1169.18);
+    expect(lump.total_overpaid).toBe(10_000);
+    expect(lump.months_saved).toBeGreaterThan(0);
+    expect(lump.overpaid_by_year).toHaveLength(1);
+    expect(lump.overpaid_by_year[0].year).toBe(2);
+
+    const both = (await callTool("loan_repayment", { ...args, extra_monthly_payment: 200, lump_sums: [{ year: 2, month: 1, amount: 10_000 }] })).json.with_extra_payment;
+    expect(both.months_to_repay).toBeLessThan(lump.months_to_repay);
+    expect(both.overpaid_by_year[0]).toEqual({ year: 1, overpaid: 2400, share_of_opening_balance_pct: 1.2 });
   });
 });
 

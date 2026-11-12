@@ -38,18 +38,103 @@ export function buildSchedule(rate: number, years: number, amount: number): Sche
 /** Paying `extra` on top of the scheduled payment every month: how many
  *  months until the loan is cleared, and the interest paid on the way. */
 export function payoffWithExtra(rate: number, years: number, amount: number, extra: number) {
+  const { months, totalInterest } = overpaymentPlan(rate, years, amount, extra);
+  return { months, totalInterest };
+}
+
+/** A one-off overpayment: `year` of the loan (1 = the first twelve
+ *  payments) and `month` within it (1–12). */
+export interface LumpSum { year: number; month: number; amount: number }
+
+export interface OverpaymentMonth {
+  period: number;
+  /** Balance after this month's payments, overpaying. */
+  balance: number;
+  /** Balance after this month's payment, without overpaying. */
+  baseline: number;
+  interest: number;
+  /** Overpaid this month, regular and one-off together (never more than was owed). */
+  overpaid: number;
+}
+
+export interface OverpaymentYear {
+  year: number;
+  openingBalance: number;
+  closingBalance: number;
+  baselineClosing: number;
+  interest: number;
+  overpaid: number;
+  /** Overpaid as a share of the balance at the start of the year (0.1 = 10%). */
+  shareOfOpening: number;
+}
+
+/** Overpaying a fixed-rate repayment mortgage: a regular amount on top of
+ *  every payment plus one-off lump sums. The lender is assumed to keep the
+ *  monthly payment and shorten the term — the usual default in the UK — and
+ *  an overpayment never exceeds what is still owed. */
+export function overpaymentPlan(rate: number, years: number, amount: number, extraMonthly: number, lumps: LumpSum[] = []) {
   const r = rate / 12;
-  const pmt = monthlyPayment(rate, years, amount) + extra;
+  const n = years * 12;
+  const pmt = monthlyPayment(rate, years, amount);
+  const lumpAt = new Map<number, number>();
+  for (const l of lumps) {
+    const period = (Math.round(l.year) - 1) * 12 + Math.round(l.month);
+    if (l.amount > 0 && period >= 1 && period <= n) lumpAt.set(period, (lumpAt.get(period) ?? 0) + l.amount);
+  }
+
   let balance = amount;
+  let baseline = amount;
   let months = 0;
   let totalInterest = 0;
-  while (balance > 1e-6 && months < years * 12) {
-    const interest = balance * r;
-    totalInterest += interest;
-    balance = Math.max(balance + interest - pmt, 0);
-    months++;
+  let baselineInterest = 0;
+  let totalOverpaid = 0;
+  const rows: OverpaymentMonth[] = [];
+  for (let period = 1; period <= n; period++) {
+    const bInterest = baseline * r;
+    baselineInterest += bInterest;
+    baseline = Math.max(baseline + bInterest - pmt, 0);
+
+    let interest = 0;
+    let overpaid = 0;
+    if (balance > 1e-6) {
+      months = period;
+      interest = balance * r;
+      totalInterest += interest;
+      balance = Math.max(balance + interest - pmt, 0);
+      overpaid = Math.min(extraMonthly + (lumpAt.get(period) ?? 0), balance);
+      balance -= overpaid;
+      totalOverpaid += overpaid;
+    }
+    rows.push({ period, balance, baseline, interest, overpaid });
   }
-  return { months, totalInterest };
+
+  const yearly: OverpaymentYear[] = [];
+  for (let y = 0; y < years; y++) {
+    const slice = rows.slice(y * 12, y * 12 + 12);
+    const openingBalance = y === 0 ? amount : rows[y * 12 - 1].balance;
+    const overpaid = slice.reduce((s, m) => s + m.overpaid, 0);
+    yearly.push({
+      year: y + 1,
+      openingBalance,
+      closingBalance: slice[slice.length - 1].balance,
+      baselineClosing: slice[slice.length - 1].baseline,
+      interest: slice.reduce((s, m) => s + m.interest, 0),
+      overpaid,
+      shareOfOpening: openingBalance > 0 ? overpaid / openingBalance : 0,
+    });
+  }
+
+  return {
+    monthlyPayment: pmt,
+    months,
+    monthsSaved: n - months,
+    totalInterest,
+    baselineInterest,
+    interestSaved: baselineInterest - totalInterest,
+    totalOverpaid,
+    rows,
+    yearly,
+  };
 }
 
 // ── Compound growth ─────────────────────────────────────────────────────────
