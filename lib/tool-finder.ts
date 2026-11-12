@@ -31,6 +31,7 @@ export const GOALS: Record<Audience, { key: string; slug: string; words: string[
     { key: "forecast", slug: "financial-model", words: ["five years", "5 years", "forecast", "model", "cinco anos", "5 anos", "modelo", "proyeccion"] },
     { key: "worth", slug: "valuation", words: ["worth", "value", "valuation", "sell", "exit", "vale", "valor", "valoracion", "vender"] },
     { key: "whole", slug: "financial-planner-company", words: ["whole picture", "step by step", "everything", "paso a paso", "todo", "completo"] },
+    { key: "capTable", slug: "cap-table", words: ["cap table", "captable", "dilution", "dilute", "diluted", "safe", "safes", "option pool", "dilucion", "diluir", "diluidos", "pool de opciones"] },
     { key: "raise", slug: "pitch-deck", words: ["raise", "investors", "pitch", "deck", "funding", "inversores", "financiacion", "ronda", "levantar"] },
     { key: "economy", slug: "macro-dashboard", words: ["economy", "inflation", "interest rates", "macro", "economia", "inflacion", "tipos"] },
     { key: "listed", slug: "stocks", words: ["listed", "shares", "stocks", "cotizadas", "acciones", "bolsa"] },

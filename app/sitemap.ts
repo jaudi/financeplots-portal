@@ -34,6 +34,7 @@ const BLOG_SLUGS = [
 const TOOL_SLUGS = [
   "annual-budget",
   "break-even",
+  "cap-table",
   "cash-flow",
   "company-map",
   "compound-interest",

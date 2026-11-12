@@ -31,7 +31,7 @@ export const AUDIENCES: Record<Audience, { href: string; icon: string; planner: 
     groups: [
       { key: "plan", icon: "🧮", slugs: ["annual-budget", "cash-flow", "break-even", "financial-model", "valuation"] },
       { key: "context", icon: "📡", slugs: ["macro-dashboard", "stocks"] },
-      { key: "funding", icon: "🎯", slugs: ["pitch-deck"] },
+      { key: "funding", icon: "🎯", slugs: ["pitch-deck", "cap-table"] },
     ],
   },
 };
