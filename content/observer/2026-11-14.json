@@ -1,0 +1,643 @@
+{
+  "slug": "2026-11-14",
+  "date": "2026-11-14",
+  "special": "Special edition: Key test",
+  "title": "The bond market's key test: hot inflation flips the Fed debate to hikes",
+  "dek": "October's inflation prints pushed US yields to the top of their range and turned talk of cuts into talk of hikes — while shares, oddly, had a good week.",
+  "mood": {
+    "label": "Nervous",
+    "explanation": "The VIX — the market's gauge of expected swings in the S&P 500 — closed at 19.3 on 13 November, about a quarter lower on the week but still higher than a month ago, and CNN's Fear & Greed index sat at 39, \"fear\", up from 24 a week earlier. Reddit chatter remains dominated by a handful of AI-linked names rather than broad index funds, and mentions roughly halved in 24 hours — attention is high but fickle."
+  },
+  "regions": [
+    {
+      "region": "US",
+      "headline": "Yields jump as hike talk replaces cut talk",
+      "summary": "October consumer prices rose 4.08% from a year earlier and wholesale prices rose 0.3% on the month, with the annual rate reported at 6.5%. Fed speakers opened the door to raising rates rather than cutting, and the 10-year Treasury yield closed at 5.15% on 13 November. Even so, the S&P 500 gained 2.51% over the week."
+    },
+    {
+      "region": "Euro",
+      "headline": "ECB hawks talk December as shares outperform",
+      "summary": "Bundesbank chief Joachim Nagel said a December rate rise looks \"rather obvious\", and Bloomberg reported solid euro-area growth with the ECB weighing another hike. The deposit rate was 2.5% on 13 November. European indices rose between 2.1% and 3.6% on the week, while the euro slipped 1.59% against a firmer dollar."
+    },
+    {
+      "region": "Asia",
+      "headline": "Yen near 160 as the dollar firms on Fed bets",
+      "summary": "The dollar bought 159.88 yen on 13 November, up 1.51% on the week, with traders watching the ¥160 area after reports of record intervention data. The Nikkei rose 6.46% over the week while Hong Kong's Hang Seng fell 3.45%. Japan's 10-year yield was 3.05% in September — a different world from the near-zero decade."
+    }
+  ],
+  "watchNextWeek": [
+    "Nvidia quarterly results, due next week, the biggest single test of the AI trade",
+    "US weekly jobless claims and any delayed federal data releases",
+    "Further Fed speeches ahead of the December FOMC meeting",
+    "ECB speakers and euro-area flash PMIs for November",
+    "Japanese inflation data and any further comment on the yen",
+    "FAA and airline updates on the backlog from Friday's nationwide ground stop"
+  ],
+  "body": "## Opening\n\nEvery so often a week arrives that tests whether a market's main assumption still holds. This was one. Two inflation readings landed, several Federal Reserve officials changed the conversation from when rates might fall to whether they must rise, and government bond yields shot up. Shares, confusingly, finished higher. The gap between those two reactions is the story.\n\n## What happened\n\nUS consumer prices rose briskly for a third straight month, [according to reporting on the October CPI release](https://news.google.com/rss/articles/CBMimgFBVV95cUxQNVpwcDNJY25FSUJfNENEOXR3cjZsUklnWUJVTEpxU0N3aVVnRGFrdzhoQUtoU2ZEWWt4UE15bXJ1VG9ldDN0UGpDUDdLbVNfVTU0dW9xOTB0czRWLXhjOEF0YnNCdm9yUnk0NVpCbGRlSWJoSVA4QXVDVmJEbzBRM0VrcVZhWkJRMzdoUXJYZFNEQTNUTldfQ2pB?oc=5); the snapshot puts headline CPI inflation at 4.08% in the year to October, up from 4.02% in September, with core (excluding food and energy) at 2.87%.\n\nFriday's producer price index — wholesale prices, a read on costs before they reach the shelf — rose 0.3% in October, below expectations, but [the annual rate was reported at 6.5%](https://news.google.com/rss/articles/CBMilAFBVV95cUxQVExfbVFlVlQ0WkZxOUwxZHJ1Umh6eTEtOGgwYlVJb2pqUm9WUVlYLTRyTmxYRFQ1OV95YnJlTzFINWhFeDEyaHhTVC16eDdpOGk4ZHVWUHIwSjdnOGxJdG16bXJtYlBJZ3RRTW03aHpFai1WdVhVd1F1cWhMSWJLcXFwVlRwZ2xEeFRJS1MyRzc4czVQ?oc=5). Reuters said producer prices rose moderately [but that inflation is broadening out](https://news.google.com/rss/articles/CBMijAFBVV95cUxNZTNDTVIxbVNEWDkyN3QzVk9YR2stVjFURXFqcDNXeGZ2S3FUcmhJNzJqcEp5R3JMY0dDdnl3MDEyRXVKRnB1ZGhMVHpQeTRYNnZwZDQ3UlpnTG5mR1o0akdxWDRhWDU1dm1CY2M3bFZQNHhNRHZyaUZFU1VPODZIdFJrbXBaM2UzTnRXOA?oc=5).\n\nOfficials responded quickly. Reuters reported that [Fed officials opened the door to a quicker round of rate hikes as inflation worsens](https://news.google.com/rss/articles/CBMiwwFBVV95cUxOTXo5UzFWVEh5WllQOHNxS1Q2cERxOEM0X1QyN1dPX0R4XzdfT1BpajYxdi0xOEltNWh6cE15Z2ZvZ2dXV0Vwb3NkbWZ1VGQ2M2tvVVVSaWd6clhPcS1XUEU2QXE3c0tlLUhPX0c2emRnWVpwOGtoajlnSS1VRXRNZXFaNEpyVlVwcFVIOUdkT18yQ2t6a1psZGVlOFpiZl90QnVhcmxqQzNxNnlNSEdXcWpjcUdzYUNJSi1hcnl6ZEpUSUU?oc=5), and Bloomberg reported that remarks from Christopher Waller and Lorie Logan [sparked a rate-hike debate](https://news.google.com/rss/articles/CBMiswFBVV95cUxOZkZoTlZOa05oRHYwaUNCM1pDVHdhNnF3ajlxMzBBd1R0Z3plbEVKbm4xemxmbm1penlwS1hrY09URU4zbDZoZFlWV213ZnZkWVlseUE1U0JyeE8zQWpqcU9YVUlKbUJldG9NT21UVkpmN2F6eFlWZWtiZlhrZUZGLUFpUTRlcmdWYnduUDB5MTNOY0xFQW5TSDZfaDNac0N5VVpuUE43WTJYeEZIZTBDbFRKdw?oc=5) and that the Fed is [on track to raise rates next month and perhaps again in January](https://news.google.com/rss/articles/CBMivAFBVV95cUxNeXJmalVqcjF1WEgxXzRyZ2hNRTRMWXdCWGdpblhnaGwxY0ZDeFIwYTVnWENtQ2U2NFg3YkpUS21EdkNHaXlwVlVicGxWd2RJZnJqOXlySXJfZzdscXlqRFNJSkswUjZ0ZjFINC11aU9GMWdrMGR6SzdfYUlkN3pGaDZZci1NbnkxWmtoZ1lNa3E2MmxDcnFqRnN0MWpwUURLT05odHBpdVlhNXRjNUJOd3JGcnNCYzd6bjVqWQ?oc=5). The Fed funds rate averaged 3.88% in October.\n\n## How markets reacted\n\nBonds did the work. Bloomberg reported yields spiking [the most since the tariff meltdown on rate-hike bets](https://news.google.com/rss/articles/CBMitAFBVV95cUxPakFPZlVwd2pvZDUwU0IzS3I3bHNNTlJOV3JRUXpyTEstS0FRN2JHeDE1R2J6cWxBU3o4SWI2SWhLNTdmdDZzTl9Na3lSLVdqcDd1c0RtSHllU3dSRk04aGNqWmZnbVQxdVVDRmhzcmlJU2tHUnJWQ1JNNzhmNXZITHJmdFpOZWdrWWdvam95YWpvd1ZxWDlROG5Za185MW1fWjFqb05QYmhzRDhpY0NHT3dMeWQ?oc=5), and by Friday investors were warning [the bond rout is not over](https://news.google.com/rss/articles/CBMiswFBVV95cUxQWjhkdkdUYk85b1djY25EQk9aY3VBUmdlZGVpS251di03VTMzaDRvVHIzbEZBcjZSSlNvMDNXdXFNX3A0QTB6TFBXRndSdFFyNXBwMXRtRmZIcVJySzVXaEZDQ25HN0ZDOGZtbkpibUZ3UDZPUWpiVWVLMU1hVzk3X3JwQ2NxVXo3WkVWMnhqandnNUg0UjlnUUNSTkUwYjFLd3ZBeEFBel9yT2h5WVRObU0zYw?oc=5). The US 10-year Treasury yield closed at 5.15% on 13 November; the two-year was 4.86% on 12 November, up from 4.73% two days earlier. The gap between 10-year and two-year yields — the \"yield curve\", a rough signal of where investors think rates and growth are heading — was 0.27 percentage points, slightly wider.\n\nThe dollar firmed: Yahoo Finance reported the [dollar climbing as traders raised December hike bets](https://news.google.com/rss/articles/CBMipgFBVV95cUxNUU9SUDRLTXBTTHJnSjNkWExkQjl0ODM0S3hyRkNVVmt2bzdQWEQ1VHp3TC1RYV9EeEQxM2pFcHBlZ2xYbXdqQ05mLWcyUHZudk9FaC1nSXFqeVFKOFJadTd6UHNGTUJ1RWNpU3AtbUpqWE90eldxZjdlWVhJbVdELURTc2xTMXYwM3FOb1NmUFJVSHdNMk0zT0pGUm5qZDVqeVZ1bWx3?oc=5). The dollar index closed at 103.41, up 1.09% on the week; the euro fell 1.59% to 1.11.\n\nEquities ignored it. The S&P 500 rose 2.51% on the week to 7,561.67, though it is down 2.04% over a month. The Nasdaq rose 2.27% on the week but is 5.83% lower over a month, after a sell-off in AI-linked shares that [pared losses mid-week](https://news.google.com/rss/articles/CBMiuwFBVV95cUxOTDc4NU9Ycko1b01GTVdRT1lMVzJWaEhrLS1OSU92el9GTTRMSEhyTW5VbThOZEhoVGNCbHNBU19EZS1UUlNiTW0wVU41RUdBVkJpQlNRazBvaHJFQ2VnT2FJU183NE9ub1RKQU5wMFp6N1luX3lrMFZubFVIaHJ0TWhZRVkyUzhJVjBsaDRlMEpKNUFLeWtITVhLRVhqOERFMzh0azNJeVlqVzI0ZUowcnV4Z3VYMUdXcFY0?oc=5). Brent crude fell 2.52% to $95.84 and gold fell 4.63%.\n\n## What it means for policy\n\nOnly what has been said: Fed speakers have floated faster tightening, including a half-point move, [as inflation worsens](https://news.google.com/rss/articles/CBMi3gFBVV95cUxNVV9UdmhMbTFEazRHd0trOXcyUUxob2JHUTd5RjU3Vl9Fa2hOejJJMWFfRERMR1FxMUNYUkVOTnBUSVJxTHFJdmV4dHBvaEluc0N6MmtBaHllSE15aGZFOUE4TXh5emVxaUthMU5PU0s3b25OcElNcVphcWVhS2tJMFBQdmhHb1VZcDZ6aUZ3SzJJcWVxVUlla2dYaFl6SER6NUgwMzA0ZXZIbHNqQ19lUGFVLXJwZXNtVEtkUVhTMVdkd1IwbDZxU2FuTmxkMTVFc3hGZmRNMG9Xb3FjN0E?oc=5). Nothing is decided.\n\nIn the euro area, Bundesbank president Joachim Nagel said a December rate rise is looking [\"rather obvious\"](https://news.google.com/rss/articles/CBMisgFBVV95cUxQQTNvUWhUQWFyaGVJc1ZPX1Q4b1FQcmFXTnlZQXF1QWdVZGVCYVBSRTRrR19SbDNWakdDQWdtLUx0X003REgxb3hmVlJnQWh1M21mdWhfRE5sSzduRTU4MmJKcC1vOThEaWFiMmhxc2FHM0dUWk9RdXJ6SmRGd0pINDZPcHNCUUgwekVHQkFGRXQzcTVaTHhCSVgyYXdhNlpZcFdXWGpDdzhIVFR1ZzMwU2Nn?oc=5), and Bloomberg reported the euro zone showing solid growth [as the ECB weighs another hike](https://news.google.com/rss/articles/CBMisAFBVV95cUxOYVZieW1jVWE1WGMzSlU1a2w5czJmbHJWaEMybDd3OUpRQUxELWJVbE1IcGVUcjF1eXMwNDVBUGduSk1MTVpnWWhuNFo4U0c5R3FWTVh0UFFtQVpTRmgyd1NpWC14bTBwTVM5Z01WSC1oWFJ2aWpYaXAxOUlrRUdVVk05dEo0UEZaeG82Zlg1UzBXazZjTmRLQ093a2x6eV96S3dET1NBeTY2RkZtV3FDSw?oc=5). The ECB deposit rate was 2.5% on 13 November.\n\n## What it means for businesses and households\n\nA 10-year yield above 5% is the anchor for fixed-rate corporate borrowing, commercial property and mortgages. If it stays there, refinancing in 2027 is done at higher cost than debt taken out in the cheap years, which shows up in capital budgets before it shows up in profits.\n\nFor households, the squeeze is two-sided: prices still rising faster than before, and borrowing costs that are no longer heading down. US unemployment was 4.1% in October, down from 4.2% — the labour market is not yet doing the Fed's job for it.\n\nFor importers and exporters, the stronger dollar cuts both ways: cheaper dollar-priced energy (Brent is down 9.52% over a month) against dearer dollar invoices for everyone earning in euros or yen.\n\n## Beyond the US\n\nEurope got the better of the week: the DAX rose 3.6%, the CAC 40 2.82%, the IBEX 3.36% and the FTSE 100 2.14%. Euro-area inflation was 3.75% in September, up from 3.23%, and unemployment steady at 6.5%. France's 10-year yield was 4.48% in September, well above Germany's 3.47% — a reminder that fiscal credibility is priced separately.\n\nIn Asia, the yen is the pressure valve. It stood at 159.88 per dollar, and the Japan Times reported that the currency is becoming [too difficult for some investors to trade](https://news.google.com/rss/articles/CBMijwFBVV95cUxPRkk2YS1XQnFySmlQN3dzam81RXl2Zjh1YTRxSkJoVGMxWk40SER4RmNUeE9uSEhhZERqR2Y5SjhDcEJYbEVFa3hVakRuT2tkMUhvdkhUVVlqRlZpMnZKZF9UZXViT1l4TWdIUEg1NWt4QjBQdkVKTkhyU2J0Z05YR0VXcVdZVi1iZkxMS2VsWQ?oc=5). The Nikkei rose 6.46% on the week; the Hang Seng fell 3.45% and the Shanghai Composite 0.41%.\n\n## Market mood\n\nThe VIX at 19.3 is down about a quarter on the week but up on the month — calmer, not calm. Fear & Greed at 39 is still in \"fear\", though better than 24 a week ago. High-yield credit spreads — the extra yield demanded to lend to riskier companies, a good stress gauge — were 3.2 percentage points on 12 November, down from 3.3 the day before: no sign of credit panic. Reddit chatter, which is unverified opinion, stayed concentrated in AI and chip names, with mention counts falling sharply in a day.\n\nTwo non-market events framed the week: the FAA's rare nationwide ground stop, which it [lifted after more than four hours](https://news.google.com/rss/articles/CBMiYkFVX3lxTFBaSWNTSW04MGV3d2hOSXdvNmVnRC1lemI4eE1jMy1KcWdKWlYwUTgtTjhaX1NJb1I4MGxmYXFTeFZlOGxtUlNZaVJpY1B5bEtEb3dsN0VPa1FqVC1vSnlPSEp30gFnQVVfeXFMTnZoYjh6WHJtU0UxdzlLLUpaeHpaQ1N3WHpHRm9NSWRpZWl0RVB1NHhpYzZCUU1feU1iVGp2LTJzSXIzMzZzWm50dTVWQ1J4dXhEQVBqbnZ6QklNLVdwV0NMbGcydFVPOA?oc=5) with cancellations running into the weekend, and a [global Microsoft outage the company said was fully restored](https://news.google.com/rss/articles/CBMirgFBVV95cUxPcVpSTUpTQVVaR0dJSEFmSzNEQWduRC1WRVNmOGt1cms0VFRjR3VvaC1GVTNaUjdmcW9LRWd4ZzJaaEpIU29kVjB0NzZGNko1UjIzdVlIQWlzdzF6Zk0xeVk4bVhUdDI0Z3d0UFlsMXVkTUhaNjZ4NXI2SldiU1JYS0R1NjJVRlBDYmt5cjdGbVV0UVkzQ3dZdEp2TWVjNm15WTcxQ3A2LW0zc0ZWX3c?oc=5). Both are operational-resilience reminders for any business with a single point of failure.\n\n## What to watch next\n\nWhether the bond move extends, and whether equity investors keep treating 5% yields as background noise. The calendar does the deciding.\n",
+  "sources": [
+    {
+      "title": "Microsoft says services fully restored after global outage hits governments - The Guardian",
+      "publisher": "The Guardian",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPcVpSTUpTQVVaR0dJSEFmSzNEQWduRC1WRVNmOGt1cms0VFRjR3VvaC1GVTNaUjdmcW9LRWd4ZzJaaEpIU29kVjB0NzZGNko1UjIzdVlIQWlzdzF6Zk0xeVk4bVhUdDI0Z3d0UFlsMXVkTUhaNjZ4NXI2SldiU1JYS0R1NjJVRlBDYmt5cjdGbVV0UVkzQ3dZdEp2TWVjNm15WTcxQ3A2LW0zc0ZWX3c?oc=5"
+    },
+    {
+      "title": "The yen is becoming too difficult for some investors to trade - The Japan Times",
+      "publisher": "The Japan Times",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPRkk2YS1XQnFySmlQN3dzam81RXl2Zjh1YTRxSkJoVGMxWk40SER4RmNUeE9uSEhhZERqR2Y5SjhDcEJYbEVFa3hVakRuT2tkMUhvdkhUVVlqRlZpMnZKZF9UZXViT1l4TWdIUEg1NWt4QjBQdkVKTkhyU2J0Z05YR0VXcVdZVi1iZkxMS2VsWQ?oc=5"
+    },
+    {
+      "title": "US producer prices rise moderately in October, but inflation broadens out - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNZTNDTVIxbVNEWDkyN3QzVk9YR2stVjFURXFqcDNXeGZ2S3FUcmhJNzJqcEp5R3JMY0dDdnl3MDEyRXVKRnB1ZGhMVHpQeTRYNnZwZDQ3UlpnTG5mR1o0akdxWDRhWDU1dm1CY2M3bFZQNHhNRHZyaUZFU1VPODZIdFJrbXBaM2UzTnRXOA?oc=5"
+    },
+    {
+      "title": "US Producer Prices Rise 0.3% in October, Below Expectations, as Annual Inflation Reaches 6.5% - Yahoo Finance",
+      "publisher": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQVExfbVFlVlQ0WkZxOUwxZHJ1Umh6eTEtOGgwYlVJb2pqUm9WUVlYLTRyTmxYRFQ1OV95YnJlTzFINWhFeDEyaHhTVC16eDdpOGk4ZHVWUHIwSjdnOGxJdG16bXJtYlBJZ3RRTW03aHpFai1WdVhVd1F1cWhMSWJLcXFwVlRwZ2xEeFRJS1MyRzc4czVQ?oc=5"
+    },
+    {
+      "title": "US consumer prices rise briskly for third straight month - Yahoo Finance",
+      "publisher": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQNVpwcDNJY25FSUJfNENEOXR3cjZsUklnWUJVTEpxU0N3aVVnRGFrdzhoQUtoU2ZEWWt4UE15bXJ1VG9ldDN0UGpDUDdLbVNfVTU0dW9xOTB0czRWLXhjOEF0YnNCdm9yUnk0NVpCbGRlSWJoSVA4QXVDVmJEbzBRM0VrcVZhWkJRMzdoUXJYZFNEQTNUTldfQ2pB?oc=5"
+    },
+    {
+      "title": "Euro-Zone Shows Solid Growth as ECB Weighs Another Rate Hike - Bloomberg.com",
+      "publisher": "Bloomberg.com",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOYVZieW1jVWE1WGMzSlU1a2w5czJmbHJWaEMybDd3OUpRQUxELWJVbE1IcGVUcjF1eXMwNDVBUGduSk1MTVpnWWhuNFo4U0c5R3FWTVh0UFFtQVpTRmgyd1NpWC14bTBwTVM5Z01WSC1oWFJ2aWpYaXAxOUlrRUdVVk05dEo0UEZaeG82Zlg1UzBXazZjTmRLQ093a2x6eV96S3dET1NBeTY2RkZtV3FDSw?oc=5"
+    },
+    {
+      "title": "ECB’s Nagel Says December Rate Hike Is Looking ‘Rather Obvious’ - Bloomberg",
+      "publisher": "Bloomberg",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQQTNvUWhUQWFyaGVJc1ZPX1Q4b1FQcmFXTnlZQXF1QWdVZGVCYVBSRTRrR19SbDNWakdDQWdtLUx0X003REgxb3hmVlJnQWh1M21mdWhfRE5sSzduRTU4MmJKcC1vOThEaWFiMmhxc2FHM0dUWk9RdXJ6SmRGd0pINDZPcHNCUUgwekVHQkFGRXQzcTVaTHhCSVgyYXdhNlpZcFdXWGpDdzhIVFR1ZzMwU2Nn?oc=5"
+    },
+    {
+      "title": "Fed officials open door to a quicker round of rate hikes as inflation worsens - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOTXo5UzFWVEh5WllQOHNxS1Q2cERxOEM0X1QyN1dPX0R4XzdfT1BpajYxdi0xOEltNWh6cE15Z2ZvZ2dXV0Vwb3NkbWZ1VGQ2M2tvVVVSaWd6clhPcS1XUEU2QXE3c0tlLUhPX0c2emRnWVpwOGtoajlnSS1VRXRNZXFaNEpyVlVwcFVIOUdkT18yQ2t6a1psZGVlOFpiZl90QnVhcmxqQzNxNnlNSEdXcWpjcUdzYUNJSi1hcnl6ZEpUSUU?oc=5"
+    },
+    {
+      "title": "Fed’s Waller, Logan Spark Rate-Hike Debate After Hot Inflation - Bloomberg",
+      "publisher": "Bloomberg",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOZkZoTlZOa05oRHYwaUNCM1pDVHdhNnF3ajlxMzBBd1R0Z3plbEVKbm4xemxmbm1penlwS1hrY09URU4zbDZoZFlWV213ZnZkWVlseUE1U0JyeE8zQWpqcU9YVUlKbUJldG9NT21UVkpmN2F6eFlWZWtiZlhrZUZGLUFpUTRlcmdWYnduUDB5MTNOY0xFQW5TSDZfaDNac0N5VVpuUE43WTJYeEZIZTBDbFRKdw?oc=5"
+    },
+    {
+      "title": "Fed officials open door to a half-percentage-point rate hike as inflation worsens - New Hampshire Union Leader",
+      "publisher": "New Hampshire Union Leader",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNVV9UdmhMbTFEazRHd0trOXcyUUxob2JHUTd5RjU3Vl9Fa2hOejJJMWFfRERMR1FxMUNYUkVOTnBUSVJxTHFJdmV4dHBvaEluc0N6MmtBaHllSE15aGZFOUE4TXh5emVxaUthMU5PU0s3b25OcElNcVphcWVhS2tJMFBQdmhHb1VZcDZ6aUZ3SzJJcWVxVUlla2dYaFl6SER6NUgwMzA0ZXZIbHNqQ19lUGFVLXJwZXNtVEtkUVhTMVdkd1IwbDZxU2FuTmxkMTVFc3hGZmRNMG9Xb3FjN0E?oc=5"
+    },
+    {
+      "title": "Fed on Track to Raise Interest Rates Next Month And Maybe Again in January - Bloomberg",
+      "publisher": "Bloomberg",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNeXJmalVqcjF1WEgxXzRyZ2hNRTRMWXdCWGdpblhnaGwxY0ZDeFIwYTVnWENtQ2U2NFg3YkpUS21EdkNHaXlwVlVicGxWd2RJZnJqOXlySXJfZzdscXlqRFNJSkswUjZ0ZjFINC11aU9GMWdrMGR6SzdfYUlkN3pGaDZZci1NbnkxWmtoZ1lNa3E2MmxDcnFqRnN0MWpwUURLT05odHBpdVlhNXRjNUJOd3JGcnNCYzd6bjVqWQ?oc=5"
+    },
+    {
+      "title": "Dollar climbs as traders raise December Fed hike bets - Yahoo Finance",
+      "publisher": "Yahoo Finance",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNUU9SUDRLTXBTTHJnSjNkWExkQjl0ODM0S3hyRkNVVmt2bzdQWEQ1VHp3TC1RYV9EeEQxM2pFcHBlZ2xYbXdqQ05mLWcyUHZudk9FaC1nSXFqeVFKOFJadTd6UHNGTUJ1RWNpU3AtbUpqWE90eldxZjdlWVhJbVdELURTc2xTMXYwM3FOb1NmUFJVSHdNMk0zT0pGUm5qZDVqeVZ1bWx3?oc=5"
+    },
+    {
+      "title": "AI stocks pare losses as investors assess fallout of Nvidia CEO's exit - Reuters",
+      "publisher": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOTDc4NU9Ycko1b01GTVdRT1lMVzJWaEhrLS1OSU92el9GTTRMSEhyTW5VbThOZEhoVGNCbHNBU19EZS1UUlNiTW0wVU41RUdBVkJpQlNRazBvaHJFQ2VnT2FJU183NE9ub1RKQU5wMFp6N1luX3lrMFZubFVIaHJ0TWhZRVkyUzhJVjBsaDRlMEpKNUFLeWtITVhLRVhqOERFMzh0azNJeVlqVzI0ZUowcnV4Z3VYMUdXcFY0?oc=5"
+    },
+    {
+      "title": "Investors Warn Bond Rout Isn’t Over After Week of Soaring Yields - Bloomberg",
+      "publisher": "Bloomberg",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQWjhkdkdUYk85b1djY25EQk9aY3VBUmdlZGVpS251di03VTMzaDRvVHIzbEZBcjZSSlNvMDNXdXFNX3A0QTB6TFBXRndSdFFyNXBwMXRtRmZIcVJySzVXaEZDQ25HN0ZDOGZtbkpibUZ3UDZPUWpiVWVLMU1hVzk3X3JwQ2NxVXo3WkVWMnhqandnNUg0UjlnUUNSTkUwYjFLd3ZBeEFBel9yT2h5WVRObU0zYw?oc=5"
+    },
+    {
+      "title": "Bond Yields Spike Most Since Tariff Meltdown on Rate-Hike Bets - Bloomberg.com",
+      "publisher": "Bloomberg.com",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPakFPZlVwd2pvZDUwU0IzS3I3bHNNTlJOV3JRUXpyTEstS0FRN2JHeDE1R2J6cWxBU3o4SWI2SWhLNTdmdDZzTl9Na3lSLVdqcDd1c0RtSHllU3dSRk04aGNqWmZnbVQxdVVDRmhzcmlJU2tHUnJWQ1JNNzhmNXZITHJmdFpOZWdrWWdvam95YWpvd1ZxWDlROG5Za185MW1fWjFqb05QYmhzRDhpY0NHT3dMeWQ?oc=5"
+    },
+    {
+      "title": "FAA lifts ground stop after more than four hours, but flight cancellations will stretch into the weekend - CNBC",
+      "publisher": "CNBC",
+      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBaSWNTSW04MGV3d2hOSXdvNmVnRC1lemI4eE1jMy1KcWdKWlYwUTgtTjhaX1NJb1I4MGxmYXFTeFZlOGxtUlNZaVJpY1B5bEtEb3dsN0VPa1FqVC1vSnlPSEp30gFnQVVfeXFMTnZoYjh6WHJtU0UxdzlLLUpaeHpaQ1N3WHpHRm9NSWRpZWl0RVB1NHhpYzZCUU1feU1iVGp2LTJzSXIzMzZzWm50dTVWQ1J4dXhEQVBqbnZ6QklNLVdwV0NMbGcydFVPOA?oc=5"
+    }
+  ],
+  "data": {
+    "markets": [
+      {
+        "symbol": "^GSPC",
+        "label": "S&P 500",
+        "region": "US",
+        "date": "2026-11-13",
+        "close": 7561.67,
+        "change1w": 2.51,
+        "change1m": -2.04
+      },
+      {
+        "symbol": "^IXIC",
+        "label": "Nasdaq Composite",
+        "region": "US",
+        "date": "2026-11-13",
+        "close": 25136.27,
+        "change1w": 2.27,
+        "change1m": -5.83
+      },
+      {
+        "symbol": "^RUT",
+        "label": "Russell 2000",
+        "region": "US",
+        "date": "2026-11-13",
+        "close": 2790.49,
+        "change1w": 1.32,
+        "change1m": 2.23
+      },
+      {
+        "symbol": "^VIX",
+        "label": "VIX (S&P 500 implied volatility)",
+        "region": "US",
+        "date": "2026-11-13",
+        "close": 19.3,
+        "change1w": -24.73,
+        "change1m": 17.25
+      },
+      {
+        "symbol": "^TNX",
+        "label": "US 10-year yield",
+        "region": "US",
+        "date": "2026-11-13",
+        "close": 5.15,
+        "change1w": 6.07,
+        "change1m": 1.28
+      },
+      {
+        "symbol": "DX-Y.NYB",
+        "label": "US Dollar Index",
+        "region": "US",
+        "date": "2026-11-13",
+        "close": 103.41,
+        "change1w": 1.09,
+        "change1m": 1.38
+      },
+      {
+        "symbol": "^STOXX50E",
+        "label": "Euro Stoxx 50",
+        "region": "Euro",
+        "date": "2026-11-13",
+        "close": 6386.86,
+        "change1w": 3.51,
+        "change1m": 3.54
+      },
+      {
+        "symbol": "^GDAXI",
+        "label": "DAX",
+        "region": "Euro",
+        "date": "2026-11-13",
+        "close": 26749.95,
+        "change1w": 3.6,
+        "change1m": 5.39
+      },
+      {
+        "symbol": "^FCHI",
+        "label": "CAC 40",
+        "region": "Euro",
+        "date": "2026-11-13",
+        "close": 8368.91,
+        "change1w": 2.82,
+        "change1m": 5.47
+      },
+      {
+        "symbol": "^IBEX",
+        "label": "IBEX 35",
+        "region": "Euro",
+        "date": "2026-11-13",
+        "close": 20020.1,
+        "change1w": 3.36,
+        "change1m": 4.39
+      },
+      {
+        "symbol": "^FTSE",
+        "label": "FTSE 100",
+        "region": "Euro",
+        "date": "2026-11-13",
+        "close": 10902.6,
+        "change1w": 2.14,
+        "change1m": 0.57
+      },
+      {
+        "symbol": "EURUSD=X",
+        "label": "EUR/USD",
+        "region": "Euro",
+        "date": "2026-11-13",
+        "close": 1.11,
+        "change1w": -1.59,
+        "change1m": -1.29
+      },
+      {
+        "symbol": "^N225",
+        "label": "Nikkei 225",
+        "region": "Asia",
+        "date": "2026-11-13",
+        "close": 61142.35,
+        "change1w": 6.46,
+        "change1m": -5.1
+      },
+      {
+        "symbol": "^HSI",
+        "label": "Hang Seng",
+        "region": "Asia",
+        "date": "2026-11-13",
+        "close": 23637.6,
+        "change1w": -3.45,
+        "change1m": -1.77
+      },
+      {
+        "symbol": "000001.SS",
+        "label": "Shanghai Composite",
+        "region": "Asia",
+        "date": "2026-11-13",
+        "close": 3634.35,
+        "change1w": -0.41,
+        "change1m": -1.97
+      },
+      {
+        "symbol": "^BSESN",
+        "label": "BSE Sensex",
+        "region": "Asia",
+        "date": "2026-11-13",
+        "close": 81592.45,
+        "change1w": 2.88,
+        "change1m": 9.79
+      },
+      {
+        "symbol": "^KS11",
+        "label": "KOSPI",
+        "region": "Asia",
+        "date": "2026-11-13",
+        "close": 5290.53,
+        "change1w": 4.56,
+        "change1m": -4.75
+      },
+      {
+        "symbol": "JPY=X",
+        "label": "USD/JPY",
+        "region": "Asia",
+        "date": "2026-11-13",
+        "close": 159.88,
+        "change1w": 1.51,
+        "change1m": 1.21
+      },
+      {
+        "symbol": "CNY=X",
+        "label": "USD/CNY",
+        "region": "Asia",
+        "date": "2026-11-14",
+        "close": 6.67,
+        "change1w": -0.07,
+        "change1m": -0.32
+      },
+      {
+        "symbol": "CL=F",
+        "label": "WTI crude oil",
+        "region": "Global",
+        "date": "2026-11-13",
+        "close": 88.56,
+        "change1w": -2.5,
+        "change1m": -9.6
+      },
+      {
+        "symbol": "BZ=F",
+        "label": "Brent crude oil",
+        "region": "Global",
+        "date": "2026-11-13",
+        "close": 95.84,
+        "change1w": -2.52,
+        "change1m": -9.52
+      },
+      {
+        "symbol": "GC=F",
+        "label": "Gold",
+        "region": "Global",
+        "date": "2026-11-13",
+        "close": 3886.3,
+        "change1w": -4.63,
+        "change1m": -6.81
+      },
+      {
+        "symbol": "HG=F",
+        "label": "Copper",
+        "region": "Global",
+        "date": "2026-11-13",
+        "close": 6.08,
+        "change1w": -2.23,
+        "change1m": -6.63
+      },
+      {
+        "symbol": "BTC-USD",
+        "label": "Bitcoin",
+        "region": "Global",
+        "date": "2026-11-14",
+        "close": 66923.68,
+        "change1w": -11.03,
+        "change1m": -18.53
+      }
+    ],
+    "macro": {
+      "US": [
+        {
+          "id": "GDPC1",
+          "label": "Real GDP growth, YoY",
+          "unit": "%",
+          "date": "2026-07-01",
+          "value": 2.07,
+          "prior": {
+            "date": "2026-04-01",
+            "value": 2.19
+          },
+          "stale": false
+        },
+        {
+          "id": "CPIAUCSL",
+          "label": "CPI inflation, YoY",
+          "unit": "%",
+          "date": "2026-10-01",
+          "value": 4.08,
+          "prior": {
+            "date": "2026-09-01",
+            "value": 4.02
+          },
+          "stale": false
+        },
+        {
+          "id": "CPILFESL",
+          "label": "Core CPI inflation, YoY",
+          "unit": "%",
+          "date": "2026-10-01",
+          "value": 2.87,
+          "prior": {
+            "date": "2026-09-01",
+            "value": 2.79
+          },
+          "stale": false
+        },
+        {
+          "id": "UNRATE",
+          "label": "Unemployment rate",
+          "unit": "%",
+          "date": "2026-10-01",
+          "value": 4.1,
+          "prior": {
+            "date": "2026-09-01",
+            "value": 4.2
+          },
+          "stale": false
+        },
+        {
+          "id": "FEDFUNDS",
+          "label": "Fed funds rate",
+          "unit": "%",
+          "date": "2026-10-01",
+          "value": 3.88,
+          "prior": {
+            "date": "2026-09-01",
+            "value": 3.75
+          },
+          "stale": false
+        },
+        {
+          "id": "DGS2",
+          "label": "2-year Treasury yield",
+          "unit": "%",
+          "date": "2026-11-12",
+          "value": 4.86,
+          "prior": {
+            "date": "2026-11-10",
+            "value": 4.73
+          },
+          "stale": false
+        },
+        {
+          "id": "DGS10",
+          "label": "10-year Treasury yield",
+          "unit": "%",
+          "date": "2026-11-12",
+          "value": 5.1,
+          "prior": {
+            "date": "2026-11-10",
+            "value": 4.98
+          },
+          "stale": false
+        },
+        {
+          "id": "T10Y2Y",
+          "label": "10y minus 2y Treasury spread",
+          "unit": "pp",
+          "date": "2026-11-13",
+          "value": 0.27,
+          "prior": {
+            "date": "2026-11-12",
+            "value": 0.24
+          },
+          "stale": false
+        },
+        {
+          "id": "BAMLH0A0HYM2",
+          "label": "High-yield credit spread",
+          "unit": "pp",
+          "date": "2026-11-12",
+          "value": 3.2,
+          "prior": {
+            "date": "2026-11-11",
+            "value": 3.3
+          },
+          "stale": false
+        },
+        {
+          "id": "GFDEGDQ188S",
+          "label": "Federal debt, % of GDP",
+          "unit": "%",
+          "date": "2026-04-01",
+          "value": 121.19,
+          "prior": {
+            "date": "2026-01-01",
+            "value": 122.44
+          },
+          "stale": false
+        },
+        {
+          "id": "FYFSGDA188S",
+          "label": "Federal surplus/deficit, % of GDP",
+          "unit": "%",
+          "date": "2025-01-01",
+          "value": -5.75,
+          "prior": {
+            "date": "2024-01-01",
+            "value": -6.24
+          },
+          "stale": false
+        }
+      ],
+      "Euro": [
+        {
+          "id": "CLVMNACSCAB1GQEA19",
+          "label": "Euro area real GDP growth, YoY",
+          "unit": "%",
+          "date": "2026-07-01",
+          "value": 1.28,
+          "prior": {
+            "date": "2026-04-01",
+            "value": 1.19
+          },
+          "stale": false
+        },
+        {
+          "id": "CP0000EZ19M086NEST",
+          "label": "Euro area HICP inflation, YoY",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.75,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.23
+          },
+          "stale": false
+        },
+        {
+          "id": "ECBDFR",
+          "label": "ECB deposit facility rate",
+          "unit": "%",
+          "date": "2026-11-13",
+          "value": 2.5,
+          "prior": {
+            "date": "2026-11-12",
+            "value": 2.5
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01DEM156N",
+          "label": "Germany 10-year yield",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.47,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 3.19
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01ITM156N",
+          "label": "Italy 10-year yield",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 3.99,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 3.88
+          },
+          "stale": false
+        },
+        {
+          "id": "IRLTLT01FRM156N",
+          "label": "France 10-year yield",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 4.48,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 4.03
+          },
+          "stale": false
+        },
+        {
+          "id": "eurostat:une_rt_m",
+          "label": "Euro area unemployment rate",
+          "unit": "%",
+          "date": "2026-09",
+          "value": 6.5,
+          "prior": {
+            "date": "2026-08",
+            "value": 6.5
+          },
+          "stale": false
+        },
+        {
+          "id": "eurostat:gov_10q_ggdebt",
+          "label": "Euro area government debt, % of GDP",
+          "unit": "%",
+          "date": "2026-Q2",
+          "value": 88.8,
+          "prior": {
+            "date": "2026-Q1",
+            "value": 88.4
+          },
+          "stale": false
+        }
+      ],
+      "Asia": [
+        {
+          "id": "IRLTLT01JPM156N",
+          "label": "Japan 10-year yield",
+          "unit": "%",
+          "date": "2026-09-01",
+          "value": 3.05,
+          "prior": {
+            "date": "2026-08-01",
+            "value": 2.94
+          },
+          "stale": false
+        },
+        {
+          "id": "IR3TIB01CNM156N",
+          "label": "China 3-month interbank rate",
+          "unit": "%",
+          "date": "2026-08-01",
+          "value": 1.49,
+          "prior": {
+            "date": "2026-07-01",
+            "value": 1.54
+          },
+          "stale": false
+        },
+        {
+          "id": "GGGDTAJPA188N",
+          "label": "Japan government debt, % of GDP (IMF)",
+          "unit": "%",
+          "date": "2023-01-01",
+          "value": 239.97,
+          "prior": null,
+          "stale": true
+        },
+        {
+          "id": "GGGDTACNA188N",
+          "label": "China government debt, % of GDP (IMF)",
+          "unit": "%",
+          "date": "2024-01-01",
+          "value": 88.33,
+          "prior": {
+            "date": "2023-01-01",
+            "value": 82.01
+          },
+          "stale": true
+        }
+      ]
+    },
+    "fearAndGreed": {
+      "score": 39,
+      "rating": "fear",
+      "previousWeek": 24,
+      "previousMonth": 46,
+      "date": "2026-11-13"
+    }
+  },
+  "meta": {
+    "model": "claude-opus-5",
+    "generatedAt": "2026-11-14T13:00:39.383Z",
+    "toolCalls": 9,
+    "usage": {
+      "input_tokens": 6,
+      "cache_creation_input_tokens": 26020,
+      "cache_read_input_tokens": 35872,
+      "output_tokens": 3939
+    },
+    "unavailableSources": []
+  },
+  "audio": {
+    "url": "https://github.com/jaudi/financeplots-portal/releases/download/observer-2026-11-14/the-observer-2026-11-14.mp3",
+    "durationSeconds": 488
+  }
+}
