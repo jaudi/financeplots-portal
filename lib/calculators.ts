@@ -592,6 +592,15 @@ function deductions(v: TakeHomeInputs) {
   return { gross, allowance, taxableIncome, incomeTax, ni, studentLoan, postgradLoan, pensionFromPay, pensionTotal: contribution, takeHome };
 }
 
+/** Income tax on a year's total taxable income (a pension, the State Pension),
+ *  with the personal allowance tapered above £100,000. Same rates as
+ *  takeHomePay, for income that is not a salary (no NI). */
+export function incomeTax(income: number, region: UkRegion = "england_wales_ni"): number {
+  const gross = Math.max(0, income);
+  const allowance = Math.max(0, PERSONAL_ALLOWANCE - Math.floor(Math.max(0, gross - TAPER_START) / 2));
+  return incomeTaxOn(Math.max(0, gross - allowance), region);
+}
+
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
 export function takeHomePay(v: TakeHomeInputs): TakeHomeResult {

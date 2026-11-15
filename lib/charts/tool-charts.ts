@@ -332,3 +332,97 @@ export function lifePlanCharts(
     chart("Savings, year by year", "savings", "Cash and investments, not the home or pensions"),
   ];
 }
+
+// ── Financial plan and pension pot ───────────────────────────────────────────
+// Shared by the MCP tools and the /plan report page (and its PDF), so all three
+// draw the same pictures. Scenario colours follow position, never outcome.
+
+const SHORT_SCENARIO_LABELS: Record<string, string> = { base: "Base", market_fall: "Market fall", low_returns: "Low returns", high_inflation: "High inflation", live_to_100: "To 100" };
+
+type PlanRow = { age: number; income_net: number; spending: number; housing: number; pension_pot: number; savings: number };
+
+export function financialPlanCharts(
+  projections: Record<string, PlanRow[]>,
+  labels: Record<string, string>,
+  endAge: number,
+  outcomes: Record<string, number | null>,
+  shortLabels: Record<string, string> = SHORT_SCENARIO_LABELS,
+): ChartSpec[] {
+  const names = Object.keys(projections);
+  const longest = names.reduce((a, n) => (projections[n].length > projections[a].length ? n : a), names[0]);
+  const ages = projections[longest].map((r) => String(r.age));
+  const base = projections[names[0]];
+  return [
+    {
+      title: "Savings and pensions, year by year",
+      subtitle: "Each stress test against the base case, in today's money",
+      x: { labels: ages, title: "Age" },
+      y: { format: "money", currency: "GBP" },
+      series: names.map((n, i) => ({
+        name: labels[n] ?? n,
+        type: "line" as const,
+        slot: i,
+        thin: i > 0,
+        values: ages.map((_, k) => (projections[n][k] ? projections[n][k].savings + projections[n][k].pension_pot : null)),
+      })),
+      refLines: [{ value: 0, label: "Money runs out" }],
+      note: `${SOURCE} · a projection, not a forecast · every rate is an assumption`,
+    },
+    {
+      title: "Income and outgoings, base case",
+      subtitle: "Take-home pay, then pensions; spending plus housing",
+      x: { labels: base.map((r) => String(r.age)), title: "Age" },
+      y: { format: "money", currency: "GBP", zeroBased: true },
+      series: [
+        { name: "Income after tax", type: "line", values: base.map((r) => r.income_net) },
+        { name: "Spending and housing", type: "line", values: base.map((r) => r.spending + r.housing) },
+      ],
+      note: `${SOURCE} · in today's money`,
+    },
+    {
+      title: "How long the money lasts",
+      subtitle: `Age money lasts to in each test (plan runs to ${endAge}; living to 100 to 100)`,
+      x: { labels: names.map((n) => shortLabels[n] ?? labels[n] ?? n) },
+      y: { format: "number", zeroBased: true },
+      series: [{ name: "Lasts to age", type: "bar", values: names.map((n) => outcomes[n] ?? (n === "live_to_100" ? 100 : endAge)) }],
+      refLines: [{ value: endAge, label: "Plan age" }],
+      note: SOURCE,
+    },
+  ];
+}
+
+export function pensionPotCharts(
+  accumulation: { age: number; contributions: number; pot_end: number }[],
+  drawdown: { age: number; state_pension: number; from_pot: number; pot_end: number }[],
+  potToday: number,
+): ChartSpec[] {
+  let paid = potToday;
+  const acc = accumulation.map((r) => {
+    paid += r.contributions;
+    return { age: r.age, paid: Math.min(paid, r.pot_end), growth: Math.max(0, r.pot_end - paid) };
+  });
+  return [
+    {
+      title: "The pot to retirement",
+      subtitle: "What goes in and what it grows by, in today's money",
+      x: { labels: acc.map((r) => String(r.age)), title: "Age" },
+      y: { format: "money", currency: "GBP" },
+      series: [
+        { name: "Paid in", type: "bar", stack: "p", values: acc.map((r) => r.paid) },
+        { name: "Growth", type: "bar", stack: "p", values: acc.map((r) => r.growth) },
+      ],
+      note: `${SOURCE} · returns are assumptions, after fees and inflation`,
+    },
+    {
+      title: "Retirement income, year by year",
+      subtitle: "State Pension plus what the pot pays, before tax",
+      x: { labels: drawdown.map((r) => String(r.age)), title: "Age" },
+      y: { format: "money", currency: "GBP", zeroBased: true },
+      series: [
+        { name: "State Pension", type: "bar", stack: "i", values: drawdown.map((r) => r.state_pension) },
+        { name: "From the pot", type: "bar", stack: "i", values: drawdown.map((r) => r.from_pot) },
+      ],
+      note: `${SOURCE} · in today's money`,
+    },
+  ];
+}
