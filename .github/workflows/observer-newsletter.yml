@@ -9,10 +9,13 @@ on:
   push:
     branches: [master]
     paths: ["content/observer/*.json"]
-  # An edition merged by the Observer workflow itself: merges made with the
-  # workflow's GITHUB_TOKEN don't trigger other workflows, so a push trigger alone
-  # would miss them. Hourly on Mondays and Tuesdays, off the hour.
+  # A weekly edition merged before 17:00 UTC on its Sunday is held until then
+  # (people are home on Sunday evening), and an edition merged by the Observer
+  # workflow itself never fires the push trigger (merges made with GITHUB_TOKEN
+  # don't trigger other workflows). Both are caught here: hourly from Sunday
+  # 17:41 UTC through Tuesday, off the hour.
   schedule:
+    - cron: "41 17-23 * * 0"
     - cron: "41 * * * 1,2"
   workflow_dispatch:
     inputs:

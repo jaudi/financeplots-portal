@@ -1,10 +1,11 @@
-# The Observer: a Claude agent drafts the weekly macro edition every Monday
-# and opens a pull request. Merging the PR publishes it (Vercel deploys master).
+# The Observer: a Claude agent drafts the weekly macro edition every Sunday morning
+# and opens a pull request. Merging the PR publishes it (Vercel deploys master); the
+# email goes out from 17:00 UTC that Sunday (scripts/observer/send-newsletter.mjs).
 name: The Observer
 
 on:
   schedule:
-    - cron: "0 5 * * 1" # Mondays 05:00 UTC, after Asia's Monday session has started
+    - cron: "0 6 * * 0" # Sundays 06:00 UTC: the week is over, and there is the day to review the PR
   # Run by hand for the weekly edition, or with `special` set for an extra,
   # one-topic edition dated today (scripts/observer/run.mjs, OBSERVER_SPECIAL).
   workflow_dispatch:

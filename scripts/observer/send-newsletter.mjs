@@ -10,6 +10,9 @@
  *   push and on a schedule without anyone getting it twice.
  * - Never sends an old edition by accident: one dated more than MAX_AGE_DAYS ago is
  *   skipped unless --force.
+ * - Holds a weekly edition dated a Sunday until SEND_FROM_UTC_HOUR that day, when
+ *   people are home to read and listen; the workflow's Sunday-evening schedule sends
+ *   it then. Special editions go out as soon as they are live.
  * - Waits until the edition's page is live before sending (the email links to it),
  *   up to WAIT_MINUTES; --no-wait skips that.
  * - --dry-run writes the email to $NEWSLETTER_PREVIEW_DIR (default: the OS temp dir)
@@ -26,6 +29,7 @@ import { broadcastName, editionEmail, editionUrl, SITE_URL } from "./email.mjs";
 
 const MAX_AGE_DAYS = 6;
 const WAIT_MINUTES = 20;
+const SEND_FROM_UTC_HOUR = 17;
 const API = "https://api.resend.com";
 const FROM = process.env.NEWSLETTER_FROM || "The Observer · FinancePlots <hello@financeplots.com>";
 const REPLY_TO = process.env.CONTACT_TO || "hello@financeplots.com";
@@ -92,6 +96,14 @@ log(`edition ${edition.slug}: ${edition.title}`);
 
 if (ageDays > MAX_AGE_DAYS && !flag("--force")) {
   log(`dated ${Math.floor(ageDays)} days ago — older than ${MAX_AGE_DAYS}, not sending (use --force to send it anyway)`);
+  process.exit(0);
+}
+
+const sendFrom = Date.parse(`${edition.date}T00:00:00Z`) + SEND_FROM_UTC_HOUR * 3_600_000;
+const isSunday = new Date(`${edition.date}T00:00:00Z`).getUTCDay() === 0;
+if (!edition.special && isSunday && Date.now() < sendFrom && !flag("--force") && !flag("--dry-run")) {
+  log(`held until ${new Date(sendFrom).toISOString()} — the Sunday-evening run sends it (use --force to send now)`);
+  summary(`Held **${edition.slug}** until ${SEND_FROM_UTC_HOUR}:00 UTC; the scheduled run sends it.`);
   process.exit(0);
 }
 

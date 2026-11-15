@@ -19,7 +19,7 @@ export default function ObserverPage() {
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
         <header className="text-center mb-14">
-          <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Every Monday</p>
+          <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">Every Sunday</p>
           <h1 className="text-5xl font-extrabold tracking-tight mb-4">The Observer</h1>
           <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
             The week in the world economy — news, inflation, rates, debt and politics across the US, the
@@ -31,7 +31,7 @@ export default function ObserverPage() {
           <div className="bg-[#0d1426] border border-gray-800 rounded-2xl p-10 text-center">
             <p className="text-4xl mb-4">🔭</p>
             <p className="text-white font-semibold mb-2">The first edition is on its way.</p>
-            <p className="text-gray-500 text-sm">New editions arrive every Monday.</p>
+            <p className="text-gray-500 text-sm">New editions arrive every Sunday.</p>
           </div>
         )}
 
