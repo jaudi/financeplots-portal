@@ -165,7 +165,7 @@ export default function FinancialPlanReport({ p }: { p?: string }) {
           flags={view.flags}
           milestones={view.milestones}
           scenarios={view.scenarios}
-          levers={view.leverRows.map((l) => ({ ...l, change: `${l.change >= 0 ? "▲ " : "▼ "}${money(Math.abs(l.change))}` }))}
+          levers={view.leverRows.map((l) => ({ ...l, change: `${l.change >= 0 ? "+" : "−"}${money(Math.abs(l.change))}` }))}
           assumptions={view.assumptions}
           charts={images}
         />,

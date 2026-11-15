@@ -82,6 +82,7 @@ function Table({ head, rows, widths }: { head: string[]; rows: string[][]; width
   );
 }
 
+// Helvetica (the built-in PDF font) has no ▲/▼: changes arrive as +/− text.
 export default function PlanPDF({ s, kpis, flags, milestones, scenarios, levers, assumptions, charts }: Props) {
   const footer = (
     <View style={styles.footer} fixed>
