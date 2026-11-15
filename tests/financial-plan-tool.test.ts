@@ -20,6 +20,9 @@ const FACT_FIND = {
   spending_per_year: 30_000,
   housing: { type: "own", home_value: 450_000, mortgage_left: 290_000, mortgage_rate_pct: 4.5, years_left: 16 },
   has_partner: false,
+  inheritance_amount: 0,
+  other_property_value: 0,
+  other_income_per_year: 0,
   chart: false,
 };
 

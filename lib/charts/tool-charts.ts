@@ -337,7 +337,7 @@ export function lifePlanCharts(
 // Shared by the MCP tools and the /plan report page (and its PDF), so all three
 // draw the same pictures. Scenario colours follow position, never outcome.
 
-const SHORT_SCENARIO_LABELS: Record<string, string> = { base: "Base", market_fall: "Market fall", low_returns: "Low returns", high_inflation: "High inflation", live_to_100: "To 100" };
+const SHORT_SCENARIO_LABELS: Record<string, string> = { no_inheritance: "No inheritance", base: "Base", market_fall: "Market fall", low_returns: "Low returns", high_inflation: "High inflation", live_to_100: "To 100" };
 
 type PlanRow = { age: number; income_net: number; spending: number; housing: number; pension_pot: number; savings: number };
 

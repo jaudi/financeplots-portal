@@ -15,6 +15,9 @@ const EXAMPLE: FactFind = {
   spending_per_year: 30_000,
   housing: { type: "own", home_value: 450_000, mortgage_left: 290_000, mortgage_rate_pct: 4.5, years_left: 16 },
   has_partner: false,
+  inheritance_amount: 0,
+  other_property_value: 0,
+  other_income_per_year: 0,
   assumptions_confirmed: true,
 };
 const plan = () => financialPlan(EXAMPLE) as CompletePlan;
@@ -25,7 +28,7 @@ describe("questions come first", () => {
     expect(r.status).toBe("needs_more_information");
     if (r.status !== "needs_more_information") return;
     expect(r.next_question.field).toBe("age");
-    expect(r.still_missing).toEqual(["age", "retire_age", "gross_salary", "has_partner", "pension_pot", "savings", "spending_per_year", "housing"]);
+    expect(r.still_missing).toEqual(["age", "retire_age", "gross_salary", "has_partner", "pension_pot", "savings", "spending_per_year", "housing", "inheritance_amount", "other_property_value", "other_income_per_year"]);
     expect(r.instruction).toMatch(/Do not guess/);
     expect(r).not.toHaveProperty("findings");
   });
@@ -63,7 +66,7 @@ describe("the reference example", () => {
   it("pins cashflow today and the milestones", () => {
     const f = plan().findings;
     expect(f.cashflow_today).toEqual({ net_income: 49_127, spending: 30_000, housing: 25_459, surplus_or_gap: -6_332 });
-    expect(f.milestones).toEqual({ mortgage_paid_off_age: 66, retire_age: 67, state_pension_age: 67, bridge_years_before_state_pension: 0, earliest_pension_access_age: 57, tax_free_cash: 55_481 });
+    expect(f.milestones).toEqual({ mortgage_paid_off_age: 66, retire_age: 67, state_pension_age: 67, bridge_years_before_state_pension: 0, earliest_pension_access_age: 57, tax_free_cash: 55_481, inheritance: null, other_property: null, other_income: null });
   });
 
   it("pins every stress test", () => {
@@ -104,6 +107,47 @@ describe("the reference example", () => {
   it("never words a finding as advice", () => {
     const text = JSON.stringify(plan()).toLowerCase();
     for (const banned of ["you should", "we recommend", "you must", "best option"]) expect(text).not.toContain(banned);
+  });
+});
+
+describe("inheritance, other property and other income", () => {
+  const run = (extra: FactFind) => financialPlan({ ...EXAMPLE, ...extra });
+
+  it("asks the follow-ups only when there is something to follow up", () => {
+    const missing = (extra: FactFind) => {
+      const r = run(extra);
+      return r.status === "needs_more_information" ? r.still_missing : [];
+    };
+    expect(missing({ inheritance_amount: 100_000 })).toEqual(["inheritance_age"]);
+    expect(missing({ other_property_value: 250_000 })).toEqual(["other_property_rent_per_year", "other_property_sell_age"]);
+    expect(missing({ other_income_per_year: 5_000 })).toEqual(["other_income_until_age"]);
+  });
+
+  it("adds the inheritance at its age and tests the plan without it", () => {
+    const r = run({ inheritance_amount: 100_000, inheritance_age: 70 }) as CompletePlan;
+    const s = r.findings.scenarios;
+    expect(Object.keys(s)).toEqual([...Object.keys(SCENARIOS), "no_inheritance"]);
+    expect(s.no_inheritance.liquid_at_end).toBe(-134_466); // the same as the plan without one
+    expect(s.base.liquid_at_end - s.no_inheritance.liquid_at_end).toBeGreaterThan(100_000); // and it grows after age 70
+    expect(r.findings.milestones.inheritance).toEqual({ amount: 100_000, at_age: 70 });
+    const rows = r.projections.base;
+    expect(rows.find((x) => x.age === 70)!.savings - rows.find((x) => x.age === 69)!.savings).toBeGreaterThan(90_000);
+  });
+
+  it("taxes rent and other income at the marginal rate on top of salary", () => {
+    const r = run({ other_income_per_year: 10_000, other_income_until_age: 60 }) as CompletePlan;
+    // £70k salary less 5% sacrifice is a higher-rate taxpayer: £10k extra adds £6k after 40% tax (no NI on it).
+    expect(r.findings.cashflow_today.net_income).toBe(49_127 + 6_000);
+    expect(r.projections.base.find((x) => x.age === 60)!.income_net).toBeLessThan(r.projections.base.find((x) => x.age === 59)!.income_net);
+  });
+
+  it("keeps rent coming until a property is sold, then adds the proceeds", () => {
+    const kept = run({ other_property_value: 200_000, other_property_rent_per_year: 8_000, other_property_sell_age: 0 }) as CompletePlan;
+    const sold = run({ other_property_value: 200_000, other_property_rent_per_year: 8_000, other_property_sell_age: 65 }) as CompletePlan;
+    expect(kept.findings.milestones.other_property).toEqual({ value: 200_000, rent_per_year: 8_000, sold_at_age: null });
+    expect(kept.projections.base.find((x) => x.age === 80)!.income_net).toBeGreaterThan(sold.projections.base.find((x) => x.age === 80)!.income_net - 1);
+    const at = (p: CompletePlan, age: number) => p.projections.base.find((x) => x.age === age)!.savings;
+    expect(at(sold, 65) - at(sold, 64)).toBeGreaterThan(190_000);
   });
 });
 

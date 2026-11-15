@@ -739,7 +739,7 @@ export function createFinancePlotsServer() {
       description:
         "A personal financial plan from a fact-find, to the standard set out by the FCA's cashflow-modelling expectations and ISO 22222: planning projections and scenarios, never advice or a recommendation. " +
         "IT ASKS BEFORE IT ANSWERS. Call it with whatever you know — even nothing. Until every required answer is in, it returns `status: needs_more_information` with ONE `next_question`: ask the user exactly that and do not guess or fill in an answer. Then it returns `status: confirm_assumptions`: show the user the assumptions and their reasons, and call again with any changes and `assumptions_confirmed: true`. " +
-        "When complete it returns: today's cashflow, milestones, five stress tests that always run (20% market fall at retirement, returns 2% lower, inflation 2% higher, living to 100, plus the base case), three levers measured as effects (spend 10% less, retire 2 years later, pension +2%), flags, assumptions with reasons, a year-by-year projection, the report sections and a footer to show word for word, charts, and `report_page`: a link to the full report on financeplots.com with charts and a PDF download. " +
+        "It also asks about an expected inheritance, other property and other income. When complete it returns: today's cashflow, milestones, five stress tests that always run (20% market fall at retirement, returns 2% lower, inflation 2% higher, living to 100, plus the base case) and a sixth without the inheritance whenever one is expected, three levers measured as effects (spend 10% less, retire 2 years later, pension +2%), flags, assumptions with reasons, a year-by-year projection, the report sections and a footer to show word for word, charts, and `report_page`: a link to the full report on financeplots.com with charts and a PDF download. " +
         "Everything is in today's money, net of income tax, NI and fees. One household income (a partner's figures can be combined). Not modelled: defined benefit pensions, dated goals, Scottish tax bands. For the conversation, use the `planning_session` prompt.",
       inputSchema: {
         age: z.number().int().min(18).max(100).optional().describe("Age today"),
@@ -762,6 +762,13 @@ export function createFinancePlotsServer() {
         inflation_pct: z.number().min(-5).max(20).optional().describe("Inflation, percent a year (assumed 2.5)"),
         pay_growth_pct: z.number().min(-10).max(20).optional().describe("Pay growth, percent a year (assumed 3)"),
         plan_to_age: z.number().int().min(60).max(110).optional().describe("Age the plan runs to (assumed 95)"),
+        inheritance_amount: z.number().min(0).max(1e9).optional().describe("Expected inheritance after inheritance tax, today's money; 0 if none (asked)"),
+        inheritance_age: z.number().int().min(18).max(110).optional().describe("Age the inheritance is expected (asked when there is one)"),
+        other_property_value: z.number().min(0).max(1e9).optional().describe("Other property owned besides the home, e.g. a buy-to-let; 0 if none (asked)"),
+        other_property_rent_per_year: z.number().min(0).max(1e7).optional().describe("Rent from it a year, after letting costs, before tax; taxed as income"),
+        other_property_sell_age: z.number().int().min(0).max(110).optional().describe("Age it is sold, proceeds after costs and tax added to savings; 0 to keep it"),
+        other_income_per_year: z.number().min(0).max(1e7).optional().describe("Other income a year before tax (a business, a pension in payment, a room let); 0 if none (asked); taxed as income"),
+        other_income_until_age: z.number().int().min(18).max(110).optional().describe("Age that income stops"),
         assumptions_confirmed: z.boolean().optional().describe("True once the user has seen the assumptions and kept or changed them"),
         chart: chartParam,
       },

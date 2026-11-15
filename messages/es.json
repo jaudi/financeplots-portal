@@ -2324,7 +2324,7 @@
     "r_employee_pension_pct": "Tu aportación; el 5% es el mínimo de la afiliación automática.",
     "r_employer_pension_pct": "La de tu empresa; el 3% es el mínimo de la afiliación automática.",
     "r_ni_qualifying_years": "35 años dan la pensión del Estado completa (12.547,60 £ al año en 2026/27).",
-    "gapsBody": "Un solo ingreso del hogar (los de la pareja solo si se suman), pensiones de prestación definida, objetivos con fecha como la universidad, herencias e impuesto de sucesiones, los tramos fiscales de Escocia y la probabilidad de cada resultado.",
+    "gapsBody": "Un solo ingreso del hogar (los de la pareja solo si se suman), pensiones de prestación definida, objetivos con fecha como la universidad, el impuesto de sucesiones sobre tu propio patrimonio, la plusvalía al vender un inmueble (da el valor después de impuestos), los tramos fiscales de Escocia y la probabilidad de cada resultado.",
     "footer": "Esta es una proyección de planificación financiera basada en la información y los supuestos anteriores. No es asesoramiento financiero ni una recomendación. Las proyecciones no están garantizadas; las inversiones pueden bajar además de subir. Para orientación gratuita e imparcial sobre pensiones, contacta con Pension Wise (MoneyHelper); para asesoramiento sobre tu caso, habla con un asesor regulado por la FCA.",
     "privacy": "Tus cifras viajan en el enlace de esta página y se leen en tu navegador. No se guarda nada.",
     "pdfTitle": "Plan financiero",
@@ -2333,6 +2333,15 @@
     "short_market_fall": "Caída",
     "short_low_returns": "Menos rentab.",
     "short_high_inflation": "Más inflación",
-    "short_live_to_100": "Hasta 100"
+    "short_live_to_100": "Hasta 100",
+    "scenario_no_inheritance": "Sin la herencia",
+    "short_no_inheritance": "Sin herencia",
+    "inheritance": "Herencia prevista",
+    "inheritanceAt": "{amount} a los {age}",
+    "otherProperty": "Otro inmueble",
+    "propertySold": "{value}, vendido a los {age}",
+    "propertyKept": "{value}, se mantiene; alquiler {rent} al año",
+    "otherIncome": "Otros ingresos",
+    "otherIncomeUntil": "{amount} al año hasta los {age}"
   }
 }

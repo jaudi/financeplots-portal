@@ -2338,7 +2338,7 @@
     "r_employee_pension_pct": "Your contribution; 5% is the auto-enrolment minimum split.",
     "r_employer_pension_pct": "Your employer's; 3% is the auto-enrolment minimum.",
     "r_ni_qualifying_years": "35 years gives the full new State Pension (£12,547.60 a year in 2026/27).",
-    "gapsBody": "One household income (a partner's figures only if combined), defined benefit pensions, dated goals such as university costs, inheritance and inheritance tax, Scottish tax bands, and the probability of each outcome.",
+    "gapsBody": "One household income (a partner's figures only if combined), defined benefit pensions, dated goals such as university costs, inheritance tax on your own estate, capital gains tax on a property sale (give the value after tax), Scottish tax bands, and the probability of each outcome.",
     "footer": "This is a financial planning projection based on the information and assumptions above. It is not financial advice or a recommendation. Projections are not guaranteed; investments can fall as well as rise. For free, impartial pension guidance, contact Pension Wise (MoneyHelper); for advice on your circumstances, speak to an FCA-regulated adviser.",
     "privacy": "Your figures travel in this page's link and are read in your browser. Nothing is stored.",
     "pdfTitle": "Financial plan",
@@ -2347,6 +2347,15 @@
     "short_market_fall": "Market fall",
     "short_low_returns": "Low returns",
     "short_high_inflation": "High inflation",
-    "short_live_to_100": "To 100"
+    "short_live_to_100": "To 100",
+    "scenario_no_inheritance": "Without the inheritance",
+    "short_no_inheritance": "No inheritance",
+    "inheritance": "Expected inheritance",
+    "inheritanceAt": "{amount} at {age}",
+    "otherProperty": "Other property",
+    "propertySold": "{value}, sold at {age}",
+    "propertyKept": "{value}, kept; rent {rent} a year",
+    "otherIncome": "Other income",
+    "otherIncomeUntil": "{amount} a year until {age}"
   }
 }

@@ -38,6 +38,16 @@ export interface FactFind {
   inflation_pct?: number;
   pay_growth_pct?: number;
   plan_to_age?: number;
+  /** Expected inheritance after inheritance tax, today's money (0 = none), and the age it is expected. */
+  inheritance_amount?: number;
+  inheritance_age?: number;
+  /** Other property owned outright (0 = none): value, yearly rent before tax, and an age to sell it (0 = keep). */
+  other_property_value?: number;
+  other_property_rent_per_year?: number;
+  other_property_sell_age?: number;
+  /** Other income before tax a year (a business, dividends taxed as income, a room let; 0 = none), and the age it stops. */
+  other_income_per_year?: number;
+  other_income_until_age?: number;
   /** The user has seen and accepted the assumptions (or given their own). */
   assumptions_confirmed?: boolean;
 }
@@ -65,6 +75,9 @@ export const QUESTIONS: { field: string; question: string }[] = [
   { field: "savings", question: "How much do you have in savings and investments outside pensions?" },
   { field: "spending_per_year", question: "Roughly what do you spend a year, not counting rent or mortgage?" },
   { field: "housing", question: "Do you rent or own your home?" },
+  { field: "inheritance_amount", question: "Do you expect to inherit anything? Roughly how much after inheritance tax, in today's money? (0 if none)" },
+  { field: "other_property_value", question: "Do you own any other property besides your home, such as a buy-to-let or a second home? Roughly what is it worth? (0 if none)" },
+  { field: "other_income_per_year", question: "Do you have any other income — a business, a pension already paid, rent from a room? Roughly how much a year before tax? (0 if none)" },
 ];
 
 export const ASSUMPTION_REASONS: Record<string, string> = {
@@ -86,9 +99,15 @@ export const SCENARIOS = {
   live_to_100: { plan_to_age: 100 },
 } as const;
 export type ScenarioName = keyof typeof SCENARIOS;
-type Scenario = { fall_at_retirement_pct?: number; return_pct_delta?: number; inflation_pct_delta?: number; plan_to_age?: number };
+type Scenario = { fall_at_retirement_pct?: number; return_pct_delta?: number; inflation_pct_delta?: number; plan_to_age?: number; no_inheritance?: boolean };
+/** Run as well whenever an inheritance is expected: a plan shouldn't depend on money that may not come. */
+export const NO_INHERITANCE: Scenario = { no_inheritance: true };
+export const NO_INHERITANCE_LABEL = "Without the inheritance";
 
-export const SCENARIO_LABELS: Record<ScenarioName, string> = {
+export type PlanScenario = ScenarioName | "no_inheritance";
+
+export const SCENARIO_LABELS: Record<PlanScenario, string> = {
+  no_inheritance: NO_INHERITANCE_LABEL,
   base: "Base case",
   market_fall: "20% market fall at retirement",
   low_returns: "Returns 2% lower",
@@ -122,6 +141,13 @@ export function missingAnswers(ff: FactFind): { field: string; question: string 
     }
   }
   if (h?.type === "rent" && h.rent_monthly == null) out.push({ field: "housing.rent_monthly", question: "How much rent do you pay a month?" });
+  // Follow-ups, only for the answers that need them.
+  if ((ff.inheritance_amount ?? 0) > 0 && ff.inheritance_age == null) out.push({ field: "inheritance_age", question: "Roughly at what age do you expect to receive it?" });
+  if ((ff.other_property_value ?? 0) > 0) {
+    if (ff.other_property_rent_per_year == null) out.push({ field: "other_property_rent_per_year", question: "Does that property bring in rent? How much a year, after letting costs but before tax? (0 if none)" });
+    if (ff.other_property_sell_age == null) out.push({ field: "other_property_sell_age", question: "Do you plan to sell it? At what age — and is the value you gave what you'd keep after costs and tax? (0 to keep it)" });
+  }
+  if ((ff.other_income_per_year ?? 0) > 0 && ff.other_income_until_age == null) out.push({ field: "other_income_until_age", question: "Until what age do you expect that income to continue?" });
   return out;
 }
 
@@ -183,6 +209,12 @@ export function project(ff: Complete, s: Scenario = {}) {
 
   const state = statePension(a.ni_qualifying_years);
   const mpa = minPensionAge(new Date().getUTCFullYear() - a.age);
+  const inherit = s.no_inheritance ? 0 : (a.inheritance_amount ?? 0);
+  const sellAge = a.other_property_sell_age ?? 0;
+  /** Other taxable income in a year: rent until the property is sold, other income until it stops. */
+  const otherIncome = (age: number) =>
+    ((a.other_property_value ?? 0) > 0 && (sellAge === 0 || age < sellAge) ? (a.other_property_rent_per_year ?? 0) : 0) +
+    (age < (a.other_income_until_age ?? 0) ? (a.other_income_per_year ?? 0) : 0);
 
   let salary = a.gross_salary;
   let pot = a.pension_pot;
@@ -197,8 +229,12 @@ export function project(ff: Complete, s: Scenario = {}) {
     let income: number;
     let fromPot = 0;
     let phase: ProjectionRow["phase"];
+    const other = otherIncome(age);
+    if (age === a.inheritance_age && inherit > 0) cash += inherit;
+    if (sellAge > 0 && age === sellAge) cash += a.other_property_value ?? 0;
     if (age < a.retire_age) {
-      income = takeHome(salary, a.employee_pension_pct);
+      const salaryTaxable = salary * (1 - a.employee_pension_pct / 100);
+      income = takeHome(salary, a.employee_pension_pct) + other - (incomeTax(salaryTaxable + other) - incomeTax(salaryTaxable));
       pot = pot * (1 + r) + (salary * (a.employee_pension_pct + a.employer_pension_pct)) / 100;
       const net = income - a.spending_per_year - housing;
       cash = (cash > 0 ? cash * (1 + r) : cash) + net;
@@ -216,10 +252,11 @@ export function project(ff: Complete, s: Scenario = {}) {
       }
       const sp = age >= a.state_pension_age ? state : 0;
       const need = spendRet + housing;
-      const netSp = sp - incomeTax(sp);
-      fromPot = age >= mpa ? Math.min(grossUp(Math.max(0, need - netSp), sp, pot), pot) : 0;
-      const netFromPot = fromPot - (incomeTax(sp + fromPot) - incomeTax(sp));
-      income = netSp + netFromPot;
+      const base = sp + other; // taxable before any pension withdrawal
+      const netBase = base - incomeTax(base);
+      fromPot = age >= mpa ? Math.min(grossUp(Math.max(0, need - netBase), base, pot), pot) : 0;
+      const netFromPot = fromPot - (incomeTax(base + fromPot) - incomeTax(base));
+      income = netBase + netFromPot;
       pot = (pot - fromPot) * (1 + r);
       cash = (cash > 0 ? cash * (1 + r) : cash) + (income - need);
       phase = "retired";
@@ -270,7 +307,9 @@ export function financialPlan(ff: FactFind) {
 
   const c = ff as Complete;
   const a = { ...FP_DEFAULTS, ...strip(c) } as typeof FP_DEFAULTS & Complete;
-  const results = Object.fromEntries((Object.keys(SCENARIOS) as ScenarioName[]).map((n) => [n, project(c, SCENARIOS[n])])) as Record<ScenarioName, ReturnType<typeof project>>;
+  const runs: [PlanScenario, Scenario][] = (Object.keys(SCENARIOS) as ScenarioName[]).map((n) => [n, SCENARIOS[n] as Scenario]);
+  if ((a.inheritance_amount ?? 0) > 0) runs.push(["no_inheritance", NO_INHERITANCE]);
+  const results = Object.fromEntries(runs.map(([n, sc]) => [n, project(c, sc)])) as Record<PlanScenario, ReturnType<typeof project>>;
   const base = results.base;
 
   const leverChanges: Record<string, Partial<FactFind>> = {
@@ -288,7 +327,7 @@ export function financialPlan(ff: FactFind) {
   const first = base.rows[0];
   const gap = first.income_net - first.spending - first.housing;
   const h = a.housing;
-  const passed = (Object.keys(results) as ScenarioName[]).filter((n) => results[n].money_runs_out_at_age === null);
+  const passed = (Object.keys(results) as PlanScenario[]).filter((n) => results[n].money_runs_out_at_age === null);
   const earliest = minPensionAge(new Date().getUTCFullYear() - a.age);
 
   const flags: string[] = [];
@@ -309,19 +348,22 @@ export function financialPlan(ff: FactFind) {
         bridge_years_before_state_pension: Math.max(0, a.state_pension_age - a.retire_age),
         earliest_pension_access_age: earliest,
         tax_free_cash: base.tax_free_cash,
+        inheritance: (a.inheritance_amount ?? 0) > 0 ? { amount: a.inheritance_amount!, at_age: a.inheritance_age! } : null,
+        other_property: (a.other_property_value ?? 0) > 0 ? { value: a.other_property_value!, rent_per_year: a.other_property_rent_per_year ?? 0, sold_at_age: (a.other_property_sell_age ?? 0) || null } : null,
+        other_income: (a.other_income_per_year ?? 0) > 0 ? { per_year: a.other_income_per_year!, until_age: a.other_income_until_age! } : null,
       },
       scenarios: Object.fromEntries(
-        (Object.keys(results) as ScenarioName[]).map((n) => [
+        (Object.keys(results) as PlanScenario[]).map((n) => [
           n,
           { label: SCENARIO_LABELS[n], outcome: outcome(results[n]), money_runs_out_at_age: results[n].money_runs_out_at_age, liquid_at_end: results[n].liquid_at_end },
         ]),
-      ) as Record<ScenarioName, { label: string; outcome: string; money_runs_out_at_age: number | null; liquid_at_end: number }>,
+      ) as Record<PlanScenario, { label: string; outcome: string; money_runs_out_at_age: number | null; liquid_at_end: number }>,
       resilience: `${passed.length} of ${Object.keys(results).length} scenarios last to the end`,
       levers,
     },
     flags,
     assumptions: assumptionsInUse(ff),
-    projections: Object.fromEntries((Object.keys(results) as ScenarioName[]).map((n) => [n, results[n].rows])) as Record<ScenarioName, ProjectionRow[]>,
+    projections: Object.fromEntries((Object.keys(results) as PlanScenario[]).map((n) => [n, results[n].rows])) as Record<PlanScenario, ProjectionRow[]>,
     report_sections: ["Your situation today", "Your goals", "Base projection", "Stress tests", "What moves the numbers", "Assumptions", "Data gaps", "Important information"],
     required_footer: REQUIRED_FOOTER,
   };
@@ -336,6 +378,7 @@ const FIELDS: (keyof FactFind)[] = [
   "age", "retire_age", "gross_salary", "pension_pot", "savings", "spending_per_year", "housing", "has_partner", "partner_included_in_figures",
   "employee_pension_pct", "employer_pension_pct", "ni_qualifying_years", "state_pension_age", "spending_in_retirement", "tax_free_cash_pct",
   "return_pct", "fee_pct", "inflation_pct", "pay_growth_pct", "plan_to_age", "assumptions_confirmed",
+  "inheritance_amount", "inheritance_age", "other_property_value", "other_property_rent_per_year", "other_property_sell_age", "other_income_per_year", "other_income_until_age",
 ];
 
 export function encodePlan(ff: FactFind): string {
@@ -382,6 +425,13 @@ export function decodePlan(p: string): FactFind | null {
       pay_growth_pct: clamp(raw.pay_growth_pct, -10, 20),
       plan_to_age: clamp(raw.plan_to_age, 60, 110),
       assumptions_confirmed: raw.assumptions_confirmed === true ? true : undefined,
+      inheritance_amount: clamp(raw.inheritance_amount, 0, 1e9),
+      inheritance_age: clamp(raw.inheritance_age, 18, 110),
+      other_property_value: clamp(raw.other_property_value, 0, 1e9),
+      other_property_rent_per_year: clamp(raw.other_property_rent_per_year, 0, 1e7),
+      other_property_sell_age: clamp(raw.other_property_sell_age, 0, 110),
+      other_income_per_year: clamp(raw.other_income_per_year, 0, 1e7),
+      other_income_until_age: clamp(raw.other_income_until_age, 18, 110),
     }) as FactFind;
   } catch {
     return null;

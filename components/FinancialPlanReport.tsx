@@ -8,7 +8,7 @@ import { layoutChart, THEMES, type Theme } from "@/lib/charts/layout";
 import type { ChartSpec } from "@/lib/charts/spec";
 import { sceneToSvg } from "@/lib/charts/svg";
 import { financialPlanCharts } from "@/lib/charts/tool-charts";
-import { decodePlan, financialPlan, FP_DEFAULTS, SCENARIOS, type CompletePlan, type ScenarioName } from "@/lib/financial-plan";
+import { decodePlan, financialPlan, FP_DEFAULTS, type CompletePlan, type PlanScenario } from "@/lib/financial-plan";
 
 // The /plan report: a financial_plan result rebuilt from its ?p= link, with the
 // same charts the MCP tool returns and a PDF built in the browser. Nothing is
@@ -54,11 +54,11 @@ export default function FinancialPlanReport({ p }: { p?: string }) {
     if (!result || result.status !== "complete" || !ff) return null;
     const plan = result as CompletePlan;
     const f = plan.findings;
-    const names = Object.keys(SCENARIOS) as ScenarioName[];
-    const label = (n: ScenarioName) => t(`scenario_${n}`);
+    const names = Object.keys(f.scenarios) as PlanScenario[];
+    const label = (n: PlanScenario) => t(`scenario_${n}`);
     const outcome = (age: number | null, end: number) => (age !== null ? t("runsOut", { age }) : t("lastsTo", { age: end }));
     const endAge = ff.plan_to_age ?? FP_DEFAULTS.plan_to_age;
-    const endOf = (n: ScenarioName) => (n === "live_to_100" ? 100 : endAge);
+    const endOf = (n: PlanScenario) => (n === "live_to_100" ? 100 : endAge);
 
     // The MCP tool's charts, with this page's language.
     const specs = financialPlanCharts(
@@ -116,6 +116,11 @@ export default function FinancialPlanReport({ p }: { p?: string }) {
       [t("earliestAccess"), String(m.earliest_pension_access_age)],
       [t("mortgagePaid"), m.mortgage_paid_off_age === null ? t("none") : String(m.mortgage_paid_off_age)],
       [t("taxFreeCash"), money(m.tax_free_cash)],
+      ...(m.inheritance ? [[t("inheritance"), t("inheritanceAt", { amount: money(m.inheritance.amount), age: m.inheritance.at_age })] as [string, string]] : []),
+      ...(m.other_property
+        ? [[t("otherProperty"), m.other_property.sold_at_age ? t("propertySold", { value: money(m.other_property.value), age: m.other_property.sold_at_age }) : t("propertyKept", { value: money(m.other_property.value), rent: money(m.other_property.rent_per_year) })] as [string, string]]
+        : []),
+      ...(m.other_income ? [[t("otherIncome"), t("otherIncomeUntil", { amount: money(m.other_income.per_year), age: m.other_income.until_age })] as [string, string]] : []),
     ];
     const scenarios = names.map((n) => ({ name: label(n), outcome: outcome(f.scenarios[n].money_runs_out_at_age, endOf(n)), atEnd: money(f.scenarios[n].liquid_at_end) }));
     return { f, specs: localised, flags, passed, total: names.length, leverRows, assumptions, milestones, scenarios };
