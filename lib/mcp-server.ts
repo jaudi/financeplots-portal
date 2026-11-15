@@ -4,7 +4,10 @@ import { z } from "zod";
 import { breakEven, buildSchedule, compoundGrowth, grossForTakeHome, INDUSTRIES, overpaymentPlan, realValue, startupValuation, STUDENT_LOAN_THRESHOLDS, TAX_YEAR, takeHomePay, valuation, youngCompanyDcf, type StudentLoanPlan } from "@/lib/calculators";
 import { chartPng } from "@/lib/charts/png";
 import { CHARTS_META_KEY, type AnyChartSpec } from "@/lib/charts/spec";
-import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, investmentReturnChart, lifePlanCharts, loanCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { breakEvenChart, companyHistoryChart, companySnowflakeChart, compoundChart, financialPlanCharts, investmentReturnChart, lifePlanCharts, loanCharts, pensionPotCharts, portfolioCharts, priceChart, startupCharts, takeHomeChart, valuationChart } from "@/lib/charts/tool-charts";
+import { encodePlan, financialPlan, FP_DEFAULTS, SCENARIO_LABELS, type FactFind } from "@/lib/financial-plan";
+import { pensionPot } from "@/lib/pension-pot";
+import { PLANNING_SESSION_PROMPT } from "@/lib/planning-prompt";
 import { getCompanyProfile, getCompanyProfiles } from "@/lib/company";
 import { tryFinancialHistory } from "@/lib/edgar";
 import { fetchIndicators } from "@/lib/fred";
@@ -29,7 +32,7 @@ import { getUniverse, UNCLASSIFIED, UNIVERSE_SCREENS } from "@/lib/universe";
 const SITE = "https://www.financeplots.com";
 
 const INSTRUCTIONS = `FinancePlots (${SITE}) — free finance and FP&A tools.
-Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, investment_return (the real annual return, XIRR, on dated deposits and withdrawals, optionally replayed in an index the user names), life_plan (a household's savings, homes, debts and net worth year by year with life events — a home, a baby, a career break, retirement — and an optional Plan B), break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
+Calculators: take_home_pay (UK salary after tax, NI, pension and student loan; or the salary needed for a take-home target), loan_repayment, compound_interest, investment_return (the real annual return, XIRR, on dated deposits and withdrawals, optionally replayed in an index the user names), life_plan (a household's savings, homes, debts and net worth year by year with life events — a home, a baby, a career break, retirement — and an optional Plan B), pension_pot (a UK pension pot to retirement and the income it can pay with the State Pension), financial_plan (a full financial plan from a fact-find: asks its questions first, always stress-tests, links to a report page with charts and a PDF; use the planning_session prompt), break_even, business_valuation (with industry_multiples), startup_valuation (Damodaran's DCF for young or loss-making companies, revenue multiple, funding-round price, cash runway).
 Data: us_macro_indicators (FRED), market_snapshot, price_history and portfolio_analysis (Yahoo Finance), screen_stocks and screener_metrics (S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 fundamentals, refreshed weekly), company_profile (one company's ratios against its index, plus up to ten years of annual-report figures for US listings from SEC EDGAR), company_snowflake (those ratios drawn as a snowflake, for one company or two on the same shape).
 All figures are for education and planning. Nothing returned is investment advice or a recommendation: the stock screener only filters by criteria the user sets and lists matches alphabetically.`;
 
@@ -651,6 +654,146 @@ export function createFinancePlotsServer() {
       }));
       return withCharts(result, lifePlanCharts(chartPlans, currency), chart);
     },
+  );
+
+  // ── Planning: pension pot and the full financial plan ───────────────────
+  // financial_plan enforces the planning standards in code (questions first,
+  // assumptions confirmed, five stress tests, levers as effects, fixed footer)
+  // and links to /plan, the report page with charts and a PDF. Planning, not
+  // advice: nothing here recommends a product or an action.
+
+  server.registerTool(
+    "pension_pot",
+    {
+      title: "Pension pot",
+      description:
+        `A UK defined-contribution pension pot in today's money (tax year ${TAX_YEAR}): grown to retirement from today's pot plus employee and employer contributions after fees and inflation, 25% tax-free cash (capped at the £268,275 lump sum allowance), the State Pension (pro rata to NI years), then the steady income the pot can pay alongside it until \`plan_to_age\`, after income tax. ` +
+        "Returns the pot at retirement, the sustainable income (gross, net a year and a month), `life_plan_pension_per_year` to pass to life_plan's retire event, bridge years before the State Pension, warnings (retiring before the minimum pension age of 55, 57 from 2028; NI gaps; the £60,000 annual allowance), and with `target_income` the age the pot runs out at that income. " +
+        "England/Wales/NI tax bands held at today's levels. Not modelled: defined benefit pensions, annuities, Scottish bands. Rates are the user's assumptions — a planning sketch, not advice.",
+      inputSchema: {
+        age: z.number().int().min(18).max(100).describe("Age today"),
+        pot_today: z.number().min(0).max(1e9).describe("Total of defined-contribution pension pots today"),
+        salary: z.number().min(0).max(1e7).default(0).describe("Gross salary a year, for contributions"),
+        employee_pct: z.number().min(0).max(100).default(0).describe("Employee contribution, percent of salary"),
+        employer_pct: z.number().min(0).max(100).default(0).describe("Employer contribution, percent of salary"),
+        extra_monthly: z.number().min(0).max(1e6).default(0).describe("Extra paid in each month"),
+        retire_age: z.number().int().min(19).max(100).default(67).describe("Age the pot starts paying an income"),
+        plan_to_age: z.number().int().min(60).max(110).default(95).describe("Age the income must last to"),
+        state_pension_age: z.number().int().min(60).max(75).default(67).describe("State Pension age (67 for most people born 1960–1977)"),
+        ni_qualifying_years: z.number().int().min(0).max(50).default(35).describe("National Insurance qualifying years (35 for the full State Pension)"),
+        tax_free_cash_pct: z.number().min(0).max(25).default(25).describe("Share of the pot taken tax-free at retirement, percent"),
+        target_income: z.number().min(0).max(1e7).optional().describe("Gross yearly income wanted in retirement, today's money: returns the age the pot runs out"),
+        return_pct: z.number().min(-20).max(30).default(5).describe("Return before retirement, percent a year (assumption)"),
+        return_in_retirement_pct: z.number().min(-20).max(30).default(4).describe("Return during retirement, percent a year (assumption)"),
+        fee_pct: z.number().min(0).max(5).default(0.5).describe("Total yearly charges, percent"),
+        inflation_pct: z.number().min(-5).max(20).default(2.5).describe("Inflation, percent a year (assumption)"),
+        pay_growth_pct: z.number().min(-10).max(20).default(3).describe("Pay growth, percent a year (assumption)"),
+        chart: chartParam,
+      },
+      annotations: readOnly,
+      _meta: chartUi,
+    },
+    async (a) => {
+      if (!(a.age < a.retire_age && a.retire_age < a.plan_to_age)) return error("Need age < retire_age < plan_to_age.");
+      const r = pensionPot({
+        age: a.age,
+        potToday: a.pot_today,
+        salary: a.salary,
+        employeePct: a.employee_pct,
+        employerPct: a.employer_pct,
+        extraMonthly: a.extra_monthly,
+        retireAge: a.retire_age,
+        planToAge: a.plan_to_age,
+        statePensionAge: a.state_pension_age,
+        niQualifyingYears: a.ni_qualifying_years,
+        taxFreeCashPct: a.tax_free_cash_pct,
+        targetIncome: a.target_income ?? null,
+        returnPct: a.return_pct,
+        returnInRetirementPct: a.return_in_retirement_pct,
+        feePct: a.fee_pct,
+        inflationPct: a.inflation_pct,
+        payGrowthPct: a.pay_growth_pct,
+      });
+      const result = json({ tax_year: TAX_YEAR, ...r });
+      return withCharts(result, pensionPotCharts(r.accumulation, r.drawdown, a.pot_today), a.chart);
+    },
+  );
+
+  const housingInput = z
+    .discriminatedUnion("type", [
+      z.object({ type: z.literal("rent"), rent_monthly: z.number().min(0).max(1e6).optional().describe("Rent per month") }),
+      z.object({
+        type: z.literal("own"),
+        home_value: z.number().min(0).max(1e9).optional().describe("What the home is worth"),
+        mortgage_left: z.number().min(0).max(1e9).optional().describe("Mortgage still owed (0 if none)"),
+        mortgage_rate_pct: z.number().min(0).max(30).optional().describe("Mortgage rate, percent a year"),
+        years_left: z.number().int().min(0).max(40).optional().describe("Years left on the mortgage"),
+      }),
+    ])
+    .optional();
+
+  server.registerTool(
+    "financial_plan",
+    {
+      title: "Financial plan",
+      description:
+        "A personal financial plan from a fact-find, to the standard set out by the FCA's cashflow-modelling expectations and ISO 22222: planning projections and scenarios, never advice or a recommendation. " +
+        "IT ASKS BEFORE IT ANSWERS. Call it with whatever you know — even nothing. Until every required answer is in, it returns `status: needs_more_information` with ONE `next_question`: ask the user exactly that and do not guess or fill in an answer. Then it returns `status: confirm_assumptions`: show the user the assumptions and their reasons, and call again with any changes and `assumptions_confirmed: true`. " +
+        "It also asks about an expected inheritance, other property and other income. When complete it returns: today's cashflow, milestones, five stress tests that always run (20% market fall at retirement, returns 2% lower, inflation 2% higher, living to 100, plus the base case) and a sixth without the inheritance whenever one is expected, three levers measured as effects (spend 10% less, retire 2 years later, pension +2%), flags, assumptions with reasons, a year-by-year projection, the report sections and a footer to show word for word, charts, and `report_page`: a link to the full report on financeplots.com with charts and a PDF download. " +
+        "Everything is in today's money, net of income tax, NI and fees. One household income (a partner's figures can be combined). Not modelled: defined benefit pensions, dated goals, Scottish tax bands. For the conversation, use the `planning_session` prompt.",
+      inputSchema: {
+        age: z.number().int().min(18).max(100).optional().describe("Age today"),
+        retire_age: z.number().int().min(19).max(100).optional().describe("Age they want to stop working"),
+        gross_salary: z.number().min(0).max(1e7).optional().describe("Gross salary a year (combined if the partner's is included)"),
+        has_partner: z.boolean().optional().describe("Shares finances with a partner"),
+        partner_included_in_figures: z.boolean().optional().describe("The figures given include the partner's"),
+        pension_pot: z.number().min(0).max(1e9).optional().describe("Defined-contribution pension pots today, total"),
+        savings: z.number().min(-1e9).max(1e9).optional().describe("Savings and investments outside pensions"),
+        spending_per_year: z.number().min(0).max(1e8).optional().describe("Spending a year, not counting rent or mortgage"),
+        housing: housingInput.describe("Renting or owning, with rent or mortgage details"),
+        employee_pension_pct: z.number().min(0).max(100).optional().describe("Employee pension contribution, percent of salary (assumed 5)"),
+        employer_pension_pct: z.number().min(0).max(100).optional().describe("Employer pension contribution, percent of salary (assumed 3)"),
+        ni_qualifying_years: z.number().int().min(0).max(50).optional().describe("National Insurance qualifying years (assumed 35)"),
+        state_pension_age: z.number().int().min(60).max(75).optional().describe("State Pension age (assumed 67)"),
+        spending_in_retirement: z.number().min(0).max(1e8).optional().describe("Spending a year in retirement, if different"),
+        tax_free_cash_pct: z.number().min(0).max(25).optional().describe("Pension taken tax-free at retirement, percent (assumed 25)"),
+        return_pct: z.number().min(-20).max(30).optional().describe("Investment return, percent a year before fees (assumed 5)"),
+        fee_pct: z.number().min(0).max(5).optional().describe("Total yearly charges, percent (assumed 0.75)"),
+        inflation_pct: z.number().min(-5).max(20).optional().describe("Inflation, percent a year (assumed 2.5)"),
+        pay_growth_pct: z.number().min(-10).max(20).optional().describe("Pay growth, percent a year (assumed 3)"),
+        plan_to_age: z.number().int().min(60).max(110).optional().describe("Age the plan runs to (assumed 95)"),
+        inheritance_amount: z.number().min(0).max(1e9).optional().describe("Expected inheritance after inheritance tax, today's money; 0 if none (asked)"),
+        inheritance_age: z.number().int().min(18).max(110).optional().describe("Age the inheritance is expected (asked when there is one)"),
+        other_property_value: z.number().min(0).max(1e9).optional().describe("Other property owned besides the home, e.g. a buy-to-let; 0 if none (asked)"),
+        other_property_rent_per_year: z.number().min(0).max(1e7).optional().describe("Rent from it a year, after letting costs, before tax; taxed as income"),
+        other_property_sell_age: z.number().int().min(0).max(110).optional().describe("Age it is sold, proceeds after costs and tax added to savings; 0 to keep it"),
+        other_income_per_year: z.number().min(0).max(1e7).optional().describe("Other income a year before tax (a business, a pension in payment, a room let); 0 if none (asked); taxed as income"),
+        other_income_until_age: z.number().int().min(18).max(110).optional().describe("Age that income stops"),
+        assumptions_confirmed: z.boolean().optional().describe("True once the user has seen the assumptions and kept or changed them"),
+        chart: chartParam,
+      },
+      annotations: readOnly,
+      _meta: chartUi,
+    },
+    async ({ chart, ...ff }) => {
+      if (ff.age !== undefined && ff.retire_age !== undefined && ff.retire_age <= ff.age) return error("retire_age must be after age.");
+      const r = financialPlan(ff as FactFind);
+      if (r.status !== "complete") return json(r);
+      const { projections, ...rest } = r;
+      const outcomes = Object.fromEntries(Object.entries(r.findings.scenarios).map(([k, v]) => [k, v.money_runs_out_at_age]));
+      const result = json({ ...rest, base_projection: projections.base, report_page: `${SITE}/plan?p=${encodePlan(ff as FactFind)}` });
+      const endAge = (ff.plan_to_age ?? FP_DEFAULTS.plan_to_age);
+      return withCharts(result, financialPlanCharts(projections, SCENARIO_LABELS, endAge, outcomes), chart);
+    },
+  );
+
+  server.registerPrompt(
+    "planning_session",
+    {
+      title: "Financial planning session",
+      description: "Run a fact-find, build a financial plan with financial_plan, and write the report — planning projections, not advice.",
+    },
+    () => ({ messages: [{ role: "user" as const, content: { type: "text" as const, text: PLANNING_SESSION_PROMPT } }] }),
   );
 
   server.registerTool(
