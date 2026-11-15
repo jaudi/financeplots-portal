@@ -80,6 +80,13 @@
     },
     "articles": [
       {
+        "slug": "strategy-models-balanced-scorecard",
+        "title": "Eight Strategy Models, Pros and Cons: Why the Balanced Scorecard Wins on Simplicity",
+        "date": "November 2026",
+        "description": "PESTEL, Five Forces, SWOT, Porter, Ansoff, BCG, Fitzgerald & Moon and the balanced scorecard: what each is good for, where each falls short, and why a small business that can only run one should pick the scorecard. With revision cards to download.",
+        "tag": "Small Business Finance"
+      },
+      {
         "slug": "financeplots-mcp-claude",
         "title": "FinancePlots Inside Claude: 17 Finance Tools You Can Just Ask For",
         "date": "November 2026",

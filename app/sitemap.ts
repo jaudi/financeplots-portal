@@ -28,6 +28,7 @@ const BLOG_SLUGS = [
   "python-for-streamlit",
   "real-assets-balance-sheets-opportunities",
   "roce-margin-turnover",
+  "strategy-models-balanced-scorecard",
   "uk-pension-savings",
   "us-10y-yield-equity-risk-premium",
   "value-vs-growth-investing",

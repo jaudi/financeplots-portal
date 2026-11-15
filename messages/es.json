@@ -80,6 +80,13 @@
     },
     "articles": [
       {
+        "slug": "strategy-models-balanced-scorecard",
+        "title": "Ocho modelos de estrategia, pros y contras: por qué el cuadro de mando integral gana por sencillez",
+        "date": "Noviembre 2026",
+        "description": "PESTEL, cinco fuerzas, DAFO, Porter, Ansoff, BCG, Fitzgerald y Moon y el cuadro de mando integral: para qué sirve cada uno, dónde se queda corto y por qué una pyme que solo pueda usar uno debería elegir el cuadro de mando. Con fichas de repaso para descargar.",
+        "tag": "Finanzas para Pymes"
+      },
+      {
         "slug": "financeplots-mcp-claude",
         "title": "FinancePlots dentro de Claude: 17 herramientas de finanzas que solo tienes que pedir",
         "date": "Noviembre 2026",
