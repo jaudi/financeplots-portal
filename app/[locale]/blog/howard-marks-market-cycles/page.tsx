@@ -12,13 +12,13 @@ const COPY = {
     url: `${BASE}${PATH}`,
     title: "Mastering the Market Cycle on a Seven-Mile Commute: What Howard Marks Taught Me",
     description:
-      "Listening to Howard Marks in traffic: market cycles, the pendulum of fear and greed, second-level thinking, being a contrarian — the Rolls-Royce of 2020 as a case — and why timing is the hardest part to get right.",
+      "Listening to Howard Marks in traffic: market cycles, the pendulum of fear and greed, second-level thinking, being a contrarian — an engine maker in 2020 as a case — and why timing is the hardest part to get right.",
   },
   es: {
     url: `${BASE}/es${PATH}`,
     title: "Dominar el ciclo de mercado en un trayecto de siete millas: lo que me enseñó Howard Marks",
     description:
-      "Escuchando a Howard Marks en un atasco: los ciclos de mercado, el péndulo entre miedo y codicia, el pensamiento de segundo nivel, ser contrarian — con Rolls-Royce en 2020 como caso — y por qué acertar con el momento es lo más difícil.",
+      "Escuchando a Howard Marks en un atasco: los ciclos de mercado, el péndulo entre miedo y codicia, el pensamiento de segundo nivel, ser contrarian — con un fabricante de motores en 2020 como caso — y por qué acertar con el momento es lo más difícil.",
   },
 };
 
@@ -37,10 +37,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// Rolls-Royce figures are weekly closing prices from Yahoo Finance (RR.L),
-// adjusted for the October 2020 rights issue, read on 18 November 2026. They
-// illustrate an idea from the book with a past episode; the article says
-// nothing about the shares today.
+// The engineering company is left unnamed on purpose (the author's choice,
+// with UK MAR in mind). Its index figures are a listed engine maker's weekly
+// closes from Yahoo Finance, adjusted for its 2020 share issue and rebased to
+// February 2020 = 100, read on 18 November 2026. They illustrate an idea from
+// the book with a past episode; the article says nothing about any share today.
 
 /** The pendulum drawn as a wave: illustrative, no data. */
 function PendulumChart({ es }: { es: boolean }) {
@@ -114,12 +115,32 @@ export default async function HowardMarksMarketCycles({ params }: Props) {
     },
   ];
 
-  const rolls: [string, string, string][] = [
-    [tr("Feb 2020", "Feb 2020"), "≈222p", tr("Before the pandemic", "Antes de la pandemia")],
-    [tr("Sep 2020", "Sep 2020"), tr("below 40p", "menos de 40p"), tr("Planes grounded; rights issue at 32p", "Aviones en tierra; ampliación a 32p")],
-    [tr("Dec 2020", "Dic 2020"), "≈116p", tr("Vaccine news; first rebound", "Llegan las vacunas; primer rebote")],
-    [tr("Sep 2022", "Sep 2022"), "≈70p", tr("Down again — two years in", "Otra vez abajo, dos años después")],
-    [tr("Late 2023", "Finales 2023"), "≈240p", tr("Back above pre-pandemic", "Por encima de antes de la pandemia")],
+  const crisis: { side: string; items: string[] }[] = [
+    {
+      side: tr("What the crisis hit", "Lo que golpeó la crisis"),
+      items: [
+        tr("Flying hours, and with them the service income, for a year or two", "Las horas de vuelo y, con ellas, los ingresos por mantenimiento, durante uno o dos años"),
+        tr("Cash: the costs of engineers, test beds and factories kept running", "La caja: los costes de ingenieros, bancos de pruebas y fábricas seguían corriendo"),
+        tr("The balance sheet — it needed emergency funding, which diluted shareholders", "El balance: necesitó financiación de urgencia, que diluyó a los accionistas"),
+      ],
+    },
+    {
+      side: tr("What it didn't touch", "Lo que no tocó"),
+      items: [
+        tr("Thousands of engines already on aircraft, each needing service for decades", "Miles de motores ya montados en aviones, cada uno con décadas de mantenimiento por delante"),
+        tr("The engineering know-how, built over generations", "El conocimiento de ingeniería, acumulado durante generaciones"),
+        tr("A market with only a handful of rivals able to build a large jet engine", "Un mercado con solo un puñado de rivales capaces de fabricar un motor de avión grande"),
+      ],
+    },
+  ];
+
+  // Share price as an index, February 2020 = 100 (weekly closes).
+  const path: [string, string, string][] = [
+    [tr("Feb 2020", "Feb 2020"), "100", tr("Before the pandemic", "Antes de la pandemia")],
+    [tr("Sep 2020", "Sep 2020"), tr("under 20", "menos de 20"), tr("Planes grounded; emergency funding", "Aviones en tierra; financiación de urgencia")],
+    [tr("Dec 2020", "Dic 2020"), "≈52", tr("Vaccine news; first rebound", "Llegan las vacunas; primer rebote")],
+    [tr("Sep 2022", "Sep 2022"), "≈32", tr("Down again — two years in", "Otra vez abajo, dos años después")],
+    [tr("Late 2023", "Finales 2023"), "≈108", tr("Back above pre-pandemic", "Por encima de antes de la pandemia")],
   ];
 
   return (
@@ -239,23 +260,45 @@ export default async function HowardMarksMarketCycles({ params }: Props) {
             )}
           </p>
 
-          <h2 className={h2}>{tr("A case: Rolls-Royce in 2020", "Un caso: Rolls-Royce en 2020")}</h2>
+          <h2 className={h2}>{tr("A case: an engineering company in 2020", "Un caso: una empresa de ingeniería en 2020")}</h2>
           <p>
             {tr(
-              "The example I kept thinking about on the road is Rolls-Royce during the pandemic. Much of what it earns from aircraft engines comes from servicing them: airlines pay according to the hours the engines fly. In 2020 planes stopped flying, and that income fell off a cliff. The market priced the shares as if planes would never fly again — the company needed a rescue rights issue in October 2020 to strengthen its balance sheet.",
-              "El ejemplo en el que no dejaba de pensar en la carretera es Rolls-Royce durante la pandemia. Gran parte de lo que gana con los motores de avión viene de su mantenimiento: las aerolíneas pagan según las horas que vuelan los motores. En 2020 los aviones dejaron de volar y ese ingreso se desplomó. El mercado puso precio a las acciones como si los aviones no fueran a volver a volar nunca — la compañía necesitó una ampliación de capital de rescate en octubre de 2020 para reforzar su balance."
+              "The example I kept thinking about on the road is a large engineering company that designs, builds and services aircraft engines. It is a business unlike most. A new engine takes about a decade and billions to develop, and only a handful of companies in the world can build one for a large jet — the know-how is the barrier. The engines themselves are often sold at little or no profit. The money comes afterwards, over 20 or 30 years of maintenance, and airlines often pay for it by the hour the engine flies.",
+              "El ejemplo en el que no dejaba de pensar en la carretera es una gran empresa de ingeniería que diseña, fabrica y mantiene motores de avión. Es un negocio distinto a casi todos. Desarrollar un motor nuevo lleva una década y miles de millones, y solo un puñado de empresas en el mundo sabe fabricar uno para un avión grande: el conocimiento es la barrera. Los motores en sí se venden muchas veces casi sin beneficio. El dinero llega después, durante 20 o 30 años de mantenimiento, y las aerolíneas a menudo lo pagan por cada hora que vuela el motor."
             )}
           </p>
           <p>
             {tr(
-              "The second-level question was simple to ask and very hard to act on: will people stop flying for ever, or is this the bottom of the pendulum? Here is what the price did (weekly closes, adjusted for the rights issue):",
-              "La pregunta de segundo nivel era fácil de hacer y muy difícil de llevar a la práctica: ¿la gente dejará de volar para siempre, o esto es el punto más bajo del péndulo? Esto es lo que hizo el precio (cierres semanales, ajustados por la ampliación):"
+              "In 2020 planes stopped flying, and that income fell off a cliff while the costs — engineers, test beds, factories — kept running. The market priced the company as if planes would never fly again. It needed emergency funding to get through. Second-level thinking means splitting what the crisis actually damaged from what it didn't:",
+              "En 2020 los aviones dejaron de volar y ese ingreso se desplomó mientras los costes — ingenieros, bancos de pruebas, fábricas — seguían corriendo. El mercado puso precio a la empresa como si los aviones no fueran a volver a volar nunca. Necesitó financiación de urgencia para aguantar. Pensar en segundo nivel es separar lo que la crisis dañó de verdad de lo que no:"
+            )}
+          </p>
+        </div>
+
+        <div className="not-prose grid gap-3 sm:grid-cols-2 my-6">
+          {crisis.map((c) => (
+            <div key={c.side} className="bg-[#0d1426] border border-gray-800 rounded-xl p-4">
+              <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">{c.side}</p>
+              <ul className="space-y-2 text-sm text-gray-300">
+                {c.items.map((s) => (
+                  <li key={s} className="flex gap-2"><span className="text-gray-500" aria-hidden>•</span><span>{s}</span></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="prose prose-invert prose-sm max-w-none text-gray-300 space-y-6">
+          <p>
+            {tr(
+              "Read that way, the question was simple to ask and very hard to act on: is this permanent damage, or a temporary stop for a business whose real asset is engines that will fly for decades — provided it survives the cash drain? Here is what the share price did, as an index where February 2020 is 100:",
+              "Visto así, la pregunta era fácil de hacer y muy difícil de llevar a la práctica: ¿es un daño permanente, o una parada temporal de un negocio cuyo activo real son motores que volarán durante décadas, siempre que sobreviva a la sangría de caja? Esto es lo que hizo la cotización, como índice en el que febrero de 2020 es 100:"
             )}
           </p>
         </div>
 
         <div className="not-prose grid gap-3 grid-cols-2 sm:grid-cols-5 my-6">
-          {rolls.map(([when, price, what]) => (
+          {path.map(([when, price, what]) => (
             <div key={when} className="bg-[#0d1426] border border-gray-800 rounded-xl p-3">
               <p className="text-xs text-gray-400">{when}</p>
               <p className="text-lg font-bold text-white mt-1">{price}</p>
@@ -267,8 +310,8 @@ export default async function HowardMarksMarketCycles({ params }: Props) {
         <div className="prose prose-invert prose-sm max-w-none text-gray-300 space-y-6">
           <p>
             {tr(
-              "In hindsight, the contrarian view was right: people did fly again, and by the end of 2023 the shares were back above where they started. But look at the years in between. Someone who bought after the first halving, at around 110p in mid-2020, was still down by about a third two years later. Being right about the idea did not protect anyone from being early.",
-              "Visto ahora, la postura contrarian acertó: la gente volvió a volar y a finales de 2023 la acción estaba por encima de donde empezó. Pero mira los años de en medio. Quien compró tras la primera caída a la mitad, a unos 110p a mediados de 2020, seguía perdiendo alrededor de un tercio dos años después. Acertar con la idea no protegió a nadie de llegar demasiado pronto."
+              "In hindsight, the contrarian view was right: people did fly again, and by the end of 2023 the share price was back above where it started. But look at the years in between. Someone who bought after the first halving, at around 50 on that index in mid-2020, was still down by about a third two years later. Being right about the idea did not protect anyone from being early.",
+              "Visto ahora, la postura contrarian acertó: la gente volvió a volar y a finales de 2023 la cotización estaba por encima de donde empezó. Pero mira los años de en medio. Quien compró tras la primera caída a la mitad, a unos 50 en ese índice a mediados de 2020, seguía perdiendo alrededor de un tercio dos años después. Acertar con la idea no protegió a nadie de llegar demasiado pronto."
             )}
           </p>
 
@@ -333,8 +376,8 @@ export default async function HowardMarksMarketCycles({ params }: Props) {
 
         <p className="text-gray-600 text-xs mt-8 text-center">
           {tr(
-            "Rolls-Royce prices are weekly closes from Yahoo Finance, adjusted for the 2020 rights issue, used to illustrate an idea with a past episode. Nothing here is a view on any share today, a recommendation or financial advice; past prices say nothing about future returns.",
-            "Los precios de Rolls-Royce son cierres semanales de Yahoo Finance, ajustados por la ampliación de 2020, y sirven para ilustrar una idea con un episodio pasado. Nada de esto es una opinión sobre ninguna acción hoy, una recomendación ni asesoramiento financiero; los precios pasados no dicen nada sobre la rentabilidad futura."
+            "The engineering company's figures are its weekly closing share prices from Yahoo Finance, adjusted for its 2020 share issue and shown as an index, used to illustrate an idea with a past episode. Nothing here is a view on any share today, a recommendation or financial advice; past prices say nothing about future returns.",
+            "Las cifras de la empresa de ingeniería son sus cierres semanales en bolsa de Yahoo Finance, ajustados por su ampliación de 2020 y expresados como índice, y sirven para ilustrar una idea con un episodio pasado. Nada de esto es una opinión sobre ninguna acción hoy, una recomendación ni asesoramiento financiero; los precios pasados no dicen nada sobre la rentabilidad futura."
           )}
         </p>
       </BlogArticleShell>
