@@ -20,6 +20,7 @@ const BLOG_SLUGS = [
   "finance-dashboard-problem",
   "financeplots-mcp-claude",
   "financial-forecasting",
+  "howard-marks-market-cycles",
   "ifrs-ias-standards-guide",
   "investment-portfolio-analysis",
   "junior-sipp-kids",
