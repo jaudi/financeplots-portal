@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { listEditions } from "@/lib/observer";
 import { getUniverse } from "@/lib/universe";
 import { SALARY_PAGES, salaryPath } from "@/lib/salary-pages";
+import { MORTGAGE_PAGES, mortgagePath } from "@/lib/mortgage-pages";
 
 const BASE = "https://www.financeplots.com";
 
@@ -117,12 +118,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "yearly" as const,
   }));
 
+  // "£200,000 mortgage" pages (lib/mortgage-pages.ts). English only, like the salary pages.
+  const mortgagePages = MORTGAGE_PAGES.map((a) => ({
+    url: `${BASE}${mortgagePath(a)}`,
+    priority: 0.6,
+    changeFrequency: "yearly" as const,
+  }));
+
   return [
     ...staticPages,
     ...blogPages,
     ...observerPages,
     ...toolPages,
     ...salaryPages,
+    ...mortgagePages,
     ...companyPages,
   ].map((page) => ({
     url: page.url,

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
 import VideoTeaser from "@/components/VideoTeaser";
+import MortgageAmountLinks from "@/components/MortgageAmountLinks";
 import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import LendingChat from "./LendingChat";
 import { buildSchedule, overpaymentPlan, type LumpSum } from "@/lib/calculators";
@@ -75,6 +76,25 @@ export default function LendingPage() {
   const [mAllowance, setMAllowance] = useState(10);
   const [showTable, setShowTable] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  // ?tab=mortgage&amount=&rate=&years= opens the calculator filled in: the
+  // "£200,000 mortgage" pages link here with their example figures.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const num = (k: string, min: number, max: number) => {
+      const n = Number(q.get(k));
+      return q.has(k) && Number.isFinite(n) && n >= min && n <= max ? n : null;
+    };
+    const amount = num("amount", 1, 100_000_000);
+    const rate = num("rate", 0, 30);
+    const years = num("years", 1, 50);
+    if (q.get("tab") === "mortgage") {
+      setTab("mortgage");
+      if (amount !== null) setMAmount(amount);
+      if (rate !== null) setMRate(rate);
+      if (years !== null) setMYears(Math.round(years));
+    }
+  }, []);
 
   const lCalc = useMemo(() => {
     const schedule = buildSchedule(lRate / 100, lYears, lAmount);
@@ -511,6 +531,8 @@ export default function LendingPage() {
                 totalInterest: activeCalc.totalInterest,
               }}
             />
+            {/* The amount pages are UK, English and in pounds, so only the English page lists them. */}
+            {!es && <MortgageAmountLinks />}
             <RelatedTools current="lending" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>
