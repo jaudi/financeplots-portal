@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import TakeHomePay from "@/components/TakeHomePay";
 import RelatedTools from "@/components/RelatedTools";
+import SalaryAfterTaxLinks from "@/components/SalaryAfterTaxLinks";
 import { TAX_YEAR } from "@/lib/calculators";
 import { pageMetadata } from "@/lib/page-metadata";
 
@@ -63,6 +64,7 @@ export default async function TakeHomePayPage({ searchParams }: Props) {
         </div>
       </div>
 
+      <SalaryAfterTaxLinks />
       <RelatedTools current="take-home-pay" />
       <p className="text-center text-xs text-gray-600 pb-8 px-4">{tc("disclaimer")}</p>
     </main>

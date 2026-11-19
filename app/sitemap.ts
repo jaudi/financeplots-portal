@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { listEditions } from "@/lib/observer";
 import { getUniverse } from "@/lib/universe";
+import { SALARY_PAGES, salaryPath } from "@/lib/salary-pages";
 
 const BASE = "https://www.financeplots.com";
 
@@ -108,11 +109,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly" as const,
   }));
 
+  // "£45,000 after tax" pages (lib/salary-pages.ts). English only: the /es copy
+  // has an English canonical.
+  const salaryPages = SALARY_PAGES.map((s) => ({
+    url: `${BASE}${salaryPath(s)}`,
+    priority: 0.6,
+    changeFrequency: "yearly" as const,
+  }));
+
   return [
     ...staticPages,
     ...blogPages,
     ...observerPages,
     ...toolPages,
+    ...salaryPages,
     ...companyPages,
   ].map((page) => ({
     url: page.url,
