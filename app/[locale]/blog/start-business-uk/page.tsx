@@ -125,6 +125,8 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
     ["Before the first payday", "Register as an employer (PAYE)", "Antes de la primera nómina", "Alta como empleador (PAYE)"],
     ["30 days after passing £90,000", "Register for VAT (rolling 12-month turnover)", "30 días después de superar 90.000 £", "Alta en el IVA (facturación de los últimos 12 meses)"],
     ["Every payday / 22nd of next month", "Send the payroll report / pay PAYE and NI", "Cada nómina / día 22 del mes siguiente", "Enviar el informe de nóminas / pagar PAYE y NI"],
+    ["Within 1 month of issuing shares", "Companies House: form SH01 — and update your cap table", "En el mes siguiente a emitir participaciones", "Companies House: formulario SH01 — y actualiza la cap table"],
+    ["6 July / 22 July", "HMRC: P11D and P11D(b) for benefits in kind / pay Class 1A NI", "6 de julio / 22 de julio", "HMRC: P11D y P11D(b) por retribuciones en especie / pagar la NI clase 1A"],
     ["Every 12 months", "Confirmation statement (14 days' grace)", "Cada 12 meses", "Confirmation statement (14 días de margen)"],
     ["21 months after incorporation", "First annual accounts to Companies House", "21 meses tras la constitución", "Primeras cuentas anuales a Companies House"],
     ["9 months after year end", "Companies House: file the annual accounts (every year after the first)", "9 meses tras el cierre", "Companies House: presentar las cuentas anuales (cada año después del primero)"],
@@ -147,7 +149,7 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
         <h1 className="text-3xl sm:text-4xl font-bold mt-2 mb-3 leading-tight">
           {tr("How to Start a Business in the UK: A Step-by-Step Guide", "Cómo montar una empresa en el Reino Unido: guía paso a paso")}
         </h1>
-        <p className="text-gray-400 text-sm mb-10">{tr("November 2026 · 7 min read", "Noviembre 2026 · 7 min de lectura")}</p>
+        <p className="text-gray-400 text-sm mb-10">{tr("November 2026 · 8 min read", "Noviembre 2026 · 8 min de lectura")}</p>
 
         <div className="prose prose-invert prose-sm max-w-none text-gray-300 space-y-6">
           <p>
@@ -358,6 +360,72 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
           />
         </div>
 
+        <h2 id="owners" className="scroll-mt-28 text-2xl font-bold text-white mt-14 mb-2">{tr("Once you're trading: the owners' paperwork", "Ya operando: el papeleo de los socios")}</h2>
+        <p className="text-gray-400 text-sm mb-4">
+          {tr(
+            "The steps above get the company running. These are the things that go wrong later, usually between the founders, their shares and the money they take out.",
+            "Los pasos anteriores ponen la sociedad en marcha. Esto es lo que suele torcerse después, casi siempre entre los socios, sus participaciones y el dinero que sacan."
+          )}
+        </p>
+        <div className="not-prose grid sm:grid-cols-2 gap-3">
+          {[
+            {
+              h: tr("Cap table", "Cap table (tabla de capital)"),
+              t: tr(
+                "Who owns which shares, bought at what price. Keep it from day one and update it with every change: new shares must be reported to Companies House on form SH01 within a month, transfers need a stock transfer form (stamp duty over £1,000), and options for staff usually go through an EMI scheme.",
+                "Quién tiene qué participaciones y a qué precio las compró. Llévala desde el primer día y actualízala con cada cambio: las nuevas participaciones se comunican a Companies House con el formulario SH01 en un mes, las transmisiones necesitan un stock transfer form (impuesto de timbre por encima de 1.000 £) y las opciones para empleados suelen ir por un plan EMI."
+              ),
+              link: { href: "/tools/cap-table", label: tr("Model it with the cap table tool →", "Modélala con la herramienta de cap table →") },
+            },
+            {
+              h: tr("Shareholders' agreement", "Pacto de socios"),
+              t: tr(
+                "With more than one founder, sign one early. It covers what the articles don't: who decides what, vesting and what happens to a leaver's shares, deadlock, and the right to sell alongside (tag) or force a sale (drag). It costs far less before a dispute than during one.",
+                "Si hay más de un fundador, firmadlo pronto. Cubre lo que los estatutos no: quién decide qué, el vesting y qué pasa con las participaciones de quien se va, los bloqueos y los derechos de acompañamiento (tag) y arrastre (drag). Cuesta mucho menos antes de un conflicto que durante."
+              ),
+            },
+            {
+              h: tr("Paying yourself", "Cómo pagarte"),
+              t: tr(
+                "Most owner-directors take a small salary through payroll plus dividends. A dividend can only come out of profits left after tax, needs a board minute and a dividend voucher, and is taxed at 10.75%, 35.75% or 39.35% above the £500 allowance. Untaxed dividends mean a Self Assessment return.",
+                "Casi todos los socios-administradores cobran un sueldo pequeño por nómina más dividendos. Un dividendo solo puede salir de beneficios después de impuestos, necesita un acta del consejo y un justificante de dividendo, y tributa al 10,75%, 35,75% o 39,35% por encima de las 500 £ exentas. Si hay dividendos sin tributar, toca declaración de Self Assessment."
+              ),
+            },
+            {
+              h: tr("Director's loan account", "Cuenta de préstamo del administrador"),
+              t: tr(
+                "Money you take out that isn't salary, dividend or an expense claim is a loan from the company. If it is still owed 9 months after the year end, the company pays s455 tax of 35.75% on it (refunded once repaid), and a loan over £10,000 is a taxable benefit.",
+                "El dinero que sacas y no es sueldo, dividendo ni gasto justificado es un préstamo de la sociedad. Si sigue pendiente 9 meses después del cierre, la sociedad paga el impuesto s455 del 35,75% sobre él (se devuelve al reembolsarlo), y un préstamo de más de 10.000 £ es una retribución en especie."
+              ),
+            },
+            {
+              h: tr("P11D: benefits in kind", "P11D: retribuciones en especie"),
+              t: tr(
+                "Company cars, private medical cover, cheap loans and other perks go on a P11D for each person by 6 July, with a P11D(b) declaring the employer's Class 1A NI at 15%, paid by 22 July. From April 2027 cars, vans and medical cover must go through payroll instead, and most other benefits follow in April 2028.",
+                "Coches de empresa, seguro médico, préstamos baratos y otras ventajas se declaran en un P11D por persona antes del 6 de julio, con un P11D(b) que declara la NI clase 1A del empleador al 15%, a pagar antes del 22 de julio. Desde abril de 2027 los coches, furgonetas y seguros médicos deben ir por nómina, y casi todo lo demás en abril de 2028."
+              ),
+            },
+            {
+              h: tr("Raising money: SEIS and EIS", "Captar inversión: SEIS y EIS"),
+              t: tr(
+                "Angel investors expect these. SEIS gives them income tax relief on up to £250,000 raised by a company with under 25 staff and gross assets up to £350,000; EIS covers larger rounds. Ask HMRC for advance assurance before you take the money.",
+                "Los business angels los esperan. SEIS les da deducción en el IRPF por hasta 250.000 £ captadas por una sociedad con menos de 25 empleados y activos de hasta 350.000 £; EIS cubre rondas mayores. Pide a HMRC la advance assurance antes de recibir el dinero."
+              ),
+              link: { href: "/tools/pitch-deck", label: tr("Build the pitch deck →", "Monta el pitch deck →") },
+            },
+          ].map((card) => (
+            <div key={card.h} className="bg-[#0d1426] border border-gray-800 rounded-xl p-4">
+              <p className="text-white font-semibold text-sm mb-1">{card.h}</p>
+              <p className="text-gray-400 text-sm leading-relaxed">{card.t}</p>
+              {card.link && (
+                <Link href={card.link.href} className="inline-block mt-2 text-blue-400 hover:text-blue-300 text-sm">
+                  {card.link.label}
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+
         <h2 className="text-2xl font-bold text-white mt-14 mb-2">{tr("The calendar that starts on day one", "El calendario que empieza el primer día")}</h2>
         <p className="text-gray-400 text-sm mb-4">
           {tr("Miss these and penalties are automatic. Put them in your diary the day you incorporate.", "Si te los saltas, las multas son automáticas. Apúntalos el día que constituyas la sociedad.")}
@@ -388,6 +456,7 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
             <li>{tr("Verify your identity, then incorporate for £100 — the easy part.", "Verifica tu identidad y constituye por 100 £ — lo fácil.")}</li>
             <li>{tr("Separate bank account and accounting software from day one.", "Cuenta bancaria propia y software contable desde el primer día.")}</li>
             <li>{tr("Register for PAYE before anyone is paid, including you.", "Alta en PAYE antes de pagar a nadie, tú incluido.")}</li>
+            <li>{tr("Keep a cap table and, with co-founders, a shareholders' agreement.", "Lleva una cap table y, si hay cofundadores, un pacto de socios.")}</li>
             <li>{tr("Diary every deadline the day the company is born.", "Apunta cada plazo el día que nace la sociedad.")}</li>
           </ul>
         </div>
