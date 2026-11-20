@@ -4,8 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { trackEvent } from "@/lib/analytics";
 
 /** "Get The Observer by email" — step 1 of the double opt-in (see lib/newsletter.ts).
- *  One list for both: a confirmed address gets The Observer (Resend) and the blog
- *  emails (Sender, lib/sender.ts). `variant="blog"` only changes the wording. */
+ *  One list for both: the Sunday email carries The Observer and the week's new
+ *  blog articles (scripts/observer/email.mjs). `variant="blog"` only changes the wording. */
 export default function ObserverSignup({ className = "", id, variant = "observer" }: { className?: string; id?: string; variant?: "observer" | "blog" }) {
   const t = useTranslations(variant === "blog" ? "blogSignup" : "observerSignup");
   const inputId = `${variant}-signup-email`;

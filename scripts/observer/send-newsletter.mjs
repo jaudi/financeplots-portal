@@ -25,7 +25,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { broadcastName, editionEmail, editionUrl, SITE_URL } from "./email.mjs";
+import { blogArticlesBetween, broadcastName, editionEmail, editionUrl, SITE_URL } from "./email.mjs";
 
 const MAX_AGE_DAYS = 6;
 const WAIT_MINUTES = 20;
@@ -51,7 +51,21 @@ function pickEdition() {
     .sort();
   const slug = slugArg ?? slugs.at(-1);
   if (!slug || !slugs.includes(slug)) throw new Error(`No edition ${slug ?? "found"} in content/observer`);
-  return JSON.parse(fs.readFileSync(path.join(DIR, `${slug}.json`), "utf8"));
+  const edition = JSON.parse(fs.readFileSync(path.join(DIR, `${slug}.json`), "utf8"));
+  const previous = slugs[slugs.indexOf(slug) - 1];
+  return { edition, previousDate: previous ?? null };
+}
+
+/** Blog posts published since the previous edition (messages/en.json, `published` dates). */
+function newArticles(edition, previousDate) {
+  try {
+    const messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "messages", "en.json"), "utf8"));
+    const from = previousDate ?? new Date(Date.parse(`${edition.date}T00:00:00Z`) - 7 * 86_400_000).toISOString().slice(0, 10);
+    return blogArticlesBetween(messages.blog?.articles, from, edition.date);
+  } catch (err) {
+    warn(`could not read blog articles: ${err.message} — sending without them`);
+    return [];
+  }
 }
 
 async function resend(method, route, body) {
@@ -89,7 +103,7 @@ async function waitUntilLive(url) {
   }
 }
 
-const edition = pickEdition();
+const { edition, previousDate } = pickEdition();
 const name = broadcastName(edition);
 const ageDays = (Date.now() - Date.parse(`${edition.date}T00:00:00Z`)) / 86_400_000;
 log(`edition ${edition.slug}: ${edition.title}`);
@@ -107,7 +121,9 @@ if (!edition.special && isSunday && Date.now() < sendFrom && !flag("--force") &&
   process.exit(0);
 }
 
-const email = editionEmail(edition, { site: SITE_URL });
+const articles = newArticles(edition, previousDate);
+log(`blog articles in this email: ${articles.length ? articles.map((a) => a.slug).join(", ") : "none"}`);
+const email = editionEmail(edition, { site: SITE_URL, articles });
 
 if (flag("--dry-run")) {
   const dir = process.env.NEWSLETTER_PREVIEW_DIR || os.tmpdir();

@@ -88,21 +88,24 @@
         "title": "Cómo montar una empresa en el Reino Unido: guía paso a paso (2026)",
         "date": "Noviembre 2026",
         "description": "Los cursos enseñan estrategia, no qué hacer el primer día. Ocho pasos prácticos: autónomo o sociedad limitada, Companies House, HMRC e IVA, cuenta bancaria, software contable, alta como empleador y lo legal básico — con cifras de 2026/27 y un calendario de plazos.",
-        "tag": "Finanzas para Pymes"
+        "tag": "Finanzas para Pymes",
+        "published": "2026-11-20"
       },
       {
         "slug": "howard-marks-market-cycles",
         "title": "Dominar el ciclo de mercado en un trayecto de siete millas: lo que me enseñó Howard Marks",
         "date": "Noviembre 2026",
         "description": "Escuchando a Howard Marks en un atasco: los ciclos de mercado, el péndulo entre miedo y codicia, el pensamiento de segundo nivel, ser contrarian — con un fabricante de motores en 2020 como caso — y por qué acertar con el momento es lo más difícil.",
-        "tag": "Opinión"
+        "tag": "Opinión",
+        "published": "2026-11-18"
       },
       {
         "slug": "strategy-models-balanced-scorecard",
         "title": "Ocho modelos de estrategia, pros y contras: por qué el cuadro de mando integral gana por sencillez",
         "date": "Noviembre 2026",
         "description": "PESTEL, cinco fuerzas, DAFO, Porter, Ansoff, BCG, Fitzgerald y Moon y el cuadro de mando integral: para qué sirve cada uno, dónde se queda corto y por qué una pyme que solo pueda usar uno debería elegir el cuadro de mando. Con fichas de repaso para descargar.",
-        "tag": "Finanzas para Pymes"
+        "tag": "Finanzas para Pymes",
+        "published": "2026-11-15"
       },
       {
         "slug": "financeplots-mcp-claude",
@@ -1864,18 +1867,18 @@
   "observerSignup": {
     "label": "The Observer por email",
     "title": "Recibe The Observer en tu correo",
-    "intro": "Un email cada domingo, cuando se publica la nueva edición (en inglés): el titular, el ánimo del mercado y las tres regiones, con un enlace al texto completo y al audio. Con la misma suscripción recibes también los nuevos artículos del blog de FinancePlots.",
+    "intro": "Un email cada domingo, cuando se publica la nueva edición (en inglés): el titular, el ánimo del mercado y las tres regiones, con un enlace al texto completo y al audio — y además los nuevos artículos del blog de FinancePlots de esa semana.",
     "placeholder": "Tu dirección de email",
     "cta": "Suscribirme",
     "loading": "Enviando…",
     "sent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No te enviaremos nada hasta que hagas clic.",
     "error": "Algo salió mal. Inténtalo de nuevo.",
-    "privacy": "Solo guardamos tu dirección de email — en Resend para The Observer y en Sender para los emails del blog — para enviarte ambos. Cada email lleva un enlace para darte de baja con un clic.",
+    "privacy": "Solo guardamos tu dirección de email, en nuestro proveedor de correo Resend, para enviarte The Observer y los artículos del blog. Cada email lleva un enlace para darte de baja con un clic.",
     "confirmTitle": "Confirma tu suscripción",
-    "confirmIntro": "Haz clic abajo para empezar a recibir por email The Observer cada domingo y los nuevos artículos del blog.",
+    "confirmIntro": "Haz clic abajo para empezar a recibir cada domingo por email The Observer y los nuevos artículos del blog.",
     "confirmCta": "Sí, enviadme los dos",
     "confirming": "Confirmando…",
-    "confirmed": "Ya estás suscrito. The Observer llega el domingo, y los nuevos artículos del blog cuando se publiquen.",
+    "confirmed": "Ya estás suscrito. El próximo email llega el domingo: The Observer y los nuevos artículos del blog.",
     "expired": "Este enlace ha caducado. Vuelve a apuntarte abajo y te enviaremos uno nuevo.",
     "invalid": "Este enlace no funciona: puede que se haya cortado. Vuelve a apuntarte abajo.",
     "failed": "No hemos podido confirmar ahora mismo. Inténtalo de nuevo en un minuto.",
@@ -2559,12 +2562,12 @@
   "blogSignup": {
     "label": "El blog por email",
     "title": "Recibe los nuevos artículos en tu correo",
-    "intro": "Las nuevas guías y análisis del blog de FinancePlots cuando se publican, y además The Observer, nuestra lectura semanal de la economía mundial (en inglés), cada domingo. Una suscripción, los dos emails.",
+    "intro": "Un email cada domingo: los nuevos artículos de la semana del blog de FinancePlots, junto con The Observer, nuestra lectura semanal de la economía mundial (en inglés). Una suscripción, los dos.",
     "placeholder": "Tu dirección de email",
     "cta": "Suscribirme",
     "loading": "Enviando…",
     "sent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No te enviaremos nada hasta que hagas clic.",
     "error": "Algo salió mal. Inténtalo de nuevo.",
-    "privacy": "Solo guardamos tu dirección de email — en Resend para The Observer y en Sender para los emails del blog — para enviarte ambos. Cada email lleva un enlace para darte de baja con un clic."
+    "privacy": "Solo guardamos tu dirección de email, en nuestro proveedor de correo Resend, para enviarte The Observer y los artículos del blog. Cada email lleva un enlace para darte de baja con un clic."
   }
 }

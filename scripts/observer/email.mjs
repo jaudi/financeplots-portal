@@ -39,7 +39,25 @@ export function broadcastName(edition) {
   return `observer-${edition.slug}`;
 }
 
-export function editionEmail(edition, { site = SITE_URL } = {}) {
+/**
+ * Blog articles to put in an edition's email: those published on or after the
+ * previous edition's date and before this edition's. Articles come from
+ * `blog.articles` in messages/en.json; only entries with a `published` ISO date
+ * count (older posts have none). Newest first, as the blog lists them.
+ */
+export function blogArticlesBetween(articles, fromIso, toIso) {
+  return (articles ?? []).filter((a) => typeof a.published === "string" && a.published >= fromIso && a.published < toIso);
+}
+
+export function articleUrl(article, site = SITE_URL) {
+  return `${site}/blog/${article.slug}`;
+}
+
+/**
+ * @param {any} edition
+ * @param {{ site?: string, articles?: { slug: string, title: string, description: string }[] }} [options]
+ */
+export function editionEmail(edition, { site = SITE_URL, articles = [] } = {}) {
   const url = editionUrl(edition, site);
   const date = formatDate(edition.date);
   const kicker = edition.special ? `${edition.special} · ${date}` : `Week of ${date}`;
@@ -63,6 +81,18 @@ export function editionEmail(edition, { site = SITE_URL } = {}) {
   <ul style="margin:0;padding-left:20px;line-height:1.7;color:#374151">${edition.watchNextWeek.map((w) => `<li>${e(w)}</li>`).join("")}</ul>`
     : "";
 
+  const blogHtml = articles.length
+    ? `
+  <div style="margin:32px 0 0;padding:18px 18px 6px;background:#eff6ff;border-radius:12px">
+    <p style="margin:0 0 10px;color:#1d4ed8;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">New on the FinancePlots blog</p>
+    ${articles
+      .map(
+        (a) => `<p style="margin:0 0 14px"><a href="${e(articleUrl(a, site))}" style="color:#111827;font-weight:700;font-size:15px;text-decoration:none">${e(a.title)}</a><br><span style="color:#4b5563;font-size:14px;line-height:1.5">${e(a.description)}</span></p>`,
+      )
+      .join("\n    ")}
+  </div>`
+    : "";
+
   const audioHtml = minutes
     ? ` &nbsp;·&nbsp; <a href="${e(url)}" style="color:#1d4ed8;white-space:nowrap">🎧 Listen (${minutes} min)</a>`
     : "";
@@ -84,7 +114,7 @@ export function editionEmail(edition, { site = SITE_URL } = {}) {
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px">${regionsHtml}
   </table>
-${watchHtml}
+${watchHtml}${blogHtml}
   <p style="margin:28px 0 0"><a href="${e(url)}" style="color:#1d4ed8;font-weight:700">Read the full edition, with sources and data →</a></p>
 
   <p style="margin:36px 0 0;padding-top:16px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;line-height:1.6">
@@ -108,6 +138,7 @@ ${watchHtml}
     "",
     ...edition.regions.flatMap((r) => [`${(REGION_NAMES[r.region] ?? r.region).toUpperCase()}: ${r.headline}`, r.summary, ""]),
     ...(edition.watchNextWeek.length ? ["ON THE CALENDAR NEXT WEEK", ...edition.watchNextWeek.map((w) => `- ${w}`), ""] : []),
+    ...(articles.length ? ["NEW ON THE FINANCEPLOTS BLOG", ...articles.flatMap((a) => [`- ${a.title}`, `  ${articleUrl(a, site)}`]), ""] : []),
     "Written by an AI agent from public data and news. General commentary, not investment advice or a recommendation to buy or sell anything.",
     `Unsubscribe: ${UNSUBSCRIBE}`,
     "",

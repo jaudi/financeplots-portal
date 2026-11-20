@@ -10,7 +10,9 @@ import {
   signingKey,
   verifyConfirmation,
 } from "@/lib/newsletter";
-import { broadcastName, editionEmail, formatDate, UNSUBSCRIBE } from "../scripts/observer/email.mjs";
+import { blogArticlesBetween, broadcastName, editionEmail, formatDate, UNSUBSCRIBE } from "../scripts/observer/email.mjs";
+import en from "@/messages/en.json";
+import es from "@/messages/es.json";
 import type { Edition } from "@/lib/observer";
 
 const KEY = "test-key";
@@ -122,6 +124,37 @@ describe("edition email", () => {
 
   it("names the broadcast after the edition, so each is sent once", () => {
     expect(broadcastName(edition)).toBe(`observer-${edition.slug}`);
+  });
+
+  it("adds the week's new blog articles, and nothing when there are none", () => {
+    expect(mail.html).not.toContain("New on the FinancePlots blog");
+    const articles = [{ slug: "start-business-uk", title: "Start <a> business", description: "Eight steps & a calendar" }];
+    const withBlog = editionEmail(edition, { articles });
+    expect(withBlog.html).toContain("New on the FinancePlots blog");
+    expect(withBlog.html).toContain('href="https://www.financeplots.com/blog/start-business-uk"');
+    expect(withBlog.html).toContain("Start &lt;a&gt; business");
+    expect(withBlog.html).toContain("Eight steps &amp; a calendar");
+    expect(withBlog.text).toContain("NEW ON THE FINANCEPLOTS BLOG");
+    expect(withBlog.text).toContain("https://www.financeplots.com/blog/start-business-uk");
+  });
+
+  it("picks posts published since the previous edition, before this one", () => {
+    const posts = [
+      { slug: "a", published: "2026-11-22" },
+      { slug: "b", published: "2026-11-20" },
+      { slug: "c", published: "2026-11-15" },
+      { slug: "d", published: "2026-11-14" },
+      { slug: "e" },
+    ];
+    expect(blogArticlesBetween(posts, "2026-11-15", "2026-11-22").map((p: { slug: string }) => p.slug)).toEqual(["b", "c"]);
+    expect(blogArticlesBetween(undefined, "2026-11-15", "2026-11-22")).toEqual([]);
+  });
+
+  it("dates each new blog post the same in both languages", () => {
+    const dated = (m: typeof en) =>
+      Object.fromEntries((m.blog.articles as { slug: string; published?: string }[]).filter((a) => a.published).map((a) => [a.slug, a.published]));
+    expect(dated(es as typeof en)).toEqual(dated(en));
+    for (const d of Object.values(dated(en))) expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   it("reads dates as calendar dates", () => {

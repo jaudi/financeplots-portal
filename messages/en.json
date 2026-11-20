@@ -88,21 +88,24 @@
         "title": "How to Start a Business in the UK: A Step-by-Step Guide (2026)",
         "date": "November 2026",
         "description": "Courses teach strategy, not what to do on day one. Eight practical steps: sole trader or limited company, Companies House, HMRC and VAT, a business bank, accounting software, registering as an employer and the legal basics — with 2026/27 figures and a deadlines calendar.",
-        "tag": "Small Business Finance"
+        "tag": "Small Business Finance",
+        "published": "2026-11-20"
       },
       {
         "slug": "howard-marks-market-cycles",
         "title": "Mastering the Market Cycle on a Seven-Mile Commute: What Howard Marks Taught Me",
         "date": "November 2026",
         "description": "Listening to Howard Marks in traffic: market cycles, the pendulum of fear and greed, second-level thinking, being a contrarian — an engine maker in 2020 as a case — and why timing is the hardest part to get right.",
-        "tag": "Opinion"
+        "tag": "Opinion",
+        "published": "2026-11-18"
       },
       {
         "slug": "strategy-models-balanced-scorecard",
         "title": "Eight Strategy Models, Pros and Cons: Why the Balanced Scorecard Wins on Simplicity",
         "date": "November 2026",
         "description": "PESTEL, Five Forces, SWOT, Porter, Ansoff, BCG, Fitzgerald & Moon and the balanced scorecard: what each is good for, where each falls short, and why a small business that can only run one should pick the scorecard. With revision cards to download.",
-        "tag": "Small Business Finance"
+        "tag": "Small Business Finance",
+        "published": "2026-11-15"
       },
       {
         "slug": "financeplots-mcp-claude",
@@ -1878,18 +1881,18 @@
   "observerSignup": {
     "label": "The Observer by email",
     "title": "Get The Observer in your inbox",
-    "intro": "One email each Sunday, when the new edition is published: the headline, the market mood and the three regions, with a link to the full piece and the audio. The same sign-up also gets you new articles from the FinancePlots blog.",
+    "intro": "One email each Sunday, when the new edition is published: the headline, the market mood and the three regions, with a link to the full piece and the audio — plus any new articles from the FinancePlots blog that week.",
     "placeholder": "Your email address",
     "cta": "Subscribe",
     "loading": "Sending…",
     "sent": "Check your inbox: we have sent you a link to confirm. Nothing is sent until you click it.",
     "error": "Something went wrong. Please try again.",
-    "privacy": "We keep only your email address — with Resend for The Observer and Sender for the blog emails — to send you both. Every email has a one-click unsubscribe link.",
+    "privacy": "We keep only your email address, with our email provider Resend, to send The Observer and the blog round-up. Every email has a one-click unsubscribe link.",
     "confirmTitle": "Confirm your subscription",
-    "confirmIntro": "Click below to start getting The Observer each Sunday and new articles from the blog by email.",
+    "confirmIntro": "Click below to start getting The Observer and new blog articles by email each Sunday.",
     "confirmCta": "Yes, send me both",
     "confirming": "Confirming…",
-    "confirmed": "You are subscribed. The next Observer arrives on Sunday, and new blog articles as they are published.",
+    "confirmed": "You are subscribed. The next email arrives on Sunday: The Observer plus any new blog articles.",
     "expired": "This link has expired. Sign up again below and we will send a new one.",
     "invalid": "This link does not work: it may have been cut short. Sign up again below.",
     "failed": "We could not confirm just now. Please try again in a minute.",
@@ -2573,12 +2576,12 @@
   "blogSignup": {
     "label": "The blog by email",
     "title": "Get new articles in your inbox",
-    "intro": "New guides and analysis from the FinancePlots blog when they are published, plus The Observer, our weekly read on the world economy, every Sunday. One sign-up, both emails.",
+    "intro": "One email each Sunday: the week's new articles from the FinancePlots blog, together with The Observer, our weekly read on the world economy. One sign-up, both.",
     "placeholder": "Your email address",
     "cta": "Subscribe",
     "loading": "Sending…",
     "sent": "Check your inbox: we have sent you a link to confirm. Nothing is sent until you click it.",
     "error": "Something went wrong. Please try again.",
-    "privacy": "We keep only your email address — with Resend for The Observer and Sender for the blog emails — to send you both. Every email has a one-click unsubscribe link."
+    "privacy": "We keep only your email address, with our email provider Resend, to send The Observer and the blog round-up. Every email has a one-click unsubscribe link."
   }
 }
