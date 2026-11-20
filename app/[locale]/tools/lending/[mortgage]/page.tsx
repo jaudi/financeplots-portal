@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import RelatedTools from "@/components/RelatedTools";
+import EmbedCode from "@/components/EmbedCode";
+import { embedSnippet, mortgageEmbed } from "@/lib/embeds";
 import { BASE, pageMetadata } from "@/lib/page-metadata";
 import { gbp } from "@/lib/salary-pages";
 import {
@@ -69,6 +71,7 @@ export default async function MortgageAmountPage({ params }: Props) {
   const hy = GRID_YEARS.indexOf(HEADLINE_YEARS);
   const [incomeLow, incomeHigh] = p.incomeRange.map((n) => roundTo(n, 1_000));
   const calculatorHref = `/tools/lending?tab=mortgage&amount=${amount}&rate=${HEADLINE_RATE_PCT}&years=${HEADLINE_YEARS}`;
+  const embed = mortgageEmbed(amount);
 
   const faq = [
     {
@@ -200,6 +203,8 @@ export default async function MortgageAmountPage({ params }: Props) {
               Open the calculator with {gbp(amount)} →
             </Link>
           </div>
+
+          <EmbedCode src={embed.src} snippet={embedSnippet(embed)} height={embed.height} />
 
           <section className="mb-6">
             <h2 className="text-white font-bold mb-3">Questions</h2>

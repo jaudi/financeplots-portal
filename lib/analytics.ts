@@ -16,6 +16,7 @@ export type AppEvent =
   | "finder_result" // "Which tool do I need?" pointed somewhere
   | "share_link" // a link to the figures on screen copied
   | "connector_copy" // the MCP URL or Claude Code command copied on /mcp
+  | "embed_copy" // the code to embed a salary or mortgage card copied
   | "video_play" // an explainer video opened (VideoTeaser)
   | "email_signup" // asked for The Observer by email (a confirmation link was sent)
   | "email_confirm" // clicked through and confirmed it

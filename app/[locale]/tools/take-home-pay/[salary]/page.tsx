@@ -5,9 +5,9 @@ import RelatedTools from "@/components/RelatedTools";
 import { TAX_YEAR } from "@/lib/calculators";
 import { BASE, pageMetadata } from "@/lib/page-metadata";
 import { gbp, HOURS_PER_WEEK, parseSalarySlug, perHundred, SALARY_PAGES, salaryPage, salaryPath, salarySlug } from "@/lib/salary-pages";
-
-// Same palette as the share card and the calculator's chart: by position, never good/bad.
-const PART_COLOURS = ["#3b82f6", "#64748b", "#94a3b8"];
+import PerHundredGrid, { PerHundredLegend } from "@/components/PerHundredGrid";
+import EmbedCode from "@/components/EmbedCode";
+import { embedSnippet, salaryEmbed } from "@/lib/embeds";
 
 // One static page per salary in SALARY_PAGES ("/tools/take-home-pay/45000-after-tax").
 // English on every locale, like the calculator: the subject is UK tax. The /es
@@ -59,14 +59,8 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
   const scotland = p.scenarios.find((s) => s.key === "scotland")!.result;
   const scotDiff = (scotland.takeHome - standard.takeHome) / 12;
   const url = `${BASE}${salaryPath(salary)}`;
-  // The "of every £100" grid: 100 squares filled in order, kept first.
-  const h = perHundred(r);
-  const parts = [
-    { label: "you keep", value: h.keep },
-    { label: "income tax", value: h.incomeTax },
-    { label: "National Insurance", value: h.ni },
-  ];
-  const squares = parts.flatMap((p, i) => Array<number>(p.value).fill(i));
+  const h = perHundred(r); // the "of every £100" grid
+  const embed = salaryEmbed(salary);
 
   const faq = [
     {
@@ -118,26 +112,10 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
           </div>
 
           <section className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 mb-6 flex flex-col sm:flex-row gap-6 sm:items-center">
-            <div
-              role="img"
-              aria-label={`Of every £100: £${h.keep} you keep, £${h.incomeTax} income tax, £${h.ni} National Insurance`}
-              className="grid grid-cols-10 gap-1 w-full max-w-[260px] shrink-0 mx-auto sm:mx-0"
-            >
-              {squares.map((part, i) => (
-                <div key={i} className="aspect-square rounded-[3px]" style={{ background: PART_COLOURS[part] }} />
-              ))}
-            </div>
+            <PerHundredGrid h={h} className="w-full max-w-[260px] shrink-0 mx-auto sm:mx-0" />
             <div>
               <h2 className="text-white font-bold text-lg mb-3">Of every £100 you earn</h2>
-              <ul className="space-y-2">
-                {parts.map((p, i) => (
-                  <li key={p.label} className="flex items-center gap-3 text-sm text-gray-300">
-                    <span className="w-3.5 h-3.5 rounded-[3px] shrink-0" style={{ background: PART_COLOURS[i] }} />
-                    <span className="text-white font-bold text-lg w-12">£{p.value}</span>
-                    {p.label}
-                  </li>
-                ))}
-              </ul>
+              <PerHundredLegend h={h} />
               <p className="text-xs text-gray-500 mt-3">Each square is £1 of every £100 of salary, with no pension or student loan.</p>
             </div>
           </section>
@@ -230,6 +208,8 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
               Open the calculator with {gbp(salary)} →
             </Link>
           </div>
+
+          <EmbedCode src={embed.src} snippet={embedSnippet(embed)} height={embed.height} />
 
           <section className="mb-6">
             <h2 className="text-white font-bold mb-3">Questions</h2>
