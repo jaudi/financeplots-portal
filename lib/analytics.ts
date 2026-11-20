@@ -17,6 +17,7 @@ export type AppEvent =
   | "share_link" // a link to the figures on screen copied
   | "connector_copy" // the MCP URL or Claude Code command copied on /mcp
   | "embed_copy" // the code to embed a salary or mortgage card copied
+  | "game_done" // a Bull or Bear game played to the final score (no score sent)
   | "video_play" // an explainer video opened (VideoTeaser)
   | "email_signup" // asked for The Observer by email (a confirmation link was sent)
   | "email_confirm" // clicked through and confirmed it

@@ -131,6 +131,22 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ── A break: the Bull or Bear game ── */}
+      <section className="px-4 sm:px-6 pb-16">
+        <Link
+          href="/tools/bull-or-bear"
+          className="group max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-5 sm:gap-8 bg-gradient-to-r from-emerald-900/30 via-[#0d1426] to-rose-900/30 border border-gray-800 hover:border-amber-500/60 rounded-2xl px-6 py-7 sm:px-10 transition"
+        >
+          <div className="text-5xl shrink-0 group-hover:scale-110 transition" aria-hidden>🐂🐻</div>
+          <div className="flex-1 text-center sm:text-left">
+            <p className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-1">{t("gameLabel")}</p>
+            <h2 className="text-xl md:text-2xl font-extrabold mb-1">{t("gameTitle")}</h2>
+            <p className="text-gray-400 text-sm">{t("gameDesc")}</p>
+          </div>
+          <span className="shrink-0 bg-amber-500 group-hover:bg-amber-400 text-[#0a0f1e] font-bold px-6 py-3 rounded-xl transition">{t("gameCta")}</span>
+        </Link>
+      </section>
+
       {/* ── What makes it different ── */}
       <section className="px-4 sm:px-6 py-16 bg-[#0d1426] border-y border-gray-800/60">
         <div className="max-w-6xl mx-auto">

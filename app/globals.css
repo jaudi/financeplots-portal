@@ -43,3 +43,17 @@ body {
   animation: confetti 1.4s ease-in both;
   top: -30px;
 }
+
+/* Bull or Bear: emoji float up and fade on a right answer */
+@keyframes bob-float {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(var(--drift, 0px), -260px) scale(1.1) rotate(20deg); opacity: 0; }
+}
+
+.bob-float {
+  animation: bob-float 1.6s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bob-float { display: none; }
+}

@@ -65,7 +65,11 @@
     "mcpChatMore": "+ {count} más",
     "contactCtaShort": "Escríbenos →",
     "metaTitle": "FinancePlots — Herramientas financieras gratis que se pueden ver",
-    "metaDescription": "Herramientas financieras gratuitas para tu dinero y tu empresa —presupuesto, caja, valoración, préstamos, interés compuesto— y una página visual para cada empresa del S&P 500, el Nasdaq-100, el FTSE 100 y el IBEX 35. Sin registro y sin anuncios."
+    "metaDescription": "Herramientas financieras gratuitas para tu dinero y tu empresa —presupuesto, caja, valoración, préstamos, interés compuesto— y una página visual para cada empresa del S&P 500, el Nasdaq-100, el FTSE 100 y el IBEX 35. Sin registro y sin anuncios.",
+    "gameLabel": "Tómate un respiro · Juego nuevo",
+    "gameTitle": "¿Toro u oso? ¿Sabes leer el mercado?",
+    "gameDesc": "Un tramo oculto de 100 años del S&P 500. ¿Estaba más alto o más bajo un año después? 10 rondas, 2 minutos.",
+    "gameCta": "Jugar →"
   },
   "blog": {
     "title": "Blog",
@@ -377,6 +381,11 @@
         "icon": "🥧",
         "name": "Cap table y dilución",
         "desc": "Quién tiene qué tras tu próxima ronda — conversión de SAFEs, las acciones de los nuevos inversores y la ampliación del pool de opciones, antes y después."
+      },
+      "bull-or-bear": {
+        "icon": "🐂",
+        "name": "¿Toro u oso? (juego)",
+        "desc": "Adivina si el S&P 500 subió o bajó el año siguiente a un tramo oculto de su historia, con cracs, burbujas y guerras incluidos. 10 rondas y comparte tu resultado."
       }
     }
   },
@@ -2245,6 +2254,10 @@
     "valuation": {
       "title": "Calculadora de valoración de empresas — DCF y múltiplos sectoriales",
       "description": "Valora un negocio con un DCF y múltiplos EV/EBITDA, EV/ventas y PER con datos sectoriales de Damodaran, cada método al lado del otro. Gratis, sin registro."
+    },
+    "bull-or-bear": {
+      "title": "¿Toro u oso? — El juego de adivinar el S&P 500",
+      "description": "Un juego gratis: ves un tramo oculto del S&P 500 desde 1928 y adivinas si un año después estaba más alto o más bajo. El Lunes Negro, las puntocom, 2008, el Covid: ¿los habrías visto venir?"
     }
   },
   "planReport": {
@@ -2356,5 +2369,70 @@
     "propertyKept": "{value}, se mantiene; alquiler {rent} al año",
     "otherIncome": "Otros ingresos",
     "otherIncomeUntil": "{amount} al año hasta los {age}"
+  },
+  "bullOrBear": {
+    "or": "u",
+    "chartLabel": "El S&P 500 en los meses anteriores a la apuesta, con las fechas ocultas",
+    "nextYear": "los próximos 12 meses",
+    "yearsAgo": "{n} años antes",
+    "youAreHere": "Estás aquí",
+    "introTitle": "¿Sabes leer el mercado?",
+    "introText": "{rounds} rondas. Cada una muestra un tramo real del S&P 500 desde 1928 con las fechas ocultas. ¿Estaba más alto o más bajo un año después? ¿Toro u oso?",
+    "introSmall": "La mitad de las rondas se cortan justo antes de un momento famoso: un crac, una guerra, una burbuja. Las fechas aparecen cuando apuestas.",
+    "play": "Jugar",
+    "yourBest": "Tu récord: {score}/{rounds}",
+    "finalLabel": "Tu puntuación",
+    "rank": {
+      "wizard": {
+        "title": "🧙 Mago del mercado",
+        "text": "Casi perfecto. Suerte, talento o las dos cosas: ni los mejores profesionales lo repiten año tras año."
+      },
+      "sharp": {
+        "title": "🎯 Buen ojo",
+        "text": "Mejor que lanzar una moneda. Pero mira abajo: decir «toro» siempre también habría puntuado bien."
+      },
+      "coin": {
+        "title": "🪙 Cara o cruz",
+        "text": "Más o menos lo que daría el azar. No es ninguna vergüenza: la mayoría de las previsiones profesionales a un año no lo hacen mejor."
+      },
+      "contrarian": {
+        "title": "🙃 Llevar la contraria",
+        "text": "Fallaste casi siempre y eso, curiosamente, tiene mérito. Haz lo contrario y serás un mago."
+      }
+    },
+    "playAgain": "Jugar otra vez",
+    "share": "Compartir mi resultado",
+    "copied": "Copiado ✓",
+    "postOnX": "Publicar en X",
+    "alwaysUp": "Decir 🐂 toro en todas las rondas habría sacado {score}/{rounds} en esta partida.",
+    "historyUp": "de todos los meses desde {year}, el S&P 500 estaba más alto un año después. El resto de las veces, las caídas podían ser profundas.",
+    "yourRounds": "Tus rondas",
+    "right": "¡Acertaste!",
+    "wrong": "Esta vez no",
+    "lesson": "Lo que enseña el juego: en la mayoría de los años el índice terminó más alto, pero los años de caída eran difíciles de ver venir, incluso con el gráfico delante. Por eso el ahorro a largo plazo piensa en décadas, no en el año que viene. La rentabilidad pasada no garantiza la futura.",
+    "linkCompound": "Mira cuánto pueden sumar décadas de crecimiento",
+    "linkCycles": "Lee: Howard Marks y los ciclos de mercado",
+    "roundOf": "Ronda {n} de {rounds}",
+    "question": "Aquí tienes {years} años del S&P 500. Un año después del punto azul, ¿más alto o más bajo?",
+    "revealing": "A ver…",
+    "bull": "Toro",
+    "bullHint": "Más alto en un año",
+    "bear": "Oso",
+    "bearHint": "Más bajo en un año",
+    "result": "De {from} a {to} el S&P 500 se movió un {change}.",
+    "alsoInWindow": "También en este gráfico:",
+    "next": "Siguiente ronda →",
+    "seeScore": "Ver mi puntuación →",
+    "keys": "Truco: ↑ para toro, ↓ para oso, Intro para la siguiente ronda.",
+    "shareText": "He sacado {score}/{rounds} en ¿Toro u oso? 🐂🐻: adivinar un año del S&P 500 por su gráfico. ¿Me superas?",
+    "pageTitle": "¿Toro u oso?",
+    "pageSubtitle": "Un juego con casi 100 años del S&P 500",
+    "howTitle": "Cómo se juega",
+    "how1": "Cada ronda muestra hasta tres años del S&P 500 sin fechas ni precios, así que no sabes si es 1987 o 2020.",
+    "how2": "Apuesta si el índice estaba más alto (toro 🐂) o más bajo (oso 🐻) doce meses después.",
+    "how3": "El año siguiente se dibuja solo, aparecen las fechas y descubres qué momento de la historia era.",
+    "aboutTitle": "¿Por qué jugar?",
+    "aboutText": "Desde {year}, el S&P 500 estaba más alto un año después en el {pct}% de los meses. Pero en el momento, justo antes del Lunes Negro, del pico de las puntocom o del crac del Covid, el gráfico rara vez parecía distinto. El juego es una forma rápida de sentir lo difícil que es acertar con el mercado a corto plazo.",
+    "source": "Datos: cierres mensuales del S&P 500 de Yahoo Finance, de diciembre de 1927 al último mes completo. Solo índice de precios: no incluye dividendos. Para aprender y divertirse; nada de esto es asesoramiento de inversión."
   }
 }

@@ -65,7 +65,11 @@
     "mcpChatMore": "+ {count} more",
     "contactCtaShort": "Email us →",
     "metaTitle": "FinancePlots — Free Finance Tools You Can See",
-    "metaDescription": "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 company. No signup, no ads. Works inside Claude."
+    "metaDescription": "Free finance tools for your money and your company — budgets, cash flow, valuation, take-home pay — plus a visual page for every S&P 500, Nasdaq-100, FTSE 100 and IBEX 35 company. No signup, no ads. Works inside Claude.",
+    "gameLabel": "Take a break · New game",
+    "gameTitle": "Bull or Bear? Can you read the market?",
+    "gameDesc": "A hidden stretch of 100 years of the S&P 500. Was it higher or lower a year later? 10 rounds, 2 minutes.",
+    "gameCta": "Play →"
   },
   "blog": {
     "title": "Blog",
@@ -391,6 +395,11 @@
         "icon": "🥧",
         "name": "Cap Table & Dilution",
         "desc": "Who owns what after your next round — SAFE conversions, the new investors' shares and an option-pool top-up, before and after."
+      },
+      "bull-or-bear": {
+        "icon": "🐂",
+        "name": "Bull or Bear? (game)",
+        "desc": "Guess whether the S&P 500 went up or down in the year after a hidden stretch of its history — crashes, bubbles and wars included. 10 rounds, then share your score."
       }
     }
   },
@@ -2259,6 +2268,10 @@
     "valuation": {
       "title": "Business Valuation Calculator — DCF and Industry Multiples",
       "description": "Value a business with a DCF and EV/EBITDA, EV/Revenue and P/E multiples from Damodaran's industry data, each method side by side. Free, no signup."
+    },
+    "bull-or-bear": {
+      "title": "Bull or Bear? — The S&P 500 Guessing Game",
+      "description": "A free game: see a hidden stretch of the S&P 500 since 1928 and guess whether it was higher or lower a year later. Black Monday, the dot-com bubble, 2008, Covid — could you have called them?"
     }
   },
   "planReport": {
@@ -2370,5 +2383,70 @@
     "propertyKept": "{value}, kept; rent {rent} a year",
     "otherIncome": "Other income",
     "otherIncomeUntil": "{amount} a year until {age}"
+  },
+  "bullOrBear": {
+    "or": "or",
+    "chartLabel": "The S&P 500 over the months before the guess, with the dates hidden",
+    "nextYear": "the next 12 months",
+    "yearsAgo": "{n} years earlier",
+    "youAreHere": "You are here",
+    "introTitle": "Can you read the market?",
+    "introText": "{rounds} rounds. Each one shows a real stretch of the S&P 500 since 1928 with the dates hidden. Was it higher or lower a year later? Bull or bear?",
+    "introSmall": "Half the rounds stop just before a famous moment — a crash, a war, a bubble. The dates appear once you've guessed.",
+    "play": "Play",
+    "yourBest": "Your best: {score}/{rounds}",
+    "finalLabel": "Your score",
+    "rank": {
+      "wizard": {
+        "title": "🧙 Market wizard",
+        "text": "Almost perfect. Lucky, brilliant, or both — even the best professionals rarely do this year after year."
+      },
+      "sharp": {
+        "title": "🎯 Sharp eye",
+        "text": "Better than a coin flip. But look below: saying “bull” every time would have scored well too."
+      },
+      "coin": {
+        "title": "🪙 Coin flipper",
+        "text": "About what chance would give. No shame in that — most professional forecasts of the year ahead do no better."
+      },
+      "contrarian": {
+        "title": "🙃 Perfect contrarian",
+        "text": "Wrong almost every time — which, oddly, takes skill. Do the opposite and you'd be a wizard."
+      }
+    },
+    "playAgain": "Play again",
+    "share": "Share my score",
+    "copied": "Copied ✓",
+    "postOnX": "Post on X",
+    "alwaysUp": "Saying 🐂 bull every round would have scored {score}/{rounds} in this game.",
+    "historyUp": "of all months since {year}, the S&P 500 was higher a year later. The rest of the time, the falls could be deep.",
+    "yourRounds": "Your rounds",
+    "right": "Right!",
+    "wrong": "Not this time",
+    "lesson": "What the game shows: in most single years the index ended higher, but the years it fell were hard to see coming, even with the chart in front of you. That's why long-term savers think in decades, not in next year. Past performance is not a guide to the future.",
+    "linkCompound": "See what decades of growth can add up to",
+    "linkCycles": "Read: Howard Marks on market cycles",
+    "roundOf": "Round {n} of {rounds}",
+    "question": "Here are {years} years of the S&P 500. A year after the blue dot — higher or lower?",
+    "revealing": "Let's see…",
+    "bull": "Bull",
+    "bullHint": "Higher in a year",
+    "bear": "Bear",
+    "bearHint": "Lower in a year",
+    "result": "From {from} to {to} the S&P 500 went {change}.",
+    "alsoInWindow": "Also on this chart:",
+    "next": "Next round →",
+    "seeScore": "See my score →",
+    "keys": "Tip: ↑ for bull, ↓ for bear, Enter for the next round.",
+    "shareText": "I scored {score}/{rounds} on Bull or Bear? 🐂🐻 — guessing a year of the S&P 500 from its chart. Can you beat me?",
+    "pageTitle": "Bull or Bear?",
+    "pageSubtitle": "A game on nearly 100 years of the S&P 500",
+    "howTitle": "How it works",
+    "how1": "Each round shows up to three years of the S&P 500 with the dates and prices hidden, so you can't tell 1987 from 2020.",
+    "how2": "Guess whether the index was higher (bull 🐂) or lower (bear 🐻) twelve months later.",
+    "how3": "The next year draws itself in, the dates appear, and you find out which moment in history it was.",
+    "aboutTitle": "Why play it?",
+    "aboutText": "Since {year}, the S&P 500 was higher a year later after {pct}% of months. Yet in the moment — just before Black Monday, the dot-com peak or the Covid crash — the chart rarely looked any different. The game is a quick way to feel how hard short-term market calls are.",
+    "source": "Data: S&P 500 month-end closes from Yahoo Finance, December 1927 to the last full month. Price index only — dividends are left out. For learning and fun; nothing here is investment advice."
   }
 }
