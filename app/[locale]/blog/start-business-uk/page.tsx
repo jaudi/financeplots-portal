@@ -126,9 +126,10 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
     ["30 days after passing £90,000", "Register for VAT (rolling 12-month turnover)", "30 días después de superar 90.000 £", "Alta en el IVA (facturación de los últimos 12 meses)"],
     ["Every payday / 22nd of next month", "Send the payroll report / pay PAYE and NI", "Cada nómina / día 22 del mes siguiente", "Enviar el informe de nóminas / pagar PAYE y NI"],
     ["Every 12 months", "Confirmation statement (14 days' grace)", "Cada 12 meses", "Confirmation statement (14 días de margen)"],
-    ["21 months after incorporation", "First accounts to Companies House — then 9 months after each year end", "21 meses tras la constitución", "Primeras cuentas a Companies House — después, 9 meses tras cada cierre"],
-    ["9 months + 1 day after year end", "Pay Corporation Tax", "9 meses y 1 día tras el cierre", "Pagar el Impuesto de Sociedades"],
-    ["12 months after year end", "File the company tax return (CT600)", "12 meses tras el cierre", "Presentar la declaración del impuesto (CT600)"],
+    ["21 months after incorporation", "First annual accounts to Companies House", "21 meses tras la constitución", "Primeras cuentas anuales a Companies House"],
+    ["9 months after year end", "Companies House: file the annual accounts (every year after the first)", "9 meses tras el cierre", "Companies House: presentar las cuentas anuales (cada año después del primero)"],
+    ["9 months + 1 day after year end", "HMRC: pay Corporation Tax — the day after the accounts deadline, to a different body", "9 meses y 1 día tras el cierre", "HMRC: pagar el Impuesto de Sociedades — el día después del plazo de las cuentas, a otro organismo"],
+    ["12 months after year end", "HMRC: file the company tax return (CT600), with the accounts attached", "12 meses tras el cierre", "HMRC: presentar la declaración del impuesto (CT600), con las cuentas adjuntas"],
     ["Sole traders: 5 Oct / 31 Jan", "Register for Self Assessment / file and pay", "Autónomos: 5 oct / 31 ene", "Alta en Self Assessment / presentar y pagar"],
   ];
 
