@@ -84,6 +84,13 @@
     },
     "articles": [
       {
+        "slug": "start-business-uk",
+        "title": "Cómo montar una empresa en el Reino Unido: guía paso a paso (2026)",
+        "date": "Noviembre 2026",
+        "description": "Los cursos enseñan estrategia, no qué hacer el primer día. Ocho pasos prácticos: autónomo o sociedad limitada, Companies House, HMRC e IVA, cuenta bancaria, software contable, alta como empleador y lo legal básico — con cifras de 2026/27 y un calendario de plazos.",
+        "tag": "Finanzas para Pymes"
+      },
+      {
         "slug": "howard-marks-market-cycles",
         "title": "Dominar el ciclo de mercado en un trayecto de siete millas: lo que me enseñó Howard Marks",
         "date": "Noviembre 2026",

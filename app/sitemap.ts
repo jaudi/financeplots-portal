@@ -31,6 +31,7 @@ const BLOG_SLUGS = [
   "python-for-streamlit",
   "real-assets-balance-sheets-opportunities",
   "roce-margin-turnover",
+  "start-business-uk",
   "strategy-models-balanced-scorecard",
   "uk-pension-savings",
   "us-10y-yield-equity-risk-premium",
