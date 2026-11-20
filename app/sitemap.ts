@@ -39,6 +39,7 @@ const BLOG_SLUGS = [
 
 const TOOL_SLUGS = [
   "annual-budget",
+  "bookkeeping",
   "break-even",
   "bull-or-bear",
   "cap-table",
