@@ -12,7 +12,7 @@ import { getTranslations } from "next-intl/server";
 // inherited the homepage's canonical URL.
 
 export const BASE = "https://www.financeplots.com";
-const IMAGE = { url: `${BASE}/og-image.png`, width: 1200, height: 630, alt: "FinancePlots" };
+const SITE_IMAGE = { url: `${BASE}/og-image.png`, width: 1200, height: 630, alt: "FinancePlots" };
 
 export interface PageMetaInput {
   title: string;
@@ -26,11 +26,15 @@ export interface PageMetaInput {
   /** false for pages that must not claim a canonical (noindex pages). */
   canonical?: boolean;
   robots?: Metadata["robots"];
+  /** A share card drawn for this page (1200×630), in place of the site's
+   *  generic one. Path or absolute URL. */
+  image?: { url: string; alt: string };
 }
 
-export function pageMetadata({ title, description, path, locale = "en", localized = false, canonical = true, robots }: PageMetaInput): Metadata {
+export function pageMetadata({ title, description, path, locale = "en", localized = false, canonical = true, robots, image }: PageMetaInput): Metadata {
   const es = localized && locale === "es";
   const url = `${BASE}${es ? "/es" : ""}${path}`;
+  const IMAGE = image ? { url: image.url.startsWith("http") ? image.url : `${BASE}${image.url}`, width: 1200, height: 630, alt: image.alt } : SITE_IMAGE;
   return {
     title,
     description,

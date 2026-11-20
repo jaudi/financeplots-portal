@@ -33,6 +33,17 @@ describe("pageMetadata", () => {
     expect(pageMetadata({ title: "T", description: "D", path: "/x", canonical: false }).alternates).toBeUndefined();
   });
 
+  it("puts a page's own share card on both Open Graph and X", () => {
+    const m = pageMetadata({ title: "T", description: "D", path: "/x", image: { url: "/api/share-image/salary/45000", alt: "A" } });
+    expect((m.openGraph as { images: { url: string; alt: string }[] }).images).toEqual([
+      { url: "https://www.financeplots.com/api/share-image/salary/45000", width: 1200, height: 630, alt: "A" },
+    ]);
+    expect((m.twitter as { images: string[] }).images).toEqual(["https://www.financeplots.com/api/share-image/salary/45000"]);
+    expect((pageMetadata({ title: "T", description: "D", path: "/x" }).twitter as { images: string[] }).images).toEqual([
+      "https://www.financeplots.com/og-image.png",
+    ]);
+  });
+
   it("has every pageMeta entry in both languages", () => {
     expect(Object.keys(es.pageMeta).sort()).toEqual(Object.keys(en.pageMeta).sort());
   });

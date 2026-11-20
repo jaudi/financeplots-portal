@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { takeHomePay } from "@/lib/calculators";
-import { parseSalarySlug, SALARY_PAGES, salaryPage, salaryPath, salarySlug } from "@/lib/salary-pages";
+import { parseSalarySlug, perHundred, SALARY_PAGES, salaryPage, salaryPath, salarySlug } from "@/lib/salary-pages";
 
 describe("salary after tax pages", () => {
   it("lists 98 distinct salaries in ascending order, £15k to £200k", () => {
@@ -55,6 +55,17 @@ describe("salary after tax pages", () => {
       expect(p.nearby).not.toContain(s);
       expect(p.nearby.every((n) => SALARY_PAGES.includes(n))).toBe(true);
     }
+  });
+
+  it("splits every £100 into whole pounds that add up to exactly 100", () => {
+    // £45,000: keep 79.82, tax 14.41, NI 5.77 → 80 / 14 / 6.
+    expect(perHundred(salaryPage(45_000).base)).toEqual({ keep: 80, incomeTax: 14, ni: 6 });
+    for (const s of SALARY_PAGES) {
+      const h = perHundred(salaryPage(s).base);
+      expect(h.keep + h.incomeTax + h.ni).toBe(100);
+      expect(Math.min(h.keep, h.incomeTax, h.ni)).toBeGreaterThanOrEqual(0);
+    }
+    expect(perHundred(takeHomePay({ grossSalary: 0 }))).toEqual({ keep: 100, incomeTax: 0, ni: 0 });
   });
 
   it("says a student loan costs nothing below its threshold, and only then", () => {

@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${gbp(amount)} Mortgage Monthly Payments: ${gbp(p.monthly)} a Month at ${headline}`,
     description: `A ${gbp(amount)} repayment mortgage costs ${gbp(p.monthly)} a month at ${headline}, ${gbp(p.totalInterest)} in interest in total. Payments at rates from ${GRID_RATES_PCT[0]}% to ${GRID_RATES_PCT.at(-1)}% and terms of ${GRID_YEARS[0]} to ${GRID_YEARS.at(-1)} years, overpaying, and the income lenders usually look for.`,
     path: mortgagePath(amount),
+    image: { url: `/api/share-image/mortgage/${amount}`, alt: `${gbp(amount)} mortgage: ${gbp(p.monthly)} a month at ${headline}, borrowed vs interest` },
   });
 }
 

@@ -4,7 +4,10 @@ import Link from "next/link";
 import RelatedTools from "@/components/RelatedTools";
 import { TAX_YEAR } from "@/lib/calculators";
 import { BASE, pageMetadata } from "@/lib/page-metadata";
-import { gbp, HOURS_PER_WEEK, parseSalarySlug, SALARY_PAGES, salaryPage, salaryPath, salarySlug } from "@/lib/salary-pages";
+import { gbp, HOURS_PER_WEEK, parseSalarySlug, perHundred, SALARY_PAGES, salaryPage, salaryPath, salarySlug } from "@/lib/salary-pages";
+
+// Same palette as the share card and the calculator's chart: by position, never good/bad.
+const PART_COLOURS = ["#3b82f6", "#64748b", "#94a3b8"];
 
 // One static page per salary in SALARY_PAGES ("/tools/take-home-pay/45000-after-tax").
 // English on every locale, like the calculator: the subject is UK tax. The /es
@@ -30,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${gbp(salary)} After Tax UK ${TAX_YEAR}: ${gbp(p.monthly)} a Month Take-Home`,
     description: `On a ${gbp(salary)} salary you take home ${gbp(p.base.takeHome)} a year, ${gbp(p.monthly)} a month, after ${gbp(p.base.incomeTax)} income tax and ${gbp(p.base.nationalInsurance)} National Insurance (${TAX_YEAR}). With Scotland, pension and student loan figures.`,
     path: salaryPath(salary),
+    image: { url: `/api/share-image/salary/${salary}`, alt: `${gbp(salary)} after tax: ${gbp(p.monthly)} a month, and what is kept of every £100` },
   });
 }
 
@@ -55,6 +59,14 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
   const scotland = p.scenarios.find((s) => s.key === "scotland")!.result;
   const scotDiff = (scotland.takeHome - standard.takeHome) / 12;
   const url = `${BASE}${salaryPath(salary)}`;
+  // The "of every £100" grid: 100 squares filled in order, kept first.
+  const h = perHundred(r);
+  const parts = [
+    { label: "you keep", value: h.keep },
+    { label: "income tax", value: h.incomeTax },
+    { label: "National Insurance", value: h.ni },
+  ];
+  const squares = parts.flatMap((p, i) => Array<number>(p.value).fill(i));
 
   const faq = [
     {
@@ -105,6 +117,31 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
             <Kpi label="Effective rate" value={`${r.effectiveRatePct.toFixed(1)}%`} sub="of salary to tax and NI" />
           </div>
 
+          <section className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 mb-6 flex flex-col sm:flex-row gap-6 sm:items-center">
+            <div
+              role="img"
+              aria-label={`Of every £100: £${h.keep} you keep, £${h.incomeTax} income tax, £${h.ni} National Insurance`}
+              className="grid grid-cols-10 gap-1 w-full max-w-[260px] shrink-0 mx-auto sm:mx-0"
+            >
+              {squares.map((part, i) => (
+                <div key={i} className="aspect-square rounded-[3px]" style={{ background: PART_COLOURS[part] }} />
+              ))}
+            </div>
+            <div>
+              <h2 className="text-white font-bold text-lg mb-3">Of every £100 you earn</h2>
+              <ul className="space-y-2">
+                {parts.map((p, i) => (
+                  <li key={p.label} className="flex items-center gap-3 text-sm text-gray-300">
+                    <span className="w-3.5 h-3.5 rounded-[3px] shrink-0" style={{ background: PART_COLOURS[i] }} />
+                    <span className="text-white font-bold text-lg w-12">£{p.value}</span>
+                    {p.label}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-gray-500 mt-3">Each square is £1 of every £100 of salary, with no pension or student loan.</p>
+            </div>
+          </section>
+
           <section className="bg-[#0d1426] border border-gray-800 rounded-xl p-6 mb-6">
             <h2 className="text-white font-bold mb-4">Where the {gbp(salary)} goes</h2>
             <div className="overflow-x-auto">
@@ -124,8 +161,8 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
                   ].map((row) => (
                     <tr key={row.label} className="border-b border-gray-800 text-gray-300">
                       <td className="py-2 pr-4">{row.label}</td>
-                      <td className="py-2 pr-4">{row.y < 0 ? "−" : ""}{gbp(Math.abs(row.y))}</td>
-                      <td className="py-2 pr-4">{row.y < 0 ? "−" : ""}{gbp(Math.abs(row.y) / 12)}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap">{row.y < 0 ? "−" : ""}{gbp(Math.abs(row.y))}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap">{row.y < 0 ? "−" : ""}{gbp(Math.abs(row.y) / 12)}</td>
                     </tr>
                   ))}
                   <tr className="text-white font-bold">
@@ -167,7 +204,7 @@ export default async function SalaryAfterTaxPage({ params }: Props) {
                       <td className="py-2 pr-4">{s.label}</td>
                       <td className="py-2 pr-4">{gbp(s.result.takeHome / 12)}</td>
                       <td className="py-2 pr-4">{gbp(s.result.takeHome)}</td>
-                      <td className="py-2 pr-4 text-gray-400">{i === 0 ? "" : signed((s.result.takeHome - standard.takeHome) / 12)}</td>
+                      <td className="py-2 pr-4 text-gray-400 whitespace-nowrap">{i === 0 ? "" : signed((s.result.takeHome - standard.takeHome) / 12)}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -95,6 +95,29 @@ function bandNotes(salary: number, base: TakeHomeResult): string[] {
   return notes;
 }
 
+export interface PerHundred {
+  keep: number;
+  incomeTax: number;
+  ni: number;
+}
+
+/** Of every £100 of salary: what is kept, and what goes to income tax and NI
+ *  (no pension or loan), in whole pounds that add up to exactly 100 — the
+ *  largest remainders get the leftover pounds. */
+export function perHundred(r: TakeHomeResult): PerHundred {
+  if (r.grossSalary <= 0) return { keep: 100, incomeTax: 0, ni: 0 };
+  const exact = { keep: (r.takeHome / r.grossSalary) * 100, incomeTax: (r.incomeTax / r.grossSalary) * 100, ni: (r.nationalInsurance / r.grossSalary) * 100 };
+  const keys = Object.keys(exact) as (keyof PerHundred)[];
+  const out = Object.fromEntries(keys.map((k) => [k, Math.floor(exact[k])])) as unknown as PerHundred;
+  let left = 100 - keys.reduce((s, k) => s + out[k], 0);
+  for (const k of [...keys].sort((a, b) => (exact[b] % 1) - (exact[a] % 1))) {
+    if (left <= 0) break;
+    out[k] += 1;
+    left -= 1;
+  }
+  return out;
+}
+
 export function salaryPage(salary: number): SalaryPage {
   const base = takeHomePay({ grossSalary: salary });
   const raised = takeHomePay({ grossSalary: salary + 1_000 });
