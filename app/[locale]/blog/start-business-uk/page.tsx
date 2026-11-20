@@ -244,10 +244,31 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
               tr("A registered office address in the UK — a real address, not a PO box. It becomes public.", "Un domicilio social en el Reino Unido — una dirección real, no un apartado de correos. Será público."),
               tr("A registered email address (kept private) for Companies House to contact you.", "Un correo electrónico registrado (no es público) para que Companies House contacte contigo."),
               tr("At least one director aged 16+, the shareholders and share capital (one £1 share is fine).", "Al menos un administrador de 16 años o más, los socios y el capital (una participación de 1 £ basta)."),
-              tr("A SIC code describing the activity, and model articles of association (the default works for most).", "Un código SIC que describa la actividad y los estatutos tipo (los de por defecto sirven para casi todos)."),
+              tr("A SIC code describing the activity, and articles of association (see below).", "Un código SIC que describa la actividad y los estatutos (articles of association, ver abajo)."),
               tr("A statement that the company is being formed for a lawful purpose.", "Una declaración de que la sociedad se constituye con un fin lícito."),
             ]}
           />
+          <div className="not-prose bg-[#0d1426] border border-blue-700/40 rounded-xl p-5">
+            <p className="text-blue-300 text-sm font-semibold mb-2">{tr("Memorandum and articles of association", "Memorandum y articles of association")}</p>
+            <p className="text-gray-300 text-sm leading-relaxed mb-3">
+              {tr(
+                "The memorandum of association is a one-page statement that the first shareholders agree to form the company and take shares. Companies House generates it when you incorporate online; there is nothing to write.",
+                "El memorandum of association es una declaración de una página en la que los primeros socios acuerdan constituir la sociedad y suscribir participaciones. Companies House lo genera al constituir online; no hay que redactar nada."
+              )}
+            </p>
+            <p className="text-gray-300 text-sm leading-relaxed mb-3">
+              {tr(
+                "The articles of association are the company's rulebook: how directors are appointed and make decisions, how board and shareholder meetings work, how shares are issued and transferred, and how dividends are paid. They are public, filed at Companies House, and bind the company and every shareholder.",
+                "Los articles of association son los estatutos, el reglamento de la sociedad: cómo se nombra a los administradores y cómo deciden, cómo funcionan el consejo y las juntas, cómo se emiten y transmiten las participaciones y cómo se pagan los dividendos. Son públicos, se depositan en Companies House y obligan a la sociedad y a cada socio."
+              )}
+            </p>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              {tr(
+                "Most new companies adopt the model articles under the Companies Act 2006 — a tick box when you incorporate online, and fine for a one- or two-person company. Write bespoke articles (a lawyer, or a reputable template) when you need different share classes, limits on who shares can be sold to, leaver rules or investor rights. Changing them later takes a special resolution — 75% of the votes — and a copy filed at Companies House within 15 days.",
+                "La mayoría de sociedades nuevas adopta los estatutos tipo (model articles) de la Companies Act 2006 — una casilla al constituir online, y suficientes para una sociedad de una o dos personas. Redacta unos a medida (con un abogado o una plantilla fiable) cuando necesites distintas clases de participaciones, límites a quién se pueden vender, reglas para quien se va o derechos de inversores. Cambiarlos después exige una resolución especial — el 75% de los votos — y depositar una copia en Companies House en 15 días."
+              )}
+            </p>
+          </div>
           <p>
             <strong className="text-white">{tr("Sole trader.", "Autónomo.")}</strong>{" "}
             {tr(
@@ -380,8 +401,8 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
             {
               h: tr("Shareholders' agreement", "Pacto de socios"),
               t: tr(
-                "With more than one founder, sign one early. It covers what the articles don't: who decides what, vesting and what happens to a leaver's shares, deadlock, and the right to sell alongside (tag) or force a sale (drag). It costs far less before a dispute than during one.",
-                "Si hay más de un fundador, firmadlo pronto. Cubre lo que los estatutos no: quién decide qué, el vesting y qué pasa con las participaciones de quien se va, los bloqueos y los derechos de acompañamiento (tag) y arrastre (drag). Cuesta mucho menos antes de un conflicto que durante."
+                "With more than one founder, sign one early. Unlike the articles it is private, and it covers what they usually don't: who decides what, vesting and what happens to a leaver's shares, deadlock, and the right to sell alongside (tag) or force a sale (drag). It costs far less before a dispute than during one.",
+                "Si hay más de un fundador, firmadlo pronto. A diferencia de los estatutos es privado, y cubre lo que estos no suelen cubrir: quién decide qué, el vesting y qué pasa con las participaciones de quien se va, los bloqueos y los derechos de acompañamiento (tag) y arrastre (drag). Cuesta mucho menos antes de un conflicto que durante."
               ),
             },
             {
