@@ -169,6 +169,21 @@ export default function TakeHomePay({ initialSalary, initialTarget }: { initialS
               options={[{ value: "england_wales_ni", label: "England, Wales or Northern Ireland" }, { value: "scotland", label: "Scotland" }]}
             />
             <NumInput label="Your pension contribution" value={pensionPct} onChange={setPensionPct} prefix="" suffix="% of salary" step={1} />
+            {/* In target mode take-home is the figure typed, so a pension change moves the
+                salary needed instead. Say so, or it looks as if the pension does nothing. */}
+            {mode === "target" && (
+              <p className="text-xs text-amber-300/90 leading-relaxed -mt-1">
+                Your take-home stays at the {gbp(target)} a month you asked for, so a bigger pension raises the salary you&apos;d
+                need instead.{" "}
+                <button
+                  type="button"
+                  onClick={() => { setSalary(Math.round(gross)); setMode("salary"); }}
+                  className="underline hover:text-amber-200"
+                >
+                  See it on a fixed salary
+                </button>
+              </p>
+            )}
             {pensionPct > 0 && (
               <Select
                 label="How your pension is paid"
@@ -203,7 +218,11 @@ export default function TakeHomePay({ initialSalary, initialTarget }: { initialS
 
       <div className="flex-1 min-w-0 flex flex-col gap-6">
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-          <KpiCard label="Take-home per month" value={gbp(monthly(r.takeHome))} sub={`${gbp(r.takeHome)} a year`} />
+          <KpiCard
+            label={mode === "target" ? "Your take-home target" : "Take-home per month"}
+            value={gbp(monthly(r.takeHome))}
+            sub={mode === "target" ? "a month, as you set it" : `${gbp(r.takeHome)} a year`}
+          />
           <KpiCard
             label={mode === "target" ? "Gross salary needed" : "Gross salary"}
             value={gbp(r.grossSalary)}
