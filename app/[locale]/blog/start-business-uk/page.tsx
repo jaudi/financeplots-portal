@@ -79,6 +79,119 @@ function StepHeading({ n, es }: { n: number; es: boolean }) {
   );
 }
 
+/** What articles actually say: model articles paraphrased (numbers from
+ *  Schedule 1 to the Companies (Model Articles) Regulations 2008, checked on
+ *  gov.uk in November 2026), then typical bespoke clauses in plain wording. */
+function ArticleExamples({ es }: { es: boolean }) {
+  const tr = (en: string, sp: string) => (es ? sp : en);
+  const model = [
+    {
+      n: "Art. 7",
+      h: tr("A sole director decides alone", "Un administrador único decide solo"),
+      t: tr(
+        "Directors normally decide by majority at a meeting or unanimously in writing; if the company has only one director, that director may take decisions on their own.",
+        "Los administradores deciden por mayoría en reunión o por unanimidad por escrito; si la sociedad tiene un solo administrador, este puede decidir por sí mismo."
+      ),
+    },
+    {
+      n: "Art. 11",
+      h: tr("Quorum of two", "Quórum de dos"),
+      t: tr(
+        "A board meeting needs at least two directors present; below that, the directors can only appoint more directors or call a general meeting.",
+        "Una reunión del consejo necesita al menos dos administradores; por debajo, solo pueden nombrar más administradores o convocar una junta."
+      ),
+    },
+    {
+      n: "Art. 17",
+      h: tr("Appointing directors", "Nombrar administradores"),
+      t: tr(
+        "A new director can be appointed by an ordinary resolution of the shareholders or by a decision of the existing directors.",
+        "Un nuevo administrador puede nombrarse por resolución ordinaria de los socios o por decisión de los administradores existentes."
+      ),
+    },
+    {
+      n: "Art. 26(5)",
+      h: tr("Directors may refuse a transfer", "Los administradores pueden rechazar una transmisión"),
+      t: tr(
+        "The directors can refuse to register a share transfer, without giving reasons — the only brake on selling shares the model articles provide.",
+        "Los administradores pueden negarse a inscribir una transmisión de participaciones, sin dar motivos — el único freno a vender participaciones que traen los estatutos tipo."
+      ),
+    },
+    {
+      n: "Art. 30",
+      h: tr("Declaring dividends", "Declarar dividendos"),
+      t: tr(
+        "Shareholders declare a dividend by ordinary resolution, never above the amount the directors recommend; the directors may pay interim dividends themselves.",
+        "Los socios declaran el dividendo por resolución ordinaria, nunca por encima de lo que recomienden los administradores; estos pueden pagar dividendos a cuenta."
+      ),
+    },
+  ];
+  const bespoke = [
+    {
+      h: tr("Pre-emption on transfer", "Derecho de adquisición preferente"),
+      t: tr(
+        "A shareholder who wants to sell must first offer the shares to the other shareholders, in proportion to their holdings, at the price in a transfer notice. Shares not taken up within 30 days may be sold to an outsider at no lower price.",
+        "El socio que quiera vender debe ofrecer primero las participaciones a los demás socios, en proporción a lo que tengan, al precio de una notificación de venta. Las que nadie compre en 30 días pueden venderse a un tercero a un precio no inferior."
+      ),
+    },
+    {
+      h: tr("Good and bad leaver", "Good leaver y bad leaver"),
+      t: tr(
+        "If a founder stops working for the company within three years, they must sell their shares back: a good leaver at market value, a bad leaver at the lower of market value and the price they paid.",
+        "Si un fundador deja de trabajar para la sociedad en los tres primeros años, debe revender sus participaciones: el good leaver a valor de mercado, el bad leaver al menor entre el valor de mercado y lo que pagó."
+      ),
+    },
+    {
+      h: tr("Drag-along", "Arrastre (drag-along)"),
+      t: tr(
+        "If holders of 75% of the shares accept an offer for the whole company, they can require every other shareholder to sell on the same terms.",
+        "Si los titulares del 75% de las participaciones aceptan una oferta por toda la sociedad, pueden obligar a los demás socios a vender en las mismas condiciones."
+      ),
+    },
+    {
+      h: tr("Tag-along", "Acompañamiento (tag-along)"),
+      t: tr(
+        "No sale that would give a buyer control may be registered unless the buyer offers to buy every other shareholder's shares on the same terms.",
+        "No se inscribe ninguna venta que dé el control a un comprador salvo que este ofrezca comprar las participaciones de todos los demás socios en las mismas condiciones."
+      ),
+    },
+  ];
+  return (
+    <div className="not-prose grid lg:grid-cols-2 gap-4">
+      <div className="bg-[#f5f1e8] text-[#2b2620] rounded-xl p-5 shadow-inner">
+        <p className="text-[11px] uppercase tracking-widest text-[#7a6f5c] mb-1">{tr("Model articles · paraphrased", "Estatutos tipo · parafraseados")}</p>
+        <p className="font-serif text-lg font-semibold mb-4">{tr("What you get by ticking the box", "Lo que obtienes al marcar la casilla")}</p>
+        <ol className="space-y-3 list-none pl-0">
+          {model.map((a) => (
+            <li key={a.n} className="border-l-2 border-[#c9b98f] pl-3">
+              <p className="font-serif text-sm"><span className="font-bold">{a.n}</span> — <span className="italic">{a.h}</span></p>
+              <p className="font-serif text-sm leading-relaxed text-[#4a4237]">{a.t}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="bg-[#0d1426] border border-blue-700/40 rounded-xl p-5">
+        <p className="text-[11px] uppercase tracking-widest text-blue-400 mb-1">{tr("Bespoke articles · illustrative", "Estatutos a medida · ilustrativos")}</p>
+        <p className="text-lg font-semibold text-white mb-4">{tr("What co-founders and investors usually add", "Lo que suelen añadir cofundadores e inversores")}</p>
+        <ol className="space-y-3 list-none pl-0">
+          {bespoke.map((a, i) => (
+            <li key={a.h} className="border-l-2 border-blue-600/60 pl-3">
+              <p className="text-sm text-white font-semibold">{`${i + 1}. ${a.h}`}</p>
+              <p className="text-sm leading-relaxed text-gray-400">{a.t}</p>
+            </li>
+          ))}
+        </ol>
+        <p className="text-xs text-gray-500 mt-4">
+          {tr(
+            "None of these four is in the model articles. Plain-English summaries to show the idea, not wording to copy — real clauses run to pages of definitions.",
+            "Ninguna de estas cuatro está en los estatutos tipo. Resúmenes en lenguaje llano para ilustrar la idea, no un texto para copiar — las cláusulas reales ocupan páginas de definiciones."
+          )}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function Checklist({ items }: { items: string[] }) {
   return (
     <ul className="space-y-2 list-none pl-0">
@@ -269,6 +382,7 @@ export default async function ArticleStartBusinessUK({ params }: Props) {
               )}
             </p>
           </div>
+          <ArticleExamples es={es} />
           <p>
             <strong className="text-white">{tr("Sole trader.", "Autónomo.")}</strong>{" "}
             {tr(
