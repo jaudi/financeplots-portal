@@ -1864,18 +1864,18 @@
   "observerSignup": {
     "label": "The Observer por email",
     "title": "Recibe The Observer en tu correo",
-    "intro": "Un email cada domingo, cuando se publica la nueva edición (en inglés): el titular, el ánimo del mercado y las tres regiones, con un enlace al texto completo y al audio.",
+    "intro": "Un email cada domingo, cuando se publica la nueva edición (en inglés): el titular, el ánimo del mercado y las tres regiones, con un enlace al texto completo y al audio. Con la misma suscripción recibes también los nuevos artículos del blog de FinancePlots.",
     "placeholder": "Tu dirección de email",
     "cta": "Suscribirme",
     "loading": "Enviando…",
     "sent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No te enviaremos nada hasta que hagas clic.",
     "error": "Algo salió mal. Inténtalo de nuevo.",
-    "privacy": "Solo guardamos tu dirección de email, en nuestro proveedor de correo Resend, para enviarte The Observer. Cada email lleva un enlace para darte de baja con un clic.",
+    "privacy": "Solo guardamos tu dirección de email — en Resend para The Observer y en Sender para los emails del blog — para enviarte ambos. Cada email lleva un enlace para darte de baja con un clic.",
     "confirmTitle": "Confirma tu suscripción",
-    "confirmIntro": "Haz clic abajo para empezar a recibir The Observer por email cada domingo.",
-    "confirmCta": "Sí, enviadme The Observer",
+    "confirmIntro": "Haz clic abajo para empezar a recibir por email The Observer cada domingo y los nuevos artículos del blog.",
+    "confirmCta": "Sí, enviadme los dos",
     "confirming": "Confirmando…",
-    "confirmed": "Ya estás suscrito. La próxima edición llega el domingo.",
+    "confirmed": "Ya estás suscrito. The Observer llega el domingo, y los nuevos artículos del blog cuando se publiquen.",
     "expired": "Este enlace ha caducado. Vuelve a apuntarte abajo y te enviaremos uno nuevo.",
     "invalid": "Este enlace no funciona: puede que se haya cortado. Vuelve a apuntarte abajo.",
     "failed": "No hemos podido confirmar ahora mismo. Inténtalo de nuevo en un minuto.",
@@ -2555,5 +2555,16 @@
     "faq4a": "El beneficio cuenta lo que ganaste y consumiste en el periodo; la caja, el dinero que entra y sale. Comprar maquinaria, pagar a proveedores, hacer retiradas y cobrar IVA mueven caja sin tocar el beneficio, y vender a crédito suma beneficio antes de cobrar. En la historia del carrito ganas 600 £ mientras el saldo del banco se reduce a la mitad.",
     "simplified": "Simplificado para aprender: un solo mes, sin retenciones ni declaración de IVA, y una cafetera comprada a un particular. Los libros reales siguen las mismas reglas con más detalle.",
     "seeBooks": "Ver los libros ↓"
+  },
+  "blogSignup": {
+    "label": "El blog por email",
+    "title": "Recibe los nuevos artículos en tu correo",
+    "intro": "Las nuevas guías y análisis del blog de FinancePlots cuando se publican, y además The Observer, nuestra lectura semanal de la economía mundial (en inglés), cada domingo. Una suscripción, los dos emails.",
+    "placeholder": "Tu dirección de email",
+    "cta": "Suscribirme",
+    "loading": "Enviando…",
+    "sent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No te enviaremos nada hasta que hagas clic.",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "privacy": "Solo guardamos tu dirección de email — en Resend para The Observer y en Sender para los emails del blog — para enviarte ambos. Cada email lleva un enlace para darte de baja con un clic."
   }
 }

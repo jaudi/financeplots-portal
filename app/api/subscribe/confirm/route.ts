@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { escapeHtml, signingKey, verifyConfirmation } from "@/lib/newsletter";
+import { addToSenderGroup } from "@/lib/sender";
 
 // Step 2 of 2: the confirmation link opens /observer/confirm, whose button posts
 // here. A POST behind a button rather than a GET on the link itself, because
@@ -54,13 +55,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: "error" }, { status: 502 });
   }
 
+  // The same sign-up covers the blog, whose list is in Sender. Best effort: the
+  // Observer subscription above already stands, and the notice below says if this failed.
+  const sender = await addToSenderGroup(email);
+  if (sender.status === "failed") console.error(`[subscribe/confirm] Sender for ${email}: ${sender.reason}`);
+  if (sender.status === "skipped") console.warn(`[subscribe/confirm] Sender skipped: ${sender.reason}`);
+  const senderNote =
+    sender.status === "failed" || sender.status === "skipped"
+      ? `NOT added to the blog list in Sender (${sender.reason}) — add them by hand.`
+      : `Added to the blog list in Sender (${sender.status === "created" ? "new subscriber" : "already in Sender"}).`;
+
   // Best effort: the subscriber is already on the list.
   try {
     await resend.emails.send({
       from: FROM,
       to: NOTIFY_TO,
-      subject: "New Observer subscriber",
-      html: `<p>New confirmed subscriber to The Observer: <strong>${escapeHtml(email)}</strong></p>`,
+      subject: "New subscriber: The Observer + blog",
+      html: `<p>New confirmed subscriber to The Observer: <strong>${escapeHtml(email)}</strong></p><p>${escapeHtml(senderNote)}</p>`,
     });
   } catch {
     // ignore

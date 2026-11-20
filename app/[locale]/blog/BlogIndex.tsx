@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import ObserverSignup from "@/components/ObserverSignup";
 
 const TAG_COLORS: Record<string, string> = {
   "Corporate Finance": "text-blue-400",
@@ -40,7 +41,8 @@ export default function BlogPage() {
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-6">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl font-bold mb-2">{t("title")}</h1>
-        <p className="text-gray-400 mb-12">{t("subtitle")}</p>
+        <p className="text-gray-400 mb-8">{t("subtitle")}</p>
+        <ObserverSignup variant="blog" id="subscribe" className="mb-12" />
 
         <div className="space-y-4">
           {articles.map((a) => (

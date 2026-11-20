@@ -3,9 +3,12 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { trackEvent } from "@/lib/analytics";
 
-/** "Get The Observer by email" — step 1 of the double opt-in (see lib/newsletter.ts). */
-export default function ObserverSignup({ className = "", id }: { className?: string; id?: string }) {
-  const t = useTranslations("observerSignup");
+/** "Get The Observer by email" — step 1 of the double opt-in (see lib/newsletter.ts).
+ *  One list for both: a confirmed address gets The Observer (Resend) and the blog
+ *  emails (Sender, lib/sender.ts). `variant="blog"` only changes the wording. */
+export default function ObserverSignup({ className = "", id, variant = "observer" }: { className?: string; id?: string; variant?: "observer" | "blog" }) {
+  const t = useTranslations(variant === "blog" ? "blogSignup" : "observerSignup");
+  const inputId = `${variant}-signup-email`;
   const locale = useLocale();
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
@@ -44,11 +47,11 @@ export default function ObserverSignup({ className = "", id }: { className?: str
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-xl">
-          <label className="sr-only" htmlFor="observer-signup-email">
+          <label className="sr-only" htmlFor={inputId}>
             {t("placeholder")}
           </label>
           <input
-            id="observer-signup-email"
+            id={inputId}
             type="email"
             required
             autoComplete="email"

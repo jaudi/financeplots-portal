@@ -1878,18 +1878,18 @@
   "observerSignup": {
     "label": "The Observer by email",
     "title": "Get The Observer in your inbox",
-    "intro": "One email each Sunday, when the new edition is published: the headline, the market mood and the three regions, with a link to the full piece and the audio.",
+    "intro": "One email each Sunday, when the new edition is published: the headline, the market mood and the three regions, with a link to the full piece and the audio. The same sign-up also gets you new articles from the FinancePlots blog.",
     "placeholder": "Your email address",
     "cta": "Subscribe",
     "loading": "Sending…",
     "sent": "Check your inbox: we have sent you a link to confirm. Nothing is sent until you click it.",
     "error": "Something went wrong. Please try again.",
-    "privacy": "We keep only your email address, with our email provider Resend, to send The Observer. Every email has a one-click unsubscribe link.",
+    "privacy": "We keep only your email address — with Resend for The Observer and Sender for the blog emails — to send you both. Every email has a one-click unsubscribe link.",
     "confirmTitle": "Confirm your subscription",
-    "confirmIntro": "Click below to start getting The Observer by email each Sunday.",
-    "confirmCta": "Yes, send me The Observer",
+    "confirmIntro": "Click below to start getting The Observer each Sunday and new articles from the blog by email.",
+    "confirmCta": "Yes, send me both",
     "confirming": "Confirming…",
-    "confirmed": "You are subscribed. The next edition arrives on Sunday.",
+    "confirmed": "You are subscribed. The next Observer arrives on Sunday, and new blog articles as they are published.",
     "expired": "This link has expired. Sign up again below and we will send a new one.",
     "invalid": "This link does not work: it may have been cut short. Sign up again below.",
     "failed": "We could not confirm just now. Please try again in a minute.",
@@ -2569,5 +2569,16 @@
     "faq4a": "Profit counts what you earned and used up in the period; cash counts money in and out. Buying equipment, paying suppliers, taking drawings and collecting VAT all move cash without touching profit, and selling on credit adds profit before any cash arrives. In the coffee-cart story you make £600 of profit while the bank balance halves.",
     "simplified": "Simplified for learning: one month, no payroll taxes or VAT return, and a machine bought from a private seller. Real books follow the same rules with more detail.",
     "seeBooks": "See the books ↓"
+  },
+  "blogSignup": {
+    "label": "The blog by email",
+    "title": "Get new articles in your inbox",
+    "intro": "New guides and analysis from the FinancePlots blog when they are published, plus The Observer, our weekly read on the world economy, every Sunday. One sign-up, both emails.",
+    "placeholder": "Your email address",
+    "cta": "Subscribe",
+    "loading": "Sending…",
+    "sent": "Check your inbox: we have sent you a link to confirm. Nothing is sent until you click it.",
+    "error": "Something went wrong. Please try again.",
+    "privacy": "We keep only your email address — with Resend for The Observer and Sender for the blog emails — to send you both. Every email has a one-click unsubscribe link."
   }
 }
