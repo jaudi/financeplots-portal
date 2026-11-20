@@ -6,9 +6,9 @@ import { useTranslations } from "next-intl";
 import RelatedTools from "@/components/RelatedTools";
 import CurrencyPicker, { useCurrency } from "@/components/CurrencyPicker";
 import CompoundChat from "./CompoundChat";
-import { compoundGrowth } from "@/lib/calculators";
+import { compoundGrowth, compoundRange } from "@/lib/calculators";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 import { trackEvent } from "@/lib/analytics";
 
@@ -71,19 +71,26 @@ export default function CompoundInterestPage() {
 
   const annualRate = PRESETS[preset].rate ?? customRate;
 
-  const { rows, finalValue, totalInvested, totalInterest, returnMultiple, chartData } = useMemo(() => {
+  const { rows, finalValue, totalInvested, totalInterest, returnMultiple, chartData, range } = useMemo(() => {
     const { rows, finalValue, totalInvested, totalInterest, returnMultiple } =
       compoundGrowth(initialCapital, monthlyContribution, years, annualRate);
+    // The same plan at a lower and a higher return, drawn as a shaded band
+    // (like a pension provider's low/high projection) so one line doesn't read as a forecast.
+    const range = compoundRange(initialCapital, monthlyContribution, years, annualRate);
 
-    const chartData = rows.map(r => ({
+    const chartData = rows.map((r, i) => ({
       year: r.year,
       "Initial Capital": initialCapital,
       "Contributions": Math.max(0, r.totalContributed - initialCapital),
       "Interest": r.interestEarned,
+      range: [range.low[i], range.high[i]],
+      low: range.low[i],
+      high: range.high[i],
     }));
 
-    return { rows, finalValue, totalInvested, totalInterest, returnMultiple, chartData };
+    return { rows, finalValue, totalInvested, totalInterest, returnMultiple, chartData, range };
   }, [initialCapital, monthlyContribution, years, annualRate]);
+  const money = (n: number) => `${currency}${fmt(n)}`;
 
   const handleExportPdf = useCallback(async () => {
     setIsExporting(true);
@@ -216,7 +223,7 @@ export default function CompoundInterestPage() {
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
                 <KpiCard label={t("kpiFinal")} value={`${currency}${fmt(finalValue)}`} sub={`${t("kpiFinalSub", { years: String(years) })}`} />
                 <KpiCard label={t("kpiInvested")} value={`${currency}${fmt(totalInvested)}`} sub={t("kpiInvestedSub")} />
-                <KpiCard label={t("kpiInterest")} value={`${currency}${fmt(totalInterest)}`} sub={`${finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(0) : 0}% ${t("kpiInterestSub")}`} color="green" />
+                <KpiCard label={t("kpiInterest")} value={`${currency}${fmt(totalInterest)}`} sub={`${finalValue > 0 ? ((totalInterest / finalValue) * 100).toFixed(0) : 0}${t("kpiInterestSub")}`} color="green" />
                 <KpiCard label={t("kpiMultiple")} value={`${returnMultiple.toFixed(1)}×`} sub={t("kpiMultipleSub", { currency, x: returnMultiple.toFixed(2) })} color="gold" />
               </div>
 
@@ -224,7 +231,7 @@ export default function CompoundInterestPage() {
               <div className="bg-[#0d1426] border border-gray-800 rounded-xl p-6">
                 <h2 className="text-white font-bold mb-5">{t("chartTitle")}</h2>
                 <ResponsiveContainer width="100%" height={360}>
-                  <AreaChart data={chartData} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
+                  <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis
                       dataKey="year"
@@ -240,15 +247,35 @@ export default function CompoundInterestPage() {
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: "#111827", border: "1px solid #1e293b", borderRadius: "8px", color: "#f1f5f9", fontSize: 12 }}
-                      formatter={(value) => [`${currency}${fmt(Number(value))}`, undefined]}
-                      labelFormatter={v => `Year ${v}`}
+                      formatter={(value, name) => [
+                        Array.isArray(value) ? `${money(Number(value[0]))} – ${money(Number(value[1]))}` : money(Number(value)),
+                        name,
+                      ]}
+                      labelFormatter={v => `${t("chartAxisYear")} ${v}`}
                     />
                     <Legend wrapperStyle={{ color: "#9ca3af", fontSize: 12, paddingTop: 16 }} />
-                    <Area type="monotone" dataKey="Initial Capital" stackId="1" stroke="#1d4ed8" fill="#1d4ed8" fillOpacity={0.7} />
-                    <Area type="monotone" dataKey="Contributions" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.7} />
-                    <Area type="monotone" dataKey="Interest" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.7} />
-                  </AreaChart>
+                    {/* The band goes first, so the stacked areas cover its lower half and the top edge shows above them. */}
+                    <Area
+                      type="monotone"
+                      dataKey="range"
+                      name={t("rangeLegend", { low: String(range.lowRate), high: String(range.highRate) })}
+                      stroke="none"
+                      fill="#94a3b8"
+                      fillOpacity={0.18}
+                      isAnimationActive={false}
+                    />
+                    <Area type="monotone" dataKey="Initial Capital" name={t("seriesInitial")} stackId="1" stroke="#1d4ed8" fill="#1d4ed8" fillOpacity={0.7} />
+                    <Area type="monotone" dataKey="Contributions" name={t("seriesContributions")} stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.7} />
+                    <Area type="monotone" dataKey="Interest" name={t("seriesInterest")} stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.7} />
+                    <Line type="monotone" dataKey="low" stroke="#94a3b8" strokeDasharray="4 4" strokeWidth={1.5} dot={false} legendType="none" tooltipType="none" isAnimationActive={false} />
+                    <Line type="monotone" dataKey="high" stroke="#94a3b8" strokeDasharray="4 4" strokeWidth={1.5} dot={false} legendType="none" tooltipType="none" isAnimationActive={false} />
+                  </ComposedChart>
                 </ResponsiveContainer>
+                <p className="text-xs text-gray-400 leading-relaxed mt-2">
+                  {range.lowRate < annualRate
+                    ? t("rangeNote", { low: String(range.lowRate), rate: String(annualRate), high: String(range.highRate), lowValue: money(range.lowFinal), highValue: money(range.highFinal) })
+                    : t("rangeNoteHighOnly", { rate: String(annualRate), high: String(range.highRate), highValue: money(range.highFinal) })}
+                </p>
               </div>
 
               {/* Year-by-Year Table */}

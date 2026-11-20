@@ -170,6 +170,27 @@ export function compoundGrowth(initialCapital: number, monthlyContribution: numb
   return { rows, finalValue: Math.round(balance), totalInvested, totalInterest: Math.round(totalInt), returnMultiple };
 }
 
+/** How far either side of the chosen return the range band reaches, in percentage points. */
+export const RANGE_SPREAD_PCT = 2;
+
+/** The same savings plan at a lower and a higher return (the chosen rate ∓
+ *  RANGE_SPREAD_PCT, never below 0%), year by year: the band drawn around the
+ *  projection, so a single line doesn't read as a forecast. */
+export function compoundRange(initialCapital: number, monthlyContribution: number, years: number, annualRatePct: number, spreadPct = RANGE_SPREAD_PCT) {
+  const lowRate = Math.max(0, annualRatePct - spreadPct);
+  const highRate = annualRatePct + spreadPct;
+  const low = compoundGrowth(initialCapital, monthlyContribution, years, lowRate);
+  const high = compoundGrowth(initialCapital, monthlyContribution, years, highRate);
+  return {
+    lowRate,
+    highRate,
+    low: low.rows.map((r) => r.portfolioValue),
+    high: high.rows.map((r) => r.portfolioValue),
+    lowFinal: low.finalValue,
+    highFinal: high.finalValue,
+  };
+}
+
 /** A future amount in today's money, deflated at a constant annual inflation rate. */
 export function realValue(nominal: number, inflationPct: number, years: number) {
   return nominal / Math.pow(1 + inflationPct / 100, years);
