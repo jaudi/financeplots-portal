@@ -61,7 +61,10 @@ jobs:
           # GitHub's Ubuntu image has no ffmpeg; the first run synthesised every
           # paragraph and then died at the MP3 encode.
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
-          npm install --no-save kokoro-js@1.2.1
+          # onnxruntime-node's install script also fetches a CUDA build on Linux, and
+          # a 404 on that download (2026-11-22) failed the whole install. Kokoro runs
+          # on the CPU build that ships in the package, so skip the GPU download.
+          npm install --no-save --onnxruntime-node-install-cuda=skip kokoro-js@1.2.1
           node scripts/observer/audio.mjs "content/observer/${{ steps.write.outputs.slug }}.json" "the-observer-${{ steps.write.outputs.slug }}.mp3"
 
       - name: Upload audio
