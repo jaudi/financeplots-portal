@@ -729,5 +729,9 @@
       "output_tokens": 5645
     },
     "unavailableSources": []
+  },
+  "audio": {
+    "url": "https://github.com/jaudi/financeplots-portal/releases/download/observer-2026-11-22/the-observer-2026-11-22.mp3",
+    "durationSeconds": 587
   }
 }
