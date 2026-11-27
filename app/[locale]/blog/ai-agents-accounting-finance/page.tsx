@@ -114,6 +114,52 @@ function Anatomy({ es }: { es: boolean }) {
   );
 }
 
+/** What an MCP connector is: one standard plug between Claude and each system. */
+function McpExplainer({ es }: { es: boolean }) {
+  const tr = (en: string, sp: string) => (es ? sp : en);
+  const systems = [
+    { name: tr("Accounting software", "Software contable"), tools: "get_trial_balance · list_invoices" },
+    { name: tr("Bank feed", "Banco"), tools: "list_transactions · get_balance" },
+    { name: "Google Drive / SharePoint", tools: "search_files · read_file" },
+    { name: "FinancePlots", tools: "break_even · business_valuation" },
+  ];
+  return (
+    <div className="not-prose my-8 bg-[#0d1426] border border-blue-700/40 rounded-xl p-5">
+      <p className="text-[11px] uppercase tracking-widest text-blue-400 mb-1">{tr("Explainer", "Para entenderlo")}</p>
+      <p className="text-white font-semibold text-lg mb-3">{tr("What is an MCP?", "¿Qué es un MCP?")}</p>
+      <div className="text-gray-300 text-sm leading-relaxed space-y-3">
+        <p>
+          {tr(
+            "MCP stands for Model Context Protocol, an open standard Anthropic published in 2024 and that other AI companies now support. Think of it as a USB-C port for AI: one standard plug between an assistant and any other system, instead of a custom integration for each.",
+            "MCP son las siglas de Model Context Protocol (protocolo de contexto del modelo), un estándar abierto que Anthropic publicó en 2024 y que hoy admiten otras empresas de IA. Piensa en un puerto USB-C para la IA: un enchufe estándar entre el asistente y cualquier otro sistema, en lugar de una integración a medida para cada uno."
+          )}
+        </p>
+        <p>
+          {tr(
+            "An MCP server — a connector — sits in front of a system and gives Claude a menu: a list of tools, each with a name, a plain description and the inputs it needs. Claude reads the menu, decides when a tool would help, calls it and works with what comes back. You decide which connectors to add, and many can be limited to reading data or set to ask before every action.",
+            "Un servidor MCP — un conector — se coloca delante de un sistema y le da a Claude un menú: una lista de herramientas, cada una con un nombre, una descripción sencilla y los datos que necesita. Claude lee el menú, decide cuándo le sirve una herramienta, la llama y trabaja con lo que le devuelve. Tú decides qué conectores añadir, y muchos se pueden limitar a solo lectura o configurar para que pidan permiso antes de cada acción."
+          )}
+        </p>
+      </div>
+      <div className="mt-5 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 items-center">
+        <div className="bg-blue-600 text-white font-semibold rounded-lg px-4 py-3 text-center">Claude</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {systems.map((s) => (
+            <div key={s.name} className="border border-gray-700 rounded-lg px-3 py-2">
+              <p className="text-[11px] text-blue-300">⇄ MCP</p>
+              <p className="text-gray-100 text-sm font-semibold">{s.name}</p>
+              <p className="text-gray-500 text-xs font-mono mt-0.5">{s.tools}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="text-gray-500 text-xs mt-3">
+        {tr("Tool names are illustrative; each connector publishes its own.", "Los nombres de herramientas son ilustrativos; cada conector publica los suyos.")}
+      </p>
+    </div>
+  );
+}
+
 function Code({ children }: { children: string }) {
   return (
     <pre className="not-prose bg-[#060a15] border border-gray-800 rounded-xl p-4 overflow-x-auto text-[13px] leading-relaxed text-cyan-200 my-4">
@@ -237,7 +283,7 @@ export default async function ArticleAiAgentsAccountingFinance({ params }: Props
         <h1 className="text-3xl sm:text-4xl font-bold mt-2 mb-3 leading-tight">
           {tr("AI Agents for Accounting and Finance: Six Levels", "Agentes de IA para contabilidad y finanzas: seis niveles")}
         </h1>
-        <p className="text-gray-400 text-sm mb-10">{tr("November 2026 · 8 min read", "Noviembre 2026 · 8 min de lectura")}</p>
+        <p className="text-gray-400 text-sm mb-10">{tr("November 2026 · 9 min read", "Noviembre 2026 · 9 min de lectura")}</p>
 
         <div className="prose prose-invert prose-sm max-w-none text-gray-300 space-y-6">
           <p>
@@ -347,11 +393,25 @@ export default async function ArticleAiAgentsAccountingFinance({ params }: Props
             )}
           </p>
           <p>
-            {tr("To give Claude your own systems as tools, use MCP connectors — FinancePlots has one, explained in ", "Para darle a Claude tus propios sistemas como herramientas se usan conectores MCP — FinancePlots tiene uno, explicado en ")}
+            {tr(
+              "To reach systems beyond your own files — the accounting package, the bank, the shared drive — Claude uses MCP connectors.",
+              "Para llegar a sistemas más allá de tus propios archivos — el programa contable, el banco, la unidad compartida — Claude usa conectores MCP."
+            )}
+          </p>
+        </div>
+
+        <McpExplainer es={es} />
+
+        <div className="prose prose-invert prose-sm max-w-none text-gray-300 space-y-6">
+          <p>
+            {tr("FinancePlots has its own connector, explained in ", "FinancePlots tiene su propio conector, explicado en ")}
             <Link href="/blog/financeplots-mcp-claude" className="text-blue-400 hover:text-blue-300">
               {tr("our MCP guide", "nuestra guía del MCP")}
             </Link>
-            .
+            {tr(
+              ". With prompts, projects, skills, artifacts, your own files and a few connectors, you already have an agent: one that works while you watch and that you approve step by step.",
+              ". Con prompts, proyectos, skills, artifacts, tus propios archivos y unos cuantos conectores ya tienes un agente: uno que trabaja mientras miras y que apruebas paso a paso."
+            )}
           </p>
 
           {/* 6 */}
@@ -360,6 +420,12 @@ export default async function ArticleAiAgentsAccountingFinance({ params }: Props
             {tr(
               "At the top of the ladder, nobody presses start. A script calls the Claude API with the instructions, the tools and the data; the agent loops until the job is done and leaves the result somewhere a person will look. The question at this level is less \"how\" than \"where does it live\" — and there are three good answers.",
               "En lo alto de la escalera, nadie le da a empezar. Un script llama a la API de Claude con las instrucciones, las herramientas y los datos; el agente itera hasta terminar y deja el resultado donde alguien lo va a mirar. La pregunta en este nivel no es tanto \"cómo\" como \"dónde vive\" — y hay tres buenas respuestas."
+            )}
+          </p>
+          <p>
+            {tr(
+              "Do you need it? For most finance work, no — level five is enough. Level six pays off when a job is repeated, well defined and easy to check, and it needs the guardrails below more than any other level.",
+              "¿Lo necesitas? Para la mayor parte del trabajo financiero, no — el nivel cinco es suficiente. El nivel seis compensa cuando un trabajo se repite, está bien definido y es fácil de comprobar, y necesita los controles de más abajo más que ningún otro nivel."
             )}
           </p>
         </div>
@@ -421,6 +487,24 @@ export default async function ArticleAiAgentsAccountingFinance({ params }: Props
           </table>
         </div>
 
+        <div className="border-l-4 border-blue-500 bg-[#0d1426] rounded-r-xl p-6 my-10">
+          <p className="text-blue-300 text-sm font-semibold mb-2">{tr("A personal note", "Una nota personal")}</p>
+          <div className="text-gray-300 text-sm leading-relaxed space-y-3">
+            <p>
+              {tr(
+                "I use Claude every day, with two accounts: a personal one, for FinancePlots and my own learning, and one at work.",
+                "Uso Claude a diario, con dos cuentas: una personal, para FinancePlots y para aprender por mi cuenta, y otra en el trabajo."
+              )}
+            </p>
+            <p>
+              {tr(
+                "Autonomous agents are what I am learning now. The Observer is my practice ground on FinancePlots, a personal project; I have not put autonomous agents into practice professionally. My view so far is the one above: for most finance work, level five is enough.",
+                "Los agentes autónomos son lo que estoy aprendiendo ahora. El Observer es mi campo de prácticas en FinancePlots, un proyecto personal; no he puesto agentes autónomos en práctica a nivel profesional. Mi opinión, de momento, es la de arriba: para la mayor parte del trabajo financiero, el nivel cinco es suficiente."
+              )}
+            </p>
+          </div>
+        </div>
+
         <div className="bg-blue-600/10 border border-blue-700/30 rounded-xl p-6 my-10">
           <p className="text-blue-300 text-sm font-semibold mb-2">{tr("The short version", "La versión corta")}</p>
           <ul className="text-gray-300 text-sm leading-relaxed space-y-1 list-disc pl-5">
@@ -428,7 +512,8 @@ export default async function ArticleAiAgentsAccountingFinance({ params }: Props
             <li>{tr("Start with better prompts: role, context, task, format, checks.", "Empieza por mejores prompts: rol, contexto, tarea, formato, comprobaciones.")}</li>
             <li>{tr("Projects hold your context; skills hold your procedures.", "Los Proyectos guardan tu contexto; las skills, tus procedimientos.")}</li>
             <li>{tr("Artifacts turn an answer into a tool the team can open.", "Los Artifacts convierten una respuesta en una herramienta que el equipo puede abrir.")}</li>
-            <li>{tr("Autonomous agents live in GitHub Actions, Claude Managed Agents or your own server.", "Los agentes autónomos viven en GitHub Actions, Claude Managed Agents o tu propio servidor.")}</li>
+            <li>{tr("MCP connectors are the standard plug between Claude and your systems.", "Los conectores MCP son el enchufe estándar entre Claude y tus sistemas.")}</li>
+            <li>{tr("Level five is enough for most finance work; autonomous agents live in GitHub Actions, Claude Managed Agents or your own server.", "El nivel cinco basta para la mayor parte del trabajo financiero; los agentes autónomos viven en GitHub Actions, Claude Managed Agents o tu propio servidor.")}</li>
             <li>{tr("Whatever the level: the agent prepares, a person approves.", "Sea cual sea el nivel: el agente prepara, una persona aprueba.")}</li>
           </ul>
         </div>
