@@ -84,6 +84,14 @@
     },
     "articles": [
       {
+        "slug": "ai-agents-accounting-finance",
+        "title": "AI Agents for Accounting and Finance: Six Levels, From a Good Prompt to an Agent That Runs Itself",
+        "date": "November 2026",
+        "description": "What an AI agent is, its six parts, and six levels of using one in finance: prompting, projects, skills (SKILL.md), artifacts, routines on your computer, and autonomous agents hosted in GitHub Actions or Claude Managed Agents — with the guardrails finance needs.",
+        "tag": "AI & Agents",
+        "published": "2026-11-27"
+      },
+      {
         "slug": "start-business-uk",
         "title": "How to Start a Business in the UK: A Step-by-Step Guide (2026)",
         "date": "November 2026",

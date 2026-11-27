@@ -84,6 +84,14 @@
     },
     "articles": [
       {
+        "slug": "ai-agents-accounting-finance",
+        "title": "Agentes de IA para contabilidad y finanzas: seis niveles, de un buen prompt a un agente que trabaja solo",
+        "date": "Noviembre 2026",
+        "description": "Qué es un agente de IA, sus seis partes y seis niveles para usarlo en finanzas: prompts, proyectos, skills (SKILL.md), artifacts, rutinas en tu ordenador y agentes autónomos alojados en GitHub Actions o Claude Managed Agents — con los controles que necesita finanzas.",
+        "tag": "IA y Agentes",
+        "published": "2026-11-27"
+      },
+      {
         "slug": "start-business-uk",
         "title": "Cómo montar una empresa en el Reino Unido: guía paso a paso (2026)",
         "date": "Noviembre 2026",

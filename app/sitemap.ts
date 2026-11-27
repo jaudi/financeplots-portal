@@ -8,6 +8,7 @@ const BASE = "https://www.financeplots.com";
 
 const BLOG_SLUGS = [
   "5-year-financial-model",
+  "ai-agents-accounting-finance",
   "annual-budget-guide",
   "bootstrapping-runway",
   "break-even-analysis-guide",
