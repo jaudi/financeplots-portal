@@ -274,7 +274,7 @@ export default async function ArticleAiAgentsAccountingFinance({ params }: Props
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white pt-28 pb-20 px-4 sm:px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <BlogArticleShell>
+      <BlogArticleShell books={false}>
         <Link href="/blog" className="text-blue-400 text-sm hover:text-blue-300 transition mb-8 inline-block">
           {tr("← Back to Blog", "← Volver al Blog")}
         </Link>
